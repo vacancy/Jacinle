@@ -1,8 +1,8 @@
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 # File   : keyboard.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 18/01/2018
+# Date   : 01/18/2018
 # 
 # This file is part of Jacinle.
 
@@ -14,3 +14,13 @@ def str2bool(s):
         return False
     else:
         raise ValueError('str2bool is undefined for: "{}".'.format(s))
+
+
+# TODO::
+def yn2bool(s):
+    raise NotImplementedError()
+
+
+# TODO::
+def maybe_mkdir(dirname):
+    raise NotImplementedError()

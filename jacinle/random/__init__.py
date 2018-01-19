@@ -1,7 +1,7 @@
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 # File   : __init__.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 18/01/2018
+# Date   : 01/18/2018
 # 
 # This file is part of Jacinle.

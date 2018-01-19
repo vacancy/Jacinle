@@ -1,8 +1,8 @@
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 # File   : device.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 18/01/2018
+# Date   : 01/18/2018
 # 
 # This file is part of Jacinle.
 
@@ -18,7 +18,7 @@ class DeviceNameFormat(JacEnum):
 
 
 def canonlize_device_name(d, format=DeviceNameFormat.INT):
-    format = DeviceNameFormat(format)
+    format = DeviceNameFormat.from_string(format)
 
     d = d.strip().lower()
     if d == 'cpu':
