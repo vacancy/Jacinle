@@ -8,6 +8,8 @@
 
 import enum
 
+__all__ = ['JacEnum']
+
 
 class JacEnum(enum.Enum):
     """A customized enumeration class, adding helper functions for string-based argument parsing."""

@@ -8,6 +8,8 @@
 
 import math
 
+__all__ = ['mean', 'std', 'rms']
+
 
 def mean(values, default=0):
     if len(values) == 0:

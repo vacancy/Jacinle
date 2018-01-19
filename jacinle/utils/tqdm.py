@@ -8,7 +8,7 @@
 
 from tqdm import tqdm as _tqdm
 
-__all__ = ['get_tqdm_defaults']
+__all__ = ['get_tqdm_defaults', 'tqdm', 'tqdm_pbar']
 
 __tqdm_defaults = {'dynamic_ncols': True, 'ascii': True}
 

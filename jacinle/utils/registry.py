@@ -11,7 +11,7 @@ import threading
 
 from .context import EmptyContext
 
-__all__ = ['Registry', 'RegistryGroup', 'CallbackRegistry']
+__all__ = ['Registry', 'DefaultRegistry', 'RegistryGroup', 'CallbackRegistry', 'LockRegistry']
 
 
 class Registry(object):

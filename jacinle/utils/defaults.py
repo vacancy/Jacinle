@@ -11,6 +11,8 @@ import functools
 
 from .naming import class_name_of_method
 
+__all__ = ['defaults_manager']
+
 
 class DefaultsManager(object):
     def __init__(self):

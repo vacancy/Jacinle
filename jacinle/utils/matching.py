@@ -30,6 +30,7 @@ class NameMatcher(object):
 
         self._matched = []
         self._unused = set()
+        self._last_stat = None
 
     @property
     def rules(self):
@@ -54,6 +55,9 @@ class NameMatcher(object):
         self._matched = []
         self._unused = set(range(len(self._compiled_rules)))
 
+    def end(self):
+        return self._matched, {self._compiled_rules[i][0] for i in self._unused}
+
     def match(self, k):
         for i, (r, p, v) in enumerate(self._compiled_rules):
             if p.match(k):
@@ -62,9 +66,6 @@ class NameMatcher(object):
                 self._matched.append((k, r, v))
                 return v
         return None
-
-    def end(self):
-        return self._matched, {self._compiled_rules[i][0] for i in self._unused}
 
     def compile(self):
         self._map = dict()
@@ -76,3 +77,13 @@ class NameMatcher(object):
             p = re.compile(p, flags=re.IGNORECASE)
             self._compiled_rules.append((r, p, v))
         self._compiled = True
+
+    def __enter__(self):
+        self.begin()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._last_stat = self.end()
+
+    def get_last_stat(self):
+        return self._last_stat

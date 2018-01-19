@@ -13,8 +13,7 @@ __all__ = [
     'isndarray',  'is_ndarray',
     'nd_tobatch',
     'nd_concat', 'nd_len', 'nd_batch_size',
-    'nd_split_n', 'size_split_n',
-    'gather_list_batch'
+    'nd_split_n', 'size_split_n', 'index_select_batch'
 ]
 
 
@@ -52,16 +51,6 @@ def nd_batch_size(thing):
         return nd_len(thing)
 
 
-def nd_split_n(ndarray, n):
-    sub_sizes = size_split_n(len(ndarray), n)
-    res = []
-    cur = 0
-    for i in range(n):
-        res.append(ndarray[cur:cur+sub_sizes[i]])
-        cur += sub_sizes[i]
-    return res
-
-
 def size_split_n(full_size, n):
     if full_size is None:
         return None
@@ -72,7 +61,17 @@ def size_split_n(full_size, n):
     return result
 
 
-def gather_list_batch(data, indices):
+def nd_split_n(ndarray, n):
+    sub_sizes = size_split_n(len(ndarray), n)
+    res = []
+    cur = 0
+    for i in range(n):
+        res.append(ndarray[cur:cur+sub_sizes[i]])
+        cur += sub_sizes[i]
+    return res
+
+
+def index_select_batch(data, indices):
     """Gather `indices` as batch indices from `data`, which can either be typical nd array or a
     list of nd array"""
     assert isinstance(indices, (tuple, list)) or (isndarray(indices) and len(indices.shape) == 1)

@@ -11,15 +11,17 @@ import collections
 import threading
 import contextlib
 
-__all__ = ['gofor', 'merge_iterable',
-           'map_exec', 'filter_exec',
-           'cond_with',
-           'dict_deep_update', 'dict_deep_keys',
-           'assert_instance', 'assert_none', 'assert_notnone',
-           'notnone_property',
-           'run_once',
-           'synchronized',
-           'try_run']
+__all__ = [
+    'gofor',
+    'run_once', 'try_run',
+    'map_exec', 'filter_exec',
+    'cond_with',
+    'merge_iterable',
+    'dict_deep_update', 'dict_deep_keys',
+    'assert_instance', 'assert_none', 'assert_notnone',
+    'notnone_property',
+    'synchronized'
+]
 
 
 def gofor(v):
@@ -29,13 +31,26 @@ def gofor(v):
     return enumerate(v)
 
 
-def merge_iterable(v1, v2):
-    assert issubclass(type(v1), type(v2)) or issubclass(type(v2), type(v1))
-    if isinstance(v1, (dict, set)):
-        v = v1.copy().update(v2)
-        return v
+def run_once(func):
+    has_run = False
 
-    return v1 + v2
+    @synchronized()
+    @functools.wraps(func)
+    def new_func(*args, **kwargs):
+        nonlocal has_run
+        if not has_run:
+            has_run = True
+            return func(*args, **kwargs)
+        else:
+            return
+    return new_func
+
+
+def try_run(lambda_):
+    try:
+        return lambda_()
+    except Exception:
+        return None
 
 
 def map_exec(func, *iterables):
@@ -46,6 +61,10 @@ def filter_exec(func, iterable):
     return list(filter(func, iterable))
 
 
+def method2func(method_name):
+    return lambda x: getattr(x, method_name)()
+
+
 @contextlib.contextmanager
 def cond_with(with_statement, cond):
     if cond:
@@ -53,6 +72,15 @@ def cond_with(with_statement, cond):
             yield
     else:
         yield
+
+
+def merge_iterable(v1, v2):
+    assert issubclass(type(v1), type(v2)) or issubclass(type(v2), type(v1))
+    if isinstance(v1, (dict, set)):
+        v = v1.copy().update(v2)
+        return v
+
+    return v1 + v2
 
 
 def dict_deep_update(a, b):
@@ -113,21 +141,6 @@ class notnone_property:
         return v
 
 
-def run_once(func):
-    has_run = False
-
-    @synchronized()
-    @functools.wraps(func)
-    def new_func(*args, **kwargs):
-        nonlocal has_run
-        if not has_run:
-            has_run = True
-            return func(*args, **kwargs)
-        else:
-            return
-    return new_func
-
-
 def synchronized(mutex=None):
     if mutex is None:
         mutex = threading.Lock()
@@ -140,10 +153,3 @@ def synchronized(mutex=None):
         return wrapped_func
 
     return wrapper
-
-
-def try_run(lambda_):
-    try:
-        return lambda_()
-    except Exception:
-        return None

@@ -8,11 +8,23 @@
 
 import collections
 
-# TODO:: FIX ME
-__all__ = ['get_2dshape', 'get_3dshape', 'get_4dshape']
+__all__ = [
+    'get_2dshape', 'get_3dshape', 'get_4dshape',
+    'astuple', 'asshape',
+    'canonize_args_list',
+    'UniqueValueGetter'
+]
 
 
 def get_2dshape(x, default=None, type=int):
+    """Convert a value or a tuple to a tuple of length 2.
+    Args:
+        x: a value of type `type`, or a tuple of length 2.
+        default: default value.
+        type: expected type of the element.
+
+    Returns: a tuple of length 2.
+    """
     if x is None:
         return default
     if isinstance(x, collections.Sequence):
@@ -60,9 +72,16 @@ def get_4dshape(x, default=None, type=int):
 
 
 def astuple(arr_like):
+    """Convert a sequence or a single value to a tuple. This method differ from the system method `tuple` in that
+    a single value (incl. int, string, bytes) will be converted to a tuple of length 1.
+    Args:
+        arr_like: a sequence or a single value.
+
+    Returns: a tuple.
+    """
     if type(arr_like) is tuple:
         return arr_like
-    elif isinstance(arr_like, collections.Sequence):
+    elif isinstance(arr_like, collections.Sequence) and not isinstance(arr_like, (str, bytes)):
         return tuple(arr_like)
     else:
         return tuple((arr_like,))
@@ -83,6 +102,20 @@ def asshape(arr_like):
 
 
 def canonize_args_list(args, *, allow_empty=False, cvt=None):
+    """Convert the argument list to a tuple of values. This is useful to make unified interface for shape-related
+    operations. E.g.,
+
+    >>> np.zeros(6).reshape(2, 3)
+    >>> np.zeros(6).reshape((2, 3))
+
+    Args:
+        args:
+        allow_empty:
+        cvt:
+
+    Returns:
+
+    """
     if not allow_empty and not args:
         raise TypeError('at least one argument must be provided')
 

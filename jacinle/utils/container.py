@@ -10,7 +10,7 @@ import copy
 
 from .printing import kvformat, kvprint
 
-__all__ = ['G', 'g']
+__all__ = ['G', 'g', 'GView', 'SlotAttrObject']
 
 
 class G(dict):
@@ -35,7 +35,26 @@ class G(dict):
 g = G()
 
 
-class AttrObject(object):
+class GView(object):
+    def __init__(self, dict_):
+        object.__setattr__(self, '_dict', dict_)
+
+    def __getattr__(self, k):
+        if k not in self.raw():
+            raise AttributeError
+        return self.raw()[k]
+
+    def __setattr__(self, k, v):
+        self.raw()[k] = v
+
+    def __delattr__(self, k):
+        del self.raw()[k]
+
+    def raw(self):
+        return object.__getattribute__(self, '_dict')
+
+
+class SlotAttrObject(object):
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -58,6 +77,3 @@ class AttrObject(object):
 
     def clone(self):
         return copy.deepcopy(self)
-
-
-# TODO:: GView

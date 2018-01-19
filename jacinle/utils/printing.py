@@ -14,7 +14,7 @@ import threading
 
 from .registry import LockRegistry
 
-__all__ = ['stprint', 'stformat', 'print_to_string']
+__all__ = ['stprint', 'stformat', 'kvprint', 'kvformat', 'print_to_string', 'print2format']
 
 
 def _indent_print(msg, indent, prefix=None, end='\n', file=None):
