@@ -10,7 +10,6 @@ import io
 import sys
 import numpy as np
 import collections
-import threading
 
 from .registry import LockRegistry
 

@@ -17,10 +17,13 @@ def image_grid(all_images, grid_desc):
     Create a image grid given the description. The description is a list of axis desc, of format: %d[h|v].
     If the first number n is a positive number, every n images will be concatenated horizontally or vertically.
     We allow exactly one axis desc to be only [h|v], meaning the number of images of that axis will be automatically
-    inferred. See examples/generative-model/data_provide_gan_mnist/main_demo_infogan for detail.
-    :param all_images: A list of images. Should be np.ndarray of shape (h, w, c).
-    :param grid_desc: The grid description.
-    :return: A single big image created.
+    inferred.
+    
+    Args:
+        all_images: A list of images. Should be np.ndarray of shape (h, w, c).
+        grid_desc: The grid description.
+
+    Returns: A single big image created.
     """
 
     axes_info = []

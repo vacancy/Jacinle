@@ -17,7 +17,12 @@ __all__ = ['Registry', 'DefaultRegistry', 'RegistryGroup', 'CallbackRegistry', '
 class Registry(object):
     __FALLBACK_KEY__ = '__fallback__'
 
+    _registry = None
+
     def __init__(self):
+        self._init_registry()
+
+    def _init_registry(self):
         self._registry = dict()
 
     @property
@@ -32,6 +37,9 @@ class Registry(object):
         self._registry[entry] = value
         return self
 
+    def unregister(self, entry):
+        return self._registry.pop(entry, None)
+
     def has(self, entry):
         return entry in self._registry
 
@@ -42,12 +50,14 @@ class Registry(object):
             fallback_value = default
         return self._registry.get(entry, fallback_value)
 
+    def items(self):
+        return self._registry.items()
+
 
 class DefaultRegistry(Registry):
     __base_class__ = dict
 
-    def __init__(self):
-        super().__init__()
+    def _init_registry(self):
         base_class = type(self).__base_class__
         self._registry = collections.defaultdict(base_class)
 
@@ -63,14 +73,17 @@ class RegistryGroup(object):
     __base_class__ = Registry
 
     def __init__(self):
+        self._init_registry_group()
+
+    def _init_registry_group(self):
         base_class = type(self).__base_class__
         self._registries = collections.defaultdict(base_class)
 
     def __getitem__(self, item):
         return self._registries[item]
 
-    def register(self, registry_name, entry, value):
-        return self._registries[registry_name].register(entry, value)
+    def register(self, registry_name, entry, value, **kwargs):
+        return self._registries[registry_name].register(entry, value, **kwargs)
 
     def lookup(self, registry_name, entry, fallback=True, default=None):
         return self._registries[registry_name].lookup(entry, fallback=fallback, default=default)

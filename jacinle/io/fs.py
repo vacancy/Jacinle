@@ -100,7 +100,7 @@ def save_pth(file, obj, **kwargs):
     return torch.save(obj, file)
 
 
-class IOFunctionRegistry(RegistryGroup):
+class _IOFunctionRegistryGroup(RegistryGroup):
     __base_class__ = CallbackRegistry
 
     def dispatch(self, registry_name, file, *args, **kwargs):
@@ -113,7 +113,7 @@ def _default_io_fallback(file, *args, **kwargs):
     raise ValueError('Unknown file extension: "{}".'.format(file))
 
 
-io_function_registry = IOFunctionRegistry()
+io_function_registry = _IOFunctionRegistryGroup()
 io_function_registry.register('open', '.h5', open_h5)
 io_function_registry.register('open', '.gz', open_gz)
 io_function_registry.register('open', '__fallback__', sys_open)

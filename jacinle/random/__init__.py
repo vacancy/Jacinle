@@ -5,3 +5,6 @@
 # Date   : 01/18/2018
 # 
 # This file is part of Jacinle.
+
+from .rng import *
+from ._lazy_bind import *

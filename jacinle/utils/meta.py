@@ -15,6 +15,7 @@ __all__ = [
     'gofor',
     'run_once', 'try_run',
     'map_exec', 'filter_exec',
+    'decorator_with_optional_args',
     'cond_with',
     'merge_iterable',
     'dict_deep_update', 'dict_deep_keys',
@@ -63,6 +64,32 @@ def filter_exec(func, iterable):
 
 def method2func(method_name):
     return lambda x: getattr(x, method_name)()
+
+
+def decorator_with_optional_args(func=None, *, is_method=False):
+    def wrapper(f):
+        @functools.wraps(f)
+        def wrapped(*args, **kwargs):
+            if is_method:
+                if len(args) == 1:
+                    return f(*args, **kwargs)
+                elif len(args) == 2:
+                    return f(args[0], **kwargs)(args[1])
+                else:
+                    raise ValueError('Decorator supports 0 or 1 positional arguments as the function to be wrapped.')
+            else:
+                if len(args) == 0:
+                    return f(**kwargs)
+                elif len(args) == 1:
+                    return f(**kwargs)(args[0])
+                else:
+                    raise ValueError('Decorator supports 0 or 1 positional arguments as the function to be wrapped.')
+        return wrapped
+
+    if func is not None:
+        return wrapper(func)
+    else:
+        return wrapper
 
 
 @contextlib.contextmanager
