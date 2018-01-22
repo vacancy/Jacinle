@@ -15,7 +15,7 @@ import numpy as np
 
 from jacinle.io.network import download
 
-__all__ = ['load_cifar']
+__all__ = ['load_cifar', 'load_cifar10', 'load_cifar100']
 
 
 cifar_web_address = 'http://www.cs.toronto.edu/~kriz/'

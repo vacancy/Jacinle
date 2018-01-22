@@ -12,7 +12,7 @@ import numpy as np
 
 from jacinle.io.network import download
 
-__all__ = ['load_mnist']
+__all__ = ['load_svhn']
 
 
 svhn_web_address = {

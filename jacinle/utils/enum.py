@@ -28,6 +28,10 @@ class JacEnum(enum.Enum):
         return list(filter(lambda x: not x.startswith('_'), dir(cls)))
 
     @classmethod
+    def choice_objs(cls):
+        return [getattr(cls, name) for name in cls.choice_names()]
+
+    @classmethod
     def choice_values(cls):
         return [getattr(cls, name).value for name in cls.choice_names()]
 
