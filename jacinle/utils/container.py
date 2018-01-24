@@ -36,7 +36,9 @@ g = G()
 
 
 class GView(object):
-    def __init__(self, dict_):
+    def __init__(self, dict_=None):
+        if dict_ is None:
+            dict_ = dict()
         object.__setattr__(self, '_dict', dict_)
 
     def __getattr__(self, k):

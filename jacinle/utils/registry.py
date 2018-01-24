@@ -143,7 +143,7 @@ class CallbackRegistry(Registry):
 
 
 class LockRegistry(DefaultRegistry):
-    __base_class__ = threading.Lock()
+    __base_class__ = threading.Lock
 
     def synchronized(self, entry, activate=True):
         if activate:

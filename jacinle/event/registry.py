@@ -12,9 +12,27 @@ import uuid
 from jacinle.utils.registry import Registry, RegistryGroup
 
 __all__ = [
+    'SimpleEventRegistry',
     'EventRegistry', 'EventRegistryGroup',
     'register_event', 'trigger_event'
 ]
+
+
+class SimpleEventRegistry(object):
+    def __init__(self, allowed_events=None):
+        self._allowed_events = allowed_events
+        self._events = collections.defaultdict(list)
+
+    def register(self, event, callback):
+        if self._allowed_events is not None:
+            assert event in self._allowed_events
+        self._events[event].append(callback)
+
+    def trigger(self, event, *args, **kwargs):
+        if self._allowed_events is not None:
+            assert event in self._allowed_events
+        for f in self._events[event]:
+            f(*args, **kwargs)
 
 
 class EventRegistry(Registry):
