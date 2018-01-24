@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File   : meters.py
+# File   : meter.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 19/01/2018
