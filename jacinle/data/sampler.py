@@ -6,8 +6,8 @@
 #
 # This file is part of Jacinle.
 
-from jacinle.numeric.nd import index_select_batch
 from jacinle.random.rng import gen_rng
+from jacnp.nd import index_select_batch
 
 __all__ = ['EpochBatchSampler', 'SimpleBatchSampler']
 
