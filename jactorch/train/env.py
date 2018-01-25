@@ -5,10 +5,10 @@ import time
 
 import torch
 
-from jacinle.logging import get_logger
 from jacinle.event.registry import SimpleEventRegistry
+from jacinle.logging import get_logger
 from jactorch.io import load_weights
-from jactorch.graph.io import as_variable, as_float
+from jactorch.utils.meta import as_variable, as_float
 
 logger = get_logger(__file__)
 
@@ -117,7 +117,7 @@ class TrainerEnv(object):
         return loss_f, monitors_f, output_dict, {'time/gpu': end - begin}
 
     def evaluate(self, feed_dict):
-        assert not self._model.training, 'Evaluting a training-model model.'
+        assert not self._model.training, 'Evaluting a training-mode model.'
         begin = time.time()
         feed_dict = as_variable(feed_dict)
         output_dict = self._model(**feed_dict)

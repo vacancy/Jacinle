@@ -14,7 +14,7 @@ import contextlib
 __all__ = [
     'gofor',
     'run_once', 'try_run',
-    'map_exec', 'filter_exec',
+    'map_exec', 'filter_exec', 'stmap',
     'decorator_with_optional_args',
     'cond_with',
     'merge_iterable',
@@ -60,6 +60,15 @@ def map_exec(func, *iterables):
 
 def filter_exec(func, iterable):
     return list(filter(func, iterable))
+
+
+def stmap(func, iterable):
+    if isinstance(iterable, collections.Sequence):
+        return [stmap(func, v) for v in iterable]
+    elif isinstance(iterable, collections.Mapping):
+        return {k: stmap(func, v) for k, v in iterable}
+    else:
+        return func(iterable)
 
 
 def method2func(method_name):

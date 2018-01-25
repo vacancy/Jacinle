@@ -3,7 +3,7 @@
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 24/01/2018
-# 
+#
 # This file is part of Jacinle.
 
 import torch
@@ -45,4 +45,3 @@ def index_one_hot(tensor, dim, index):
     index = index.expand(tensor.size(0), 1, tensor.size(2))
     tensor = tensor.gather(1, index)
     return tensor.view(tensor_shape[:dim] + tensor_shape[dim+1:])
-
