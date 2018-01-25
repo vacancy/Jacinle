@@ -53,4 +53,4 @@ def _as_float(o):
 
 
 def as_float(obj):
-    return stmap(_as_numpy, obj)
+    return stmap(_as_float, obj)

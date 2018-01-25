@@ -23,7 +23,7 @@ def concat_shape(*shapes):
 def broadcast(tensor, dim, size):
     assert tensor.size(dim) == 1
     shape = tensor.size()
-    return tensor.expand(concat_shape(shape[:dim], size + shape[dim+1:]))
+    return tensor.expand(concat_shape(shape[:dim], size, shape[dim+1:]))
 
 
 def repeat(tensor, dim, count):
