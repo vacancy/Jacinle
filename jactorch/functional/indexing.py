@@ -8,6 +8,7 @@
 
 import torch
 
+from jacinle.utils.numeric import prod
 from jactorch.graph.variable import var_with, new_var_with
 
 
@@ -27,3 +28,18 @@ def one_hot(index, nr_classes):
     ones = new_var_with(index, index.size(0), 1).fill_(1)
     ret = mask.scatter_(1, index.unsqueeze(-1), ones)
     return ret
+
+
+def inverse_permutation(perm):
+    length = perm.size(0)
+    inv = var_with(perm.data.new(length).long().zero_(), perm)
+    inv.scatter_(0, perm, var_with(torch.arange(length).long(), perm))
+    return inv.long()
+
+
+def index_one_hot(tensor, dim, index):
+    tensor_shape = tensor.size()
+    tensor = tensor.view(prod(tensor_shape[:dim]), tensor_shape[dim], prod(tensor_shape[dim+1:]))
+    assert tensor.size(0) == index.size(0)
+    tensor = tensor.gather(1, index.unsqueeze(-1).unsqueeze(-1))
+    return tensor.view(tensor_shape[:dim] + tensor_shape[dim+1:])
