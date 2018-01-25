@@ -41,5 +41,8 @@ def index_one_hot(tensor, dim, index):
     tensor_shape = tensor.size()
     tensor = tensor.view(prod(tensor_shape[:dim]), tensor_shape[dim], prod(tensor_shape[dim+1:]))
     assert tensor.size(0) == index.size(0)
-    tensor = tensor.gather(1, index.unsqueeze(-1).unsqueeze(-1))
+    index = index.unsqueeze(-1).unsqueeze(-1)
+    index = index.expand(tensor.size(0), 1, tensor.size(2))
+    tensor = tensor.gather(1, index)
     return tensor.view(tensor_shape[:dim] + tensor_shape[dim+1:])
+
