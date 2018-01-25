@@ -66,7 +66,7 @@ def stmap(func, iterable):
     if isinstance(iterable, collections.Sequence):
         return [stmap(func, v) for v in iterable]
     elif isinstance(iterable, collections.Mapping):
-        return {k: stmap(func, v) for k, v in iterable}
+        return {k: stmap(func, v) for k, v in iterable.items()}
     else:
         return func(iterable)
 
