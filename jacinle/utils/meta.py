@@ -15,6 +15,7 @@ __all__ = [
     'gofor',
     'run_once', 'try_run',
     'map_exec', 'filter_exec', 'stmap',
+    'method2func', 'map_exec_method',
     'decorator_with_optional_args',
     'cond_with',
     'merge_iterable',
@@ -73,6 +74,10 @@ def stmap(func, iterable):
 
 def method2func(method_name):
     return lambda x: getattr(x, method_name)()
+
+
+def map_exec_method(method_name, iterable):
+    return list(map(method2func(method_name), iterable))
 
 
 def decorator_with_optional_args(func=None, *, is_method=False):
