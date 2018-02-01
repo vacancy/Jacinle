@@ -4,6 +4,7 @@ import os.path as osp
 import time
 
 import torch
+import torch.nn as nn
 
 from jacinle.event.registry import SimpleEventRegistry
 from jacinle.logging import get_logger
@@ -49,16 +50,21 @@ class TrainerEnv(object):
         self._event_manager.trigger(name, *args, **kwargs)
 
     def save_checkpoint(self, filename, extra=None):
+        # Hack the data parallel.
+        model = self._model
+        if isinstance(model, nn.DataParallel):
+            model = model.module
+
         state = {
-            'model': self._model.state_dict(),
+            'model': model.state_dict(),
             'optimizer': self._optimizer.state_dict(),
             'extra': extra
         }
         try:
             torch.save(state, filename)
             logger.info('Checkpoint saved: {}.'.format(filename))
-        except Exception as e:
-            logger.exception('Error occured when dump checkpoint {}.'.format(filename))
+        except Exception:
+            logger.exception('Error occurred when dump checkpoint {}.'.format(filename))
 
     def load_checkpoint(self, filename):
         if osp.isfile(filename):
@@ -68,8 +74,8 @@ class TrainerEnv(object):
                 self._optimizer.load_state_dict(checkpoint['optimizer'])
                 logger.critical('Checkpoint loaded: {}.'.format(filename))
                 return checkpoint['extra']
-            except Exception as e:
-                logger.exception('Error occured when load checkpoint {}.'.format(filename))
+            except Exception:
+                logger.exception('Error occurred when load checkpoint {}.'.format(filename))
         else:
             logger.warning('No checkpoint found at specified position: {}.'.format(filename))
         return None
@@ -117,7 +123,7 @@ class TrainerEnv(object):
         return loss_f, monitors_f, output_dict, {'time/gpu': end - begin}
 
     def evaluate(self, feed_dict):
-        assert not self._model.training, 'Evaluting a training-mode model.'
+        assert not self._model.training, 'Evaluating a training-mode model.'
         begin = time.time()
         feed_dict = as_variable(feed_dict)
         output_dict = self._model(**feed_dict)
