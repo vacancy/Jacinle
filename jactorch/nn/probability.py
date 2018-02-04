@@ -54,7 +54,7 @@ class ProbabilityBilinear(nn.Bilinear):
 class ProbabilityNLinear(nn.Module):
     def __new__(cls, *nr_categories, bias=False, norm=True):
         if len(nr_categories) == 2:
-            pass
+            return ProbabilityLinear(*nr_categories, bias=bias, norm=norm)
         elif len(nr_categories) == 3:
             return ProbabilityBilinear(*nr_categories, bias=bias, norm=norm)
         else:
