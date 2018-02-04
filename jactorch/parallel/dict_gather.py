@@ -1,14 +1,39 @@
 # -*- coding: utf-8 -*-
-# File   : gather.py
+# File   : dict_gather.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 24/01/2018
+# Date   : 04/02/2018
 # 
 # This file is part of Jacinle.
 
+import functools
 import collections
+
 from torch.autograd import Variable
+from torch.nn.parallel.data_parallel import DataParallel
 from torch.nn.parallel._functions import Gather
+
+
+__all__ = [
+    'data_parallel_dict_gather',
+    'DictGatherDataParallel',
+    'patch_dict_gathering'
+]
+
+
+def data_parallel_dict_gather(data_parallel, outputs, output_device):
+    return dict_gather(outputs, output_device, dim=data_parallel.dim)
+
+
+class DictGatherDataParallel(DataParallel):
+    """Add support for modules that return dicts."""
+    def gather(self, outputs, output_device):
+        return data_parallel_dict_gather(self, outputs, output_device)
+
+
+def patch_dict_gathering(data_parallel):
+    assert isinstance(data_parallel, DataParallel)
+    data_parallel.gather = functools.partial(data_parallel_dict_gather, data_parallel=data_parallel)
 
 
 def dict_gather(outputs, target_device, dim=0):

@@ -145,3 +145,7 @@ set_state = _lazy_bind(_rng.set_state)
 choice_list = _lazy_bind(_rng.choice_list)
 shuffle_list = _lazy_bind(_rng.shuffle_list)
 shuffle_multi = _lazy_bind(_rng.shuffle_multi)
+
+# Some aliases:
+ranf = random = sample = random_sample
+__all__.extend(['ranf', 'random', 'sample'])
