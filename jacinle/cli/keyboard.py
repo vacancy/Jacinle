@@ -16,9 +16,13 @@ def str2bool(s):
         raise ValueError('str2bool is undefined for: "{}".'.format(s))
 
 
-# TODO::
 def yn2bool(s):
-    raise NotImplementedError()
+    if s.lower() in ('yes', 'y'):
+        return True
+    elif s.lower() in ('no', 'n'):
+        return False
+    else:
+        raise ValueError('yn2bool is undefined for: "{}".'.format(s))
 
 
 # TODO::
