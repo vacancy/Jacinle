@@ -37,3 +37,7 @@ def cosine_distance(f_lookup, f):
     f = normalize(f, 2, dim=1)
 
     return torch.mm(f_lookup, f.t())
+
+
+def dot(f_lookup, f):
+    return torch.mm(f_lookup, f.t())
