@@ -7,6 +7,7 @@
 # This file is part of Jacinle.
 
 import functools
+import operator
 import collections
 import threading
 import contextlib
@@ -19,7 +20,7 @@ __all__ = [
     'decorator_with_optional_args',
     'cond_with',
     'merge_iterable',
-    'dict_deep_update', 'dict_deep_keys',
+    'dict_deep_update', 'dict_deep_kv', 'dict_deep_keys',
     'assert_instance', 'assert_none', 'assert_notnone',
     'notnone_property',
     'synchronized'
@@ -132,21 +133,30 @@ def dict_deep_update(a, b):
             a[key] = b[key]
 
 
-def dict_deep_keys(d, sort=True, sep='.'):
-    assert type(d) is dict
+def dict_deep_kv(d, sort=True, sep='.', allow_dict=False):
+    # Not using collections.Sequence to avoid infinite recursion.
+    assert isinstance(d, (tuple, list, collections.Mapping))
+    result = list()
 
-    def _dfs(current, result, prefix=None):
-        for key in current:
-            current_key = key if prefix is None else '{}{}{}'.format(prefix, sep, key)
-            result.append(current_key)
-            if type(current[key]) is dict:
-                _dfs(current[key], res, current_key)
+    def _dfs(current, prefix=None):
+        for key, value in gofor(current):
+            current_key = key if prefix is None else prefix + sep + str(key)
+            if isinstance(current[key], (tuple, list, collections.Mapping)):
+                if allow_dict:
+                    result.append((current_key, value))
+                _dfs(current[key], current_key)
+            else:
+                result.append((current_key, value))
 
-    res = list()
-    _dfs(d, res)
+    _dfs(d)
     if sort:
-        res.sort()
-    return res
+        result.sort(key=operator.itemgetter(0))
+    return result
+
+
+def dict_deep_keys(d, sort=True, sep='.', allow_dict=True):
+    kv = dict_deep_kv(d, sort=sort, sep=sep, allow_dict=allow_dict)
+    return [i[0] for i in kv]
 
 
 def assert_instance(ins, clz, msg=None):

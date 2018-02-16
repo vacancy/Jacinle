@@ -1,25 +1,27 @@
 # -*- coding: utf-8 -*-
-# File   : pushpull.py
+# File   : gather.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 22/01/2018
 #
 # This file is part of Jacinle.
 
-import zmq
-import threading
-import queue
 import contextlib
+import queue
+import threading
 
+import zmq
+
+from jacinle.concurrency.packing import loadb, dumpb
+from jacinle.concurrency.zmq_utils import get_addr, bind_to_random_ipc, graceful_close
 from jacinle.utils.meta import notnone_property
 
-from ..packing import loadb, dumpb
-from ..zmq_utils import get_addr, bind_to_random_ipc, graceful_close
+__all__ = ['GatherOutputPipe', 'GatherInputPipe', 'make_gather_pair']
 
-__all__ = ['PushPipe', 'PullPipe', 'make_push_pair']
+GATHER_HWM = 2
 
 
-class PullPipe(object):
+class GatherInputPipe(object):
     def __init__(self, name, mode='tcp'):
         self._name = name
         self._mode = mode
@@ -27,7 +29,7 @@ class PullPipe(object):
 
         self._context = zmq.Context()
         self._sock = self._context.socket(zmq.PULL)
-        self._sock.set_hwm(2)
+        self._sock.set_hwm(GATHER_HWM)
 
     @notnone_property
     def conn_info(self):
@@ -62,7 +64,7 @@ class PullPipe(object):
             pass
 
 
-class PushPipe(object):
+class GatherOutputPipe(object):
     def __init__(self, conn_info, send_qsize=10):
         self._conn_info = conn_info
         self._send_qsize = send_qsize
@@ -75,10 +77,10 @@ class PushPipe(object):
     def initialize(self):
         self._context = zmq.Context()
         self._sock = self._context.socket(zmq.PUSH)
-        self._sock.set_hwm(2)
+        self._sock.set_hwm(GATHER_HWM)
         self._sock.connect(self._conn_info)
-        self._send_queue = queue.Queue(maxsize=self._send_qsize)
 
+        self._send_queue = queue.Queue(maxsize=self._send_qsize)
         self._send_thread = threading.Thread(target=self.mainloop_send, daemon=True)
         self._send_thread.start()
 
@@ -107,11 +109,11 @@ class PushPipe(object):
         return self
 
 
-def make_push_pair(name, nr_workers=None, mode='tcp', send_qsize=10):
-    pull = PullPipe(name, mode=mode)
+def make_gather_pair(name, nr_workers=None, mode='tcp', send_qsize=10):
+    pull = GatherInputPipe(name, mode=mode)
     pull.initialize()
     nr_pushs = nr_workers or 1
-    pushs = [PushPipe(pull.conn_info, send_qsize=send_qsize) for _ in range(nr_pushs)]
+    pushs = [GatherOutputPipe(pull.conn_info, send_qsize=send_qsize) for _ in range(nr_pushs)]
 
     if nr_workers is None:
         return pull, pushs[0]

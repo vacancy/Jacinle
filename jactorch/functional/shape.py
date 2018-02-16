@@ -38,3 +38,9 @@ def repeat_times(tensor, dim, repeats):
     for i in range(tensor.size(dim)):
         outputs.append(broadcast(tensor.narrow(dim, i, 1), dim, int(repeats[i])))
     return torch.cat(outputs, dim=dim)
+
+
+def force_view(tensor, *shapes):
+    if not tensor.is_contiguous():
+        tensor = tensor.contiguous()
+    return tensor.view(*shapes)

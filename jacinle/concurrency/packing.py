@@ -6,12 +6,14 @@
 #
 # This file is part of Jacinle.
 
+import os
 import functools
 
 from jacinle.utils.enum import JacEnum
 from jacinle.utils.registry import RegistryGroup, CallbackRegistry
 
 import pickle
+
 loadb_pickle = pickle.loads
 dumpb_pickle = pickle.dumps
 
@@ -24,6 +26,15 @@ try:
     loadb_msgpack = msgpack.loads
 except ImportError:
     dumpb_msgpack = loadb_msgpack = None
+
+
+try:
+    import pyarrow
+
+    dumpb_pyarrow = lambda obj: pyarrow.serialize(obj).to_buffer()
+    loadb_pyarrow = lambda buffer: pyarrow.deserialize(buffer)
+except ImportError:
+    dumpb_pyarrow = loadb_pyarrow = None
 
 
 class _PackingFunctionRegistryGroup(RegistryGroup):
@@ -44,13 +55,19 @@ def check_msgpack():
     return dumpb_msgpack is not None
 
 
+def check_pyarrow():
+    return dumpb_pyarrow is not None
+
+
 class _PackingBackend(JacEnum):
     PICKLE = 'pickle'
     MSGPACK = 'msgpack'
+    PYARROW = 'pyarrow'
 
 
 _packing_function_registry.register('check', _PackingBackend.PICKLE, lambda: True)
 _packing_function_registry.register('check', _PackingBackend.MSGPACK, check_msgpack)
+_packing_function_registry.register('check', _PackingBackend.PYARROW, check_pyarrow)
 
 
 _packing_function_registry.register('loadb', _PackingBackend.PICKLE, loadb_pickle)
@@ -59,6 +76,8 @@ _packing_function_registry.register('dumpb', _PackingBackend.PICKLE, dumpb_pickl
 _packing_function_registry.register('loadb', _PackingBackend.MSGPACK, loadb_msgpack)
 _packing_function_registry.register('dumpb', _PackingBackend.MSGPACK, dumpb_msgpack)
 
+_packing_function_registry.register('loadb', _PackingBackend.PYARROW, loadb_pyarrow)
+_packing_function_registry.register('dumpb', _PackingBackend.PYARROW, dumpb_pyarrow)
 
 _default_packing_backend = _PackingBackend.PICKLE
 
@@ -81,9 +100,16 @@ def set_default_backend(backend):
 
 def loadb(bstr, *args, backend=None, **kwargs):
     backend = backend or _default_packing_backend
-    return _packing_function_registry.dispatch('loadb', backend)(bstr, *args, **kwargs)
+    return _packing_function_registry.dispatch('loadb', backend, bstr, *args, **kwargs)
 
 
 def dumpb(obj, *args, backend=None, **kwargs):
     backend = backend or _default_packing_backend
-    return _packing_function_registry.dispatch('dumpb', backend)(obj, *args, **kwargs)
+    return _packing_function_registry.dispatch('dumpb', backend, obj, *args, **kwargs)
+
+
+def _initialize_backend():
+    set_default_backend(os.getenv('JAC_PACKING_BACKEND', _PackingBackend.PICKLE))
+
+
+_initialize_backend()

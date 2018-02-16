@@ -1,33 +1,33 @@
 # -*- coding: utf-8 -*-
-# File   : reqrep.py
+# File   : cs.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 22/01/2018
 #
 # This file is part of Jacinle.
 
-import zmq
-import threading
-import queue
-import contextlib
 import collections
+import contextlib
+import queue
+import threading
 
+import zmq
+
+from jacinle.concurrency.packing import dumpb, loadb
+from jacinle.concurrency.zmq_utils import get_addr, bind_to_random_ipc, graceful_close
 from jacinle.logging import get_logger
 from jacinle.utils.meta import notnone_property
 from jacinle.utils.registry import CallbackRegistry
 
-from ..packing import dumpb, loadb
-from ..zmq_utils import get_addr, bind_to_random_ipc, graceful_close
-
 logger = get_logger(__file__)
 
-__all__ = ['QueryMessage', 'RepPipe', 'ReqPipe']
+__all__ = ['ServerPipe', 'ClientPipe', 'make_cs_pair']
 
-QueryMessage = collections.namedtuple('QueryMessage', ['identifier', 'payload'])
+_QueryMessage = collections.namedtuple('QueryMessage', ['identifier', 'payload'])
 
 
-class RepPipe(object):
-    def __init__(self, name, send_qsize=0, mode='ipc'):
+class ServerPipe(object):
+    def __init__(self, name, send_qsize=0, mode='tcp'):
         self._name = name
         self._conn_info = None
 
@@ -116,10 +116,10 @@ class RepPipe(object):
                 raise e
 
     def send(self, identifier, msg):
-        self._send_queue.put(QueryMessage(identifier, msg))
+        self._send_queue.put(_QueryMessage(identifier, msg))
 
 
-class ReqPipe(object):
+class ClientPipe(object):
     def __init__(self, name, conn_info):
         self._name = name
         self._conn_info = conn_info
@@ -159,3 +159,14 @@ class ReqPipe(object):
         if do_recv:
             out = loadb(self._frsock.recv(copy=False).bytes)
             return out
+
+
+def make_cs_pair(name, nr_clients=None, mode='tcp', send_qsize=10):
+    rep = ServerPipe(name + '-rep', mode=mode, send_qsize=send_qsize)
+    rep.initialize()
+    nr_reqs = nr_clients or 1
+    reqs = [ClientPipe(name + '-req-' + str(i), rep.conn_info) for i in range(nr_reqs)]
+
+    if nr_clients is None:
+        return rep, reqs[0]
+    return rep, reqs

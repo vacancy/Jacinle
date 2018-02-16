@@ -25,21 +25,23 @@ class Actions:
     NS_REGISTER_CTL_REQ = 'ns-register-ctl-req'
     NS_REGISTER_CTL_REP = 'ns-register-ctl-rep'
 
-    NS_REGISTER_PIPE_REQ = 'ns-register-pipe-req'
-    NS_REGISTER_PIPE_REP = 'ns-register-pipe-rep'
+    NS_REGISTER_OUTPUTS_REQ = 'ns-register-outputs-req'
+    NS_REGISTER_OUTPUTS_REP = 'ns-register-outputs-rep'
 
     NS_HEARTBEAT_REQ = 'ns-heartbeat-req'
     NS_HEARTBEAT_REP = 'ns-heartbeat-rep'
 
-    NS_QUERY_OPIPE_REQ = 'ns-query-opipe-req'
-    NS_QUERY_OPIPE_REP = 'ns-query-opipe-rep'
+    NS_REGISTER_INPUTS_REQ = 'ns-register-inputs-req'
+    NS_REGISTER_INPUTS_REP = 'ns-register-inputs-rep'
 
-    CTL_NOTIFY_OPEN_REQ = 'ctl-notify-open-req'
-    CTL_NOTIFY_OPEN_REP = 'ctl-notify-open-rep'
-    CTL_NOTIFY_CLOSE_REQ = 'ctl-notify-close-req'
-    CTL_NOTIFY_CLOSE_REP = 'ctl-notify-close-rep'
+    NS_NOTIFY_OPEN_REQ = 'ctl-notify-open-req'
+    NS_NOTIFY_OPEN_REP = 'ctl-notify-open-rep'
+
+    NS_NOTIFY_CLOSE_REQ = 'ctl-notify-close-req'
+    NS_NOTIFY_CLOSE_REP = 'ctl-notify-close-rep'
 
     CTL_CONNECT_REQ = 'ctl-connect-req'
     CTL_CONNECT_REP = 'ctl-connect-rep'
+
     CTL_CONNECTED_REQ = 'ctl-connected-req'
     CTL_CONNECTED_REP = 'ctl-connected-rep'

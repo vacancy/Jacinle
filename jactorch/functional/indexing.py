@@ -30,6 +30,11 @@ def one_hot(index, nr_classes):
     return ret
 
 
+def one_hot_nd(index, nr_classes):
+    index_size = index.size()
+    return one_hot(index.view(-1), nr_classes).view(index_size + (nr_classes, ))
+
+
 def inverse_permutation(perm):
     length = perm.size(0)
     inv = var_with(perm.data.new(length).long().zero_(), perm)

@@ -137,7 +137,7 @@ class CallbackRegistry(Registry):
         callback = self.lookup(name, fallback=False)
         if callback is None:
             if self.fallback_callback is None:
-                raise ValueError('Unknown callback entry: "{}".',format(name))
+                raise ValueError('Unknown callback entry: "{}".'.format(name))
             return self.fallback_callback(self, name, *args, **kwargs)
         return callback(*args, **kwargs)
 

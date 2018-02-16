@@ -69,20 +69,3 @@ def nd_split_n(ndarray, n):
         res.append(ndarray[cur:cur+sub_sizes[i]])
         cur += sub_sizes[i]
     return res
-
-
-def index_select_batch(data, indices):
-    """Gather `indices` as batch indices from `data`, which can either be typical nd array or a
-    list of nd array"""
-    assert isinstance(indices, (tuple, list)) or (isndarray(indices) and len(indices.shape) == 1)
-
-    if isndarray(data):
-        return data[indices]
-
-    assert len(data) > 0 and len(indices) > 0
-
-    sample = np.array(data[0])  # Try to convert the first element to a typical nd array.
-    output = np.empty((len(indices), ) + sample.shape, dtype=sample.dtype)
-    for i, j in enumerate(indices):
-        output[i] = data[j]
-    return output

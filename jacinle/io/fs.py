@@ -24,7 +24,7 @@ __all__ = [
     'open', 'open_h5', 'open_gz',
     'load', 'load_h5', 'load_pkl', 'load_pklgz', 'load_npy', 'load_npz', 'load_pth',
     'save', 'save_pkl', 'save_pklgz', 'save_npy', 'save_npz', 'save_pth',
-    'link', 'mkdir', 'locate_newest_file'
+    'link', 'mkdir', 'locate_newest_file', 'io_function_registry'
 ]
 
 sys_open = open

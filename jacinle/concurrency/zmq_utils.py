@@ -12,6 +12,7 @@ import uuid
 import json
 
 from jacinle.utils.network import get_local_addr_v2
+from jacinle.concurrency.packing import loadb, dumpb
 
 
 json_dumpb = lambda x: json.dumps(x).encode('utf-8')
@@ -74,7 +75,7 @@ def req_send_and_recv(sock, *payloads):
 
 def push_pyobj(sock, data, flag=zmq.NOBLOCK):
     try:
-        sock.send_pyobj(data, flag)
+        sock.send(dumpb(data), flag, copy=False)
     except zmq.error.ZMQError:
         return False
     return True
@@ -82,7 +83,7 @@ def push_pyobj(sock, data, flag=zmq.NOBLOCK):
 
 def pull_pyobj(sock, flag=zmq.NOBLOCK):
     try:
-        response = sock.recv_pyobj(flag)
+        response = loadb(sock.recv(flag, copy=False).bytes)
         return response
     except zmq.error.ZMQError:
         return None
