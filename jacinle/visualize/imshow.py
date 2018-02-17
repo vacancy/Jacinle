@@ -8,7 +8,7 @@
 
 import numpy as np
 
-from jacinle.image.imgio import imshow
+from jacinle.image.imgio import imshow as imshow_
 from jacinle.image.imgproc import resize_minmax
 from .grid import image_grid
 
@@ -22,7 +22,7 @@ def imshow(img, resize=(600, 800), title='imshow'):
     :param title: The title of the shown window.
     """
     img = resize_minmax(img, *resize, interpolation='NEAREST')
-    imshow(title, img)
+    imshow_(title, img)
 
 
 def batch_show(batch, nr_show=16, grid_desc=('4v', '4h'), resize=(600, 800), title='batch_show'):
@@ -48,4 +48,4 @@ def batch_show(batch, nr_show=16, grid_desc=('4v', '4h'), resize=(600, 800), tit
 
     img = image_grid(batch, grid_desc)
     img = resize_minmax(img, *resize, interpolation='NEAREST')
-    imshow(title, img)
+    imshow_(title, img)

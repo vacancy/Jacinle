@@ -37,7 +37,7 @@ def gofor(v):
 def run_once(func):
     has_run = False
 
-    @synchronized()
+    @synchronized
     @functools.wraps(func)
     def new_func(*args, **kwargs):
         nonlocal has_run
@@ -192,6 +192,7 @@ class notnone_property:
         return v
 
 
+@decorator_with_optional_args
 def synchronized(mutex=None):
     if mutex is None:
         mutex = threading.Lock()
@@ -201,6 +202,7 @@ def synchronized(mutex=None):
         def wrapped_func(*args, **kwargs):
             with mutex:
                 return func(*args, **kwargs)
+        wrapped_func.__sync_mutex__ = mutex
         return wrapped_func
 
     return wrapper
