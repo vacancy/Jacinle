@@ -65,9 +65,12 @@ def filter_exec(func, iterable):
 
 
 def stmap(func, iterable):
-    if isinstance(iterable, collections.Sequence):
+    # Not using collections.Sequence as isinstance('', Sequence)
+    if isinstance(iterable, (tuple, list, collections.UserList)):
         return [stmap(func, v) for v in iterable]
-    elif isinstance(iterable, collections.Mapping):
+    elif isinstance(iterable, collections.Set):
+        return {stmap(func, v) for v in iterable}
+    elif isinstance(iterable, (collections.Mapping, collections.UserDict)):
         return {k: stmap(func, v) for k, v in iterable.items()}
     else:
         return func(iterable)
