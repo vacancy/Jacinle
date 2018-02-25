@@ -27,6 +27,8 @@ def mark_volatile(obj):
 def _as_variable(o):
     if isinstance(o, Variable):
         return o
+    if not torch.is_tensor(o):
+        o = torch.from_numpy(np.array(o))
     return Variable(o)
 
 
