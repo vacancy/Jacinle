@@ -68,9 +68,13 @@ class TrainerEnv(object):
 
     def load_checkpoint(self, filename):
         if osp.isfile(filename):
+            model = self._model
+            if isinstance(model, nn.DataParallel):
+                model = model.module
+
             try:
                 checkpoint = torch.load(filename)
-                self._model.load_state_dict(checkpoint['model'])
+                model.load_state_dict(checkpoint['model'])
                 self._optimizer.load_state_dict(checkpoint['optimizer'])
                 logger.critical('Checkpoint loaded: {}.'.format(filename))
                 return checkpoint['extra']
