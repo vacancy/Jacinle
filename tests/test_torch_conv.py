@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File   : test_torch_trainer.py
+# File   : test_torch_conv.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 28/02/2018
@@ -8,45 +8,36 @@
 
 import unittest
 
-import numpy as np
-from torch.utils.data import DataLoader
-
-from jacinle import random
-from jactorch.quickstart.train import ModelTrainer
-from jactorch.quickstart.models import LinearClassificationModel, MLPClassificationModel
+import torch
+import jactorch.nn as jacnn
+from jactorch.utils.meta import as_variable
 
 
-def _make_data_loader(nr_data):
-    def _generate_fake_data():
-        values = []
-        for i in range(nr_data):
-            input = random.normal(size=(2, )).astype('float32')
-            label = int(input.sum() > 0)
-            values.append(dict(input=input, label=label))
-        return values
+class TestTorchConv(unittest.TestCase):
+    def _test_conv_size(self, in_tensor, conv, out_size, **kwargs):
+        self.assertEqual(conv(in_tensor, **kwargs).size(), out_size)
 
-    data = _generate_fake_data()
-    return DataLoader(data, batch_size=8, shuffle=True)
+    def test_conv2d(self):
+        in_tensor = as_variable(torch.randn(16, 8, 4, 2))
+        self._test_conv_size(in_tensor, jacnn.Conv2d(8, 16, 3, padding=1), (16, 16, 4, 2))
+        self._test_conv_size(in_tensor, jacnn.Conv2d(8, 16, 2, stride=2, padding_mode='valid'), (16, 16, 2, 1))
+        self._test_conv_size(in_tensor, jacnn.Conv2d(8, 16, 3, padding_mode='same'), (16, 16, 4, 2))
+        self._test_conv_size(in_tensor, jacnn.Conv2d(8, 16, (5, 3), padding_mode='same', border_mode='replicate'), (16, 16, 4, 2))
+        self._test_conv_size(in_tensor, jacnn.Conv2d(8, 16, (5, 3), padding_mode='same', border_mode='reflect'), (16, 16, 4, 2))
 
+    def test_deconv2d(self):
+        in_tensor = as_variable(torch.randn(16, 8, 4, 2))
+        self._test_conv_size(in_tensor, jacnn.ConvTranspose2d(8, 16, 3, padding_mode='same'), (16, 16, 4, 2))
+        self._test_conv_size(in_tensor, jacnn.ConvTranspose2d(8, 16, 3, 2, padding_mode='same'), (16, 16, 8, 4), scale_factor=2)
 
-def _eval_accuracy(fd, od):
-    return {'accuracy': np.equal(od['pred'], fd['label']).astype('float32').mean()}
+    def test_resize_conv2d(self):
+        in_tensor = as_variable(torch.randn(16, 8, 4, 2))
+        self._test_conv_size(in_tensor, jacnn.ResizeConv2d(8, 16, 3, scale_factor=2), (16, 16, 8, 4))
 
-
-class TestTorchInferencer(unittest.TestCase):
-    def test_train_linear(self):
-        model = LinearClassificationModel(2, 2)
-        self._test_model(model)
-
-    def test_train_mlp(self):
-        model = MLPClassificationModel(2, 2, 1, 10, dropout=True)
-        self._test_model(model)
-
-    def _test_model(self, model):
-        trainer = ModelTrainer(model, 'Adam', lr=0.1)
-        trainer.train(_make_data_loader(128), 50, print_interval=10)
-        result = trainer.validate(_make_data_loader(128), _eval_accuracy)
-        self.assertGreater(result['accuracy'], 0.98)
+    def test_deconv2d(self):
+        in_tensor = as_variable(torch.randn(16, 8, 4, 2))
+        self._test_conv_size(in_tensor, jacnn.Deconv2dLayer(8, 16, 3, scale_factor=2), (16, 16, 8, 4))
+        self._test_conv_size(in_tensor, jacnn.Deconv2dLayer(8, 16, 3, scale_factor=2, algo='convtranspose'), (16, 16, 8, 4))
 
 
 if __name__ == '__main__':

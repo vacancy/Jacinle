@@ -6,6 +6,7 @@
 # 
 # This file is part of Jacinle.
 
+import itertools
 import collections
 
 from .meta import map_exec
@@ -58,3 +59,16 @@ class GroupMeters(object):
     @property
     def val(self):
         return {k: m.val for k, m in self._meters.items()}
+
+    def format(self, caption, attr, kv_format, glue):
+        assert attr in ('avg', 'val')
+        meters_kv = getattr(self, attr)
+        log_str = [caption]
+        log_str.extend(itertools.starmap(kv_format.format, sorted(meters_kv.items())))
+        return glue.join(log_str)
+
+    def format_simple(self, caption, attr='avg', compressed=True):
+        if compressed:
+            return self.format(caption, attr, '{}={:4f}', ' ')
+        else:
+            return self.format(caption, attr, '\t{} = {:4f}', '\n')

@@ -56,3 +56,19 @@ def _as_float(o):
 
 def as_float(obj):
     return stmap(_as_float, obj)
+
+
+def _as_cpu(o):
+    return o.cpu()
+
+
+def as_cpu(obj):
+    return stmap(_as_cpu, obj)
+
+
+def _as_cuda(o):
+    return o.cuda()
+
+
+def as_cuda(obj):
+    return stmap(_as_cuda, obj)
