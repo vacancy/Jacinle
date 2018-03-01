@@ -16,7 +16,7 @@ from jacinle.utils.meta import map_exec_method
 from jactorch.utils.meta import as_numpy, as_variable, mark_volatile
 from jacnp.batch import batchify, unbatchify
 
-__all__ = ['ModelInferencer', 'AsyncInferenceTask', 'BatchedAsyncModelInferencer']
+__all__ = ['ModelInferencer', 'AsyncInferenceTask', 'AsyncModelInferencer', 'BatchedAsyncModelInferencer']
 
 
 class AsyncInferenceTask(object):
