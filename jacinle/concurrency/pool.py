@@ -19,6 +19,8 @@ from jacinle.utils.tqdm import tqdm_pbar
 
 logger = get_logger(__file__)
 
+__all__ = ['Pool', 'TQDMPool', 'default_pool', 'multiprocessing_map', 'tqdm_multiprocessing_map']
+
 
 class _ResultType(JacEnum):
     RESULT = 'result'

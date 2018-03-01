@@ -8,6 +8,8 @@
 
 import threading
 
+__all__ = ['FutureResult']
+
 
 class FutureResult(object):
     """A thread-safe future implementation. Used only as one-to-one pipe."""

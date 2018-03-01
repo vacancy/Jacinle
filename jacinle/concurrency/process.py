@@ -15,6 +15,8 @@ from jacinle.random.rng import gen_seed, reset_global_seed
 
 logger = get_logger(__file__)
 
+__all__ = ['JacProcess']
+
 
 class JacProcess(multiprocessing.Process):
     def __init__(self, *args, extra_env=None, seed=None, **kwargs):

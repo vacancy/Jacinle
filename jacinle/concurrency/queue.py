@@ -9,7 +9,7 @@
 import queue
 import heapq
 
-__all__ = ['ListToFill']
+__all__ = ['ListToFill', 'iter_queue', 'sorted_iter']
 
 
 class ListToFill(list):

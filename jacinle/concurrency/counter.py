@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# File   : stat.py
+# File   : counter.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 18/02/2018
@@ -12,10 +12,10 @@ import queue
 import collections
 import time
 
-__all__ = ['TSCounter', 'TSCounterBasedEvent', 'TSCounterMonitor']
+__all__ = ['Counter', 'CounterBasedEvent', 'CounterBasedMonitor']
 
 
-class TSCounter(object):
+class Counter(object):
     def __init__(self):
         self._cnt = itertools.count()
         self._ref = itertools.count()
@@ -54,7 +54,7 @@ class TSCoordinatorEvent(object):
         return rc
 
 
-class TSCounterBasedEvent(object):
+class CounterBasedEvent(object):
     """Thread-safe counter-based callback invoker. When the counter is incremented, the system will check whether
     the counter has reached a target value. If so, the event will be set."""
     def __init__(self, target, tqdm=None):
@@ -91,7 +91,7 @@ class TSCounterBasedEvent(object):
         return self._event.wait(timeout=timeout)
 
 
-class TSCounterMonitor(object):
+class CounterBasedMonitor(object):
     _displayer = None
 
     def __init__(self, counters=None, display_names=None, interval=1, printf=None):
@@ -99,12 +99,12 @@ class TSCounterMonitor(object):
             counters = ['DEFAULT']
 
         self._display_names = display_names
-        self._counters = collections.OrderedDict([(n, TSCounter()) for n in counters])
+        self._counters = collections.OrderedDict([(n, Counter()) for n in counters])
         self._interval = interval
         self._printf = printf
 
         if self._printf is None:
-            from ..logger import get_logger
+            from jacinle.logging import get_logger
             logger = get_logger(__file__)
             self._printf = logger.info
 
