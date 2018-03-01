@@ -6,12 +6,11 @@
 # 
 # This file is part of Jacinle.
 
-import copy
 import threading
 import numpy as np
 import collections
 
-from jacinle import io
+import jacinle.io as jacio
 
 from ..env import SimpleRLEnvBase, ProxyRLEnvBase
 from ..space import DiscreteActionSpace, ContinuousActionSpace
@@ -29,7 +28,7 @@ def get_env_lock():
     return _ENV_LOCK
 
 
-__all__ = ['GymRLEnv', 'GymAtariRLEnv', 'GymNintendoWrapper', 'GymMarioRLEnviron', 'GymPreventStuckProxy']
+__all__ = ['GymRLEnv', 'GymAtariRLEnv', 'GymPreventStuckProxy']
 
 
 class GymRLEnv(SimpleRLEnvBase):
@@ -40,7 +39,7 @@ class GymRLEnv(SimpleRLEnvBase):
             self._gym = self._make_env(name)
 
         if dump_dir:
-            io.mkdir(dump_dir)
+            jacio.mkdir(dump_dir)
             self._gym = gym.wrappers.Monitor(self._gym, dump_dir, force=force_dump)
 
         assert state_mode in ('DEFAULT', 'RENDER', 'BOTH')

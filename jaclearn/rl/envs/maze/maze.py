@@ -10,7 +10,7 @@ import numpy as np
 import collections
 import itertools
 
-from jacinle import random
+import jacinle.random as random
 from jacinle.utils.meta import notnone_property
 from jacinle.utils.argument import get_2dshape
 

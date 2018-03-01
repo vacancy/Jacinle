@@ -11,7 +11,7 @@ import unittest
 import numpy as np
 from torch.utils.data import DataLoader
 
-from jacinle import random
+import jacinle.random as random
 from jactorch.quickstart.train import ModelTrainer
 from jactorch.quickstart.models import LinearClassificationModel, MLPClassificationModel
 

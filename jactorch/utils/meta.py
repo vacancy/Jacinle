@@ -24,6 +24,16 @@ def mark_volatile(obj):
     return stmap(_mark_volatile, obj)
 
 
+def _as_tensor(o):
+    if torch.is_tensor(o):
+        return o
+    return torch.from_numpy(np.array(o))
+
+
+def as_tensor(obj):
+    return stmap(_as_tensor, obj)
+
+
 def _as_variable(o):
     if isinstance(o, Variable):
         return o

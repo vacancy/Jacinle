@@ -9,7 +9,7 @@
 import itertools
 import collections
 
-from jacinle import random
+import jacinle.random as random
 from jacinle.image import imgproc
 from jacinle.utils.argument import get_2dshape
 

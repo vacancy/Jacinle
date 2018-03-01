@@ -15,7 +15,7 @@ import numpy.random as npr
 from jacinle.utils.defaults import defaults_manager
 from jacinle.utils.registry import Registry
 
-__all__ = ['JacRandomState', 'get_default_rng', 'gen_seed', 'gen_rng', 'reset_global_rng']
+__all__ = ['JacRandomState', 'get_default_rng', 'gen_seed', 'gen_rng', 'reset_global_seed']
 
 
 class JacRandomState(npr.RandomState):
@@ -71,17 +71,21 @@ global_rng_registry.register('numpy', lambda: npr.seed)
 global_rng_registry.register('sys', lambda: sys_random.seed)
 
 
-def reset_global_rng(seed=None):
+def reset_global_seed(seed=None, verbose=False):
     if seed is None:
         seed = gen_seed()
     for k, seed_getter in global_rng_registry.items():
+        if verbose:
+            from jacinle.logging import get_logger
+            logger = get_logger(__file__)
+            logger.critical('Reset random seed for: {} (pid={}, seed={}).'.format(k, os.getpid(), seed))
         seed_getter()(seed)
 
 
-def _initialize_global_rng():
+def _initialize_global_seed():
     seed = os.getenv('JAC_RANDOM_SEED', None)
     if seed is not None:
-        reset_global_rng(seed)
+        reset_global_seed(seed)
 
 
-_initialize_global_rng()
+_initialize_global_seed()

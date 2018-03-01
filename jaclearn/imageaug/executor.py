@@ -9,7 +9,7 @@
 import functools
 import copy
 
-from jacinle import random
+import jacinle.random as random
 
 
 class AugmentorExecutorBase(object):

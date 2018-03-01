@@ -8,7 +8,7 @@
 
 import numpy as np
 
-from jacinle import random
+import jacinle.random as random
 
 __all__ = [
     'ActionSpaceBase', 'DiscreteActionSpace', 'ContinuousActionSpace'

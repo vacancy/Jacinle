@@ -10,8 +10,6 @@ import os
 import sys
 import resource
 
-__all__ = ['release_syslim', 'tune_opencv', 'tune_tensorflow', 'initialize_main']
-
 
 def release_syslim():
     sys.setrecursionlimit(1000000)
@@ -22,15 +20,10 @@ def release_syslim():
         pass
 
 
-def tune_tensorflow():
-    os.environ['TF_ENABLE_WINOGRAD_NONFUSED'] = '1'  # issue#9339
-    os.environ['TF_AUTOTUNE_THRESHOLD'] = '3'   # use more warm-up
-
-
 def tune_opencv():
     os.environ['OPENCV_OPENCL_RUNTIME'] = ''
 
 
-def initialize_main():
+def init_main():
     release_syslim()
-    tune_tensorflow()
+    tune_opencv()
