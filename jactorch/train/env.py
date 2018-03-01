@@ -9,7 +9,7 @@ import torch.nn as nn
 from jacinle.event.registry import SimpleEventRegistry
 from jacinle.logging import get_logger
 from jactorch.io import load_weights
-from jactorch.utils.meta import as_variable, as_float
+from jactorch.utils.meta import as_variable, as_float, as_cpu
 
 logger = get_logger(__file__)
 
@@ -56,8 +56,8 @@ class TrainerEnv(object):
             model = model.module
 
         state = {
-            'model': model.state_dict(),
-            'optimizer': self._optimizer.state_dict(),
+            'model': model.cpu().state_dict(),
+            'optimizer': as_cpu(self._optimizer.state_dict()),
             'extra': extra
         }
         try:
