@@ -10,6 +10,8 @@ from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
 from jactorch.functional.indexing import inverse_permutation
 
+__all__ = ['rnn_with_length']
+
 
 def rnn_with_length(rnn, seq_tensor, seq_lengths, initial_states, batch_first=True, sorted=False):
     perm_idx = None

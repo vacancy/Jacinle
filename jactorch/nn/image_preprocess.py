@@ -11,6 +11,8 @@ import torch.nn as nn
 
 from jactorch.graph.variable import new_var_with
 
+__all__ = ['ImageNetNormalizer']
+
 
 class ImageNetNormalizer(nn.Module):
     v_imagenet_means = np.array([0.485, 0.456, 0.406], dtype='float32').reshape(1, 3, 1, 1)

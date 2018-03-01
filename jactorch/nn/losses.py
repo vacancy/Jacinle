@@ -13,6 +13,14 @@ from jacinle.utils.enum import JacEnum
 from jactorch.functional.indexing import one_hot
 from jactorch.graph.variable import var_with
 
+__all__ = [
+    'LossAverageMethod', 'AverageLoss',
+    'CrossEntropyLossWithProbs', 'CompatibleCrossEntropyLossWithProbs',
+    'MSEProbabilityLoss',
+    'SmoothL1Loss',
+    'masked_average', 'weighted_loss'
+]
+
 
 class LossAverageMethod(JacEnum):
     NONE = 'none'
