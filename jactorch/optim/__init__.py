@@ -6,5 +6,6 @@
 # 
 # This file is part of Jacinle.
 
+from .custom_optimizer import *
 from .accum_grad import *
 from .weight_decay import *

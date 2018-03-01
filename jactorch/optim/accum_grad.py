@@ -8,8 +8,10 @@
 
 __all__ = ['AccumGrad']
 
+from .custom_optimizer import CustomizedOptimizer
 
-class AccumGrad(object):
+
+class AccumGrad(CustomizedOptimizer):
     def __init__(self, base_optimizer, nr_acc):
         self._base_optimizer = base_optimizer
         self._nr_acc = nr_acc
