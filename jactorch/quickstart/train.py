@@ -47,7 +47,7 @@ class ModelTrainer(object):
         feed_dict = as_variable(feed_dict)
 
         self._optimizer.zero_grad()
-        loss, monitors, output_dict, extra_info = self._model(feed_dict)
+        loss, monitors, output_dict = self._model(feed_dict)
         loss.backward()
         self._optimizer.step()
 

@@ -9,7 +9,7 @@ import torch.nn as nn
 from jacinle.event.registry import SimpleEventRegistry
 from jacinle.logging import get_logger
 from jactorch.io import load_weights
-from jactorch.utils.meta import as_variable, as_float, as_cpu
+from jactorch.utils.meta import as_variable, as_float, as_cpu, mark_volatile
 
 logger = get_logger(__file__)
 
@@ -130,6 +130,7 @@ class TrainerEnv(object):
         assert not self._model.training, 'Evaluating a training-mode model.'
         begin = time.time()
         feed_dict = as_variable(feed_dict)
+        feed_dict = mark_volatile(feed_dict)
         output_dict = self._model(**feed_dict)
         end = time.time()
 

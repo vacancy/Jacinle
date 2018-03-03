@@ -53,7 +53,7 @@ class MLPRegressionModel(MLPModel, ModelIOKeysMixin):
         pred = super().foward(self._get_input(feed_dict))
         if self.training:
             loss = self.loss(pred, self._get_label(feed_dict))
-            return loss, {}, {}, {}
+            return loss, dict(), dict()
         else:
             return self._compose_output(pred)
 
@@ -69,7 +69,7 @@ class MLPClassificationModel(MLPModel, ModelIOKeysMixin):
         logits = super().forward(self._get_input(feed_dict))
         if self.training:
             loss = self.loss(logits, self._get_label(feed_dict))
-            return loss, {}, {}, {}
+            return loss, dict(), dict()
         else:
             return self._compose_output(self.softmax(logits))
 
