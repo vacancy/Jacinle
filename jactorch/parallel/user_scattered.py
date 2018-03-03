@@ -1,9 +1,16 @@
 # -*- coding: utf8 -*-
+# File   : user_scattered.py
+# Author : Jiayuan Mao
+# Email  : maojiayuan@gmail.com
+# Date   : 27/01/2018
+#
+# This file is part of Jacinle.
 
 import torch.cuda as cuda
 from torch.nn.parallel.data_parallel import DataParallel
 
 from jactorch.cuda.copy import async_copy_to
+from jactorch.data.collate import user_scattered_collate
 
 __all__ = ['DictGatherDataParallel', 'UserScatteredDataParallel', 'user_scattered_collate']
 
@@ -25,10 +32,6 @@ class UserScatteredDataParallel(DataParallel):
         kwargs = [{} for _ in range(len(inputs))]
 
         return inputs, kwargs
-
-
-def user_scattered_collate(batch):
-    return batch
 
 
 def _async_copy(inputs, device_ids):
