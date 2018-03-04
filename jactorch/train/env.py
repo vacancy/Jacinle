@@ -56,7 +56,7 @@ class TrainerEnv(object):
             model = model.module
 
         state = {
-            'model': model.cpu().state_dict(),
+            'model': as_cpu(model.state_dict()),
             'optimizer': as_cpu(self._optimizer.state_dict()),
             'extra': extra
         }
