@@ -131,7 +131,7 @@ class TrainerEnv(object):
         begin = time.time()
         feed_dict = as_variable(feed_dict)
         feed_dict = mark_volatile(feed_dict)
-        output_dict = self._model(**feed_dict)
+        output_dict = self._model(feed_dict)
         end = time.time()
 
         return output_dict, dict(gpu_time=end - begin)
