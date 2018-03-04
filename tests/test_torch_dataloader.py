@@ -44,7 +44,7 @@ class TestTorchDataLoader(unittest.TestCase):
 
     def test_jac_dataloader(self):
         ds = _FakeDataset()
-        dl = JacDataLoader(ds, num_workers=2, init_func=_my_init_func, init_args=[('hello', ), ('world', )])
+        dl = JacDataLoader(ds, num_workers=2, worker_init_fn=_my_init_func, worker_init_args=[('hello', ), ('world', )])
         res = list(dl)
         self.assertNotEqual(as_float(res[0]), as_float(res[1]))
 
