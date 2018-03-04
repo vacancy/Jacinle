@@ -33,7 +33,7 @@ class Lambda(transforms.Lambda):
 class ToTensor(transforms.ToTensor):
     def __call__(self, img, coor):
         img, coor = F.refresh_valid(img, coor)
-        return super()(img), torch.from_numpy(coor)
+        return super().__call__(img), torch.from_numpy(coor)
 
 
 class NormalizeCoor(object):
@@ -41,9 +41,9 @@ class NormalizeCoor(object):
         return F.normalize_coor(img, coor)
 
 
-class Normalize(transforms.ToTensor):
+class Normalize(transforms.Normalize):
     def __call__(self, img, coor):
-        return super()(img), coor
+        return super().__call__(img), coor
 
 
 class Resize(transforms.Resize):
@@ -87,31 +87,31 @@ class RandomVerticalFlip(transforms.RandomVerticalFlip):
 class RandomResizedCrop(transforms.RandomResizedCrop):
     def __call__(self, img, coor):
         i, j, h, w = self.get_params(img, self.scale, self.ratio)
-        return F.resized_crop(img, i, j, h, w, self.size, self.interpolation)
+        return F.resized_crop(img, coor, i, j, h, w, self.size, self.interpolation)
 
 
 class Grayscale(transforms.Grayscale):
     def __call__(self, img, coor):
-        return super()(img), coor
+        return super().__call__(img), coor
 
 
 class RandomGrayscale(transforms.RandomGrayscale):
     def __call__(self, img, coor):
-        return super()(img), coor
+        return super().__call__(img), coor
 
 
 class LinearTransformation(transforms.LinearTransformation):
     def __call__(self, tensor, coor):
-        return super()(tensor), coor
+        return super().__call__(tensor), coor
 
 
 class ColorJitter(transforms.ColorJitter):
     def __call__(self, img, coor):
-        return super()(img), coor
+        return super().__call__(img), coor
 
 
 class RandomRotation(transforms.RandomRotation):
     def __call__(self, img, coor):
         assert self.degrees[0] == self.degrees[1] == 0
         angle = self.get_params(self.degrees)
-        return F.rotate(img, angle, self.resample, self.expand, self.center), coor
+        return F.rotate(img, coor, angle, self.resample, self.expand, self.center)

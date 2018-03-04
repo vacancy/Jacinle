@@ -69,7 +69,7 @@ def resize(img, coor, size, interpolation=Image.BILINEAR):
     return TF.resize(img, size, interpolation=interpolation), coor
 
 
-def resized_crop(img, i, j, h, w, size, interpolation=Image.BILINEAR):
+def resized_crop(img, coor, i, j, h, w, size, interpolation=Image.BILINEAR):
     img, coor = crop(img, coor, i, j, h, w)
     img, coor = resize(img, coor, size, interpolation)
     return img, coor
@@ -83,4 +83,10 @@ def refresh_valid(img, coor):
             out.append((x, y, v))
         else:
             out.append((0., 0., 0.))
-    return np.array(out, dtype='float32')
+    return img, np.array(out, dtype='float32')
+
+
+def rotate(img, coor, angle, resample, expand, center):
+    assert angle == 0
+    return img, coor
+
