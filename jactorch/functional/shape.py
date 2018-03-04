@@ -10,6 +10,14 @@ import collections
 import torch
 
 
+def flatten(tensor):
+    return tensor.view(-1)
+
+
+def flatten2(tensor):
+    return tensor.view(tensor.size(0), -1)
+
+
 def concat_shape(*shapes):
     output = []
     for s in shapes:
