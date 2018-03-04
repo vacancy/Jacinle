@@ -71,7 +71,9 @@ def as_float(obj):
 
 
 def _as_cpu(o):
-    return o.cpu()
+    if isinstance(o, Variable) or torch.is_tensor(o):
+        return o.cpu()
+    return o
 
 
 def as_cpu(obj):
@@ -79,7 +81,9 @@ def as_cpu(obj):
 
 
 def _as_cuda(o):
-    return o.cuda()
+    if isinstance(o, Variable) or torch.is_tensor(o):
+        return o.cuda()
+    return o
 
 
 def as_cuda(obj):
