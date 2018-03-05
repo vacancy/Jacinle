@@ -49,7 +49,7 @@ class Normalize(transforms.Normalize):
 class Resize(transforms.Resize):
     # Assuming coordinates are 0/1-normalized.
     def __call__(self, img, coor):
-        return super(img), coor
+        return super().__init__(img), coor
 
 
 class CenterCrop(transforms.CenterCrop):
