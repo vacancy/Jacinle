@@ -5,3 +5,11 @@
 # Date   : 24/01/2018
 #
 # This file is part of Jacinle.
+
+from .grad import *
+from .indexing import *
+from .kernel import *
+from .linalg import *
+from .mask import *
+from .probability import *
+from .shape import *

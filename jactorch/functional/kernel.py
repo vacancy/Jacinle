@@ -12,6 +12,8 @@ import torch
 
 from jactorch.functional.linalg import normalize
 
+__all__ = ['inverse_distance', 'cosine_distance', 'dot']
+
 
 def inverse_distance(f_lookup, f, p=2, eps=1e-8):
     """

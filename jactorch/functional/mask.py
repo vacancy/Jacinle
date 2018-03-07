@@ -6,6 +6,8 @@
 # 
 # This file is part of Jacinle.
 
+__all__ = ['masked_average']
+
 
 def masked_average(tensor, mask, eps=1e-8):
     tensor = tensor.float()

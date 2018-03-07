@@ -11,6 +11,8 @@ import torch
 from jacinle.utils.numeric import prod
 from jactorch.graph.variable import var_with, new_var_with
 
+__all__ = ['reversed', 'one_hot', 'one_hot_nd', 'inverse_permutation', 'index_one_hot', 'index_one_hot_ellipsis']
+
 
 def reversed(x, dim=-1):
     # https://github.com/pytorch/pytorch/issues/229#issuecomment-350041662

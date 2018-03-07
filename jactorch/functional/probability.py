@@ -6,6 +6,8 @@
 # 
 # This file is part of Jacinle.
 
+__all__ = ['normalize_prob', 'check_prob_normalization']
+
 
 def normalize_prob(a, dim=-1):
     return a / a.sum(dim=dim, keepdim=True)

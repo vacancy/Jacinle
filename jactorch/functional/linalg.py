@@ -6,6 +6,8 @@
 # 
 # This file is part of Jacinle.
 
+__all__ = ['normalize']
+
 
 def normalize(a, p=2, dim=-1):
     return a / a.norm(p, dim=dim, keepdim=True)
