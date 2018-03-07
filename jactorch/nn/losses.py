@@ -17,9 +17,9 @@ from jactorch.graph.variable import var_with
 __all__ = [
     'LossAverageMethod', 'AverageLoss',
     'CrossEntropyLossWithLogits', 'CrossEntropyLoss', 'MSELoss',
-    'CrossEntropyLossWithProbs', 'CompatibleCrossEntropyLossWithProbs',
-    'MSEProbabilityLoss',
+    'CrossEntropyLossWithProbs', 
     'SmoothL1Loss',
+    'CompatibleCrossEntropyLossWithProbs', 'CompatibleMSEProbabilityLoss',
     'masked_average', 'weighted_loss'
 ]
 
@@ -33,7 +33,7 @@ class LossAverageMethod(JacEnum):
 class AverageLoss(nn.Module):
     def __init__(self, average):
         super().__init__()
-        self.average_method = JacEnum.from_string(average)
+        self.average_method = LossAverageMethod.from_string(average)
 
     def _average(self, loss, mask):
         if self.average_method is not LossAverageMethod.NONE:
@@ -43,7 +43,7 @@ class AverageLoss(nn.Module):
                 if self.average_method is LossAverageMethod.ALL:
                     loss = loss.mean()
                 elif self.average_method is LossAverageMethod.VALID:
-                    loss = loss.sum() / mask.sum()
+                    loss = loss.sum() / mask.sum().clamp(min=0.1)
                 else:
                     raise ValueError('Unknown average method: {}.'.format(self.average_method))
             else:
@@ -58,8 +58,8 @@ class CrossEntropyLossWithLogits(AverageLoss):
 
     def forward(self, logits, target, mask=None):
         log_prob = F.log_softmax(logits, dim=self.dim)
-        neg_xent = index_one_hot(log_prob, target, self.dim)
-        return -self.average(neg_xent, mask)
+        neg_xent = index_one_hot(log_prob, self.dim, target)
+        return -self._average(neg_xent, mask)
 
 
 CrossEntropyLoss = CrossEntropyLossWithLogits  # Typical PyTorch naming.
@@ -71,7 +71,7 @@ class MSELoss(AverageLoss):
 
     def forward(self, output, target, mask=None):
         diff_sqr = 0.5 * ((output - target) ** 2)
-        return self.average(diff_sqr, mask)
+        return self._average(diff_sqr, mask)
 
 
 class CrossEntropyLossWithProbs(AverageLoss):
@@ -83,32 +83,8 @@ class CrossEntropyLossWithProbs(AverageLoss):
 
     def forward(self, probs, target, mask=None):
         log_prob = torch.log(probs.clamp(min=self._eps))
-        neg_xent = index_one_hot(log_prob, target, self.dim)
+        neg_xent = index_one_hot(log_prob, self.dim, target)
         return -self._average(neg_xent, mask)
-
-
-class CompatibleCrossEntropyLossWithProbs(CrossEntropyLossWithProbs):
-    def __init__(self, dim=-1, weight=None, ignore_index=None):
-        super().__init__(dim, average=LossAverageMethod.NONE)
-        self.weight = weight
-        self.ignore_index = ignore_index
-
-    def forward(self, probs, target, mask=None):
-        assert mask is None
-        loss = super().forward(probs, target)
-        return weighted_loss(loss, target, self.weight, self.ignore_index)
-
-
-class MSEProbabilityLoss(nn.Module):
-    def __init__(self, weight=None, ignore_index=None):
-        super().__init__()
-        self.weight = weight
-        self.ignore_index = ignore_index
-
-    def forward(self, probs, target):
-        target_onehot = one_hot(target, probs.size(1))
-        loss = 0.5 * ((probs - target_onehot) ** 2.).sum(dim=1)
-        return weighted_loss(loss, target, self.weight, self.ignore_index)
 
 
 class SmoothL1Loss(AverageLoss):
@@ -127,6 +103,30 @@ class SmoothL1Loss(AverageLoss):
         if sidechain is not None:
             mask = (sidechain > 0).float()
         return self._average(loss, mask)
+
+
+class CompatibleCrossEntropyLossWithProbs(CrossEntropyLossWithProbs):
+    def __init__(self, dim=-1, weight=None, ignore_index=None):
+        super().__init__(dim, average=LossAverageMethod.NONE)
+        self.weight = weight
+        self.ignore_index = ignore_index
+
+    def forward(self, probs, target, mask=None):
+        assert mask is None
+        loss = super().forward(probs, target)
+        return weighted_loss(loss, target, self.weight, self.ignore_index)
+
+
+class CompatibleMSEProbabilityLoss(nn.Module):
+    def __init__(self, weight=None, ignore_index=None):
+        super().__init__()
+        self.weight = weight
+        self.ignore_index = ignore_index
+
+    def forward(self, probs, target):
+        target_onehot = one_hot(target, probs.size(1))
+        loss = 0.5 * ((probs - target_onehot) ** 2.).sum(dim=1)
+        return weighted_loss(loss, target, self.weight, self.ignore_index)
 
 
 def masked_average(tensor, mask, eps=1e-8):
@@ -149,3 +149,4 @@ def weighted_loss(loss, target, weight, ignore_index):
         return loss.mean()
     else:
         return masked_average(loss, weight)
+

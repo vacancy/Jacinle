@@ -35,10 +35,6 @@ def one_hot_nd(index, nr_classes):
     return one_hot(index.view(-1), nr_classes).view(index_size + (nr_classes, ))
 
 
-def index_one_hot(tensor, index, dim):
-    return tensor.gather(dim, index.unsqueeze(dim)).squeeze(dim)
-
-
 def inverse_permutation(perm):
     length = perm.size(0)
     inv = var_with(perm.data.new(length).long().zero_(), perm)
@@ -47,6 +43,10 @@ def inverse_permutation(perm):
 
 
 def index_one_hot(tensor, dim, index):
+    return tensor.gather(dim, index.unsqueeze(dim)).squeeze(dim)
+
+
+def index_one_hot_ellipsis(tensor, dim, index):
     tensor_shape = tensor.size()
     tensor = tensor.view(prod(tensor_shape[:dim]), tensor_shape[dim], prod(tensor_shape[dim+1:]))
     assert tensor.size(0) == index.size(0)
@@ -54,3 +54,4 @@ def index_one_hot(tensor, dim, index):
     index = index.expand(tensor.size(0), 1, tensor.size(2))
     tensor = tensor.gather(1, index)
     return tensor.view(tensor_shape[:dim] + tensor_shape[dim+1:])
+
