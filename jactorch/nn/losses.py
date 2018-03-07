@@ -13,6 +13,7 @@ import torch.nn.functional as F
 from jacinle.utils.enum import JacEnum
 from jactorch.functional.indexing import one_hot, index_one_hot
 from jactorch.graph.variable import var_with
+from jactorch.functional.mask import masked_average
 
 __all__ = [
     'LossAverageMethod', 'AverageLoss',
@@ -20,7 +21,7 @@ __all__ = [
     'CrossEntropyLossWithProbs', 
     'SmoothL1Loss',
     'CompatibleCrossEntropyLossWithProbs', 'CompatibleMSEProbabilityLoss',
-    'masked_average', 'weighted_loss'
+    'weighted_loss'
 ]
 
 
@@ -129,13 +130,6 @@ class CompatibleMSEProbabilityLoss(nn.Module):
         return weighted_loss(loss, target, self.weight, self.ignore_index)
 
 
-def masked_average(tensor, mask, eps=1e-8):
-    tensor = tensor.float()
-    mask = mask.float()
-    masked = tensor * mask
-    return masked.sum() / mask.sum().clamp(min=eps)
-
-
 def weighted_loss(loss, target, weight, ignore_index):
     if weight is not None:
         weight = var_with(weight, target)
@@ -149,4 +143,3 @@ def weighted_loss(loss, target, weight, ignore_index):
         return loss.mean()
     else:
         return masked_average(loss, weight)
-
