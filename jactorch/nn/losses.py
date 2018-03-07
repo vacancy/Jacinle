@@ -8,13 +8,15 @@
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from jacinle.utils.enum import JacEnum
-from jactorch.functional.indexing import one_hot
+from jactorch.functional.indexing import one_hot, index_one_hot
 from jactorch.graph.variable import var_with
 
 __all__ = [
     'LossAverageMethod', 'AverageLoss',
+    'CrossEntropyLossWithLogits', 'CrossEntropyLoss', 'MSELoss',
     'CrossEntropyLossWithProbs', 'CompatibleCrossEntropyLossWithProbs',
     'MSEProbabilityLoss',
     'SmoothL1Loss',
@@ -49,6 +51,29 @@ class AverageLoss(nn.Module):
         return loss
 
 
+class CrossEntropyLossWithLogits(AverageLoss):
+    def __init__(self, dim=-1, average=LossAverageMethod.VALID):
+        super().__init__(average)
+        self.dim = dim
+
+    def forward(self, logits, target, mask=None):
+        log_prob = F.log_softmax(logits, dim=self.dim)
+        neg_xent = index_one_hot(log_prob, target, self.dim)
+        return -self.average(neg_xent, mask)
+
+
+CrossEntropyLoss = CrossEntropyLossWithLogits  # Typical PyTorch naming.
+
+
+class MSELoss(AverageLoss):
+    def __init__(self, average):
+        super().__init__(average)
+
+    def forward(self, output, target, mask=None):
+        diff_sqr = 0.5 * ((output - target) ** 2)
+        return self.average(diff_sqr, mask)
+
+
 class CrossEntropyLossWithProbs(AverageLoss):
     _eps = 1e-8
 
@@ -57,8 +82,8 @@ class CrossEntropyLossWithProbs(AverageLoss):
         self.dim = dim
 
     def forward(self, probs, target, mask=None):
-        log_prob = torch.log(probs + self._eps)
-        neg_xent = log_prob.gather(self.dim, target.unsqueeze(self.dim))
+        log_prob = torch.log(probs.clamp(min=self._eps))
+        neg_xent = index_one_hot(log_prob, target, self.dim)
         return -self._average(neg_xent, mask)
 
 

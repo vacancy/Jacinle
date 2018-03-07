@@ -35,6 +35,10 @@ def one_hot_nd(index, nr_classes):
     return one_hot(index.view(-1), nr_classes).view(index_size + (nr_classes, ))
 
 
+def index_one_hot(tensor, index, dim):
+    return tensor.gather(dim, index.unsqueeze(dim)).squeeze(dim)
+
+
 def inverse_permutation(perm):
     length = perm.size(0)
     inv = var_with(perm.data.new(length).long().zero_(), perm)

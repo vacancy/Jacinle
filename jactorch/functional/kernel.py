@@ -29,7 +29,7 @@ def inverse_distance(f_lookup, f, p=2, eps=1e-8):
     f = f.view(1, m, k).expand(n, m, k)
 
     dist = (f_lookup - f).norm(p, dim=2)
-    return 1. / (dist + eps)
+    return 1. / dist.clamp(min=eps)
 
 
 def cosine_distance(f_lookup, f):
