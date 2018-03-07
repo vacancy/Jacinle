@@ -108,7 +108,7 @@ def masked_average(tensor, mask, eps=1e-8):
     tensor = tensor.float()
     mask = mask.float()
     masked = tensor * mask
-    return masked.sum() / torch.max(mask.sum(), eps)
+    return masked.sum() / mask.sum().clamp(min=eps)
 
 
 def weighted_loss(loss, target, weight, ignore_index):
