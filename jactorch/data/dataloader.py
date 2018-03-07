@@ -6,9 +6,10 @@
 # 
 # This file is part of Jacinle.
 
+import torch
+from torch.utils.data.dataloader import DataLoader, default_collate
 
 from jacinle.random import reset_global_seed, gen_seed
-from torch.utils.data.dataloader import DataLoader, default_collate
 
 __all__ = ['JacDataLoader']
 
@@ -43,3 +44,8 @@ class JacDataLoader(DataLoader):
         super().__init__(dataset, batch_size=batch_size, shuffle=shuffle, sampler=sampler, batch_sampler=batch_sampler,
                          num_workers=num_workers, collate_fn=collate_fn, pin_memory=pin_memory, drop_last=drop_last,
                          timeout=timeout, worker_init_fn=worker_init_fn, **kwargs)
+
+
+if torch.__version__ < '0.3.1':
+    from .dataloader_v030 import JacDataLoader
+
