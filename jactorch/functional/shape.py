@@ -39,7 +39,7 @@ def broadcast(tensor, dim, size):
 def repeat(tensor, dim, count):
     tensor_shape = tensor.size()
     value = broadcast(tensor.unsqueeze(dim + 1), dim + 1, count)
-    return value.view(concat_shape(tensor_shape[:dim], -1, tensor_shape[dim + 1:]))
+    return force_view(value, concat_shape(tensor_shape[:dim], -1, tensor_shape[dim + 1:]))
 
 
 def repeat_times(tensor, dim, repeats):
