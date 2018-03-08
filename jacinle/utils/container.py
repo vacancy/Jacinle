@@ -52,6 +52,9 @@ class GView(object):
     def __delattr__(self, k):
         del self.raw()[k]
 
+    def __contains__(self, k):
+        return k in self.raw()
+
     def raw(self):
         return object.__getattribute__(self, '_dict')
 
