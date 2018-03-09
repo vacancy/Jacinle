@@ -8,4 +8,5 @@
 # https://github.com/vacancy/Synchronized-BatchNorm-PyTorch
 # Distributed under MIT License.
 
-from .batchnorm import SynchronizedBatchNorm1d, SynchronizedBatchNorm2d, SynchronizedBatchNorm3d
+from .batchnorm import *
+

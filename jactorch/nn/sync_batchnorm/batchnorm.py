@@ -9,6 +9,7 @@
 # Distributed under MIT License.
 
 import collections
+import contextlib
 
 import torch
 import torch.nn.functional as F
@@ -21,7 +22,7 @@ except ImportError:
 
 from jactorch.parallel.comm import SyncMaster
 
-__all__ = ['SynchronizedBatchNorm1d', 'SynchronizedBatchNorm2d', 'SynchronizedBatchNorm3d']
+__all__ = ['patch_sync_batchnorm', 'SynchronizedBatchNorm1d', 'SynchronizedBatchNorm2d', 'SynchronizedBatchNorm3d']
 
 
 def _sum_ft(tensor):
@@ -36,6 +37,21 @@ def _unsqueeze_ft(tensor):
 
 _ChildMessage = collections.namedtuple('_ChildMessage', ['sum', 'ssum', 'sum_size'])
 _MasterMessage = collections.namedtuple('_MasterMessage', ['sum', 'inv_std'])
+
+
+@contextlib.contextmanager
+def patch_sync_batchnorm():
+    import torch.nn as nn
+
+    backup = nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d
+
+    nn.BatchNorm1d = SynchronizedBatchNorm1d
+    nn.BatchNorm2d = SynchronizedBatchNorm2d
+    nn.BatchNorm3d = SynchronizedBatchNorm3d
+
+    yield
+
+    nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d = backup
 
 
 class _SynchronizedBatchNorm(_BatchNorm):
