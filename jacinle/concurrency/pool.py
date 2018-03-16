@@ -11,6 +11,7 @@ import multiprocessing as mp
 import threading
 import queue
 import functools
+import collections
 
 from jacinle.logging import get_logger
 from jacinle.utils.enum import JacEnum
@@ -139,6 +140,8 @@ class Pool(object):
 
 class TQDMPool(Pool):
     def map(self, func, iterable, chunksize=1, sort=True, total=None, desc='', callback=None, use_tqdm=True, **kwargs):
+        if total is None and isinstance(iterable, collections.Sized):
+            total = len(iterable)
         if use_tqdm:
             pbar = tqdm_pbar(total=total, **kwargs)
             super().map(func, iterable, chunksize, sort, callback=self._wrap_callback(callback, pbar, desc))
