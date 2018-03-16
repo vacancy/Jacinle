@@ -83,6 +83,7 @@ class VarLengthCollate(object):
                     result[key + '_length'] = lengths
                 else:
                     result[key] = self(values)
+            return result
         elif isinstance(batch[0], collections.Sequence):
             transposed = zip(*batch)
             return [self(samples) for samples in transposed]
@@ -117,6 +118,9 @@ class VarLengthCollate(object):
             result = []
             for v in values:
                 if v.size(0) < max_length:
-                    v = torch.cat(v, v.new((max_length - v.size(0), ) + v.size()[1:]).zero_())
+                    v = torch.cat([v, v.new(*((max_length - v.size(0), ) + v.size()[1:])).zero_()], dim=0)
                 result.append(v)
-            torch.stack(result, 0, out=out)
+            return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
+        else:
+            raise ValueError('Unknown collation mode: {}.'.format(self._mode))
+
