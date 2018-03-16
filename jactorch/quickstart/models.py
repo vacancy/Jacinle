@@ -23,11 +23,11 @@ class ModelIOKeysMixin(object):
 
 
 class MLPModel(nn.Module):
-    def __init__(self, input_dim, output_dim, nr_hiddens, hidden_dims, batch_norm=None, dropout=None, activation='relu'):
+    def __init__(self, input_dim, output_dim, hidden_dims, batch_norm=None, dropout=None, activation='relu'):
         super().__init__()
 
         dims = [input_dim]
-        dims.extend([hidden_dims] * nr_hiddens)
+        dims.extend(hidden_dims)
         dims.append(output_dim)
         modules = []
 
@@ -44,8 +44,8 @@ class MLPModel(nn.Module):
 
 
 class MLPRegressionModel(MLPModel, ModelIOKeysMixin):
-    def __init__(self, input_dim, output_dim, nr_hiddens, hidden_dims, batch_norm=None, dropout=None, activation='relu'):
-        super().__init__(input_dim, output_dim, nr_hiddens, hidden_dims,
+    def __init__(self, input_dim, output_dim, hidden_dims, batch_norm=None, dropout=None, activation='relu'):
+        super().__init__(input_dim, output_dim, hidden_dims,
                          batch_norm=batch_norm, dropout=dropout, activation=activation)
         self.loss = nn.MSELoss()
 
@@ -59,8 +59,8 @@ class MLPRegressionModel(MLPModel, ModelIOKeysMixin):
 
 
 class MLPClassificationModel(MLPModel, ModelIOKeysMixin):
-    def __init__(self, input_dim, nr_classes, nr_hiddens, hidden_dims, batch_norm=None, dropout=None, activation='relu'):
-        super().__init__(input_dim, nr_classes, nr_hiddens, hidden_dims,
+    def __init__(self, input_dim, nr_classes, hidden_dims, batch_norm=None, dropout=None, activation='relu'):
+        super().__init__(input_dim, nr_classes, hidden_dims,
                          batch_norm=batch_norm, dropout=dropout, activation=activation)
         self.softmax = nn.Softmax()
         self.loss = nn.CrossEntropyLoss()
@@ -80,9 +80,9 @@ class MLPClassificationModel(MLPModel, ModelIOKeysMixin):
 
 class LinearRegressionModel(MLPRegressionModel):
     def __init__(self, input_dim, output_dim):
-        super().__init__(input_dim, output_dim, 0, 0)
+        super().__init__(input_dim, output_dim, [])
 
 
 class LinearClassificationModel(MLPClassificationModel):
     def __init__(self, input_dim, nr_classes):
-        super().__init__(input_dim, nr_classes, 0, 0)
+        super().__init__(input_dim, nr_classes, [])

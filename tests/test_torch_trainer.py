@@ -39,7 +39,7 @@ class TestTorchTrainer(unittest.TestCase):
         self._test_model(model)
 
     def test_train_mlp(self):
-        model = MLPClassificationModel(2, 2, 1, 10, dropout=True)
+        model = MLPClassificationModel(2, 2, [10], dropout=True)
         self._test_model(model)
 
     def _test_model(self, model):
