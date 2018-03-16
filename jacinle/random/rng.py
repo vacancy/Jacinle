@@ -19,17 +19,17 @@ __all__ = ['JacRandomState', 'get_default_rng', 'gen_seed', 'gen_rng', 'reset_gl
 
 
 class JacRandomState(npr.RandomState):
-    def choice_list(self, list_, size=1, replace=False):
+    def choice_list(self, list_, size=1, replace=False, p=None):
         """Efficiently draw an element from an list, if the rng is given, use it instead of the system one."""
         if size == 1:
             if type(list_) in (list, tuple):
-                return list_[self.choice(len(list_))]
-            return self.choice(list_)
+                return list_[self.choice(len(list_), p=p)]
+            return self.choice(list_, p=p)
         else:
             if type(list_) in (list, tuple):
-                inds = self.choice(len(list_), size=size, replace=replace)
+                inds = self.choice(len(list_), size=size, replace=replace, p=p)
                 return [list_[i] for i in inds]
-            return self.choice(list_, size=size, replace=replace)
+            return self.choice(list_, size=size, replace=replace, p=p)
 
     def shuffle_list(self, list_):
         if type(list_) is list:
