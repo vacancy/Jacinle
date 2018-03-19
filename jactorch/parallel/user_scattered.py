@@ -12,26 +12,31 @@ from torch.nn.parallel.data_parallel import DataParallel
 from jactorch.cuda.copy import async_copy_to
 from jactorch.data.collate import user_scattered_collate
 
-__all__ = ['DictGatherDataParallel', 'UserScatteredDataParallel', 'user_scattered_collate']
+__all__ = ['UserScatteredDataParallel', 'use_user_scattered', 'user_scattered_collate']
 
 
 class UserScatteredDataParallel(DataParallel):
     use_copy_stream = True
 
     def scatter(self, inputs, kwargs, device_ids):
-        assert len(inputs) == 1
+        return use_user_scattered(inputs, kwargs, device_ids, use_stream=self.use_copy_stream)
 
-        inputs = inputs[0]
-        if self.use_copy_stream:
-            inputs = _async_copy_stream(inputs, device_ids)
-        else:
-            inputs = _async_copy(inputs, device_ids)
 
-        inputs = [[i] for i in inputs]
-        assert len(kwargs) == 0
-        kwargs = [{} for _ in range(len(inputs))]
+def use_user_scattered(inputs, kwargs, device_ids, use_stream=True):
+    assert len(inputs) == 1
 
-        return inputs, kwargs
+    inputs = inputs[0]
+    if use_stream:
+        inputs = _async_copy_stream(inputs, device_ids)
+    else:
+        inputs = _async_copy(inputs, device_ids)
+
+    inputs = [[i] for i in inputs]
+    assert len(kwargs) == 0
+    kwargs = [{} for _ in range(len(inputs))]
+
+    return inputs, kwargs
+
 
 
 def _async_copy(inputs, device_ids):

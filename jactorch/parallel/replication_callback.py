@@ -16,6 +16,7 @@ from torch.nn.parallel.data_parallel import DataParallel
 __all__ = [
     'CallbackContext',
     'ReplicationCallbackDataParallel',
+    'exec_data_parallel_replication_callback',
     'patch_replication_callback'
 ]
 
