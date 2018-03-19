@@ -40,7 +40,7 @@ class JacDataLoader(DataLoader):
         worker_init_kwargs = worker_init_kwargs if worker_init_kwargs is not None else [{} for _ in range(num_workers)]
 
         base_seed = base_seed if base_seed is not None else gen_seed()
-        worker_init_fn=_InitFunctionWrapper(base_seed, worker_init_fn, worker_init_args, worker_init_kwargs)
+        worker_init_fn = _InitFunctionWrapper(base_seed, worker_init_fn, worker_init_args, worker_init_kwargs)
         super().__init__(dataset, batch_size=batch_size, shuffle=shuffle, sampler=sampler, batch_sampler=batch_sampler,
                          num_workers=num_workers, collate_fn=collate_fn, pin_memory=pin_memory, drop_last=drop_last,
                          timeout=timeout, worker_init_fn=worker_init_fn, **kwargs)

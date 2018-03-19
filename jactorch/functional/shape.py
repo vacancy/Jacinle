@@ -31,18 +31,24 @@ def concat_shape(*shapes):
 
 
 def broadcast(tensor, dim, size):
+    if dim < 0:
+        dim += tensor.dim()
     assert tensor.size(dim) == 1
     shape = tensor.size()
     return tensor.expand(concat_shape(shape[:dim], size, shape[dim+1:]))
 
 
 def repeat(tensor, dim, count):
+    if dim < 0:
+        dim += tensor.dim()
     tensor_shape = tensor.size()
     value = broadcast(tensor.unsqueeze(dim + 1), dim + 1, count)
     return force_view(value, concat_shape(tensor_shape[:dim], -1, tensor_shape[dim + 1:]))
 
 
 def repeat_times(tensor, dim, repeats):
+    if dim < 0:
+        dim += tensor.dim()
     repeats = repeats.data.cpu().numpy()
     outputs = []
     for i in range(tensor.size(dim)):
