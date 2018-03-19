@@ -51,7 +51,7 @@ class MLPRegressionModel(MLPModel, ModelIOKeysMixin):
         self.loss = nn.MSELoss()
 
     def forward(self, feed_dict):
-        pred = super().foward(self._get_input(feed_dict))
+        pred = super().forward(self._get_input(feed_dict))
         if self.training:
             loss = self.loss(pred, self._get_label(feed_dict))
             return loss, dict(), dict()
