@@ -22,7 +22,7 @@ def async_copy_to(obj, dev, main_stream=None):
         return v
     elif isinstance(obj, collections.Mapping):
         return {k: async_copy_to(o, dev, main_stream) for k, o in obj.items()}
-    elif isinstance(obj, collections.Sequence):
+    elif isinstance(obj, (tuple, list, collections.UserList)):
         return [async_copy_to(o, dev, main_stream) for o in obj]
     else:
         return obj
