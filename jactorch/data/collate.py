@@ -12,7 +12,7 @@ import collections
 import torch
 import torch.utils.data.dataloader as torchdl
 
-from torch._six import string_classes
+from six import string_types
 
 from jacinle.utils.argument import UniqueValueGetter
 from jacinle.utils.enum import JacEnum
@@ -71,7 +71,7 @@ class VarLengthCollate(object):
             return torch.LongTensor(batch)
         elif isinstance(batch[0], float):
             return torch.DoubleTensor(batch)
-        elif isinstance(batch[0], string_classes):
+        elif isinstance(batch[0], string_types):
             return batch
         elif isinstance(batch[0], collections.Mapping):
             result = {}
