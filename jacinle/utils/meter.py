@@ -6,6 +6,7 @@
 # 
 # This file is part of Jacinle.
 
+import six
 import itertools
 import collections
 
@@ -60,15 +61,18 @@ class GroupMeters(object):
     def val(self):
         return {k: m.val for k, m in self._meters.items()}
 
-    def format(self, caption, attr, kv_format, glue):
-        assert attr in ('avg', 'val')
-        meters_kv = getattr(self, attr)
+    def format(self, caption, values, kv_format, glue):
+        if isinstance(values, six.string_types):
+            assert values in ('avg', 'val')
+            meters_kv = getattr(self, values)
+        else:
+            meters_kv = values
         log_str = [caption]
         log_str.extend(itertools.starmap(kv_format.format, sorted(meters_kv.items())))
         return glue.join(log_str)
 
-    def format_simple(self, caption, attr='avg', compressed=True):
+    def format_simple(self, caption, values='avg', compressed=True):
         if compressed:
-            return self.format(caption, attr, '{}={:4f}', ' ')
+            return self.format(caption, values, '{}={:4f}', ' ')
         else:
             return self.format(caption, attr, '\t{} = {:4f}', '\n')
