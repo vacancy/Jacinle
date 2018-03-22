@@ -8,6 +8,7 @@
 
 import functools
 import operator
+import six
 import collections
 import threading
 import contextlib
@@ -65,8 +66,9 @@ def filter_exec(func, iterable):
 
 
 def stmap(func, iterable):
-    # Not using collections.Sequence as isinstance('', Sequence)
-    if isinstance(iterable, (tuple, list, collections.UserList)):
+    if isinstance(iterable, six.string_types):
+        return func(iterable)
+    elif isinstance(iterable, (collections.Sequence, collections.UserList)):
         return [stmap(func, v) for v in iterable]
     elif isinstance(iterable, collections.Set):
         return {stmap(func, v) for v in iterable}
