@@ -75,4 +75,4 @@ class GroupMeters(object):
         if compressed:
             return self.format(caption, values, '{}={:4f}', ' ')
         else:
-            return self.format(caption, attr, '\t{} = {:4f}', '\n')
+            return self.format(caption, values, '\t{} = {:4f}', '\n')
