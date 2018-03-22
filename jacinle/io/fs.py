@@ -10,6 +10,7 @@
 import os
 import os.path as osp
 import glob
+import shutil
 
 import pickle
 import gzip
@@ -24,7 +25,7 @@ __all__ = [
     'open', 'open_h5', 'open_gz',
     'load', 'load_h5', 'load_pkl', 'load_pklgz', 'load_npy', 'load_npz', 'load_pth',
     'dump', 'dump_pkl', 'dump_pklgz', 'dump_npy', 'dump_npz', 'dump_pth',
-    'link', 'mkdir', 'locate_newest_file', 'io_function_registry'
+    'link', 'mkdir', 'remove', 'locate_newest_file', 'io_function_registry'
 ]
 
 sys_open = open
@@ -157,6 +158,14 @@ def link(path_origin, *paths, use_relative_path=True):
 
 def mkdir(path):
     return os.makedirs(path, exist_ok=True)
+
+
+def remove(file):
+    if osp.exists(file):
+        if osp.isdir(file):
+            shutil.rmtree(file, ignore_errors=True)
+        if osp.isfile(file):
+            os.remove(file)
 
 
 def locate_newest_file(dirname, pattern):
