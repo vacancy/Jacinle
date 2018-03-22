@@ -9,7 +9,7 @@
 import numpy as np
 
 import jacinle.random as rand
-from .word_embedding import EBD_UNKNOWN, EBD_ALL_ZEROS
+from .constant import EBD_UNKNOWN, EBD_ALL_ZEROS
 
 
 def init_random(elements_to_embed, embedding_size, add_all_zeroes=False, add_unknown=False):

@@ -19,10 +19,9 @@ import numpy as np
 
 from jacinle.logging import get_logger
 
-logger = get_logger(__file__)
+from .constant import EBD_ALL_ZEROS, EBD_UNKNOWN
 
-EBD_ALL_ZEROS = "ALL_ZERO"
-EBD_UNKNOWN = "_UNKNOWN"
+logger = get_logger(__file__)
 
 special_tokens = {"&ndash;": "–", "&mdash;": "—", "@card@": "0"}
 
