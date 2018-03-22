@@ -23,7 +23,7 @@ __all__ = [
     'as_file_descriptor',
     'open', 'open_h5', 'open_gz',
     'load', 'load_h5', 'load_pkl', 'load_pklgz', 'load_npy', 'load_npz', 'load_pth',
-    'save', 'save_pkl', 'save_pklgz', 'save_npy', 'save_npz', 'save_pth',
+    'dump', 'dump_pkl', 'dump_pklgz', 'dump_npy', 'dump_npz', 'dump_pth',
     'link', 'mkdir', 'locate_newest_file', 'io_function_registry'
 ]
 
@@ -77,25 +77,25 @@ def load_pth(file, **kwargs):
     return torch.load(file, **kwargs)
 
 
-def save_pkl(file, obj, **kwargs):
+def dump_pkl(file, obj, **kwargs):
     with as_file_descriptor(file, 'wb') as f:
         return pickle.dump(obj, f, **kwargs)
 
 
-def save_pklgz(file, obj, **kwargs):
+def dump_pklgz(file, obj, **kwargs):
     with open_gz(file, 'wb') as f:
         return pickle.dump(obj, f)
 
 
-def save_npy(file, obj, **kwargs):
+def dump_npy(file, obj, **kwargs):
     return np.save(file, obj)
 
 
-def save_npz(file, obj, **kwargs):
+def dump_npz(file, obj, **kwargs):
     return np.savez(file, obj)
 
 
-def save_pth(file, obj, **kwargs):
+def dump_pth(file, obj, **kwargs):
     import torch
     return torch.save(obj, file)
 
@@ -125,11 +125,11 @@ io_function_registry.register('load', '.npy',   load_npy)
 io_function_registry.register('load', '.npz',   load_npz)
 io_function_registry.register('load', '.pth',   load_pth)
 
-io_function_registry.register('save', '.pkl',   save_pkl)
-io_function_registry.register('save', '.pklgz', save_pklgz)
-io_function_registry.register('save', '.npy',   save_npy)
-io_function_registry.register('save', '.npz',   save_npz)
-io_function_registry.register('save', '.pth',   save_pth)
+io_function_registry.register('dump', '.pkl',   dump_pkl)
+io_function_registry.register('dump', '.pklgz', dump_pklgz)
+io_function_registry.register('dump', '.npy',   dump_npy)
+io_function_registry.register('dump', '.npz',   dump_npz)
+io_function_registry.register('dump', '.pth',   dump_pth)
 
 
 def open(file, mode, **kwargs):
@@ -140,8 +140,8 @@ def load(file, **kwargs):
     return io_function_registry.dispatch('load', file, **kwargs)
 
 
-def save(file, obj, **kwargs):
-    return io_function_registry.dispatch('save', file, obj, **kwargs)
+def dump(file, obj, **kwargs):
+    return io_function_registry.dispatch('dump', file, obj, **kwargs)
 
 
 def link(path_origin, *paths, use_relative_path=True):
