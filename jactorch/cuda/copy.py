@@ -13,9 +13,7 @@ from torch.autograd import Variable
 
 
 def async_copy_to(obj, dev, main_stream=None):
-    if torch.is_tensor(obj):
-        obj = Variable(obj)
-    if isinstance(obj, Variable):
+    if isinstance(obj, Variable) or torch.is_tensor(obj):
         v = obj.cuda(dev, async=True)
         if main_stream is not None:
             v.data.record_stream(main_stream)

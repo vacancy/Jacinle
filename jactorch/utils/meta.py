@@ -12,7 +12,7 @@ import torch
 from jacinle.utils.meta import stmap
 from torch.autograd import Variable
 
-ACCEPTABLE_TYPES = six.string_types
+SKIP_TYPES = six.string_types
 
 
 def _mark_volatile(o):
@@ -28,7 +28,7 @@ def mark_volatile(obj):
 
 
 def _as_tensor(o):
-    if isinstance(o, ACCEPTABLE_TYPES):
+    if isinstance(o, SKIP_TYPES):
         return o
     if isinstance(o, Variable):
         return o.data
@@ -42,7 +42,7 @@ def as_tensor(obj):
 
 
 def _as_variable(o):
-    if isinstance(o, ACCEPTABLE_TYPES):
+    if isinstance(o, SKIP_TYPES):
         return o
     if isinstance(o, Variable):
         return o
@@ -56,7 +56,7 @@ def as_variable(obj):
 
 
 def _as_numpy(o):
-    if isinstance(o, ACCEPTABLE_TYPES):
+    if isinstance(o, SKIP_TYPES):
         return o
     if isinstance(o, Variable):
         o = o.data
@@ -70,7 +70,7 @@ def as_numpy(obj):
 
 
 def _as_float(o):
-    if isinstance(o, ACCEPTABLE_TYPES):
+    if isinstance(o, SKIP_TYPES):
         return o
     arr = as_numpy(o)
     assert arr.size == 1
