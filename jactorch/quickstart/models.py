@@ -26,6 +26,9 @@ class MLPModel(nn.Module):
     def __init__(self, input_dim, output_dim, hidden_dims, batch_norm=None, dropout=None, activation='relu'):
         super().__init__()
 
+        if type(hidden_dims) is int:
+            hidden_dims = [hidden_dims]
+
         dims = [input_dim]
         dims.extend(hidden_dims)
         dims.append(output_dim)
