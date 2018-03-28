@@ -9,62 +9,14 @@
 import torch.nn as nn
 
 from . import conv as conv
-from . import sync_batchnorm as sync_bn
 from jacinle.utils.enum import JacEnum
+from jactorch.nn.quickaccess import get_batcnnorm, get_dropout, get_activation
 
 __all__ = [
     'LinearLayer',
     'Conv1dLayer', 'Conv2dLayer', 'Conv3dLayer',
     'DeconvAlgo', 'Deconv1dLayer', 'Deconv2dLayer', 'Deconv3dLayer'
 ]
-
-
-def _get_batcnnorm(bn, nr_features=None, nr_dims=1):
-    if isinstance(bn, nn.Module):
-        return bn
-
-    assert 1 <= nr_dims <= 3
-
-    if bn in (True, 'async'):
-        clz_name = 'BatchNorm{}d'.format(nr_dims)
-        return getattr(nn, clz_name)(nr_features)
-    elif bn == 'sync':
-        clz_name = 'SynchronizedBatchNorm{}d'.format(nr_dims)
-        return getattr(sync_bn, clz_name)(nr_features)
-    else:
-        raise ValueError('Unknown type of batch normalization: {}.'.format(bn))
-
-
-def _get_dropout(dropout, nr_dims=1):
-    if isinstance(dropout, nn.Module):
-        return dropout
-
-    if dropout is True:
-        dropout = 0.5
-    if nr_dims == 1:
-        return nn.Dropout(dropout, True)
-    else:
-        clz_name = 'Dropout{}d'.format(nr_dims)
-        return getattr(nn, clz_name)(dropout)
-
-
-def _get_activation(act):
-    if isinstance(act, nn.Module):
-        return act
-
-    assert type(act) is str, 'Unknown type of activation: {}.'.format(act)
-    act_lower = act.lower()
-    if act_lower == 'relu':
-        return nn.ReLU(True)
-    elif act_lower == 'sigmoid':
-        return nn.Sigmoid()
-    elif act_lower == 'tanh':
-        return nn.Tanh()
-    else:
-        try:
-            return getattr(nn, act)
-        except AttributeError:
-            raise ValueError('Unknown activation function: {}.'.format(act))
 
 
 class LinearLayer(nn.Sequential):
@@ -74,11 +26,11 @@ class LinearLayer(nn.Sequential):
 
         modules = [nn.Linear(in_features, out_features, bias=bias)]
         if batch_norm is not None and batch_norm is not False:
-            modules.append(_get_batcnnorm(batch_norm, out_features, 1))
+            modules.append(get_batcnnorm(batch_norm, out_features, 1))
         if dropout is not None and dropout is not False:
-            modules.append(_get_dropout(dropout, 1))
+            modules.append(get_dropout(dropout, 1))
         if activation is not None and activation is not False:
-            modules.append(_get_activation(activation))
+            modules.append(get_activation(activation))
         super().__init__(*modules)
 
 
@@ -102,11 +54,11 @@ class ConvNDLayerBase(nn.Sequential):
         )]
 
         if batch_norm is not None and batch_norm is not False:
-            modules.append(_get_batcnnorm(batch_norm, out_channels, nr_dims))
+            modules.append(get_batcnnorm(batch_norm, out_channels, nr_dims))
         if dropout is not None and dropout is not False:
-            modules.append(_get_dropout(dropout, nr_dims))
+            modules.append(get_dropout(dropout, nr_dims))
         if activation is not None and activation is not False:
-            modules.append(_get_activation(activation))
+            modules.append(get_activation(activation))
 
         super().__init__(*modules)
 
@@ -170,11 +122,11 @@ class _DeconvLayerBase(nn.Module):
 
         post_modules = []
         if batch_norm is not None and batch_norm is not False:
-            post_modules.append(_get_batcnnorm(batch_norm, out_channels, nr_dims))
+            post_modules.append(get_batcnnorm(batch_norm, out_channels, nr_dims))
         if dropout is not None and dropout is not False:
-            post_modules.append(_get_dropout(dropout, nr_dims))
+            post_modules.append(get_dropout(dropout, nr_dims))
         if activation is not None and activation is not False:
-            post_modules.append(_get_activation(activation))
+            post_modules.append(get_activation(activation))
         self.post_process = nn.Sequential(*post_modules)
 
     def forward(self, input, output_size=None):

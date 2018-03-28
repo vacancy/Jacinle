@@ -8,10 +8,8 @@
 
 import time
 
-import torch.optim as optim
-import jactorch.optim as jacoptim
-
 from jacinle.utils.meter import GroupMeters
+from jactorch.optim.quickaccess import get_optimizer
 from jactorch.utils.meta import as_numpy, as_float, as_variable, mark_volatile
 from jacinle.logging import get_logger
 
@@ -20,25 +18,9 @@ logger = get_logger(__file__)
 __all__ = ['ModelTrainer']
 
 
-def _get_optimizer(optimizer, model, **kwargs):
-    if isinstance(optimizer, (optim.Optimizer, jacoptim.CustomizedOptimizer)):
-        return optimizer
-
-    if type(optimizer) is str:
-        try:
-            optimizer = getattr(optim, optimizer)
-        except AttributeError:
-            try:
-                optimizer = getattr(jacoptim, optimizer)
-            except AttributeError:
-                raise ValueError('Unknown optimizer type: {}.'.format(optimizer))
-
-    return optimizer(filter(lambda p: p.requires_grad, model.parameters()), **kwargs)
-
-
 class ModelTrainer(object):
     def __init__(self, model, optimizer, lr=0.01, weight_decay=0, **opt_kwargs):
-        optimizer = _get_optimizer(optimizer, model, lr=lr, weight_decay=weight_decay, **opt_kwargs)
+        optimizer = get_optimizer(optimizer, model, lr=lr, weight_decay=weight_decay, **opt_kwargs)
         self._model = model
         self._optimizer = optimizer
 
