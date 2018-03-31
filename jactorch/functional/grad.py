@@ -41,6 +41,7 @@ zero_grad_v1 = ZeroGradV1.apply
 
 
 def zero_grad_v2(v):
+    """Zero-grad the variable."""
     return v.detach()
 
 

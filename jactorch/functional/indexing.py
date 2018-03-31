@@ -11,7 +11,12 @@ import torch
 from jacinle.utils.numeric import prod
 from jactorch.graph.variable import var_with, new_var_with
 
-__all__ = ['reversed', 'one_hot', 'one_hot_nd', 'inverse_permutation', 'index_one_hot', 'index_one_hot_ellipsis']
+__all__ = [
+    'reversed',
+    'one_hot', 'one_hot_nd',
+    'inverse_permutation',
+    'index_one_hot', 'set_index_one_hot', 'set_index_one_hot_',
+    'index_one_hot_ellipsis']
 
 
 def reversed(x, dim=-1):
@@ -40,15 +45,29 @@ def one_hot_nd(index, nr_classes):
 def inverse_permutation(perm):
     length = perm.size(0)
     inv = var_with(perm.data.new(length).long().zero_(), perm)
-    inv.scatter_(0, perm, var_with(torch.arange(length).long(), perm))
+    inv.scatter_(0, perm, var_with(torch.arange(0, length).long(), perm))
     return inv.long()
 
 
 def index_one_hot(tensor, dim, index):
+    """Return tensor[:, :, index, :, :]"""
     return tensor.gather(dim, index.unsqueeze(dim)).squeeze(dim)
 
 
+def set_index_one_hot(tensor, dim, index, value):
+    """Return tensor[:, :, index, :, :]"""
+    return tensor.scatter(dim, index.unsqueeze(dim), value)
+
+
+def set_index_one_hot_(tensor, dim, index, value):
+    """Return tensor[:, :, index, :, :]"""
+    if not isinstance(value, (int, float)):
+        value = value.unsqueeze(dim)
+    return tensor.scatter_(dim, index.unsqueeze(dim), value)
+
+
 def index_one_hot_ellipsis(tensor, dim, index):
+    """Return tensor[:, :, index, ...]"""
     tensor_shape = tensor.size()
     tensor = tensor.view(prod(tensor_shape[:dim]), tensor_shape[dim], prod(tensor_shape[dim+1:]))
     assert tensor.size(0) == index.size(0)
@@ -56,4 +75,3 @@ def index_one_hot_ellipsis(tensor, dim, index):
     index = index.expand(tensor.size(0), 1, tensor.size(2))
     tensor = tensor.gather(1, index)
     return tensor.view(tensor_shape[:dim] + tensor_shape[dim+1:])
-

@@ -6,10 +6,12 @@
 # 
 # This file is part of Jacinle.
 
+from .gumbel_softmax import *
 from .sync_batchnorm import *
+from .losses import *
+
 from .cnn_layers import *
 from .conv import *
 from .image_preprocess import *
-from .losses import *
 from .probability import *
 from .rnn_utils import *

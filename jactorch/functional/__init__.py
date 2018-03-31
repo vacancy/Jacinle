@@ -11,5 +11,6 @@ from .indexing import *
 from .kernel import *
 from .linalg import *
 from .mask import *
+from .meshgrid import *
 from .probability import *
 from .shape import *
