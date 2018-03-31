@@ -21,7 +21,7 @@ __all__ = [
     'vgg13', 'vgg13_bn',
     'vgg16', 'vgg16_bn',
     'vgg19', 'vgg19_bn',
-    'initialize_vgg_weights', 'reset_vgg_parameters'
+    'reset_vgg_parameters'
 ]
 
 
