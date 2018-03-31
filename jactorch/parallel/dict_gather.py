@@ -6,6 +6,7 @@
 # 
 # This file is part of Jacinle.
 
+import six
 import functools
 import collections
 
@@ -44,11 +45,16 @@ def dict_gather(outputs, target_device, dim=0):
     def gather_map(outputs):
         out = outputs[0]
         if isinstance(out, Variable):
+            if out.dim() == 0:
+                outputs = [o.unsqueeze(0) for o in outputs]
             return Gather.apply(target_device, dim, *outputs)
         elif out is None:
             return None
         elif isinstance(out, collections.Mapping):
             return {k: gather_map([o[k] for o in outputs]) for k in out}
+        elif isinstance(out, six.string_types):
+            return outputs
         elif isinstance(out, collections.Sequence):
             return type(out)(map(gather_map, zip(*outputs)))
+        return outputs
     return gather_map(outputs)

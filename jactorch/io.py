@@ -17,6 +17,37 @@ from jacinle.logging import get_logger
 
 logger = get_logger(__file__)
 
+__all__ = ['load_state_dict', 'load_weights']
+
+
+def load_state_dict(model, state_dict):
+    own_state = model.state_dict()
+    for name, param in state_dict.items():
+        if name in own_state:
+            if isinstance(param, nn.Parameter):
+                # backwards compatibility for serialized parameters
+                param = param.data
+            try:
+                own_state[name].copy_(param)
+            except Exception:
+                raise RuntimeError('While copying the parameter named {}, '
+                                   'whose dimensions in the model are {} and '
+                                   'whose dimensions in the checkpoint are {}.'
+                                   .format(name, own_state[name].size(), param.size()))
+
+    error_msg = []
+
+    missing = set(own_state.keys()) - set(state_dict.keys())
+    if len(missing) > 0:
+        error_msg.append('Missing keys in state_dict: "{}".'.format(missing))
+
+    unexpected = set(state_dict.keys()) - set(own_state.keys())
+    if len(unexpected) > 0:
+        error_msg.append('Unexpected key "{}" in state_dict.'.format(unexpected))
+
+    if len(error_msg):
+        raise KeyError('\n'.join(error_msg))
+
 
 def load_weights(model, filename):
     if osp.isfile(filename):
@@ -35,7 +66,7 @@ def load_weights(model, filename):
             try:
                 if isinstance(model, nn.DataParallel):
                     model = model.module
-                model.load_state_dict(weights)
+                load_state_dict(model, weights)
             except KeyError as e:
                 logger.warning('Unexpected or missing weights found: {}.'.format(str(e)))
             logger.critical('Weights loaded: {}.'.format(filename))
