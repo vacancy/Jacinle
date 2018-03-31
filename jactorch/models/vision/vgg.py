@@ -48,7 +48,7 @@ class VGG(nn.Module):
             )
 
         if self.incl_cls:
-            self.classifier = nn.Linear(4096, num_classes),
+            self.classifier = nn.Linear(4096, num_classes)
 
         self.reset_parameters()
 
@@ -125,7 +125,11 @@ def make_vgg(cfg_id, batch_norm, pretrained, url_id, incl_fcs=True, num_classes=
         try:
             load_state_dict(model, pretrained_model)
         except KeyError:
+            from jacinle.logging import get_logger
+            logger = get_logger(__file__)
+            logger.exception('test')
             pass  # Intentionally ignore the key error.
+    return model
 
 
 def make_vgg_contructor(cfg_id, url_id, batch_norm=False):
@@ -165,4 +169,5 @@ def reset_vgg_parameters(m, fc_std=0.01, bfc_std=0.001):
             m.bias.data.zero_()
     else:
         for sub in m.modules():
-            reset_vgg_parameters(sub, fc_std=fc_std, bfc_std=bfc_std)
+            if m != sub:
+                reset_vgg_parameters(sub, fc_std=fc_std, bfc_std=bfc_std)

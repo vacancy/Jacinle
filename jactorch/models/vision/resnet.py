@@ -189,6 +189,7 @@ def make_resnet(net_id, pretrained, incl_gap=True, num_classes=1000):
             load_state_dict(model, pretrained_model)
         except KeyError:
             pass  # Intentionally ignore the key error.
+    return model
 
 
 def make_resnet_contructor(net_id):
@@ -224,4 +225,5 @@ def reset_resnet_parameters(m, fc_std=0.01, bfc_std=0.001):
             m.bias.data.zero_()
     else:
         for sub in m.modules():
-            reset_resnet_parameters(sub, fc_std=fc_std, bfc_std=bfc_std)
+            if m != sub:
+                reset_resnet_parameters(sub, fc_std=fc_std, bfc_std=bfc_std)
