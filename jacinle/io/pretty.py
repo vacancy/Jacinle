@@ -6,9 +6,10 @@
 # 
 # This file is part of Jacinle.
 
-
+import io as _io
 import json
 import functools
+import collections
 import xml.etree.ElementTree as et
 import yaml
 
@@ -18,14 +19,38 @@ from jacinle.utils.printing import stformat, kvformat
 from .fs import as_file_descriptor, io_function_registry
 
 __all__ = [
+    'pretty_dump', 'pretty_load',
     'dumps_json', 'dump_json', 'loads_json', 'load_json',
     'dumps_xml', 'dump_xml', 'loads_xml', 'load_xml',
     'dumps_yaml', 'dump_yaml', 'loads_yaml', 'load_yaml',
+    'dumps_txt', 'dump_txt',
     'dumps_struct', 'dump_struct',
     'dumps_kv', 'dump_kv',
-    'dumps_env', 'dump_env',
-    'pretty_dump', 'pretty_load'
+    'dumps_env', 'dump_env'
 ]
+
+
+def loads_json(value):
+    return json.loads(value)
+
+
+def loads_xml(value):
+    return _xml2dict(et.fromstring(value))
+
+
+def loads_yaml(value):
+    return yaml.load(value)
+
+
+def dumps_txt(value):
+    assert isinstance(value, collections.Iterable), 'dump(s) txt supports only list as input.'
+    with _io.StringIO() as buf:
+        for v in value:
+            v = str(v)
+            buf.write(v)
+            if v[-1] != '\n':
+                buf.write('\n')
+        return buf.getvalue()
 
 
 def dumps_json(value):
@@ -52,16 +77,15 @@ def dumps_env(value):
     return '\n'.join(['{} = {}'.format(k, v) for k, v in dict_deep_kv(value)])
 
 
-def loads_json(value):
-    return json.loads(value)
+def _wrap_load(loads_func):
+    @functools.wraps(loads_func)
+    def load(file, **kwargs):
+        with as_file_descriptor(file, 'r') as f:
+            return loads_func(f.read(), **kwargs)
 
-
-def loads_xml(value):
-    return _xml2dict(et.fromstring(value))
-
-
-def loads_yaml(value):
-    return yaml.load(value)
+    load.__name__ = loads_func.__name__[:-1]
+    load.__qualname__ = loads_func.__qualname__[:-1]
+    return load
 
 
 def _wrap_dump(dumps_func):
@@ -75,17 +99,11 @@ def _wrap_dump(dumps_func):
     return dump
 
 
-def _wrap_load(loads_func):
-    @functools.wraps(loads_func)
-    def load(file, **kwargs):
-        with as_file_descriptor(file, 'r') as f:
-            return loads_func(f.read(), **kwargs)
+load_json = _wrap_load(loads_json)
+load_xml = _wrap_load(loads_xml)
+load_yaml = _wrap_load(loads_yaml)
 
-    load.__name__ = loads_func.__name__[:-1]
-    load.__qualname__ = loads_func.__qualname__[:-1]
-    return load
-
-
+dump_txt = _wrap_dump(dumps_txt)
 dump_json = _wrap_dump(dumps_json)
 dump_xml = _wrap_dump(dumps_xml)
 dump_yaml = _wrap_dump(dumps_yaml)
@@ -93,10 +111,11 @@ dump_struct = _wrap_dump(dumps_struct)
 dump_kv = _wrap_dump(dumps_kv)
 dump_env = _wrap_dump(dumps_env)
 
-load_json = _wrap_load(loads_json)
-load_xml = _wrap_load(loads_xml)
-load_yaml = _wrap_load(loads_yaml)
+io_function_registry.register('pretty_load', '.json', load_json)
+io_function_registry.register('pretty_load', '.xml',  load_xml)
+io_function_registry.register('pretty_load', '.yaml', load_yaml)
 
+io_function_registry.register('pretty_dump', '.txt',    dump_txt)
 io_function_registry.register('pretty_dump', '.json',   dump_json)
 io_function_registry.register('pretty_dump', '.xml',    dump_xml)
 io_function_registry.register('pretty_dump', '.yaml',   dump_yaml)
@@ -104,17 +123,13 @@ io_function_registry.register('pretty_dump', '.struct', dump_struct)
 io_function_registry.register('pretty_dump', '.kv',     dump_kv)
 io_function_registry.register('pretty_dump', '.env',    dump_env)
 
-io_function_registry.register('pretty_load', '.json', load_json)
-io_function_registry.register('pretty_load', '.xml',  load_xml)
-io_function_registry.register('pretty_load', '.yaml', load_yaml)
-
-
-def pretty_dump(file, **kwargs):
-    return io_function_registry.dispatch('pretty_dump', file, **kwargs)
-
 
 def pretty_load(file, **kwargs):
     return io_function_registry.dispatch('pretty_load', file, **kwargs)
+
+
+def pretty_dump(file, obj, **kwargs):
+    return io_function_registry.dispatch('pretty_dump', file, obj, **kwargs)
 
 
 def _dict2xml(d, indent=4, *, root_node=None, root_indent=0):

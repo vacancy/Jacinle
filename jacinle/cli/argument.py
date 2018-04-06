@@ -20,6 +20,7 @@ class JacArgumentParser(argparse.ArgumentParser):
         self.register('type', 'bool', _type_bool)
         self.register('type', 'checked_file', _type_checked_file)
         self.register('type', 'checked_dir', _type_checked_dir)
+        self.register('type', 'ensured_dir', _type_ensured_dir)
         self.register('action', 'set_device', SetDeviceAction)
 
 
@@ -39,6 +40,14 @@ def _type_checked_file(string):
 def _type_checked_dir(string):
     if not osp.isdir(string):
         raise argparse.ArgumentTypeError('Check directory existence failed: "{}".'.format(string))
+    return string
+
+
+def _type_ensured_dir(string):
+    if not osp.isdir(string):
+        # TODO:: Change to Y/N question.
+        import jacinle.io as io
+        io.mkdir(string)
     return string
 
 
