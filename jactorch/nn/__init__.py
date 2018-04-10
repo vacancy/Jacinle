@@ -13,5 +13,8 @@ from .losses import *
 from .cnn_layers import *
 from .conv import *
 from .image_preprocess import *
+from .linear import *
+from .normalization import *
 from .probability import *
+from .residual import *
 from .rnn_utils import *

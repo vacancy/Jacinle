@@ -13,88 +13,12 @@ import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 
 from jactorch.io import load_state_dict
+from jactorch.nn import ResidualConvBlock, ResidualConvBottleneck
 
 
-__all__ = ['ResNetBasicBlock', 'ResNetBottleneck', 'ResNet',
+__all__ = ['ResNet',
            'resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152',
            'reset_resnet_parameters']
-
-
-def _conv3x3(in_planes, out_planes, stride=1):
-    """3x3 convolution with padding"""
-    return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
-                     padding=1, bias=False)
-
-
-class ResNetBasicBlock(nn.Module):
-    expansion = 1
-
-    def __init__(self, inplanes, planes, stride=1, downsample=None):
-        super(ResNetBasicBlock, self).__init__()
-        self.conv1 = _conv3x3(inplanes, planes, stride)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.relu = nn.ReLU(inplace=True)
-        self.conv2 = _conv3x3(planes, planes)
-        self.bn2 = nn.BatchNorm2d(planes)
-        self.downsample = downsample
-        self.stride = stride
-
-    def forward(self, x):
-        residual = x
-
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-
-        if self.downsample is not None:
-            residual = self.downsample(x)
-
-        out += residual
-        out = self.relu(out)
-
-        return out
-
-
-class ResNetBottleneck(nn.Module):
-    expansion = 4
-
-    def __init__(self, inplanes, planes, stride=1, downsample=None):
-        super(ResNetBottleneck, self).__init__()
-        self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride,
-                               padding=1, bias=False)
-        self.bn2 = nn.BatchNorm2d(planes)
-        self.conv3 = nn.Conv2d(planes, planes * 4, kernel_size=1, bias=False)
-        self.bn3 = nn.BatchNorm2d(planes * 4)
-        self.relu = nn.ReLU(inplace=True)
-        self.downsample = downsample
-        self.stride = stride
-
-    def forward(self, x):
-        residual = x
-
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-        out = self.relu(out)
-
-        out = self.conv3(out)
-        out = self.bn3(out)
-
-        if self.downsample is not None:
-            residual = self.downsample(x)
-
-        out += residual
-        out = self.relu(out)
-
-        return out
 
 
 class ResNet(nn.Module):
@@ -161,11 +85,11 @@ class ResNet(nn.Module):
 
 
 cfgs = {
-    'resnet18': (ResNetBasicBlock, [2, 2, 2, 2]),
-    'resnet34': (ResNetBasicBlock, [3, 4, 6, 3]),
-    'resnet50': (ResNetBottleneck, [3, 4, 6, 3]),
-    'resnet101': (ResNetBottleneck, [3, 4, 23, 3]),
-    'resnet152': (ResNetBottleneck, [3, 8, 36, 3]),
+    'resnet18': (ResidualConvBlock, [2, 2, 2, 2]),
+    'resnet34': (ResidualConvBlock, [3, 4, 6, 3]),
+    'resnet50': (ResidualConvBottleneck, [3, 4, 6, 3]),
+    'resnet101': (ResidualConvBottleneck, [3, 4, 23, 3]),
+    'resnet152': (ResidualConvBottleneck, [3, 8, 36, 3]),
 }
 
 model_urls = {
