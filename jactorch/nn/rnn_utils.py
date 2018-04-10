@@ -26,9 +26,10 @@ def rnn_with_length(rnn, seq_tensor, seq_lengths, initial_states, batch_first=Tr
     if not sorted:
         perm_inv = inverse_permutation(perm_idx)
         output = output[perm_inv]
+        sequence_dim = 1 if batch_first else 0
         if type(last_output) is tuple:
-            last_output = tuple(map(lambda x: x.index_select(1, perm_inv), last_output))
+            last_output = tuple(map(lambda x: x.index_select(sequence_dim, perm_inv), last_output))
         else:
-            last_output = last_output.index_select(1, perm_inv)
+            last_output = last_output.index_select(sequence_dim, perm_inv)
 
     return output, last_output
