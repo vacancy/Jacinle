@@ -13,4 +13,5 @@ from .linalg import *
 from .mask import *
 from .meshgrid import *
 from .probability import *
+from .sample import *
 from .shape import *
