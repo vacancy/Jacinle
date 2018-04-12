@@ -1,0 +1,6 @@
+six
+zmq
+h5py
+numpy
+scipy
+matplotlib

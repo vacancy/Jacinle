@@ -9,7 +9,19 @@
 import math
 from functools import reduce
 
-__all__ = ['mean', 'std', 'rms', 'prod', 'divup']
+__all__ = ['safe_sum', 'mean', 'std', 'rms', 'prod', 'divup']
+
+
+def safe_sum(*values):
+    if len(values) == 0:
+        return 0
+    if len(values) == 1:
+        if isinstance(values[0], (tuple, list)):
+            return safe_sum(*values[0])
+    res = values[0]
+    for v in values[1:]:
+        res = res + v
+    return res
 
 
 def mean(values, default=0):
