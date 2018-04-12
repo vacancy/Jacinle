@@ -52,6 +52,13 @@ class DefaultsManager(object):
             return self._get_defaults_registry(identifier).get(identifier, default)
         return get_default
 
+    def gen_set_default(self, cls):
+        identifier = class_name_of_method(cls.as_default)
+
+        def set_default(default):
+            self._get_defaults_registry(identifier)[identifier] = default
+        return set_default
+
     def set_default(self, cls, default):
         identifier = class_name_of_method(cls.as_default)
         self._get_defaults_registry(identifier)[identifier] = default

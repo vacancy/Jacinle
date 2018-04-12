@@ -44,7 +44,7 @@ def l2_loss(output, target):
     return 0.5 * ((output - target) ** 2)
 
 
-def cross_entropy_with_probs(probs, target, dim, eps):
+def cross_entropy_with_probs(probs, target, dim=-1, eps=1e-8):
     log_prob = torch.log(probs.clamp(min=eps))
     neg_xent = index_one_hot(log_prob, dim, target)
     return -neg_xent
