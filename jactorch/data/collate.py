@@ -123,4 +123,3 @@ class VarLengthCollate(object):
             return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
         else:
             raise ValueError('Unknown collation mode: {}.'.format(self._mode))
-

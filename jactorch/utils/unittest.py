@@ -15,6 +15,8 @@ from torch.autograd import Variable
 
 
 def _as_numpy(v):
+    if isinstance(v, np.ndarray):
+        return v
     if isinstance(v, Variable):
         v = v.data
     return v.cpu().numpy()
