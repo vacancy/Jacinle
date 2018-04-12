@@ -13,7 +13,7 @@ from jactorch.graph.variable import var_with, new_var_with
 
 __all__ = [
     'reversed',
-    'one_hot', 'one_hot_nd',
+    'one_hot', 'one_hot_nd', 'one_hot_dim',
     'inverse_permutation',
     'index_one_hot', 'set_index_one_hot', 'set_index_one_hot_',
     'index_one_hot_ellipsis']
@@ -40,6 +40,11 @@ def one_hot(index, nr_classes):
 def one_hot_nd(index, nr_classes):
     index_size = index.size()
     return one_hot(index.view(-1), nr_classes).view(index_size + (nr_classes, ))
+
+
+def one_hot_dim(index, nr_classes, dim):
+    # TODO:: Any faster implementation?
+    return one_hot_nd(index, nr_classes).transpose(-1, dim)
 
 
 def inverse_permutation(perm):

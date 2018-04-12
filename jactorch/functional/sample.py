@@ -9,6 +9,8 @@
 import torch
 import torch.autograd as autograd
 
+from .indexing import one_hot_nd
+
 __all__ = ['sample_bernoulli', 'sample_multinomial']
 
 
@@ -30,10 +32,11 @@ class SampleMultinomial(autograd.Function):
     @staticmethod
     def forward(ctx, input, dim):
         input = input.transpose(dim, -1)
-        input_flatten = input.view(-1, input.size(-1))
-        rand = torch.multinomial(input_flatten, 1).view(input.size()[:-1], 1)
-        rand.transpose_(dim, -1).unsqueeze_(-1)
-        return rand
+        input_flatten = input.contiguous().view(-1, input.size(-1))
+        rand = torch.multinomial(input_flatten, 1).view(input.size()[:-1])
+        output = one_hot_nd(rand, input.size(dim))
+        output = output.transpose(dim, -1)
+        return output.float()
 
     @staticmethod
     def backward(ctx, grad_output):
