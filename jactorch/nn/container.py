@@ -12,7 +12,11 @@ __all__ = ['SequentialN']
 
 
 class SequentialN(nn.Sequential):
-    def forward(self, *inputs):
+    def forward(self, *inputs, return_all=False):
+        all_values = [inputs]
         for module in self._modules.values():
             inputs = module(*inputs)
+            all_values.append(inputs)
+        if return_all:
+            return inputs, all_values
         return inputs
