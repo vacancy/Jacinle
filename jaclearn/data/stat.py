@@ -9,9 +9,9 @@
 __all__ = ['stat_histogram']
 
 
-def stat_histogram(name, value, markers):
+def stat_histogram(name, value, markers, value_format='{}'):
     histo = dict()
     for m in markers:
-        histo['{}/>{}'.format(name, m)] = int(value > m)
+        histo[('{}/>=' + value_format).format(name, m)] = int(value >= m)
     return histo
 

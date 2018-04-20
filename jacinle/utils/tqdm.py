@@ -7,8 +7,9 @@
 # This file is part of Jacinle.
 
 from tqdm import tqdm as _tqdm
+from .meta import gofor
 
-__all__ = ['get_tqdm_defaults', 'tqdm', 'tqdm_pbar']
+__all__ = ['get_tqdm_defaults', 'tqdm', 'tqdm_pbar', 'tqdm_gofor', 'tqdm_zip']
 
 __tqdm_defaults = {'dynamic_ncols': True, 'ascii': True}
 
@@ -40,3 +41,14 @@ def tqdm_pbar(**kwargs):
     for k, v in get_tqdm_defaults().items():
         kwargs.setdefault(k, v)
     return _tqdm(**kwargs)
+
+
+def tqdm_gofor(iterable, **kwargs):
+    kwargs.setdefault('total', len(iterable))
+    return tqdm(gofor(iterable), **kwargs)
+
+
+def tqdm_zip(*iterable, **kwargs):
+    kwargs.setdefault('total', len(iterable[0]))
+    return tqdm(zip(*iterable), **kwargs)
+
