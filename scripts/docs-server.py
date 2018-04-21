@@ -1,10 +1,15 @@
-# -*- coding:utf8 -*-
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
 # File   : docs-server.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 3/25/17
+# Date   : 04/21/2018
 # 
-# This file is part of TensorArtist.
+# Distributed under terms of the MIT license.
+
+"""
+Start the Jacinle docs server, which can be viewed through the browsers.
+"""
 
 import http.server
 import socketserver
@@ -13,9 +18,12 @@ import sys
 import os
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-p', '--port', dest='port', default=8080, type=int, help='Serving port.')
-parser.add_argument('-m', '--make', dest='make', default=True, action='store_true', help='Run the makefile.')
-port = parser.parse_args().port
+parser.add_argument('-p', '--port', default=8080, type=int, help='Serving port.')
+parser.add_argument('--make', action='store_true', help='Rebuild the HTMLs by make.')
+parser.add_argument('--apidoc', action='store_true', help='Rebuild the RSTs by sphinx.')
+
+args = parser.parse_args()
+
 
 if __name__ == '__main__':
     dirname = os.path.dirname(sys.argv[0])
@@ -23,14 +31,20 @@ if __name__ == '__main__':
     docpath = os.path.realpath(os.path.join(dirname, '../', 'docs'))
     os.chdir(docpath)
     print('Chaning directory to {}'.format(docpath))
-    os.system('make html')
 
-    docpath = os.path.realpath(os.path.join(dirname, '../', 'docs', '_build', 'html'))
+    if args.apidoc:
+        os.system('sphinx-apidoc -o source/ ../')
+
+    if args.make:
+        os.system('make html')
+
+    docpath = os.path.realpath(os.path.join(dirname, '../', 'docs', 'build', 'html'))
     os.chdir(docpath)
     print('Chaning directory to {}'.format(docpath))
 
     Handler = http.server.SimpleHTTPRequestHandler
     
-    print('Serving at port {}.'.format(port))
-    httpd = socketserver.TCPServer(("", port), Handler)
+    print('Serving at port {}.'.format(args.port))
+    httpd = socketserver.TCPServer(("", args.port), Handler)
     httpd.serve_forever()
+
