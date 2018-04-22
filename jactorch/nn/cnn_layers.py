@@ -13,7 +13,7 @@ from jacinle.utils.enum import JacEnum
 from jactorch.nn.quickaccess import get_batcnnorm, get_dropout, get_activation
 
 __all__ = [
-    'LinearLayer',
+    'LinearLayer', 'MLPLayer',
     'Conv1dLayer', 'Conv2dLayer', 'Conv3dLayer',
     'DeconvAlgo', 'Deconv1dLayer', 'Deconv2dLayer', 'Deconv3dLayer'
 ]
@@ -32,6 +32,33 @@ class LinearLayer(nn.Sequential):
         if activation is not None and activation is not False:
             modules.append(get_activation(activation))
         super().__init__(*modules)
+
+
+class MLPLayer(nn.Module):
+    def __init__(self, input_dim, output_dim, hidden_dims, batch_norm=None, dropout=None, activation='relu'):
+        super().__init__()
+
+        if hidden_dims is None:
+            hidden_dims = []
+        elif type(hidden_dims) is int:
+            hidden_dims = [hidden_dims]
+
+        dims = [input_dim]
+        dims.extend(hidden_dims)
+        dims.append(output_dim)
+        modules = []
+
+        nr_hiddens = len(hidden_dims)
+        for i in range(nr_hiddens):
+            layer = LinearLayer(dims[i], dims[i+1], batch_norm=batch_norm, dropout=dropout, activation=activation)
+            modules.append(layer)
+        layer = nn.Linear(dims[-2], dims[-1], bias=True)
+        modules.append(layer)
+        self.mlp = nn.Sequential(*modules)
+
+    def forward(self, input):
+        input = input.view(input.size(0), -1)
+        return self.mlp(input)
 
 
 class ConvNDLayerBase(nn.Sequential):

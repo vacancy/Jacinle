@@ -8,7 +8,9 @@
 
 import torch.nn as nn
 
-from jactorch.nn.cnn_layers import LinearLayer
+from jactorch.nn.cnn_layers import LinearLayer, MLPLayer
+
+__all__ = ['MLPModel', 'MLPRegressionModel', 'MLPClassificationModel', 'LinearRegressionModel', 'LinearClassificationModel']
 
 
 class ModelIOKeysMixin(object):
@@ -22,31 +24,8 @@ class ModelIOKeysMixin(object):
         return dict(pred=value)
 
 
-class MLPModel(nn.Module):
-    def __init__(self, input_dim, output_dim, hidden_dims, batch_norm=None, dropout=None, activation='relu'):
-        super().__init__()
-
-        if hidden_dims is None:
-            hidden_dims = []
-        elif type(hidden_dims) is int:
-            hidden_dims = [hidden_dims]
-
-        dims = [input_dim]
-        dims.extend(hidden_dims)
-        dims.append(output_dim)
-        modules = []
-
-        nr_hiddens = len(hidden_dims)
-        for i in range(nr_hiddens):
-            layer = LinearLayer(dims[i], dims[i+1], batch_norm=batch_norm, dropout=dropout, activation=activation)
-            modules.append(layer)
-        layer = nn.Linear(dims[-2], dims[-1], bias=True)
-        modules.append(layer)
-        self.mlp = nn.Sequential(*modules)
-
-    def forward(self, input):
-        input = input.view(input.size(0), -1)
-        return self.mlp(input)
+class MLPModel(MLPLayer):
+    pass
 
 
 class MLPRegressionModel(MLPModel, ModelIOKeysMixin):
