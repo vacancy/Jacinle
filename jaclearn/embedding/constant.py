@@ -6,5 +6,5 @@
 # 
 # This file is part of Jacinle.
 
-EBD_ALL_ZEROS = '<all_zero>'
-EBD_UNKNOWN = '<unknown>'
+EBD_ALL_ZEROS = '<PAD>'
+EBD_UNKNOWN = '<UNK>'
