@@ -10,6 +10,8 @@ import six
 import itertools
 import collections
 
+import jacinle.io as io
+
 from .meta import map_exec
 
 
@@ -62,11 +64,7 @@ class GroupMeters(object):
         return {k: m.val for k, m in self._meters.items()}
 
     def format(self, caption, values, kv_format, glue):
-        if isinstance(values, six.string_types):
-            assert values in ('avg', 'val')
-            meters_kv = getattr(self, values)
-        else:
-            meters_kv = values
+        meters_kv = self._canonize_values(values)
         log_str = [caption]
         log_str.extend(itertools.starmap(kv_format.format, sorted(meters_kv.items())))
         return glue.join(log_str)
@@ -76,3 +74,17 @@ class GroupMeters(object):
             return self.format(caption, values, '{}={:4f}', ' ')
         else:
             return self.format(caption, values, '\t{} = {:4f}', '\n')
+
+    def dump(self, filename, values='avg'):
+        meters_kv = self._canonize_values(values)
+        with open(filename, 'a') as f:
+            f.write(io.dumps_json(meters_kv))
+            f.write('\n')
+
+    def _canonize_values(self, values):
+        if isinstance(values, six.string_types):
+            assert values in ('avg', 'val')
+            meters_kv = getattr(self, values)
+        else:
+            meters_kv = values
+        return meters_kv
