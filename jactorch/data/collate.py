@@ -41,7 +41,7 @@ class VarLengthCollateMode(JacEnum):
 
 
 class VarLengthCollate(object):
-    def __init__(self, fields, mode):
+    def __init__(self, fields, mode='pad'):
         self._fields = fields
         self._mode = VarLengthCollateMode.from_string(mode)
 

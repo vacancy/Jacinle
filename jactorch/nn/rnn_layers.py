@@ -7,12 +7,13 @@
 # 
 # Distributed under terms of the MIT license.
 
+import torch
 import torch.nn as nn
 
 from jactorch.graph.variable import var_with
 from jactorch.functional.indexing import index_one_hot_ellipsis
 from jactorch.nn.rnn_utils import rnn_with_length
-from jactorch.utils.meta import storage
+from jactorch.utils.meta import as_tensor
 
 __all__ = ['RNNLayer', 'LSTMLayer', 'GRULayer']
 
@@ -24,11 +25,13 @@ class RNNLayerBase(nn.Module):
     def __init__(self, input_dim, hidden_dim, nr_layers, 
             bias=True, batch_first=True, dropout=0, bidirectional=False):
 
+        super().__init__()
+
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.nr_layers = nr_layers
         self.bias = bias
-        self.batch_first = self.rnn.batch_first
+        self.batch_first = batch_first
         self.dropout = dropout
         self.bidirectional = bidirectional
 
@@ -37,8 +40,8 @@ class RNNLayerBase(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        nn.init.orthogonal(self.rnn.weight_ih_l)
-        nn.init.orthogonal(self.rnn.weight_hh_l)
+        nn.init.orthogonal(self.rnn.weight_ih_l0)
+        nn.init.orthogonal(self.rnn.weight_hh_l0)
 
     def forward(self, input, input_lengths, sorted=False):
         initial_states = self.zero_state(input)
@@ -60,9 +63,9 @@ class RNNLayerBase(nn.Module):
 
     def extract_last_output(self, rnn_last_output):
         if self.rnn.bidirectional:
-            extract = lambda x: return torch.cat((x[-2], x[-1]), dim=-1)
+            extract = lambda x: torch.cat((x[-2], x[-1]), dim=-1)
         else:
-            extract = lambda x: return x[-1]
+            extract = lambda x: x[-1]
         if type(rnn_last_output) is tuple:
             return tuple(map(extract, rnn_last_output))
         return extract(rnn_last_output)

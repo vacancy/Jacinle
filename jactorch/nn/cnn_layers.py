@@ -35,7 +35,7 @@ class LinearLayer(nn.Sequential):
 
 
 class MLPLayer(nn.Module):
-    def __init__(self, input_dim, output_dim, hidden_dims, batch_norm=None, dropout=None, activation='relu'):
+    def __init__(self, input_dim, output_dim, hidden_dims, batch_norm=None, dropout=None, activation='relu', flatten=True):
         super().__init__()
 
         if hidden_dims is None:
@@ -55,9 +55,11 @@ class MLPLayer(nn.Module):
         layer = nn.Linear(dims[-2], dims[-1], bias=True)
         modules.append(layer)
         self.mlp = nn.Sequential(*modules)
+        self.flatten = flatten
 
     def forward(self, input):
-        input = input.view(input.size(0), -1)
+        if self.flatten:
+            input = input.view(input.size(0), -1)
         return self.mlp(input)
 
 

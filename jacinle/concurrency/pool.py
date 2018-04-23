@@ -87,7 +87,8 @@ class Pool(object):
                     result.append((i, func(val)))
                 self._result_queue.put(('result', result))
             except Exception:
-                self._result_queue.put(('exc', sys.exc_info()))
+                print(sys.exc_info())
+                self._result_queue.put(('exc', _format_exc(sys.exc_info())))
 
     def _task_dispatcher(self):
         while True:
@@ -128,7 +129,8 @@ class Pool(object):
                         callback(*r)
                 all_result.extend(result)
             elif result_type is _ResultType.EXC:
-                logger.exception('Worker got exception.', exc_info=result)
+                # TODO(Jiayuan Mao @ 04/24): show the worker process ID, etc.
+                logger.warning('Worker got exception: ' + result)
                 break
 
             if nr_total is not None and len(all_result) >= nr_total:
@@ -144,9 +146,9 @@ class TQDMPool(Pool):
             total = len(iterable)
         if use_tqdm:
             pbar = tqdm_pbar(total=total, **kwargs)
-            super().map(func, iterable, chunksize, sort, callback=self._wrap_callback(callback, pbar, desc))
+            return super().map(func, iterable, chunksize, sort, callback=self._wrap_callback(callback, pbar, desc))
         else:
-            super().map(func, iterable, chunksize, sort, callback=callback)
+            return super().map(func, iterable, chunksize, sort, callback=callback)
 
     def _wrap_callback(self, callback, pbar, desc):
         def wrapped(i, val):
@@ -161,6 +163,23 @@ class TQDMPool(Pool):
             pbar.set_description(desc)
             pbar.update()
         return wrapped
+
+
+def _format_exc(ei):
+    import io
+    import traceback
+
+    sio = io.StringIO()
+    tb = ei[2]
+    # See issues #9427, #1553375. Commented out for now.
+    #if getattr(self, 'fullstack', False):
+    #    traceback.print_stack(tb.tb_frame.f_back, file=sio)
+    traceback.print_exception(ei[0], ei[1], tb, None, sio)
+    s = sio.getvalue()
+    sio.close()
+    if s[-1:] == "\n":
+        s = s[:-1]
+    return s
 
 
 default_pool = TQDMPool(1)
