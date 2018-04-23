@@ -60,7 +60,7 @@ args.desc_name = escape_desc_name(args.desc)
 args.run_name = 'run-{}'.format(time.strftime('%Y-%m-%d-%H-%M-%S'))
 
 # direcrories
-args.dump_dir = ensure_path(osp.join('dumps', args.series, args.desc_name))
+args.dump_dir = ensure_path(osp.join('dumps', args.series_name, args.desc_name))
 args.ckpt_dir = ensure_path(osp.join(args.dump_dir, 'checkpoints'))
 args.meta_dir = ensure_path(osp.join(args.dump_dir, 'meta'))
 args.meta_file = osp.join(args.meta_dir, args.run_name + '.json')
