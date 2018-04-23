@@ -42,7 +42,7 @@ parser.add_argument('--start-epoch', type=int, default=0, metavar='N', help='man
 parser.add_argument('--save-interval', type=int, default=10, metavar='N', help='model save interval (epochs) (default: 10)')
 
 # data related
-# Placholder(Jiayuan Mao @ 04/23): add data related arguments.
+# TODO(Jiayuan Mao @ 04/23): add data related arguments.
 parser.add_argument('--data-dir', required=True, type='checked_dir', metavar='DIR', help='data directory')
 parser.add_argument('--data-workers', type=int, default=4, metavar='N', help='the num of workers that input training data')
 
@@ -93,7 +93,7 @@ def main():
         f.write(dump_metainfo(args=args.__dict__, configs=configs))
 
     logger.critical('Building the model.')
-    # Placholder(Jiayuan Mao @ 04/23): build the model.
+    # TODO(Jiayuan Mao @ 04/23): build the model.
     model = desc.make_model(args)
 
     if args.use_gpu:
@@ -107,12 +107,12 @@ def main():
         cudnn.benchmark = False
 
     logger.critical('Loading the dataset.')
-    # Placholder(Jiayuan Mao @ 04/23): load the dataset.
+    # TODO(Jiayuan Mao @ 04/23): load the dataset.
     train_dataset = None
     configs.validate_dataset_compatibility(train_dataset)
 
-    logger.critical('Building up the data loader.')
-    # Placholder(Jiayuan Mao @ 04/23): make the data loader.
+    logger.critical('Building the data loader.')
+    # TODO(Jiayuan Mao @ 04/23): make the data loader.
     train_dataloader = None
 
     if hasattr(desc, 'make_optimizer'):
@@ -120,7 +120,7 @@ def main():
         optimizer = desc.make_optimizer(model, args.lr)
     else:
         from jactorch.optim import AdamW
-        # Placholder(Jiayuan Mao @ 04/23): set the default optimizer.
+        # TODO(Jiayuan Mao @ 04/23): set the default optimizer.
         trainable_parameters = filter(lambda x: x.requires_grad, model.parameters())
         optimizer = AdamW(trainable_parameters, args.lr, weight_decay=configs.train.weight_decay)
 
@@ -194,7 +194,7 @@ def train_epoch(epoch, trainer, train_dataloader, meters):
             data_time = time.time() - end; end = time.time()
 
             loss, monitors, output_dict, extra_info = trainer.step(feed_dict)
-            step_time = time.time() - end;  end = time.time()
+            step_time = time.time() - end; end = time.time()
 
             meters.update(loss=loss)
             meters.update(monitors)
@@ -203,7 +203,7 @@ def train_epoch(epoch, trainer, train_dataloader, meters):
             if args.use_tb:
                 meters.flush()
 
-            # Placholder(Jiayuan Mao @ 04/23): customize the logger. 
+            # TODO(Jiayuan Mao @ 04/23): customize the logger. 
             pbar.set_description(meters.format_simple(
                 'Epoch {}'.format(epoch),
                 {k: v for k, v in meters.val.items() if k.startswith('loss') or k.startswith('time')},
