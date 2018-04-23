@@ -151,9 +151,6 @@ def main():
 
     logger.critical('Writing meter logs to file: "{}".'.format(args.meter_file))
 
-    # Switch to train mode.
-    model.train()
-
     if args.embed:
         from IPython import embed; embed()
 
@@ -162,7 +159,10 @@ def main():
 
     for epoch in range(args.start_epoch + 1, args.epochs + 1):
         meters.reset()
+
+        model.train()
         train_epoch(epoch, trainer, train_dataloader, meters)
+
         meters.dump(args.meter_file)
 
         logger.critical(meters.format_simple('Epoch = {}'.format(epoch), compressed=False))
@@ -196,6 +196,7 @@ def train_epoch(epoch, trainer, train_dataloader, meters):
             loss, monitors, output_dict, extra_info = trainer.step(feed_dict)
             step_time = time.time() - end; end = time.time()
 
+            # TODO(Jiayuan Mao @ 04/23): normalize the loss/monitors by adding n=xxx if applicable.
             meters.update(loss=loss)
             meters.update(monitors)
             meters.update({'time/data': data_time, 'time/step': step_time})
