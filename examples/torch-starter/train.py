@@ -25,7 +25,7 @@ from jactorch.train import TrainerEnv
 
 logger = get_logger(__file__)
 
-parser = JacArgumentParser(description='Sememe training')
+parser = JacArgumentParser(description='')
 parser.add_argument('--desc', required=True, type='checked_file', metavar='FILE')
 
 # training hyperparameters
