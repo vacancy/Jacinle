@@ -65,7 +65,7 @@ args.ckpt_dir = ensure_path(osp.join(args.dump_dir, 'checkpoints'))
 args.meta_dir = ensure_path(osp.join(args.dump_dir, 'meta'))
 args.meta_file = osp.join(args.meta_dir, args.run_name + '.json')
 args.log_file = osp.join(args.meta_dir, args.run_name + '.log')
-args.meter_file = osp.join(args.meta_dir, args.run_name + '.meter.json'
+args.meter_file = osp.join(args.meta_dir, args.run_name + '.meter.json')
 
 # Initialize the tensorboard.
 if args.use_tb:
