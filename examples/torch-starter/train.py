@@ -19,9 +19,9 @@ from jacinle.logging import get_logger, set_output_file
 from jacinle.utils.imp import load_source
 from jacinle.utils.tqdm import tqdm_pbar
 
+from jactorch.cli import escape_desc_name, ensure_path, dump_metainfo
 from jactorch.cuda.copy import async_copy_to
 from jactorch.train import TrainerEnv
-from libsememe.cli import escape_desc_name, ensure_path, dump_metainfo
 
 logger = get_logger(__file__)
 
@@ -138,18 +138,18 @@ def main():
             logger.critical('Resume from epoch {}.'.format(args.start_epoch))
     elif args.load:
         if trainer.load_weights(args.load):
-            logger.critical('Loaded weights from pretrained model: {}.'.format(args.load))
+            logger.critical('Loaded weights from pretrained model: "{}".'.format(args.load))
 
     if args.use_tb:
         from jactorch.train.tb import TBLogger, TBGroupMeters
         tb_logger = TBLogger(args.tb_dir)
         meters = TBGroupMeters(tb_logger)
-        logger.critical('Writing tensorboard logs to: {}.'.format(args.tb_dir))
+        logger.critical('Writing tensorboard logs to: "{}".'.format(args.tb_dir))
     else:
         from jacinle.utils.meter import GroupMeters
         meters = GroupMeters()
 
-    logger.critical('Writing meter logs to: {}.'.format(args.meter_file))
+    logger.critical('Writing meter logs to file: "{}".'.format(args.meter_file))
 
     # Switch to train mode.
     model.train()
@@ -162,7 +162,7 @@ def main():
 
     for epoch in range(args.start_epoch + 1, args.epochs + 1):
         meters.reset()
-        train_epoch(epoch, train_loader, trainer, meters)
+        train_epoch(epoch, trainer, train_dataloader, meters)
         meters.dump(args.meter_file)
 
         logger.critical(meters.format_simple('Epoch = {}'.format(epoch), compressed=False))
@@ -172,16 +172,17 @@ def main():
             trainer.save_checkpoint(fname, dict(epoch=epoch, meta_file=args.meta_file))
 
 
-def train_epoch(epoch, train_loader, trainer, meters):
+def train_epoch(epoch, trainer, train_dataloader, meters):
     nr_iters = args.iters_per_epoch
     if nr_iters == 0:
-        nr_iters = len(train_loader)
+        nr_iters = len(train_dataloader)
 
-    end = time.time()
+    meters.update(epoch=epoch)
 
     trainer.trigger_event('epoch:before', trainer, epoch)
+    train_iter = iter(train_dataloader)
 
-    train_iter = iter(train_loader)
+    end = time.time()
     with tqdm_pbar(total=nr_iters) as pbar:
         for i in range(nr_iters):
             feed_dict = next(train_iter)
@@ -204,7 +205,7 @@ def train_epoch(epoch, train_loader, trainer, meters):
 
             # Placholder(Jiayuan Mao @ 04/23): customize the logger. 
             pbar.set_description(meters.format_simple(
-                'iter={}/{}'.format(epoch, i),
+                'Epoch {}'.format(epoch),
                 {k: v for k, v in meters.val.items() if k.startswith('loss') or k.startswith('time')},
                 compressed=True
             ))

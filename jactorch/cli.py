@@ -25,7 +25,9 @@ def escape_desc_name(filename):
 
 
 def ensure_path(path):
-    os.makedirs(path, exist_ok=True)
+    if not osp.exists(path):
+        print('Creating directory: "{}".'.format(path))
+        os.makedirs(path, exist_ok=True)
     return path
 
 
