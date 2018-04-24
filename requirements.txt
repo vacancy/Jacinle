@@ -1,8 +1,8 @@
 six
+pyyaml
+tqdm
 zmq
 h5py
 numpy
 scipy
 matplotlib
-pyyaml
-tqdm
