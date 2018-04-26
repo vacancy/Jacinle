@@ -113,17 +113,21 @@ dump_struct = _wrap_dump(dumps_struct)
 dump_kv = _wrap_dump(dumps_kv)
 dump_env = _wrap_dump(dumps_env)
 
-io_function_registry.register('pretty_load', '.json', load_json)
-io_function_registry.register('pretty_load', '.xml',  load_xml)
-io_function_registry.register('pretty_load', '.yaml', load_yaml)
 
-io_function_registry.register('pretty_dump', '.txt',    dump_txt)
-io_function_registry.register('pretty_dump', '.json',   dump_json)
-io_function_registry.register('pretty_dump', '.xml',    dump_xml)
-io_function_registry.register('pretty_dump', '.yaml',   dump_yaml)
-io_function_registry.register('pretty_dump', '.struct', dump_struct)
-io_function_registry.register('pretty_dump', '.kv',     dump_kv)
-io_function_registry.register('pretty_dump', '.env',    dump_env)
+for registry in ['load', 'pretty_load']:
+    io_function_registry.register(registry, '.json', load_json)
+    io_function_registry.register(registry, '.xml',  load_xml)
+    io_function_registry.register(registry, '.yaml', load_yaml)
+
+
+for registry in ['dump', 'pretty_dump']:
+    io_function_registry.register(registry, '.txt',    dump_txt)
+    io_function_registry.register(registry, '.json',   dump_json)
+    io_function_registry.register(registry, '.xml',    dump_xml)
+    io_function_registry.register(registry, '.yaml',   dump_yaml)
+    io_function_registry.register(registry, '.struct', dump_struct)
+    io_function_registry.register(registry, '.kv',     dump_kv)
+    io_function_registry.register(registry, '.env',    dump_env)
 
 
 def pretty_load(file, **kwargs):
