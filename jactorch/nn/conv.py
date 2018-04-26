@@ -18,7 +18,8 @@ __all__ = [
     'ConvPaddingMode', 'ConvBorderMode',
     'Conv1d', 'Conv2d', 'Conv3d',
     'ConvTranspose1d', 'ConvTranspose2d', 'ConvTranspose3d',
-    'ResizeConv1d', 'ResizeConv2d', 'ResizeConv3d'
+    'ResizeConv1d', 'ResizeConv2d', 'ResizeConv3d',
+    'SequenceConvWrapper'
 ]
 
 
@@ -173,3 +174,26 @@ class ResizeConv2d(ResizeConvBase):
 
 class ResizeConv3d(ResizeConvBase):
     __nr_dims__ = 3
+
+
+class SequenceConvWrapper(nn.Module):
+    def __init__(self, *modules, batch_first=True):
+        super().__init__()
+        self.sequential = nn.Sequential(*modules)
+        self.batch_first = batch_first
+
+    def forward(self, input):
+        assert input.dim() == 3, 'Expect 3-dim input, but got: {}.'.format(input.size())
+        if self.batch_first:
+            input = input.permute(0, 2, 1)
+        else:
+            input = input.permute(1, 2, 0)
+
+        input = self.sequential(input)
+
+        if self.batch_first:
+            input = input.permute(0, 2, 1)
+        else:
+            input = input.permute(2, 0, 1)
+        return input
+
