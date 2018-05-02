@@ -8,14 +8,17 @@
 
 import six
 import numpy as np
+
 import torch
+
+from jacinle.utils.deprecated import deprecated
 from jacinle.utils.meta import stmap
-from torch.autograd import Variable
 
 SKIP_TYPES = six.string_types
 
 
 def _mark_volatile(o):
+    from torch.autograd import Variable
     if torch.is_tensor(o):
         o = Variable(o)
     if isinstance(o, Variable):
@@ -23,13 +26,16 @@ def _mark_volatile(o):
     return o
 
 
+@deprecated
 def mark_volatile(obj):
+    """DEPRECATED(Jiayuan Mao): mark_volatile has been deprecated and will be removed by 10/23/2018; please use torch.no_grad instead."""
     return stmap(_mark_volatile, obj)
 
 
 def _as_tensor(o):
     if isinstance(o, SKIP_TYPES):
         return o
+    """DEPRECATED(Jiayuan Mao): variable cast has been deprecated and will be removed by 10/23/2018; please use o directly instead."""
     if isinstance(o, Variable):
         return o.data
     if torch.is_tensor(o):
@@ -51,13 +57,16 @@ def _as_variable(o):
     return Variable(o)
 
 
+@deprecated
 def as_variable(obj):
+    """DEPRECATED(Jiayuan Mao): as_variable has been deprecated and will be removed by 10/23/2018; please use as_tensor instead."""
     return stmap(_as_variable, obj)
 
 
 def _as_numpy(o):
     if isinstance(o, SKIP_TYPES):
         return o
+    """DEPRECATED(Jiayuan Mao): variable cast has been deprecated and will be removed by 10/23/2018; please use o directly instead."""
     if isinstance(o, Variable):
         o = o.data
     if torch.is_tensor(o):
