@@ -15,5 +15,5 @@ def normalize(a, p=2, dim=-1, eps=1e-8):
     return a / a.norm(p, dim=dim, keepdim=True).clamp(min=eps)
 
 
-def logsumexp(inputs, dim=None, keepdim=False):
-    return (inputs - F.log_softmax(inputs)).mean(dim, keepdim=keepdim)
+def logsumexp(inputs, dim=-1, keepdim=False):
+    return (inputs - F.log_softmax(inputs, dim=dim)).mean(dim, keepdim=keepdim)
