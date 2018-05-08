@@ -3,7 +3,7 @@
 # File   : stat.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 16/04/2018
+# Date   : 04/16/2018
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.

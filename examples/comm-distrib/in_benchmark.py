@@ -3,7 +3,7 @@
 # File   : in_benchmark.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 2/5/17
+# Date   : 02/05/2017
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.

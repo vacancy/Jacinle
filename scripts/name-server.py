@@ -3,7 +3,7 @@
 # File   : name-server.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 18/01/2017
+# Date   : 01/18/2017
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.

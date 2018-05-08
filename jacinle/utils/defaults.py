@@ -3,7 +3,7 @@
 # File   : defaults.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 28/1/17
+# Date   : 01/28/2017
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.

@@ -3,7 +3,7 @@
 # File   : tqdm.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 23/3/17
+# Date   : 03/23/2017
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.

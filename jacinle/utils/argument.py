@@ -3,7 +3,7 @@
 # File   : argument.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 14/3/17
+# Date   : 03/14/2017
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.

@@ -3,7 +3,7 @@
 # File   : network.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 07/6/2017
+# Date   : 07/06/2017
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.

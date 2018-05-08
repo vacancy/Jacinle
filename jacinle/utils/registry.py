@@ -3,7 +3,7 @@
 # File   : registry.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 29/12/16
+# Date   : 12/29/16
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.

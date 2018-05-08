@@ -3,7 +3,7 @@
 # File   : meta.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 18/1/18
+# Date   : 01/18/2018
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
