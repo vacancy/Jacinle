@@ -2,6 +2,7 @@
 # File   : controller.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
+# Date   : 23/04/2017
 #
 # This file is part of Atari-Simulator.
 

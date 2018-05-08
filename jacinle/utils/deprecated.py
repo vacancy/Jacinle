@@ -5,6 +5,7 @@
 # Email  : maojiayuan@gmail.com
 # Date   : 04/21/2018
 # 
+# This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
 import functools
