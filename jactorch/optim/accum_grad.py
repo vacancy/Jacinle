@@ -52,6 +52,8 @@ class AccumGrad(CustomizedOptimizer):
                     continue
                 d_p = p.grad.data
                 param_state = self._base_optimizer.state[p]
+
+                # MJY:: we ensure that grad_buffer does not require grad.
                 if 'grad_buffer' not in param_state:
                     buf = param_state['grad_buffer'] = d_p.clone()
                 else:
@@ -61,6 +63,7 @@ class AccumGrad(CustomizedOptimizer):
                 if self._current >= self._nr_acc:
                     buf.mul_(1. / self._current)
                     p.grad.data.copy_(buf)
+                    buf.zero_()
 
         if self._current >= self._nr_acc:
             self._base_optimizer.step()

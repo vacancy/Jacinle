@@ -37,7 +37,7 @@ def _as_tensor(o):
     if isinstance(o, SKIP_TYPES):
         return o
     if isinstance(o, Variable):
-        return o.data
+        return o
     if torch.is_tensor(o):
         return o
     return torch.from_numpy(np.array(o))
@@ -69,7 +69,7 @@ def _as_numpy(o):
     if isinstance(o, SKIP_TYPES):
         return o
     if isinstance(o, Variable):
-        o = o.data
+        o = o
     if torch.is_tensor(o):
         return o.cpu().numpy()
     return np.array(o)

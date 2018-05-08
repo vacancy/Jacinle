@@ -40,8 +40,12 @@ class RNNLayerBase(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        nn.init.orthogonal(self.rnn.weight_ih_l0)
-        nn.init.orthogonal(self.rnn.weight_hh_l0)
+        for name, weight in self.rnn.named_parameters():
+            if name.startswith('weight'):
+                nn.init.orthogonal_(weight)
+            else:
+                assert name.startswith('bias')
+                weight.data.zero_()
 
     def forward(self, input, input_lengths, sorted=False):
         initial_states = self.zero_state(input)

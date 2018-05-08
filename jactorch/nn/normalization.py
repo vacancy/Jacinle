@@ -30,8 +30,8 @@ class LayerNorm(nn.Module):
 
     def reset_parameters(self):
         if self.affine:
-            self.weight.fill_(1)
-            self.bias.zero_()
+            self.weight.data.fill_(1)
+            self.bias.data.zero_()
 
     def forward(self, input):
         dim = self.dim
