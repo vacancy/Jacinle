@@ -5,3 +5,6 @@
 # Date   : 24/01/2018
 # 
 # This file is part of Jacinle.
+
+from .parameter import *
+from .variable import *

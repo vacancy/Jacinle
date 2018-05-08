@@ -10,6 +10,8 @@ import collections
 
 import torch
 
+__all__ = ['async_copy_to']
+
 
 def async_copy_to(obj, dev, main_stream=None):
     # Adapted from: https://github.com/pytorch/pytorch/blob/master/torch/nn/parallel/_functions.py

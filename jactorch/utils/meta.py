@@ -16,6 +16,8 @@ from jacinle.utils.meta import stmap
 
 SKIP_TYPES = six.string_types
 
+__all__ = ['mark_volatile', 'as_tensor', 'as_variable', 'as_numpy', 'as_float', 'as_cuda', 'as_cpu']
+
 
 def _mark_volatile(o):
     from torch.autograd import Variable

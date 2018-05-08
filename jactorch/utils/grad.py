@@ -12,6 +12,8 @@ import functools
 
 import torch
 
+__all__ = ['no_grad_func']
+
 
 def no_grad_func(func):
     @functools.wraps(func)
