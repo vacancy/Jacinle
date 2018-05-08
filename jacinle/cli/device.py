@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : device.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 01/18/2018
-# 
+# Date   : 18/01/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import os
 import collections

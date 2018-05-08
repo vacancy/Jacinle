@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : word_embedding.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 24/01/2018
-# 
+# Date   : 01/24/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 # This file is adapted from from UKP Lab's project.
 # https://github.com/UKPLab/emnlp2017-relation-extraction
 # Original copyrights:

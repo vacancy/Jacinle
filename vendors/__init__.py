@@ -1,7 +1,9 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : __init__.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 04/02/2018
-# 
+# Date   : 02/04/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.

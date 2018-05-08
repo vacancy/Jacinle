@@ -1,10 +1,12 @@
-# -*- coding:utf8 -*-
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
 # File   : network.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 6/07/2017
+# Date   : 07/6/2017
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import socket
 

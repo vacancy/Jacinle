@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : context.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 12/31/16
+# Date   : 31/12/16
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 __all__ = ['EmptyContext']
 

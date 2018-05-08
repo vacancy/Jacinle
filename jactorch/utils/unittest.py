@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : unittest.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 27/01/2018
-# 
+# Date   : 01/27/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 # https://github.com/vacancy/Synchronized-BatchNorm-PyTorch
 # Distributed under MIT License.
 

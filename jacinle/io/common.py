@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : numeric.py
+# File   : common.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 1/19/17
+# Date   : 19/1/17
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import os.path as osp
 import math

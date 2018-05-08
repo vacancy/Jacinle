@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : monitor.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 12/04/2018
+# Date   : 04/12/2018
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import torch.nn.functional as F
 from jactorch.utils.meta import as_float

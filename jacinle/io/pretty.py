@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : pretty.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 15/02/2018
-# 
+# Date   : 02/15/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import io as _io
 import json

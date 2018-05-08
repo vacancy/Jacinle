@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : custom_optimizer.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 27/02/2018
+# Date   : 02/27/2018
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 __all__ = ['CustomizedOptimizer']
 

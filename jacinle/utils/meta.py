@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : meta.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 1/18/18
+# Date   : 18/1/18
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import functools
 import operator

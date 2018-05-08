@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : constant.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 22/03/2018
-# 
+# Date   : 03/22/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 EBD_ALL_ZEROS = '<PAD>'
 EBD_UNKNOWN = '<UNK>'

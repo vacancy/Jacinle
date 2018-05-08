@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : match.py
+# File   : matching.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 2/3/17
+# Date   : 3/2/17
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 
 import fnmatch

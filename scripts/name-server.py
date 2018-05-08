@@ -1,10 +1,12 @@
-# -*- coding:utf8 -*-
-# File   : name_server.py
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+# File   : name-server.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 01/18/2017
+# Date   : 18/01/2017
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import argparse
 

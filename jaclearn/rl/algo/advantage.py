@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : advantage.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 17/02/2018
-# 
+# Date   : 02/17/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 from .math import discount_cumsum, compute_gae
 

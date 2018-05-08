@@ -1,10 +1,12 @@
-# -*- coding:utf8 -*-
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
 # File   : server.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 3/19/17
-# 
+# Date   : 19/3/17
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import time
 from jacinle.comm.cs import ServerPipe

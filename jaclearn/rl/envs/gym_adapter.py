@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : gym_adapter.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 17/02/2018
-# 
+# Date   : 02/17/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 # https://github.com/openai/gym/blob/26556f99fe09332771ea619ed0a56bcfc75a3b99/gym/spaces/multi_discrete.py
 

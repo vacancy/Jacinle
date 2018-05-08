@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : shmarray.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 6/2/17
+# Date   : 2/6/17
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 
 """

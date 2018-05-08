@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : pool.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 28/01/2018
-# 
+# Date   : 01/28/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import sys
 import multiprocessing as mp

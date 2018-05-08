@@ -1,10 +1,12 @@
-# -*- coding: utf8 -*-
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
 # File   : user_scattered.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 27/01/2018
+# Date   : 01/27/2018
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import torch.cuda as cuda
 from torch.nn.parallel.data_parallel import DataParallel

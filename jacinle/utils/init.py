@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : init.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 1/25/17
+# Date   : 25/1/17
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import os
 import sys
