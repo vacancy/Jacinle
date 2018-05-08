@@ -15,7 +15,7 @@ __all__ = [
     'reversed',
     'one_hot', 'one_hot_nd', 'one_hot_dim',
     'inverse_permutation',
-    'index_one_hot', 'set_index_one_hot', 'set_index_one_hot_',
+    'index_one_hot', 'set_index_one_hot_',
     'index_one_hot_ellipsis']
 
 
@@ -32,8 +32,8 @@ def reversed(x, dim=-1):
 @no_grad_func
 def one_hot(index, nr_classes):
     assert index.dim() == 1
-    mask = torch.zeros(index, index.size(0), nr_classes, dtype=torch.float32, device=index.device)
-    ones = torch.ones(index, index.size(0), 1, dtype=torch.float32, device=index.device)
+    mask = torch.zeros(index.size(0), nr_classes, dtype=torch.float32, device=index.device)
+    ones = torch.ones(index.size(0), 1, dtype=torch.float32, device=index.device)
     ret = mask.scatter_(1, index.unsqueeze(1), ones)
     return ret
 

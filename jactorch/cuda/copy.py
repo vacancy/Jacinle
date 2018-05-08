@@ -16,7 +16,7 @@ __all__ = ['async_copy_to']
 def async_copy_to(obj, dev, main_stream=None):
     # Adapted from: https://github.com/pytorch/pytorch/blob/master/torch/nn/parallel/_functions.py
     if torch.is_tensor(obj):
-        v = obj.cuda(dev, async=True)
+        v = obj.cuda(dev, non_blocking=True)
         if main_stream is not None:
             v.record_stream(main_stream)
         return v
