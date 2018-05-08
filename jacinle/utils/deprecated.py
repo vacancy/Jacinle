@@ -18,7 +18,7 @@ __all__ = ['deprecated']
 
 
 def deprecated(func):
-    @functools.wraps
+    @functools.wraps(func)
     def new_func(*args, **kwargs):
         if func not in deprecated.logged:
             deprecated.logged.add(func)

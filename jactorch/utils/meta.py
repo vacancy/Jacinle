@@ -33,6 +33,7 @@ def mark_volatile(obj):
 
 
 def _as_tensor(o):
+    from torch.autograd import Variable
     if isinstance(o, SKIP_TYPES):
         return o
     """DEPRECATED(Jiayuan Mao): variable cast has been deprecated and will be removed by 10/23/2018; please use o directly instead."""
@@ -48,6 +49,7 @@ def as_tensor(obj):
 
 
 def _as_variable(o):
+    from torch.autograd import Variable
     if isinstance(o, SKIP_TYPES):
         return o
     if isinstance(o, Variable):
@@ -64,6 +66,7 @@ def as_variable(obj):
 
 
 def _as_numpy(o):
+    from torch.autograd import Variable
     if isinstance(o, SKIP_TYPES):
         return o
     """DEPRECATED(Jiayuan Mao): variable cast has been deprecated and will be removed by 10/23/2018; please use o directly instead."""
@@ -91,6 +94,7 @@ def as_float(obj):
 
 
 def _as_cpu(o):
+    from torch.autograd import Variable
     if isinstance(o, Variable) or torch.is_tensor(o):
         return o.cpu()
     return o
@@ -101,6 +105,7 @@ def as_cpu(obj):
 
 
 def _as_cuda(o):
+    from torch.autograd import Variable
     if isinstance(o, Variable) or torch.is_tensor(o):
         return o.cuda()
     return o

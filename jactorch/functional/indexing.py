@@ -31,9 +31,9 @@ def reversed(x, dim=-1):
 
 def one_hot(index, nr_classes):
     assert index.dim() == 1
-    mask = new_var_with(index, index.size(0), nr_classes).fill_(0)
+    mask = new_var_with(index, index.size(0), nr_classes).fill_(0).detach()
     ones = new_var_with(index, index.size(0), 1).fill_(1)
-    ret = mask.scatter_(1, index.unsqueeze(-1), ones)
+    ret = mask.scatter_(1, index.unsqueeze(1), ones)
     return ret
 
 
