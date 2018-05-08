@@ -4,7 +4,8 @@
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 05/09/2018
-# 
+#
+# This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
 import os.path as osp
@@ -57,6 +58,15 @@ for i, line in enumerate(lines):
         assert len(date) == 3
         if filetype == 'charm':
             date = (date[1], date[0], date[2])
+        if int(date[0]) > 12 or (int(date[2]) == 2018 and int(date[0]) > 5):
+            date = (date[1], date[0], date[2])
+        date = list(date)
+        date[0] = '{:02d}'.format(int(date[0]))
+        date[1] = '{:02d}'.format(int(date[1]))
+        if date[2] == '17':
+            date[2] = '2017'
+        if date[2] == '18':
+            date[2] = '2018'
         fields['date'] = '/'.join(date)
 
     if i == 8 and filetype == 'vim':
