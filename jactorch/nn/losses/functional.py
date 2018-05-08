@@ -9,7 +9,6 @@
 import torch
 import torch.nn.functional as F
 
-from jactorch.graph.variable import var_with
 from jactorch.functional import index_one_hot, masked_average, normalize
 
 __all__ = [
@@ -21,7 +20,6 @@ __all__ = [
 
 def weighted_loss(loss, target, weight, ignore_index):
     if weight is not None:
-        weight = var_with(weight, target)
         weight = weight[target]
     else:
         weight = 1

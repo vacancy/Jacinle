@@ -38,7 +38,6 @@ def use_user_scattered(inputs, kwargs, device_ids, use_stream=True):
     return inputs, kwargs
 
 
-
 def _async_copy(inputs, device_ids):
     nr_devs = len(device_ids)
     assert type(inputs) in (tuple, list)

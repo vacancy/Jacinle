@@ -36,7 +36,6 @@ def _as_tensor(o):
     from torch.autograd import Variable
     if isinstance(o, SKIP_TYPES):
         return o
-    """DEPRECATED(Jiayuan Mao): variable cast has been deprecated and will be removed by 10/23/2018; please use o directly instead."""
     if isinstance(o, Variable):
         return o.data
     if torch.is_tensor(o):
@@ -69,7 +68,6 @@ def _as_numpy(o):
     from torch.autograd import Variable
     if isinstance(o, SKIP_TYPES):
         return o
-    """DEPRECATED(Jiayuan Mao): variable cast has been deprecated and will be removed by 10/23/2018; please use o directly instead."""
     if isinstance(o, Variable):
         o = o.data
     if torch.is_tensor(o):
@@ -84,6 +82,8 @@ def as_numpy(obj):
 def _as_float(o):
     if isinstance(o, SKIP_TYPES):
         return o
+    if torch.is_tensor(o):
+        return o.item()
     arr = as_numpy(o)
     assert arr.size == 1
     return float(arr)

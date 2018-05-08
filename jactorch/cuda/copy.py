@@ -9,14 +9,14 @@
 import collections
 
 import torch
-from torch.autograd import Variable
 
 
 def async_copy_to(obj, dev, main_stream=None):
-    if isinstance(obj, Variable) or torch.is_tensor(obj):
+    # Adapted from: https://github.com/pytorch/pytorch/blob/master/torch/nn/parallel/_functions.py
+    if torch.is_tensor(obj):
         v = obj.cuda(dev, async=True)
         if main_stream is not None:
-            v.data.record_stream(main_stream)
+            v.record_stream(main_stream)
         return v
     elif isinstance(obj, collections.Mapping):
         return {k: async_copy_to(o, dev, main_stream) for k, o in obj.items()}

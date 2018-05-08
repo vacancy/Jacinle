@@ -58,12 +58,13 @@ def gumbel_softmax(logits, dim=-1, tau=1, hard=False, eps=1e-10):
     """
     y_soft = _gumbel_softmax_sample(logits, tau=tau, eps=eps)
     if hard:
-        _, k = y_soft.data.max(dim=dim)
-        # this bit is based on
-        # https://discuss.pytorch.org/t/stop-gradients-for-st-gumbel-softmax/530/5
-        y_hard = torch.zeros_like(logits)
-        y_hard.requires_grad = False
-        set_index_one_hot_(y_hard, dim, k, 1.0)
+        with torch.no_grad():
+            _, k = y_soft.max(dim=dim)
+            # this bit is based on
+            # https://discuss.pytorch.org/t/stop-gradients-for-st-gumbel-softmax/530/5
+            y_hard = torch.zeros_like(logits)
+            y_hard.requires_grad = False
+            set_index_one_hot_(y_hard, dim, k, 1.0)
         # this cool bit of code achieves two things:
         # - makes the output value exactly one-hot (since we add then
         #   subtract y_soft value)

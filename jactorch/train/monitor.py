@@ -7,7 +7,8 @@
 # This file is part of Jacinle.
 
 import torch.nn.functional as F
-from jactorch.utils.meta import as_tensor, as_float
+from jactorch.utils.meta import as_float
+from jactorch.utils.grad import no_grad_func
 
 __all__ = [
     'binary_classification_accuracy',
@@ -18,12 +19,13 @@ __all__ = [
 ]
 
 
+@no_grad_func
 def binary_classification_accuracy(pred, label, name='', saturation=True):
     if name != '':
         name = '/' + name
     prefix = 'accuracy' + name
-    pred = as_tensor(pred).view(-1)  # Binary accuracy
-    label = as_tensor(label).view(-1)
+    pred = pred.view(-1)  # Binary accuracy
+    label = label.view(-1)
     acc = label.float().eq((pred > 0.5).float())
     if saturation:
         sat = 1 - (pred - (pred > 0.5).float()).abs()
@@ -35,12 +37,13 @@ def binary_classification_accuracy(pred, label, name='', saturation=True):
     return {prefix: as_float(acc.float().mean())}
 
 
+@no_grad_func
 def regression_accuracy(pred, label, name=''):
     if name != '':
         name = '/' + name
     prefix = 'accuracy' + name
-    pred = as_tensor(pred).view(-1)  # Binary accuracy
-    label = as_tensor(label).view(-1)
+    pred = pred.view(-1)  # Binary accuracy
+    label = label.view(-1)
     diff = pred - label
     return {
         prefix + '/l1': as_float(diff.abs().mean()),
@@ -49,9 +52,10 @@ def regression_accuracy(pred, label, name=''):
 
 
 def _rms(p):
-    return as_float((as_tensor(p) ** 2).mean() ** 0.5)
+    return as_float((p ** 2).mean() ** 0.5)
 
 
+@no_grad_func
 def monitor_param_saturation(model):
     monitors = {}
     for name, p in model.named_parameters():
@@ -61,6 +65,7 @@ def monitor_param_saturation(model):
     return monitors
 
 
+@no_grad_func
 def monitor_param_rms(model):
     monitors = {}
     for name, p in model.named_parameters():
@@ -68,6 +73,7 @@ def monitor_param_rms(model):
     return monitors
 
 
+@no_grad_func
 def monitor_param_gradrms(model):
     monitors = {}
     for name, p in model.named_parameters():
@@ -76,6 +82,7 @@ def monitor_param_gradrms(model):
     return monitors
 
 
+@no_grad_func
 def monitor_param_gradrms_ratio(model):
     monitors = {}
     for name, p in model.named_parameters():

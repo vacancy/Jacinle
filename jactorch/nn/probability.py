@@ -72,7 +72,7 @@ class ProbabilityNLinear(nn.Module):
 
     def reset_parameters(self):
         stdv = 1. / math.sqrt(self.weight.size(1))
-        self.weight.data.uniform_(-stdv, stdv)
+        self.weight.uniform_(-stdv, stdv)
 
     def forward(self, *inputs):
         f = self._regulize_parameter(self.weight)
