@@ -45,7 +45,7 @@ def _type_checked_dir(string):
 
 def _type_ensured_dir(string):
     if not osp.isdir(string):
-        # TODO:: Change to Y/N question.
+        # TODO(Jiayuan Mao @ 05/08): change to a Y/N question.
         import jacinle.io as io
         io.mkdir(string)
     return string

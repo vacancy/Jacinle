@@ -151,7 +151,7 @@ class NameServer(object):
                         utils.graceful_close(req_sock)
                         self._req_socks.remove(req_sock)
 
-                        # TODO:: use controller's heartbeat
+                        # TODO(Jiayuan Mao @ 05/08): use controller's heartbeat.
                         all_peers_to_inform = set()
                         for i in info['inputs']:
                             all_peers_to_inform = all_peers_to_inform.union(self.storage.get_outputs(i))

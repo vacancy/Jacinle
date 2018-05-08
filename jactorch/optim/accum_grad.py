@@ -26,7 +26,7 @@ class AccumGrad(CustomizedOptimizer):
         return self._base_optimizer.param_groups
 
     def state_dict(self):
-        # TODO:: Use a separate method to store all grad_buffer.
+        # TODO(Jiayuan Mao @ 05/08): use a separate method to store all grad_buffer.
         return {
             'base_optimizer': self._base_optimizer.state_dict(),
             'current': self._current

@@ -154,7 +154,7 @@ class ResidualGRU(nn.Module):
         for i in range(self.num_layers):
             f_input = f
             f_state = initial_states[2*i:2*i+2] if self.bidirectional else initial_states[i:i+1]
-            # TODO:: Accelerate this by pre-sort the sequences.
+            # TODO(Jiayuan Mao @ 05/08): accelerate this by pre-sort the sequences.
             f = rnn_with_length(self.rnns[i], f, input_lengths, initial_states=f_state,
                                 batch_first=False, sorted=False)
             if self.layer_norms is not None:

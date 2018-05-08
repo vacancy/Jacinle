@@ -25,6 +25,6 @@ def yn2bool(s):
         raise ValueError('yn2bool is undefined for: "{}".'.format(s))
 
 
-# TODO::
+# TODO(Jiayuan Mao @ 05/08): implement this.
 def maybe_mkdir(dirname):
     raise NotImplementedError()
