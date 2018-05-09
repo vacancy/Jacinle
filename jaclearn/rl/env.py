@@ -12,8 +12,7 @@ import collections
 
 from jacinle.utils.cache import cached_property
 
-__all__ = ['RLEnvBase', 'SimpleRLEnvBase', 'ProxyRLEnvBase'
-]
+__all__ = ['RLEnvBase', 'SimpleRLEnvBase', 'ProxyRLEnvBase']
 
 
 class RLEnvBase(object):
