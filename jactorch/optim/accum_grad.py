@@ -61,6 +61,7 @@ class AccumGrad(CustomizedOptimizer):
                 if self._current >= self._nr_acc:
                     buf.mul_(1. / self._current)
                     p.grad.data.copy_(buf)
+                    buf.zero_()
 
         if self._current >= self._nr_acc:
             self._base_optimizer.step()
