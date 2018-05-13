@@ -15,6 +15,7 @@ from jactorch.functional import index_one_hot, masked_average, normalize
 
 __all__ = [
     'weighted_loss',
+    'pn_balanced_binary_cross_entropy_with_probs',
     'cross_entropy_with_logits', 'cross_entropy_with_probs',
     'l2_loss', 'smooth_l1', 'cosine_loss'
 ]
@@ -32,6 +33,29 @@ def weighted_loss(loss, target, weight, ignore_index):
         return loss.mean()
     else:
         return masked_average(loss, weight)
+
+
+def binary_cross_entropy_with_probs(probs, target, eps=1e-6):
+    probs_1m = 1 - probs
+    target_1m = 1 - target
+    loss = -target * probs.clamp(min=eps).log() - target_1m * probs_1m.clamp(min=eps).log()
+
+    return loss
+
+
+def pn_balanced_binary_cross_entropy_with_probs(probs, target, eps=1e-6):
+    pos_mask = (target > 0.5).float()
+    neg_mask = 1 - pos_mask
+
+    pos_count = pos_mask.sum()
+    neg_count = neg_mask.sum()
+    tot_count = pos_count + neg_count
+
+    pos_mask1 = pos_mask * neg_count / tot_count
+    neg_mask1 = neg_mask * pos_count / tot_count
+
+    loss = binary_cross_entropy_with_probs(probs, target, eps)
+    return (loss * pos_mask1 + loss * neg_mask1).sum() / (pos_mask1.sum() + neg_mask1.sum()).clamp(min=eps)
 
 
 def cross_entropy_with_logits(logits, target, dim):
