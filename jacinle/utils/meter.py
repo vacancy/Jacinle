@@ -58,6 +58,10 @@ class GroupMeters(object):
             self._meters[k].update(v, n=n)
 
     @property
+    def sum(self):
+        return {k: m.sum for k, m in self._meters.items()}
+
+    @property
     def avg(self):
         return {k: m.avg for k, m in self._meters.items()}
 
@@ -85,7 +89,7 @@ class GroupMeters(object):
 
     def _canonize_values(self, values):
         if isinstance(values, six.string_types):
-            assert values in ('avg', 'val')
+            assert values in ('avg', 'val', 'sum')
             meters_kv = getattr(self, values)
         else:
             meters_kv = values
