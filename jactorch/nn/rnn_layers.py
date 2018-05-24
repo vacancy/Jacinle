@@ -11,7 +11,6 @@
 import torch
 import torch.nn as nn
 
-from jactorch.graph.variable import var_with
 from jactorch.functional.indexing import index_one_hot_ellipsis
 from jactorch.nn.rnn_utils import rnn_with_length
 from jactorch.utils.meta import as_tensor
@@ -61,7 +60,7 @@ class RNNLayerBase(nn.Module):
         state_shape = (nr_layers, batch_size, self.rnn.hidden_size)
 
         storage = as_tensor(input)
-        gen = lambda: var_with(storage.new(*state_shape), input)
+        gen = lambda: torch.zeros(*state_shape, device=input.device)
         if self.state_is_tuple:
             return (gen(), gen())
         return gen()

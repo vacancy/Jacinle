@@ -11,7 +11,6 @@
 import torch
 import torch.nn as nn
 
-from jactorch.graph.variable import var_with
 from jactorch.nn.rnn_utils import rnn_with_length
 from .normalization import LayerNorm
 
@@ -147,10 +146,7 @@ class ResidualGRU(nn.Module):
         if initial_states is None:
             batch_size = input.size(1)
             state_shape = (self.real_num_layers, batch_size, self.hidden_dim)
-            initial_states = (
-                var_with(torch.zeros(state_shape), input),
-                var_with(torch.zeros(state_shape), input)
-            )
+            initial_states = torch.zeros(state_shape, device=input.device)
 
         f = input
         for i in range(self.num_layers):
