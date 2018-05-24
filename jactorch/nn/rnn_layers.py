@@ -56,7 +56,7 @@ class RNNLayerBase(nn.Module):
         state_shape = (nr_layers, batch_size, self.rnn.hidden_size)
 
         storage = as_tensor(input)
-        gen = lambda: var_with(storage.new(*state_shape), input)
+        gen = lambda: var_with(storage.new(*state_shape).zero_(), input)
         if self.state_is_tuple:
             return (gen(), gen())
         return gen()
