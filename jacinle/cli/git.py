@@ -18,4 +18,4 @@ def get_git_revision_hash(short=False):
 
 
 def get_git_uncommitted_files():
-    return subprocess.check_output(['git', 'status', '--porcelain']).strip().split('\n')
+    return subprocess.check_output(['git', 'status', '--porcelain']).decode('utf-8').strip().split('\n')
