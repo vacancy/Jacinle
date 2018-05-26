@@ -8,15 +8,24 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import torch
 import torch.nn.functional as F
 
 from .shape import concat_shape
 
-__all__ = ['normalize', 'logaddexp', 'logsumexp', 'logmatmulexp']
+__all__ = ['normalize', 'atanh', 'logit', 'logaddexp', 'logsumexp', 'logmatmulexp']
 
 
 def normalize(a, p=2, dim=-1, eps=1e-8):
     return a / a.norm(p, dim=dim, keepdim=True).clamp(min=eps)
+
+
+def atanh(x, eps):
+    return 0.5 * torch.log(( (1 + x) / (1 - x).clamp(min=eps) ).clamp(min=eps))
+
+
+def logit(x, eps):
+    return -torch.log((1 / x.clamp(min=eps) - 1).clamp(min=eps))
 
 
 def logaddexp(x, y):
