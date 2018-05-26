@@ -12,7 +12,7 @@
 
 import torch
 
-from jactorch.functional.linalg import normalize
+from .linalg import normalize
 
 __all__ = ['inverse_distance', 'cosine_distance', 'dot']
 
@@ -32,6 +32,7 @@ def inverse_distance(f_lookup, f, p=2, eps=1e-8):
     f_lookup = f_lookup.view(n, 1, k).expand(n, m, k)
     f = f.view(1, m, k).expand(n, m, k)
 
+    # TODO(Jiayuan Mao @ 05/26): this function can be optimized.
     dist = (f_lookup - f).norm(p, dim=2)
     return 1. / dist.clamp(min=eps)
 
