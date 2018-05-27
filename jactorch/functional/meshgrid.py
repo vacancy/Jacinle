@@ -31,6 +31,9 @@ def meshgrid_exclude_self(input, dim=1):
 
     The operation is performed over dim and dim +1 axes.
     """
+    if dim < 0:
+        dim += input.dim()
+
     n = input.size(dim)
     assert n == input.size(dim + 1)
 

@@ -44,6 +44,14 @@ jacinle.utils.defaults module
     :undoc-members:
     :show-inheritance:
 
+jacinle.utils.deprecated module
+-------------------------------
+
+.. automodule:: jacinle.utils.deprecated
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jacinle.utils.enum module
 -------------------------
 

@@ -20,11 +20,11 @@ def normalize(a, p=2, dim=-1, eps=1e-8):
     return a / a.norm(p, dim=dim, keepdim=True).clamp(min=eps)
 
 
-def atanh(x, eps):
+def atanh(x, eps=1e-8):
     return 0.5 * torch.log(( (1 + x) / (1 - x).clamp(min=eps) ).clamp(min=eps))
 
 
-def logit(x, eps):
+def logit(x, eps=1e-8):
     return -torch.log((1 / x.clamp(min=eps) - 1).clamp(min=eps))
 
 
@@ -43,6 +43,5 @@ def logmatmulexp(mat1, mat2):
     mat2 = mat2.contiguous().view(1, mat2_shape[0], -1).transpose(1, 2)
     logprod = mat1 + mat2
     logsum = logsumexp(logprod, dim=-1)
-    logsum.view(concat_shape(mat1_shape[:-1], mat2_shape[1:]))
-    return logsum
+    return logsum.view(concat_shape(mat1_shape[:-1], mat2_shape[1:]))
 

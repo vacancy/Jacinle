@@ -8,6 +8,7 @@ Subpackages
 
     jactorch.nn.gumbel_softmax
     jactorch.nn.losses
+    jactorch.nn.mask
     jactorch.nn.sync_batchnorm
 
 Submodules
@@ -89,6 +90,14 @@ jactorch.nn.residual module
 ---------------------------
 
 .. automodule:: jactorch.nn.residual
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+jactorch.nn.rnn_layers module
+-----------------------------
+
+.. automodule:: jactorch.nn.rnn_layers
     :members:
     :undoc-members:
     :show-inheritance:
