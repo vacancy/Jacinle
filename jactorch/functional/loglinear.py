@@ -4,7 +4,7 @@
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 05/31/2018
-# 
+#
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
@@ -59,7 +59,7 @@ def batch_logmatmulexp(mat1, mat2):
     mat2 = mat2 - mat2_max
 
     out = torch.bmm(mat1.exp(), mat2.exp().permute(0, 2, 1)).log()
-    out = out + mat1_max + mat2_max.t()
+    out = out + mat1_max + mat2_max.permute(0, 2, 1)
 
     return out.view(concat_shape(mat1_shape[:-1], mat2_shape[2:]))
 
