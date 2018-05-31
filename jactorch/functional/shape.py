@@ -54,6 +54,13 @@ def add_dim_as_except(tensor, target, *excepts):
     return tensor
 
 
+def move_dim(tensor, dim, dest):
+    dims = list(range(tensor.dim()))
+    dims.pop(dim)
+    dims.insert(dest, dim)
+    return tensor.permute(dims)
+
+
 def repeat(tensor, dim, count):
     if dim < 0:
         dim += tensor.dim()
