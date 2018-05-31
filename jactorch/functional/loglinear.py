@@ -19,47 +19,61 @@ def logaddexp(x, y):
     return torch.max(x, y) + torch.log(1 + torch.exp(-torch.abs(y - x)))
 
 
+def safe_log(x):
+    # mask = (x < 1e-8).float()
+    # return x.clamp(min=1e-8).log() * (1 - mask) + -1e5 * mask
+    return x.log()
+
+
 def logsumexp(inputs, dim=-1, keepdim=False):
     inputs_max = inputs.max(dim=dim, keepdim=True)[0]
     inputs = inputs - inputs_max
     if not keepdim:
         inputs_max = inputs_max.squeeze(dim)
-    return inputs.exp().sum(dim=dim, keepdim=keepdim).log() + inputs_max
+    return safe_log(inputs.exp().sum(dim=dim, keepdim=keepdim)) + inputs_max
     # return (inputs - F.log_softmax(inputs, dim=dim)).mean(dim, keepdim=keepdim)
 
 
-def logmatmulexp(mat1, mat2):
+def logmatmulexp(mat1, mat2, use_mm=False):
     mat1_shape = mat1.size()
     mat2_shape = mat2.size()
     mat1 = mat1.contiguous().view(-1, mat1_shape[-1])
     mat2 = move_dim(mat2, 0, -1)
     mat2 = mat2.contiguous().view(-1, mat2_shape[0])
 
-    mat1_max = mat1.max(dim=-1, keepdim=True)[0]
-    mat2_max = mat2.max(dim=-1, keepdim=True)[0]
-    mat1 = mat1 - mat1_max
-    mat2 = mat2 - mat2_max
+    if use_mm:
+        mat1_max = mat1.max(dim=-1, keepdim=True)[0]
+        mat2_max = mat2.max(dim=-1, keepdim=True)[0]
+        mat1 = mat1 - mat1_max
+        mat2 = mat2 - mat2_max
 
-    out = torch.matmul(mat1.exp(), mat2.exp().t()).log()
-    out = out + mat1_max + mat2_max.t()
+        out = safe_log(torch.matmul(mat1.exp(), mat2.exp().t()))
+        out = out + mat1_max + mat2_max.t()
+    else:
+        out_sum = mat1.unsqueeze(1) + mat2.unsqueeze(0)
+        out = logsumexp(out_sum, dim=-1)
 
     return out.view(concat_shape(mat1_shape[:-1], mat2_shape[1:]))
 
 
-def batch_logmatmulexp(mat1, mat2):
+def batch_logmatmulexp(mat1, mat2, use_mm=False):
     mat1_shape = mat1.size()
     mat2_shape = mat2.size()
     mat1 = mat1.contiguous().view(mat1_shape[0], -1, mat1_shape[-1])
     mat2 = move_dim(mat2, 1, -1)
     mat2 = mat2.contiguous().view(mat2_shape[0], -1, mat2_shape[1])
 
-    mat1_max = mat1.max(dim=-1, keepdim=True)[0]
-    mat2_max = mat2.max(dim=-1, keepdim=True)[0]
-    mat1 = mat1 - mat1_max
-    mat2 = mat2 - mat2_max
+    if use_mm:
+        mat1_max = mat1.max(dim=-1, keepdim=True)[0]
+        mat2_max = mat2.max(dim=-1, keepdim=True)[0]
+        mat1 = mat1 - mat1_max
+        mat2 = mat2 - mat2_max
 
-    out = torch.bmm(mat1.exp(), mat2.exp().permute(0, 2, 1)).log()
-    out = out + mat1_max + mat2_max.permute(0, 2, 1)
+        out = safe_log(torch.bmm(mat1.exp(), mat2.exp().permute(0, 2, 1)))
+        out = out + mat1_max + mat2_max.permute(0, 2, 1)
+    else:
+        out_sum = mat1.unsqueeze(2) + mat2.unsqueeze(1)
+        out = logsumexp(out_sum, dim=-1)
 
     return out.view(concat_shape(mat1_shape[:-1], mat2_shape[2:]))
 
