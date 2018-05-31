@@ -33,7 +33,12 @@ def logaddexp(x, y):
 
 
 def logsumexp(inputs, dim=-1, keepdim=False):
-    return (inputs - F.log_softmax(inputs, dim=dim)).mean(dim, keepdim=keepdim)
+    inputs_max = inputs.max(dim=dim, keepdim=True)[0]
+    inputs = inputs - inputs_max
+    if not keepdim:
+        inputs_max = inputs_max.squeeze(dim)
+    return inputs.exp().sum(dim=dim, keepdim=keepdim).log() + inputs_max
+    # return (inputs - F.log_softmax(inputs, dim=dim)).mean(dim, keepdim=keepdim)
 
 
 def logmatmulexp(mat1, mat2):
