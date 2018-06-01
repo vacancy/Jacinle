@@ -11,8 +11,12 @@
 import os.path as osp
 import argparse
 
+from jacinle.utils.enum import JacEnum
+
 from .device import DeviceNameFormat, parse_and_set_devices
 from .keyboard import str2bool
+
+__all__ = ['JacArgumentParser']
 
 
 class JacArgumentParser(argparse.ArgumentParser):
@@ -24,6 +28,7 @@ class JacArgumentParser(argparse.ArgumentParser):
         self.register('type', 'checked_dir', _type_checked_dir)
         self.register('type', 'ensured_dir', _type_ensured_dir)
         self.register('action', 'set_device', SetDeviceAction)
+        self.register('action', 'as_enum', AsEnumAction)
 
 
 def _type_bool(string):
@@ -66,3 +71,24 @@ class SetDeviceAction(argparse.Action):
 
     def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, parse_and_set_devices(values, self.format, self.set_device))
+
+
+class AsEnumAction(argparse.Action):
+    def __init__(self, option_strings, dest, type, nargs=None, const=None, default=None, choices=None, 
+                 required=False, help=None, metavar=None):
+
+        assert issubclass(type, JacEnum)
+
+        self.enum_type = type
+        if choices is None:
+            choices = type.choice_values()
+
+        super().__init__(option_strings=option_strings, dest=dest, nargs=nargs, const=const, default=default, 
+                         type=None, choices=choices, required=required, help=help, metavar=metavar)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        if isinstance(values, (tuple, list)):
+            setattr(namespace, self.dest, tuple(map(self.enum_type.from_string, values)))
+        else:
+            setattr(namespace, self.dest, self.enum_type.from_string(values))
+
