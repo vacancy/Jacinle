@@ -14,6 +14,8 @@ import functools
 import collections
 import xml.etree.ElementTree as et
 import yaml
+import six
+import inspect
 
 from jacinle.utils.meta import dict_deep_kv
 from jacinle.utils.printing import stformat, kvformat
@@ -57,8 +59,8 @@ def dumps_txt(value):
 
 def dumps_json(value, compressed=False):
     if compressed:
-        return json.dumps(value)
-    return json.dumps(value, sort_keys=True, indent=4, separators=(',', ': '))
+        return json.dumps(value, cls=JsonObjectEncoder)
+    return json.dumps(value, cls=JsonObjectEncoder, sort_keys=True, indent=4, separators=(',', ': '))
 
 
 def dumps_xml(value, root_node='data'):
@@ -195,3 +197,35 @@ def _xml2dict(element):
         else:
             output_dict[c.tag] = _xml2dict(c)
     return output_dict
+
+
+class JsonObjectEncoder(json.JSONEncoder):
+    """Adapted from https://stackoverflow.com/a/35483750"""
+
+    def default(self, obj):
+        if hasattr(obj, '__jsonify__'):
+            json_object = obj.__jsonify__()
+            if isinstance(json_object, six.string_types):
+                return json_object
+            return self.encode(json_object)
+        else:
+            raise TypeError("Object of type '%s' is not JSON serializable." % obj.__class__.__name__)
+
+        if hasattr(obj, '__dict__'):
+            d = dict(
+                (key, value)
+                for key, value in inspect.getmembers(obj)
+                if not key.startswith("__")
+                and not inspect.isabstract(value)
+                and not inspect.isbuiltin(value)
+                and not inspect.isfunction(value)
+                and not inspect.isgenerator(value)
+                and not inspect.isgeneratorfunction(value)
+                and not inspect.ismethod(value)
+                and not inspect.ismethoddescriptor(value)
+                and not inspect.isroutine(value)
+            )
+            return self.default(d)
+
+        return obj
+

@@ -47,6 +47,9 @@ class JacEnum(enum.Enum):
         assert cls.is_valid(value), 'Invalid {}: "{}". Supported choices: {}.'.format(
             cls.type_name(), value, ','.join(cls.choice_values()))
 
+    def __jsonify__(self):
+        return self.value
+
 
 def _canonize_enum_value(value):
     if type(value) is str:

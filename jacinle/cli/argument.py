@@ -82,6 +82,8 @@ class AsEnumAction(argparse.Action):
         self.enum_type = type
         if choices is None:
             choices = type.choice_values()
+        if default is not None:
+            default = self.enum_type.from_string(default)
 
         super().__init__(option_strings=option_strings, dest=dest, nargs=nargs, const=const, default=default, 
                          type=None, choices=choices, required=required, help=help, metavar=metavar)
