@@ -103,12 +103,23 @@ class VarLengthCollate(object):
         if torchdl._use_shared_memory:
             # If we're in a background process, concatenate directly into a
             # shared memory tensor to avoid an extra copy
-            if process and self._mode is VarLengthCollateMode.PAD:
-                numel = max([x.numel() for x in values]) * len(values)
+            numel = 0
+            if process:
+                if self._mode is VarLengthCollateMode.PAD:
+                    numel = max([x.numel() for x in values]) * len(values)
+                elif self._mode is VarLengthCollateMode.CONCAT:
+                    numel = sum([x.numel() for x in values])
+                elif self._mode is VarLengthCollateMode.PAD2D:
+                    max_h = max([x.size(0) for x in values])
+                    max_w = max([x.size(1) for x in values])
+                    hw = max_h * max_w
+                    numel = sum([x.numel() // x.size(0) // x.size(1) * hw for x in values])
             else:
                 numel = sum([x.numel() for x in values])
-            storage = values[0].storage()._new_shared(numel)
-            out = values[0].new(storage)
+
+            if numel > 0:
+                storage = values[0].storage()._new_shared(numel)
+                out = values[0].new(storage)
 
         if not process:
             return torch.stack(values, 0, out=out)
@@ -179,20 +190,6 @@ class VarLengthCollateV2(object):
         raise TypeError((error_msg.format(type(batch[0]))))
 
     def _stack(self, values, key=None):
-        out = None
-        if torchdl._use_shared_memory:
-            # If we're in a background process, concatenate directly into a
-            # shared memory tensor to avoid an extra copy
-            if key is not None:
-                if self._mode is VarLengthCollateMode.PAD:
-                    numel = max([x.numel() for x in values]) * len(values)
-                elif self._mode is VarLengthCollateMode.CONCAT:
-                    numel = sum([x.numel() for x in values])
-            else:
-                numel = sum([x.numel() for x in values])
-            storage = values[0].storage()._new_shared(numel)
-            out = values[0].new(storage)
-
         if key is None:
             return torch.stack(values, 0, out=out)
 
@@ -203,6 +200,28 @@ class VarLengthCollateV2(object):
         else:
             mode = VarLengthCollateMode.from_string(mode_spec)
             parameters = tuple()
+
+        out = None
+        if torchdl._use_shared_memory:
+            # If we're in a background process, concatenate directly into a
+            # shared memory tensor to avoid an extra copy
+            numel = 0
+            if key is not None:
+                if mode is VarLengthCollateMode.PAD:
+                    numel = max([x.numel() for x in values]) * len(values)
+                elif mode is VarLengthCollateMode.CONCAT:
+                    numel = sum([x.numel() for x in values])
+                elif mode is VarLengthCollateMode.PAD2D:
+                    max_h = max([x.size(0) for x in values])
+                    max_w = max([x.size(1) for x in values])
+                    hw = max_h * max_w
+                    numel = sum([x.numel() // x.size(0) // x.size(1) * hw for x in values])
+            else:
+                numel = sum([x.numel() for x in values])
+
+            if numel > 0:
+                storage = values[0].storage()._new_shared(numel)
+                out = values[0].new(storage)
 
         if mode is VarLengthCollateMode.CONCAT:
             uvg = UniqueValueGetter('Tensor sizes should match except the first dim.')
