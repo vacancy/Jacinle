@@ -1,15 +1,16 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : residual.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 10/04/2018
-# 
+# Date   : 04/10/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import torch
 import torch.nn as nn
 
-from jactorch.graph.variable import var_with
 from jactorch.nn.rnn_utils import rnn_with_length
 from .normalization import LayerNorm
 
@@ -145,16 +146,13 @@ class ResidualGRU(nn.Module):
         if initial_states is None:
             batch_size = input.size(1)
             state_shape = (self.real_num_layers, batch_size, self.hidden_dim)
-            initial_states = (
-                var_with(torch.zeros(state_shape), input),
-                var_with(torch.zeros(state_shape), input)
-            )
+            initial_states = torch.zeros(state_shape, device=input.device)
 
         f = input
         for i in range(self.num_layers):
             f_input = f
             f_state = initial_states[2*i:2*i+2] if self.bidirectional else initial_states[i:i+1]
-            # TODO:: Accelerate this by pre-sort the sequences.
+            # TODO(Jiayuan Mao @ 05/08): accelerate this by pre-sort the sequences.
             f = rnn_with_length(self.rnns[i], f, input_lengths, initial_states=f_state,
                                 batch_first=False, sorted=False)
             if self.layer_norms is not None:

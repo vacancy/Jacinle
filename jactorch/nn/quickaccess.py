@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : quickaccess.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 28/03/2018
-# 
+# Date   : 03/28/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import torch.nn as nn
 

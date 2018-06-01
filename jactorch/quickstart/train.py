@@ -1,16 +1,20 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : train.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 27/02/2018
+# Date   : 02/27/2018
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import time
 
+import torch
+
 from jacinle.utils.meter import GroupMeters
 from jactorch.optim.quickaccess import get_optimizer
-from jactorch.utils.meta import as_numpy, as_float, as_variable, mark_volatile
+from jactorch.utils.meta import as_numpy, as_float, as_tensor
 from jacinle.logging import get_logger
 
 logger = get_logger(__file__)
@@ -26,7 +30,7 @@ class ModelTrainer(object):
 
     def train_step(self, feed_dict, meters=None):
         assert self._model.training
-        feed_dict = as_variable(feed_dict)
+        feed_dict = as_tensor(feed_dict)
 
         self._optimizer.zero_grad()
         loss, monitors, output_dict = self._model(feed_dict)
@@ -70,8 +74,9 @@ class ModelTrainer(object):
 
     def validate_step(self, feed_dict, metric, meters=None):
         feed_dict_np = as_numpy(feed_dict)
-        feed_dict = mark_volatile(as_variable(feed_dict))
-        output_dict = self._model(feed_dict)
+        feed_dict = as_tensor(feed_dict)
+        with torch.no_grad():
+            output_dict = self._model(feed_dict)
         output_dict_np = as_numpy(output_dict)
         result = as_float(metric(feed_dict_np, output_dict_np))
         if meters is not None:

@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : container.py
 # Author : Jiayuan Mao
@@ -5,6 +6,7 @@
 # Date   : 01/18/2018
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import copy
 

@@ -1,10 +1,12 @@
-# -*- coding:utf8 -*-
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
 # File   : client.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 3/19/17
-# 
+# Date   : 03/19/2017
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import time
 import sys

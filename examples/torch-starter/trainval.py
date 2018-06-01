@@ -4,7 +4,7 @@
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 04/26/2018
-# 
+#
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
@@ -212,7 +212,7 @@ def train_epoch(epoch, trainer, train_dataloader, meters):
                 meters.flush()
 
             # TODO(Jiayuan Mao @ 04/23): customize the logger. 
-            pbar.set_description(meters.format(
+            pbar.set_description(meters.format_simple(
                 'Epoch {}'.format(epoch),
                 {k: v for k, v in meters.val.items() if k.startswith('loss') or k.startswith('time')},
                 compressed=True
@@ -246,7 +246,7 @@ def validate_epoch(epoch, trainer, val_dataloader, meters):
             if args.use_tb:
                 meters.flush()
 
-            pbar.set_description(meters.format(
+            pbar.set_description(meters.format_simple(
                 'Epoch {} (validation)'.format(epoch),
                 {k: v for k, v in meters.val.items() if k.startswith('validation')},
                 compressed=True

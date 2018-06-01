@@ -1,10 +1,12 @@
-# -*- coding:utf8 -*-
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
 # File   : in.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 3/2/17
-# 
+# Date   : 02/03/2017
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import time
 

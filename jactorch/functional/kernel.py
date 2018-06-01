@@ -1,16 +1,18 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : kernel.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 04/02/2018
-# 
+# Date   : 02/04/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 """Useful utilities for kernel-based attention mechanism."""
 
 import torch
 
-from jactorch.functional.linalg import normalize
+from .linalg import normalize
 
 __all__ = ['inverse_distance', 'cosine_distance', 'dot']
 
@@ -30,6 +32,7 @@ def inverse_distance(f_lookup, f, p=2, eps=1e-8):
     f_lookup = f_lookup.view(n, 1, k).expand(n, m, k)
     f = f.view(1, m, k).expand(n, m, k)
 
+    # TODO(Jiayuan Mao @ 05/26): this function can be optimized.
     dist = (f_lookup - f).norm(p, dim=2)
     return 1. / dist.clamp(min=eps)
 

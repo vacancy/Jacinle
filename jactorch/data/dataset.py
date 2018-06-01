@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : dataset.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 08/03/2018
-# 
+# Date   : 03/08/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 from torch.utils.data.dataset import Dataset
 

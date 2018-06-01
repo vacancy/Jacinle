@@ -1,17 +1,18 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : env.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 17/02/2018
-# 
+# Date   : 02/17/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import collections
 
 from jacinle.utils.cache import cached_property
 
-__all__ = ['RLEnvBase', 'SimpleRLEnvBase', 'ProxyRLEnvBase'
-]
+__all__ = ['RLEnvBase', 'SimpleRLEnvBase', 'ProxyRLEnvBase']
 
 
 class RLEnvBase(object):

@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : thirdparty.py
+# File   : tqdm.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 3/23/17
+# Date   : 03/23/2017
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 from tqdm import tqdm as _tqdm
 from .meta import gofor

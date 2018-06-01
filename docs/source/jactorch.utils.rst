@@ -4,6 +4,14 @@ jactorch.utils package
 Submodules
 ----------
 
+jactorch.utils.grad module
+--------------------------
+
+.. automodule:: jactorch.utils.grad
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jactorch.utils.init module
 --------------------------
 

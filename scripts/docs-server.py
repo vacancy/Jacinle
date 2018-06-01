@@ -4,7 +4,8 @@
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 04/21/2018
-# 
+#
+# This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
 """
@@ -33,7 +34,7 @@ if __name__ == '__main__':
     print('Chaning directory to {}'.format(docpath))
 
     if args.apidoc:
-        os.system('sphinx-apidoc -o source/ ../')
+        os.system('rm -rf source/jac*.rst modules.rst vendors.rst && sphinx-apidoc -o source/ ../')
 
     if args.make:
         os.system('make html')

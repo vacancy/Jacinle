@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : rnn_utils.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 25/01/2018
-# 
+# Date   : 01/25/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
@@ -19,7 +21,7 @@ def rnn_with_length(rnn, seq_tensor, seq_lengths, initial_states, batch_first=Tr
         seq_lengths, perm_idx = seq_lengths.sort(0, descending=True)
         seq_tensor = seq_tensor[perm_idx]
 
-    packed_input = pack_padded_sequence(seq_tensor, seq_lengths.data.cpu().numpy(), batch_first=batch_first)
+    packed_input = pack_padded_sequence(seq_tensor, seq_lengths.cpu().numpy(), batch_first=batch_first)
     packed_output, last_output = rnn(packed_input, initial_states)
     output, _ = pad_packed_sequence(packed_output, batch_first=batch_first)
 

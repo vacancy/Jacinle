@@ -4,13 +4,13 @@
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 04/21/2018
-# 
+#
+# This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
 import torch
 import torch.nn as nn
 
-from jactorch.graph.variable import var_with
 from jactorch.functional.indexing import index_one_hot_ellipsis
 from jactorch.nn.rnn_utils import rnn_with_length
 from jactorch.utils.meta import as_tensor
@@ -40,8 +40,12 @@ class RNNLayerBase(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        nn.init.orthogonal(self.rnn.weight_ih_l0)
-        nn.init.orthogonal(self.rnn.weight_hh_l0)
+        for name, weight in self.rnn.named_parameters():
+            if name.startswith('weight'):
+                nn.init.orthogonal_(weight)
+            else:
+                assert name.startswith('bias')
+                weight.data.zero_()
 
     def forward(self, input, input_lengths, sorted=False):
         initial_states = self.zero_state(input)
@@ -56,7 +60,7 @@ class RNNLayerBase(nn.Module):
         state_shape = (nr_layers, batch_size, self.rnn.hidden_size)
 
         storage = as_tensor(input)
-        gen = lambda: var_with(storage.new(*state_shape).zero_(), input)
+        gen = lambda: torch.zeros(*state_shape, device=input.device)
         if self.state_is_tuple:
             return (gen(), gen())
         return gen()

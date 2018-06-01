@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : future.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 18/02/2018
-# 
+# Date   : 02/18/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import threading
 

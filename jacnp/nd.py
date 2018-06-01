@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : nd.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 1/30/17
+# Date   : 01/30/2017
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import collections
 import numpy as np

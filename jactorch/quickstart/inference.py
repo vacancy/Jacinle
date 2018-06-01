@@ -1,19 +1,23 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : inference.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 18/02/2018
-# 
+# Date   : 02/18/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import time
 import queue
 import threading
 import contextlib
 
+import torch
+
 from jacinle.concurrency.future import FutureResult
 from jacinle.utils.meta import map_exec_method
-from jactorch.utils.meta import as_numpy, as_variable, mark_volatile
+from jactorch.utils.meta import as_numpy, as_tensor
 from jacnp.batch import batchify, unbatchify
 
 __all__ = ['ModelInferencer', 'AsyncInferenceTask', 'AsyncModelInferencer', 'BatchedAsyncModelInferencer']
@@ -55,9 +59,9 @@ class ModelInferencer(object):
         return self._inference_model(feed_dict)
 
     def _inference_model(self, feed_dict):
-        feed_dict = as_variable(feed_dict)
-        mark_volatile(feed_dict)
-        return as_numpy(self._model(feed_dict))
+        feed_dict = as_tensor(feed_dict)
+        with torch.no_grad():
+            return as_numpy(self._model(feed_dict))
 
 
 class AsyncModelInferencer(ModelInferencer):

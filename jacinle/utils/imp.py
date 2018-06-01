@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : imp.py
 # Author : Jiayuan Mao
@@ -5,6 +6,7 @@
 # Date   : 12/29/16
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import importlib
 import os

@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : network.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 1/19/17
+# Date   : 01/19/2017
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import os
 import os.path as osp

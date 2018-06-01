@@ -22,6 +22,14 @@ Subpackages
 Submodules
 ----------
 
+jactorch.cli module
+-------------------
+
+.. automodule:: jactorch.cli
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jactorch.io module
 ------------------
 

@@ -1,14 +1,16 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : models.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 27/02/2018
+# Date   : 02/27/2018
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import torch.nn as nn
 
-from jactorch.nn.cnn_layers import LinearLayer, MLPLayer
+from jactorch.nn.cnn_layers import MLPLayer
 
 __all__ = ['MLPModel', 'MLPRegressionModel', 'MLPClassificationModel', 'LinearRegressionModel', 'LinearClassificationModel']
 

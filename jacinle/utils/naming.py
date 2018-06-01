@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : naming.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 1/18/17
+# Date   : 01/18/2017
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 __all__ = ['class_name', 'func_name', 'method_name', 'class_name_of_method']
 

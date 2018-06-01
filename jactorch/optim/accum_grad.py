@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : accum_grad.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 24/01/2018
-# 
+# Date   : 01/24/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 __all__ = ['AccumGrad']
 
@@ -26,7 +28,7 @@ class AccumGrad(CustomizedOptimizer):
         return self._base_optimizer.param_groups
 
     def state_dict(self):
-        # TODO:: Use a separate method to store all grad_buffer.
+        # TODO(Jiayuan Mao @ 05/08): use a separate method to store all grad_buffer.
         return {
             'base_optimizer': self._base_optimizer.state_dict(),
             'current': self._current
@@ -52,6 +54,8 @@ class AccumGrad(CustomizedOptimizer):
                     continue
                 d_p = p.grad.data
                 param_state = self._base_optimizer.state[p]
+
+                # MJY:: we ensure that grad_buffer does not require grad.
                 if 'grad_buffer' not in param_state:
                     buf = param_state['grad_buffer'] = d_p.clone()
                 else:

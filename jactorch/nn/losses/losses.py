@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : losses.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 25/01/2018
-# 
+# Date   : 01/25/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import torch.nn as nn
 
@@ -16,8 +18,9 @@ from .functional import weighted_loss
 
 __all__ = [
     'LossAverageMethod', 'AverageLoss',
+    'BinaryCrossEntropyLossWithProbs', 'PNBalancedBinaryCrossEntropyLossWithProbs',
     'CrossEntropyLossWithLogits', 'CrossEntropyLoss', 'MSELoss',
-    'CrossEntropyLossWithProbs', 
+    'CrossEntropyLossWithProbs',
     'SmoothL1Loss',
     'CompatibleCrossEntropyLossWithProbs', 'CompatibleMSEProbabilityLoss',
     'CosineLoss',
@@ -49,6 +52,18 @@ class AverageLoss(nn.Module):
             else:
                 loss = loss.mean()
         return loss
+
+
+class BinaryCrossEntropyLossWithProbs(AverageLoss):
+    def forward(self, logits, target, mask=None):
+        loss = F.binary_cross_entropy_with_probs(logits, target)
+        return self._average(loss, mask)
+
+
+
+class PNBalancedBinaryCrossEntropyLossWithProbs(nn.Module):
+    def forward(self, probs, target):
+        return F.pn_balanced_binary_cross_entropy_with_probs(probs, target)
 
 
 class CrossEntropyLossWithLogits(AverageLoss):

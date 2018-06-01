@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : stat.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 04/16/2018
-# 
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 __all__ = ['stat_histogram']
 

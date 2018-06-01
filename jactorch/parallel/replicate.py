@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : replicate.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 19/03/2018
+# Date   : 03/19/2018
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import torch.cuda.comm as comm
 

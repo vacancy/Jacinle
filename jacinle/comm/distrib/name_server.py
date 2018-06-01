@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : name_server.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 22/01/2018
+# Date   : 01/22/2018
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import collections
 import queue
@@ -151,7 +153,7 @@ class NameServer(object):
                         utils.graceful_close(req_sock)
                         self._req_socks.remove(req_sock)
 
-                        # TODO:: use controller's heartbeat
+                        # TODO(Jiayuan Mao @ 05/08): use controller's heartbeat.
                         all_peers_to_inform = set()
                         for i in info['inputs']:
                             all_peers_to_inform = all_peers_to_inform.union(self.storage.get_outputs(i))

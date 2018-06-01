@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : keyboard.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 01/18/2018
-# 
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 
 def str2bool(s):
@@ -25,6 +27,6 @@ def yn2bool(s):
         raise ValueError('yn2bool is undefined for: "{}".'.format(s))
 
 
-# TODO::
+# TODO(Jiayuan Mao @ 05/08): implement this.
 def maybe_mkdir(dirname):
     raise NotImplementedError()

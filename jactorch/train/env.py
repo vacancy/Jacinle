@@ -1,4 +1,12 @@
-# -*- coding: utf8 -*-
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+# File   : env.py
+# Author : Jiayuan Mao
+# Email  : maojiayuan@gmail.com
+# Date   : 05/09/2018
+#
+# This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import os.path as osp
 import time
@@ -9,7 +17,7 @@ import torch.nn as nn
 from jacinle.event.registry import SimpleEventRegistry
 from jacinle.logging import get_logger
 from jactorch.io import load_weights
-from jactorch.utils.meta import as_variable, as_float, as_cpu, mark_volatile
+from jactorch.utils.meta import as_tensor, as_float, as_cpu
 
 logger = get_logger(__file__)
 
@@ -100,7 +108,7 @@ class TrainerEnv(object):
 
         self.trigger_event('step:before', self)
 
-        feed_dict = as_variable(feed_dict)
+        feed_dict = as_tensor(feed_dict)
 
         begin = time.time()
 
@@ -129,9 +137,9 @@ class TrainerEnv(object):
     def evaluate(self, feed_dict):
         assert not self._model.training, 'Evaluating a training-mode model.'
         begin = time.time()
-        feed_dict = as_variable(feed_dict)
-        feed_dict = mark_volatile(feed_dict)
-        output_dict = self._model(feed_dict)
+        feed_dict = as_tensor(feed_dict)
+        with torch.no_grad():
+            output_dict = self._model(feed_dict)
         end = time.time()
 
         return output_dict, dict(gpu_time=end - begin)

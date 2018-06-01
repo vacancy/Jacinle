@@ -1,4 +1,12 @@
-# -*- coding: utf8 -*-
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+# File   : tb.py
+# Author : Jiayuan Mao
+# Email  : maojiayuan@gmail.com
+# Date   : 05/09/2018
+#
+# This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import tensorflow as tf
 import numpy as np

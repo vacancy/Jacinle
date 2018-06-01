@@ -1,10 +1,12 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : lmdb.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 19/01/2018
+# Date   : 01/19/2018
 #
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 
 from .kv import KVStoreBase
@@ -52,7 +54,7 @@ class LMDBKVStore(KVStoreBase):
         self._is_dirty = True
         if self._lmdb_keys is None:
             self._lmdb_keys = []
-        # TODO(MJY):: test whehter the key already exists
+            # TODO(Jiayuan Mao @ 05/08): test whehter the key already exists.
         self._lmdb_keys.append(key)
         return self.txn.put(key.encode(self._key_charset), _dumps(value), overwrite=replace)
 

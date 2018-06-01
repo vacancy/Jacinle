@@ -1,13 +1,14 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # File   : meshgrid.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 31/03/2018
-# 
+# Date   : 03/31/2018
+#
 # This file is part of Jacinle.
+# Distributed under terms of the MIT license.
 
 import torch
-from jactorch.graph.variable import var_with
 from .shape import broadcast, concat_shape
 
 __all__ = ['meshgrid', 'meshgrid_exclude_self']
@@ -30,11 +31,14 @@ def meshgrid_exclude_self(input, dim=1):
 
     The operation is performed over dim and dim +1 axes.
     """
+    if dim < 0:
+        dim += input.dim()
+
     n = input.size(dim)
     assert n == input.size(dim + 1)
 
     # exclude self-attention
-    rng = var_with(torch.arange(0, n), input)
+    rng = torch.arange(0, n, dtype=torch.long, device=input.device)
     rng_n1 = rng.unsqueeze(1).expand((n, n))
     rng_1n = rng.unsqueeze(0).expand((n, n))
     mask_self = (rng_n1 != rng_1n)

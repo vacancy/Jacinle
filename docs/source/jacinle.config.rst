@@ -12,6 +12,14 @@ jacinle.config.environ module
     :undoc-members:
     :show-inheritance:
 
+jacinle.config.g module
+-----------------------
+
+.. automodule:: jacinle.config.g
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------
