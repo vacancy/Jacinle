@@ -103,7 +103,7 @@ class CallbackRegistry(Registry):
 
     The fallback callback will also receive the called name as its first argument.
 
-    Usage:
+    Examples:
 
     >>> registry = CallbackRegistry()
     >>> callback_func = print

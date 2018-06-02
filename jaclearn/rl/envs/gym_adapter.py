@@ -28,22 +28,29 @@ class DiscreteToMultiDiscrete(Discrete):
     Configuration 1) - DiscreteToMultiDiscrete(multi_discrete)                   [2nd param is empty]
         Would adapt to a Discrete action space of size (1 + nb of discrete in MultiDiscrete)
         where
-            0   returns NOOP                                [  0,   0,   0, ...]
-            1   returns max for the first discrete space    [max,   0,   0, ...]
-            2   returns max for the second discrete space   [  0, max,   0, ...]
-            etc.
+
+            - 0   returns NOOP                                [  0,   0,   0, ...]
+            - 1   returns max for the first discrete space    [max,   0,   0, ...]
+            - 2   returns max for the second discrete space   [  0, max,   0, ...]
+            - etc.
+
     Configuration 2) - DiscreteToMultiDiscrete(multi_discrete, list_of_discrete) [2nd param is a list]
         Would adapt to a Discrete action space of size (1 + nb of items in list_of_discrete)
         e.g.
         if list_of_discrete = [0, 2]
-            0   returns NOOP                                [  0,   0,   0, ...]
-            1   returns max for first discrete in list      [max,   0,   0, ...]
-            2   returns max for second discrete in list     [  0,   0,  max, ...]
-            etc.
+
+            - 0   returns NOOP                                [  0,   0,   0, ...]
+            - 1   returns max for first discrete in list      [max,   0,   0, ...]
+            - 2   returns max for second discrete in list     [  0,   0,  max, ...]
+            - etc.
+
     Configuration 3) - DiscreteToMultiDiscrete(multi_discrete, discrete_mapping) [2nd param is a dict]
         Would adapt to a Discrete action space of size (nb_keys in discrete_mapping)
         where discrete_mapping is a dictionnary in the format { discrete_key: multi_discrete_mapping }
         e.g. for the Nintendo Game Controller [ [0,4], [0,1], [0,1] ] a possible mapping might be;
+
+        ::
+
         mapping = {
             0:  [0, 0, 0],  # NOOP
             1:  [1, 0, 0],  # Up
