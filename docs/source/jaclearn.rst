@@ -8,9 +8,10 @@ Subpackages
 
     jaclearn.data
     jaclearn.dataflow
-    jaclearn.dataset
+    jaclearn.datasets
     jaclearn.embedding
     jaclearn.imageaug
+    jaclearn.models
     jaclearn.rl
     jaclearn.visualize
 

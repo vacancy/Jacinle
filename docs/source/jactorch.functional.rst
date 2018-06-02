@@ -4,6 +4,14 @@ jactorch.functional package
 Submodules
 ----------
 
+jactorch.functional.arith module
+--------------------------------
+
+.. automodule:: jactorch.functional.arith
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jactorch.functional.grad module
 -------------------------------
 
@@ -32,6 +40,14 @@ jactorch.functional.linalg module
 ---------------------------------
 
 .. automodule:: jactorch.functional.linalg
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+jactorch.functional.loglinear module
+------------------------------------
+
+.. automodule:: jactorch.functional.loglinear
     :members:
     :undoc-members:
     :show-inheritance:
