@@ -1,6 +1,11 @@
 jaclearn.embedding package
 ==========================
 
+.. automodule:: jaclearn.embedding
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -37,10 +42,3 @@ jaclearn.embedding.word_embedding module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jaclearn.embedding
-    :members:
-    :undoc-members:
-    :show-inheritance:

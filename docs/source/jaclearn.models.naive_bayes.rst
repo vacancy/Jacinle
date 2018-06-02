@@ -1,6 +1,11 @@
 jaclearn.models.naive_bayes package
 ===================================
 
+.. automodule:: jaclearn.models.naive_bayes
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -13,10 +18,3 @@ jaclearn.models.naive_bayes.hybrid_nb module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jaclearn.models.naive_bayes
-    :members:
-    :undoc-members:
-    :show-inheritance:

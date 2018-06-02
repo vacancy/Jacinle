@@ -1,6 +1,11 @@
 jaclearn.datasets.image_classification package
 ==============================================
 
+.. automodule:: jaclearn.datasets.image_classification
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -29,10 +34,3 @@ jaclearn.datasets.image_classification.svhn module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jaclearn.datasets.image_classification
-    :members:
-    :undoc-members:
-    :show-inheritance:

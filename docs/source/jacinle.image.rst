@@ -1,6 +1,11 @@
 jacinle.image package
 =====================
 
+.. automodule:: jacinle.image
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -37,10 +42,3 @@ jacinle.image.imgproc module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jacinle.image
-    :members:
-    :undoc-members:
-    :show-inheritance:

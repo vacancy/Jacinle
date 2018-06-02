@@ -1,6 +1,11 @@
 jactorch.optim package
 ======================
 
+.. automodule:: jactorch.optim
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -37,10 +42,3 @@ jactorch.optim.weight_decay module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.optim
-    :members:
-    :undoc-members:
-    :show-inheritance:

@@ -1,6 +1,11 @@
 jactorch.data package
 =====================
 
+.. automodule:: jactorch.data
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -37,10 +42,3 @@ jactorch.data.dataset module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.data
-    :members:
-    :undoc-members:
-    :show-inheritance:

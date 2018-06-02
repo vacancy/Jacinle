@@ -34,7 +34,7 @@ if __name__ == '__main__':
     print('Chaning directory to {}'.format(docpath))
 
     if args.apidoc:
-        os.system('rm -rf source/jac*.rst modules.rst vendors.rst && sphinx-apidoc -o source/ ../')
+        os.system('rm -rf source/jac*.rst source/modules.rst source/vendors.rst && sphinx-apidoc -f -o source/ ../ -d 2 --module-first')
 
     if args.make:
         os.system('make html')

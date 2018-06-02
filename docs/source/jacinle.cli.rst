@@ -1,6 +1,11 @@
 jacinle.cli package
 ===================
 
+.. automodule:: jacinle.cli
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -37,10 +42,3 @@ jacinle.cli.keyboard module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jacinle.cli
-    :members:
-    :undoc-members:
-    :show-inheritance:

@@ -1,6 +1,11 @@
 jactorch.nn package
 ===================
 
+.. automodule:: jactorch.nn
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -111,10 +116,3 @@ jactorch.nn.rnn_utils module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.nn
-    :members:
-    :undoc-members:
-    :show-inheritance:

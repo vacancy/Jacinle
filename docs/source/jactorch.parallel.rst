@@ -1,6 +1,11 @@
 jactorch.parallel package
 =========================
 
+.. automodule:: jactorch.parallel
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -53,10 +58,3 @@ jactorch.parallel.user_scattered module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.parallel
-    :members:
-    :undoc-members:
-    :show-inheritance:

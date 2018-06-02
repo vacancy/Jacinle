@@ -1,6 +1,11 @@
 jacinle.utils package
 =====================
 
+.. automodule:: jacinle.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -149,10 +154,3 @@ jacinle.utils.tqdm module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jacinle.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:

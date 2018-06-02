@@ -1,6 +1,11 @@
 jacinle.event package
 =====================
 
+.. automodule:: jacinle.event
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -13,10 +18,3 @@ jacinle.event.registry module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jacinle.event
-    :members:
-    :undoc-members:
-    :show-inheritance:

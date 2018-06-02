@@ -1,6 +1,11 @@
 jaclearn.data package
 =====================
 
+.. automodule:: jaclearn.data
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -21,10 +26,3 @@ jaclearn.data.stat module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jaclearn.data
-    :members:
-    :undoc-members:
-    :show-inheritance:

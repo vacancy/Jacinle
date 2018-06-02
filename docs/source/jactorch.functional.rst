@@ -1,6 +1,11 @@
 jactorch.functional package
 ===========================
 
+.. automodule:: jactorch.functional
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -93,10 +98,3 @@ jactorch.functional.shape module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.functional
-    :members:
-    :undoc-members:
-    :show-inheritance:

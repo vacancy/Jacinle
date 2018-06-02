@@ -1,6 +1,11 @@
 jacinle.comm.distrib package
 ============================
 
+.. automodule:: jacinle.comm.distrib
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -29,10 +34,3 @@ jacinle.comm.distrib.pipe module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jacinle.comm.distrib
-    :members:
-    :undoc-members:
-    :show-inheritance:

@@ -1,6 +1,11 @@
 jacinle package
 ===============
 
+.. automodule:: jacinle
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -20,10 +25,3 @@ Subpackages
     jacinle.storage
     jacinle.utils
 
-Module contents
----------------
-
-.. automodule:: jacinle
-    :members:
-    :undoc-members:
-    :show-inheritance:

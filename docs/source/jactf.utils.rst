@@ -1,6 +1,11 @@
 jactf.utils package
 ===================
 
+.. automodule:: jactf.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -13,10 +18,3 @@ jactf.utils.init module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactf.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:

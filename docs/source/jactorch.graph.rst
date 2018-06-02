@@ -1,6 +1,11 @@
 jactorch.graph package
 ======================
 
+.. automodule:: jactorch.graph
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -21,10 +26,3 @@ jactorch.graph.variable module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.graph
-    :members:
-    :undoc-members:
-    :show-inheritance:

@@ -1,6 +1,11 @@
 jactorch.train package
 ======================
 
+.. automodule:: jactorch.train
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -37,10 +42,3 @@ jactorch.train.utils module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.train
-    :members:
-    :undoc-members:
-    :show-inheritance:

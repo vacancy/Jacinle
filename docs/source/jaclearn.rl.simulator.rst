@@ -1,6 +1,11 @@
 jaclearn.rl.simulator package
 =============================
 
+.. automodule:: jaclearn.rl.simulator
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -21,10 +26,3 @@ jaclearn.rl.simulator.pack module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jaclearn.rl.simulator
-    :members:
-    :undoc-members:
-    :show-inheritance:
