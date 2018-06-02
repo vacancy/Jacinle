@@ -9,7 +9,7 @@
 # Distributed under terms of the MIT license.
 
 from jacinle.random.rng import gen_rng
-from jacnp.nd import index_select_batch
+from jacnp.indexing import index_select_batch
 
 __all__ = ['EpochBatchSampler', 'SimpleBatchSampler']
 

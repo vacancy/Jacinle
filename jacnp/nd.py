@@ -15,7 +15,7 @@ __all__ = [
     'isndarray',  'is_ndarray',
     'nd_tobatch',
     'nd_concat', 'nd_len', 'nd_batch_size',
-    'nd_split_n', 'size_split_n', 'index_select_batch'
+    'nd_split_n', 'size_split_n'
 ]
 
 
