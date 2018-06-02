@@ -11,10 +11,24 @@ Welcome to Jacinle's documentation!
    :caption: Contents:
 
 
-
 Indices and tables
 ==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+Modules
+==================
+
+.. toctree::
+   :maxdepth: 4
+
+   jacinle
+   jaclearn
+   jacnp
+   jactf
+   jactorch
+   vendors
+
