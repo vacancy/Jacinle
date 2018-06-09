@@ -41,13 +41,11 @@ def compose_param_groups(model, *groups, filter_grad=True, verbose=True):
     """
     Compose the param_groups argument for torch optimizers.
 
-    Usage::
+    Examples:
 
-    ```
-    optim.Adam(compose_param_groups(
-        param_group('*.weight', lr=0.01)
-    ), lr=0.1)
-    ```
+    >>> optim.Adam(compose_param_groups(
+    >>>     param_group('*.weight', lr=0.01)
+    >>> ), lr=0.1)
 
     Args:
         model: the model containing optimizable variables.

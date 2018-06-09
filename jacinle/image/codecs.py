@@ -19,8 +19,8 @@ def jpeg_encode(img, quality=90):
     """Encode the image with JPEG encoder.
 
     Args:
-        img np.ndarray: uint8 color image array
-        quality int: quality for JPEG compression
+        img (:class:`numpy.ndarray`): uint8 color image array
+        quality (int): quality for JPEG compression
 
     Returns bytes: encoded image data
     """
@@ -34,8 +34,8 @@ def png_encode(input, compress_level=3):
     Encode the image with PNG encoder.
 
     Args:
-        img np.ndarray: uint8 color image array
-        quality int: quality for JPEG compression
+        img (:class:`numpy.ndarray`): uint8 color image array
+        quality (int): quality for JPEG compression
 
     Returns bytes: encoded image data
     """
@@ -52,7 +52,7 @@ def imdecode(data, *, require_chl3=True, require_alpha=False):
     """Decode images in common formats (jpg, png, etc.).
 
     Args:
-        data bytes: encoded image data
+        data (bytes): encoded image data
         require_chl3: whether to convert gray image to 3-channel BGR image
         require_alpha: whether to add alpha channel to BGR image
 

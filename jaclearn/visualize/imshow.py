@@ -31,8 +31,7 @@ def batch_show(batch, nr_show=16, grid_desc=('4v', '4h'), resize=(600, 800), tit
     """
     Show a batch of images.
 
-    :param batch: The batched data: can be either a ndarray of shape (batch_size, h, w, c) or a list
-    of images.
+    :param batch: The batched data: can be either a ndarray of shape (batch_size, h, w, c) or a list of images.
     :param nr_show: Number of images to be displayed. Default set to be 16.
     :param grid_desc: Grid description. See `tartist.image.image_grid` for details.
     :param resize: Resize factor, a tuple (min_dim, max_dim).

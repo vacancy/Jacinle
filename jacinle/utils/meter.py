@@ -52,11 +52,10 @@ class GroupMeters(object):
 
     def update(self, updates=None, value=None, n=1, **kwargs):
         """
-        Usage:
-
-            > meters.update(key, value)
-            > meters.update({key1: value1, key2: value2})
-            > meters.update(key1=value1, key2=value2)
+        Example:
+            >>> meters.update(key, value)
+            >>> meters.update({key1: value1, key2: value2})
+            >>> meters.update(key1=value1, key2=value2)
         """
         if updates is None:
             updates = {}

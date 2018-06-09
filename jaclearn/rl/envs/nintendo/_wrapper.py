@@ -8,7 +8,14 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-import gym
+try:
+    import gym
+except ImportError:
+    from jacinle.logging import get_logger
+    logger = get_logger(__file__)
+    logger.warning('Cannot import gym.')
+
+    gym = None
 
 # https://github.com/ppaquette/gym-super-mario/blob/master/ppaquette_gym_super_mario/wrappers/action_space.py
 from ..gym_adapter import DiscreteToMultiDiscrete

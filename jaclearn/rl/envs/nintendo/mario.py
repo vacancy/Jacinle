@@ -13,9 +13,17 @@ import copy
 from ._wrapper import GymNintendoWrapper
 from ..gym import GymRLEnv
 
-import gym
-import ppaquette_gym_super_mario
-from ppaquette_gym_super_mario import wrappers
+try:
+    import gym
+    import ppaquette_gym_super_mario
+    from ppaquette_gym_super_mario import wrappers
+except ImportError:
+    from jacinle.logging import get_logger
+    logger = get_logger(__file__)
+    logger.warning('Cannot import gym and ppaquette_gym_super_mario.')
+
+    gym = None
+    ppaquette_gym_super_mario = None
 
 
 class GymMarioRLEnv(GymRLEnv):

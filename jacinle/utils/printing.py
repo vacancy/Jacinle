@@ -27,25 +27,21 @@ def _indent_print(msg, indent, prefix=None, end='\n', file=None):
 
 def stprint(data, key=None, indent=0, file=None, need_lock=True):
     """
-    Structure print. Usage:
+    Structure print.
 
-    ```
-    data = dict(a=np.zeros(shape=(10, 10)), b=3)
-    stprint(data)
-    ```
+    Example:
 
-    and you will get:
+        >>> data = dict(a=np.zeros(shape=(10, 10)), b=3)
+        >>> stprint(data)
+        dict{
+            a: ndarray(10, 10), dtype=float64
+            b: 3
+        }
 
-    ```
-    dict{
-        a: ndarray(10, 10), dtype=float64
-        b: 3
-    }
-    ```
-
-    :param data: Data you want to print.
-    :param key: Output prefix, internal usage only.
-    :param indent: Indent level of the print, internal usage only.
+    Args:
+        data: data to be print. Currently support Sequnce, Mappings and primitive types.
+        key: for recursion calls. Do not use it if you don't know how it works.
+        indent: indent level.
     """
     t = type(data)
     if file is None:

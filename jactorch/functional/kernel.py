@@ -22,10 +22,10 @@ def inverse_distance(f_lookup, f, p=2, eps=1e-8):
     Inverse distance kernel.
 
     Args:
-        f_lookup FloatTensor(NxK): features of the lookup keys
-        f FloatTensor(MxK): features of the value keys
+        f_lookup (FloatTensor): features of the lookup keys
+        f (FloatTensor): features of the value keys
 
-    Returns FloatTensor(NxM): the attention mask for each lookup keys.
+    Returns (FloatTensor): the attention mask for each lookup keys.
     """
 
     n, m, k = f_lookup.size(0), f.size(0), f.size(1)

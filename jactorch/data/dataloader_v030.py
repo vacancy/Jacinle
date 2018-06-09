@@ -12,7 +12,10 @@ import threading
 import queue
 import multiprocessing
 
-from torch.utils.data.dataloader import _worker_loop, _pin_memory_loop, default_collate, DataLoader, DataLoaderIter
+try:
+    from torch.utils.data.dataloader import _worker_loop, _pin_memory_loop, default_collate, DataLoader, DataLoaderIter
+except ImportError:
+    pass
 
 from jacinle.random import reset_global_seed, gen_rng
 
