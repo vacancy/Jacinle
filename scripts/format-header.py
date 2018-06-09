@@ -11,6 +11,7 @@
 import os
 import os.path as osp
 import glob
+import time
 
 from jacinle.cli.argument import JacArgumentParser
 from jacinle.logging import get_logger
@@ -20,6 +21,7 @@ parser = JacArgumentParser()
 parser.add_argument('--dir', default=os.getcwd())
 parser.add_argument('--project', default=osp.basename(os.getcwd()))
 parser.add_argument('-n', '--dry', action='store_true')
+parser.add_argument('-f', '--force', action='store_true')
 args = parser.parse_args()
 
 
@@ -43,8 +45,9 @@ def process(filename):
         lines = f.readlines()
     
     filetype = 'unk'
-    fields = dict(project=args.project)
-    
+    fields = dict()
+    fields['project'] = args.project
+
     for i, line in enumerate(lines):
         if i == 0:
             if line.startswith('#! /usr/bin/env'):
@@ -53,14 +56,20 @@ def process(filename):
                 filetype = 'charm'
             else:
                 filetype = 'unk'
-    
+
         if i == 1 and filetype != 'unk':
             if not line.startswith('# '):
-                filetype = 'unk'
+                if not args.force:
+                    filetype = 'unk'
+                else:
+                    filetype = 'force'
     
         if filetype == 'unk':
             break
     
+        if not line.startswith('#'):
+            break
+
         line_trim = line[2:]
         if line_trim.startswith('File'):
             fields['file'] = line_trim[line_trim.find(':')+1:].strip()
@@ -100,10 +109,7 @@ def process(filename):
             if not line_trim.startswith('This file'):
                 log('  charm-typed file error: {}'.format(filename))
             break
-    
-        if not line.startswith('#'):
-            break
-    
+
     if filetype == 'unk':
         logger.warn('Unkown filetype.')
         return
@@ -112,8 +118,16 @@ def process(filename):
         extras = lines[9:]
     elif filetype == 'charm':
         extras = lines[7:]
+    elif filetype == 'force':
+        extras = lines[i:]
     
-    assert len(fields) == 5
+    if len(fields) != 5:
+        logger.warn('Incomplete header.')
+
+        fields.setdefault('file', osp.basename(filename))
+        fields.setdefault('author', 'Jiayuan Mao')
+        fields.setdefault('email', 'maojiayuan@gmail.com')
+        fields.setdefault('date', time.strftime('%m/%d/%Y', time.localtime(osp.getctime(filename))))
 
     if not args.dry:
         with open(filename, 'w') as f:
