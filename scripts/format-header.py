@@ -104,22 +104,15 @@ def process(filename):
         if i == 8 and filetype == 'vim':
             if not line_trim.startswith('Distributed'):
                 log('  vim-typed file error: {}'.format(filename))
-            break
         if i == 6 and filetype == 'charm':
             if not line_trim.startswith('This file'):
                 log('  charm-typed file error: {}'.format(filename))
-            break
 
     if filetype == 'unk':
         logger.warn('Unkown filetype.')
         return
     
-    if filetype == 'vim':
-        extras = lines[9:]
-    elif filetype == 'charm':
-        extras = lines[7:]
-    elif filetype == 'force':
-        extras = lines[i:]
+    extras = lines[i:]
     
     if len(fields) != 5:
         logger.warn('Incomplete header.')

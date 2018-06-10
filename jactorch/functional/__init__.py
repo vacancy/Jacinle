@@ -17,5 +17,6 @@ from .loglinear import *
 from .mask import *
 from .meshgrid import *
 from .probability import *
+from .quantization import *
 from .sample import *
 from .shape import *
