@@ -14,13 +14,15 @@ from .shape import broadcast, concat_shape
 __all__ = ['meshgrid', 'meshgrid_exclude_self']
 
 
-def meshgrid(input, dim=1):
+def meshgrid(input1, input2=None, dim=1):
     """Perform np.meshgrid along given axis. It will generate a new dimension after dim."""
+    if input2 is None:
+        input2 = input1
     if dim < 0:
-        dim += input.dim()
-    n = input.size(dim)
-    x = broadcast(input.unsqueeze(dim + 1), dim + 1, n)
-    y = broadcast(input.unsqueeze(dim + 0), dim + 0, n)
+        dim += input1.dim()
+    n, m = input1.size(dim), input2.size(dim)
+    x = broadcast(input1.unsqueeze(dim + 1), dim + 1, m)
+    y = broadcast(input2.unsqueeze(dim + 0), dim + 0, n)
     return x, y
 
 
