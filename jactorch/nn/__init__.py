@@ -22,3 +22,5 @@ from .probability import *
 from .residual import *
 from .rnn_layers import *
 from .rnn_utils import *
+from .word_embedding import *
+
