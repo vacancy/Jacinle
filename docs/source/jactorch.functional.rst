@@ -81,6 +81,14 @@ jactorch.functional.probability module
     :undoc-members:
     :show-inheritance:
 
+jactorch.functional.quantization module
+---------------------------------------
+
+.. automodule:: jactorch.functional.quantization
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jactorch.functional.sample module
 ---------------------------------
 

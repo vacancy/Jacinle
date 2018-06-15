@@ -115,4 +115,12 @@ jactorch.nn.rnn_utils module
     :undoc-members:
     :show-inheritance:
 
+jactorch.nn.word_embedding module
+---------------------------------
+
+.. automodule:: jactorch.nn.word_embedding
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
