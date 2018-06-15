@@ -59,17 +59,29 @@ def load(path, word_index_only=False):
 
     word2idx = {}  # Maps a word to the index in the embeddings matrix
     embeddings = []
+    embedding_size = None
 
-    with open(path, 'r') as fIn:
+    with open(path, 'r', encoding='utf-8') as fIn:
         idx = 1
         for line in fIn:
-            split = line.strip().split(' ')
-            embeddings.append(np.array([float(num) for num in split[1:]]))
-            word2idx[split[0]] = idx
-            idx += 1
+            try:
+                split = line.strip().split(' ')
+                val = np.array([float(num) for num in split[1:]], dtype='float32')
+
+                if embedding_size is None:
+                    embedding_size = len(val)
+                else:
+                    if embedding_size != len(val):
+                        continue
+
+                embeddings.append(val)
+                word2idx[split[0]] = idx
+                idx += 1
+            except ValueError:
+                # 840D GloVe file has some encoding errors...
+                continue
 
     word2idx[EBD_ALL_ZEROS] = 0
-    embedding_size = embeddings[0].shape[0]
     embeddings.insert(0, np.zeros(embedding_size, dtype='float32'))
 
     # rare words
