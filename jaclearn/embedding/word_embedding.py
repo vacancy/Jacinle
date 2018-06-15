@@ -28,7 +28,7 @@ logger = get_logger(__file__)
 special_tokens = {"&ndash;": "–", "&mdash;": "—", "@card@": "0"}
 
 
-def load_word_index(path):
+def load_word_index(path, filter=None):
     """
     Loads only the word index from the embeddings file
 
@@ -40,6 +40,8 @@ def load_word_index(path):
         idx = 1
         for line in fIn:
             split = line.strip().split(' ')
+            if filter is not None and split[0] not in filter:
+                continue
             word2idx[split[0]] = idx
             idx += 1
 
@@ -49,13 +51,13 @@ def load_word_index(path):
     return word2idx
 
 
-def load(path, word_index_only=False):
+def load(path, word_index_only=False, filter=None):
     """
     Loads pre-trained embeddings from the specified path.
     """
 
     if word_index_only:
-        return load_word_index(path)
+        return load_word_index(path, filter=filter)
 
     word2idx = {}  # Maps a word to the index in the embeddings matrix
     embeddings = []
@@ -66,6 +68,10 @@ def load(path, word_index_only=False):
         for line in fIn:
             try:
                 split = line.strip().split(' ')
+
+                if filter is not None and split[0] not in filter:
+                    continue
+
                 val = np.array([float(num) for num in split[1:]], dtype='float32')
 
                 if embedding_size is None:
