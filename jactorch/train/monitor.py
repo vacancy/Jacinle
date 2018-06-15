@@ -14,6 +14,7 @@ from jactorch.utils.grad import no_grad_func
 
 __all__ = [
     'binary_classification_accuracy',
+    'classification_accuracy',
     'regression_accuracy',
     'monitor_param_saturation',
     'monitor_param_rms',
@@ -36,6 +37,17 @@ def binary_classification_accuracy(pred, label, name='', saturation=True):
             prefix + '/saturation/mean': as_float(sat.mean()),
             prefix + '/saturation/min': as_float(sat.min())
         }
+    return {prefix: as_float(acc.float().mean())}
+
+
+@no_grad_func
+def classification_accuracy(pred, label, name=''):
+    if name != '':
+        name = '/' + name
+    prefix = 'accuracy' + name
+    pred = pred.view(-1)  # Binary accuracy
+    label = label.view(-1)
+    acc = label.float().eq((pred).float())
     return {prefix: as_float(acc.float().mean())}
 
 
