@@ -90,7 +90,7 @@ def process(filename):
             assert len(date) == 3
             if filetype == 'charm':
                 date = (date[1], date[0], date[2])
-            if int(date[0]) > 12 or (int(date[2]) == 2018 and int(date[0]) > 5):
+            if int(date[0]) > 12:
                 date = (date[1], date[0], date[2])
             date = list(date)
             date[0] = '{:02d}'.format(int(date[0]))
