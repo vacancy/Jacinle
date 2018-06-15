@@ -70,15 +70,15 @@ def load(path, word_index_only=False):
 
     word2idx[EBD_ALL_ZEROS] = 0
     embedding_size = embeddings[0].shape[0]
-    embeddings = np.asarray([[0.0] * embedding_size] + embeddings, dtype='float32')
+    embeddings.insert(0, np.zeros(embedding_size, dtype='float32'))
 
-    rare_w_ids = list(range(idx - 101, idx - 1))
-    unknown_emb = np.average(embeddings[rare_w_ids, :], axis=0)
-    embeddings = np.append(embeddings, [unknown_emb], axis=0)
+    # rare words
+    unknown_emb = np.average(np.array(embeddings[-101:]), axis=0)
+    embeddings.append(unknown_emb)
     word2idx[EBD_UNKNOWN] = idx
     idx += 1
 
-    return embeddings, word2idx
+    return np.array(embeddings, dtype='float32'), word2idx
 
 
 def map(word, word2idx):
