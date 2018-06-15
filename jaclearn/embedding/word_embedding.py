@@ -72,12 +72,14 @@ def load(path, word_index_only=False):
                     embedding_size = len(val)
                 else:
                     if embedding_size != len(val):
+                        logger.warning('Skip invalid entry (vector length): Line#{}.'.format(idx - 1))
                         continue
 
                 embeddings.append(val)
                 word2idx[split[0]] = idx
                 idx += 1
             except ValueError:
+                logger.warning('Skip invalid entry (encoding): Line#{}.'.format(idx - 1))
                 # 840D GloVe file has some encoding errors...
                 continue
 
