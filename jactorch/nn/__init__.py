@@ -19,6 +19,7 @@ from .image_preprocess import *
 from .linear import *
 from .normalization import *
 from .probability import *
+from .quickstart import *
 from .residual import *
 from .rnn_layers import *
 from .rnn_utils import *
