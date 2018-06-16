@@ -9,8 +9,9 @@
 # Distributed under terms of the MIT license.
 
 import functools
-import threading
 import collections
+import os.path as osp
+import threading
 
 import jacinle.io as io
 from .meta import synchronized
@@ -61,7 +62,7 @@ def fs_cached_result(filename, force_update=False):
         @synchronized()
         @functools.wraps(func)
         def wrapped_func(*args, **kwargs):
-            if not force_update:
+            if not force_update and osp.exists(filename):
                 cached_value = io.load(filename)
                 if cached_value is not None:
                     return cached_value
