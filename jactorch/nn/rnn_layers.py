@@ -39,6 +39,9 @@ class RNNLayerBase(nn.Module):
                 bias=bias, batch_first=batch_first, dropout=dropout, bidirectional=bidirectional)
         self.reset_parameters()
 
+    def flatten_parameters(self):
+        self.flatten_parameters()
+
     def reset_parameters(self):
         for name, weight in self.rnn.named_parameters():
             if name.startswith('weight'):
