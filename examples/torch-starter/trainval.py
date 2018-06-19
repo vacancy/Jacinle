@@ -115,8 +115,8 @@ def main():
 
     logger.critical('Building the data loader.')
     # TODO(Jiayuan Mao @ 04/23): make the data loader.
-    train_dataloader = None
-    validation_dataloader = None
+    train_dataloader = train_dataset.make_dataloader(args.batch_size, shuffle=True, drop_last=True, nr_workers=args.data_workers)
+    validation_dataloader = validation_dataset.make_dataloader(args.batch_size, shuffle=False, drop_last=False, nr_workers=args.data_workers)
 
     if hasattr(desc, 'make_optimizer'):
         logger.critical('Building customized optimizer.')
@@ -194,8 +194,8 @@ def train_epoch(epoch, trainer, train_dataloader, meters):
         for i in range(nr_iters):
             feed_dict = next(train_iter)
 
-            if not args.gpu_parallel:
-                if args.use_gpu:
+            if args.use_gpu:
+                if not args.gpu_parallel:
                     feed_dict = async_copy_to(feed_dict, 0)
 
             data_time = time.time() - end; end = time.time()
@@ -228,8 +228,8 @@ def validate_epoch(epoch, trainer, val_dataloader, meters):
     end = time.time()
     with tqdm_pbar(total=len(val_dataloader)) as pbar:
         for feed_dict in val_dataloader:
-            if not args.gpu_parallel:
-                if args.use_gpu:
+            if args.use_gpu:
+                if not args.gpu_parallel:
                     feed_dict = async_copy_to(feed_dict, 0)
 
             data_time = time.time() - end; end = time.time()
