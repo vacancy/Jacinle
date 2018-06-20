@@ -192,7 +192,7 @@ class SynchronizedBatchNorm1d(_SynchronizedBatchNorm):
         affine: a boolean value that when set to ``True``, gives the layer learnable
             affine parameters. Default: ``True``
 
-    Shape:
+    Shape::
         - Input: :math:`(N, C)` or :math:`(N, C, L)`
         - Output: :math:`(N, C)` or :math:`(N, C, L)` (same shape as input)
 
@@ -255,7 +255,7 @@ class SynchronizedBatchNorm2d(_SynchronizedBatchNorm):
         affine: a boolean value that when set to ``True``, gives the layer learnable
             affine parameters. Default: ``True``
 
-    Shape:
+    Shape::
         - Input: :math:`(N, C, H, W)`
         - Output: :math:`(N, C, H, W)` (same shape as input)
 
@@ -319,7 +319,7 @@ class SynchronizedBatchNorm3d(_SynchronizedBatchNorm):
         affine: a boolean value that when set to ``True``, gives the layer learnable
             affine parameters. Default: ``True``
 
-    Shape:
+    Shape::
         - Input: :math:`(N, C, D, H, W)`
         - Output: :math:`(N, C, D, H, W)` (same shape as input)
 
