@@ -8,10 +8,19 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-__all__ = ['masked_average', 'length_masked_reversed']
+__all__ = ['mask_meshgrid', 'masked_average', 'length2mask', 'length_masked_reversed'] 
 
 import torch
 import numpy as np
+
+
+def mask_meshgrid(mask, target_dims=2):
+    for i in range(target_dims - 1):
+        f = mask.unsqueeze(-1)
+        g = mask.unsqueeze(-2)
+        mask = f * g
+
+    return mask
 
 
 def masked_average(tensor, mask, eps=1e-8):
@@ -21,11 +30,21 @@ def masked_average(tensor, mask, eps=1e-8):
     return masked.sum() / mask.sum().clamp(min=eps)
 
 
+def length2mask(lengths, max_length):
+    rng = torch.arange(max_length, dtype=lengths.dtype, device=lengths.device)
+    lengths = lengths.unsqueeze(-1)
+    rng = add_dim_as_except(rng, lengths, -1)
+    mask = rng < lengths
+    return mask.float()
+
+
 def length_masked_reversed(tensor, lengths, dim=1):
     """Reverses sequences according to their lengths.
-    Arguments:
+
+    Args:
         tensor (torch.Tensor): padded batch of variable length sequences.
         lengths (torch.LongTensor): list of sequence lengths
+
     Returns:
         A Variable with the same size as tensor, but with each sequence
         reversed according to its length.

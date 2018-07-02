@@ -10,10 +10,12 @@
 
 import torch
 import torch.nn.functional as F
+from jacinle.utils.enum import JacEnum
 
-from jactorch.functional import set_index_one_hot_
+from jactorch.functional import set_index_one_hot_, one_hot_nd
+from jactorch.nn.mask.functional import masked_softmax
 
-__all__ = ['gumbel_softmax']
+__all__ = ['greedy_softmax', 'gumbel_softmax', 'SoftmaxImplmentation', 'general_softmax']
 
 
 def _sample_gumbel(shape, eps=1e-10, out=None):
@@ -27,7 +29,7 @@ def _sample_gumbel(shape, eps=1e-10, out=None):
     return - torch.log(eps - torch.log(U + eps))
 
 
-def _gumbel_softmax_sample(logits, dim=-1, tau=1, eps=1e-10):
+def _gumbel_softmax_sample(logits, dim=-1, tau=1, eps=1e-10, mask=None):
     """
     Draw a sample from the Gumbel-Softmax distribution
     based on
@@ -36,28 +38,36 @@ def _gumbel_softmax_sample(logits, dim=-1, tau=1, eps=1e-10):
     """
     gumbel_noise = _sample_gumbel(logits.size(), eps=eps, out=logits.new())
     y = logits + gumbel_noise
-    return F.softmax(y / tau, dim=dim)
+    return masked_softmax(y / tau, mask, dim=dim)
 
 
-def gumbel_softmax(logits, dim=-1, tau=1, hard=False, eps=1e-10):
+def greedy_softmax(logits, dim=-1, mask=None):
+    probs = masked_softmax(logits, mask=mask, dim=dim)
+    one_hot = one_hot_nd(probs.max(1)[1], logits.size(1))
+    return one_hot
+
+
+def gumbel_softmax(logits, dim=-1, tau=1, hard=False, mask=None, eps=1e-10):
     """
     Sample from the Gumbel-Softmax distribution and optionally discretize.
+
     Args:
-      logits: [batch_size, n_class] unnormalized log-probs
-      dim: along which dim the softmax is performed
-      tau: non-negative scalar temperature
-      hard: if True, take argmax, but differentiate w.r.t. soft sample y
-      eps: eps
+        logits: [batch_size, n_class] unnormalized log-probs
+        dim: along which dim the softmax is performed
+        tau: non-negative scalar temperature
+        hard: if True, take argmax, but differentiate w.r.t. soft sample y
+        eps: eps
+
     Returns:
-      [batch_size, n_class] sample from the Gumbel-Softmax distribution.
-      If hard=True, then the returned sample will be one-hot, otherwise it will
-      be a probability distribution that sums to 1 across classes
-    Constraints:
-    - this implementation only works on batch_size x num_features tensor for now
-    based on
+        [batch_size, n_class] sample from the Gumbel-Softmax distribution.
+        If hard=True, then the returned sample will be one-hot, otherwise it will
+        be a probability distribution that sums to 1 across classes
+
+    Based on
     https://github.com/ericjang/gumbel-softmax/blob/3c8584924603869e90ca74ac20a6a03d99a91ef9/Categorical%20VAE.ipynb ,
     (MIT license)
     """
+
     y_soft = _gumbel_softmax_sample(logits, tau=tau, eps=eps)
     if hard:
         with torch.no_grad():
@@ -72,7 +82,28 @@ def gumbel_softmax(logits, dim=-1, tau=1, hard=False, eps=1e-10):
         #   subtract y_soft value)
         # - makes the gradient equal to y_soft gradient (since we strip
         #   all other gradients)
-        y = (y_hard - y_soft) + y_soft
+        y = (y_hard - y_soft).detach() + y_soft
     else:
         y = y_soft
     return y
+
+
+class SoftmaxImplmentation(JacEnum):
+    STANDARD = 'standard'
+    GUMBEL = 'gumbel'
+    GUMBEL_HARD = 'gumbel_hard'
+
+
+def general_softmax(logits, dim=-1, tau=1, impl='standard', mask=None, training=False):
+    impl = SoftmaxImplmentation.from_string(impl)
+    if impl is SoftmaxImplmentation.STANDARD:
+        return masked_softmax(logits / tau, dim=dim)
+    elif impl in (SoftmaxImplmentation.GUMBEL, SoftmaxImplmentation.GUMBEL_HARD):
+        if training:
+            # no need to use logits / tau
+            return greedy_softmax(logits, dim=dim, mask=mask)
+        if impl is SoftmaxImplmentation.GUMBEL:
+            return gumbel_softmax(logits, dim=dim, tau=tau, hard=False, mask=mask)
+        else:
+            return gumbel_softmax(logits, dim=dim, tau=tau, hard=True, mask=mask)
+
