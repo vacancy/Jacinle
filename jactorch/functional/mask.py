@@ -8,10 +8,12 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-__all__ = ['mask_meshgrid', 'masked_average', 'length2mask', 'length_masked_reversed'] 
-
 import torch
 import numpy as np
+
+from .shape import add_dim_as_except
+
+__all__ = ['mask_meshgrid', 'masked_average', 'length2mask', 'length_masked_reversed'] 
 
 
 def mask_meshgrid(mask, target_dims=2):
