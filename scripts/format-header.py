@@ -108,6 +108,9 @@ def process(filename):
             if not line_trim.startswith('This file'):
                 log('  charm-typed file error: {}'.format(filename))
 
+    if lines[i].startswith('#'):
+        i += 1
+
     if filetype == 'unk':
         logger.warn('Unkown filetype.')
         return
@@ -125,7 +128,8 @@ def process(filename):
     if not args.dry:
         with open(filename, 'w') as f:
             f.write(HEADER.format(**fields))
-            f.writelines(extras)
+            if len(extras):
+                f.writelines(extras)
 
 
 def main():
