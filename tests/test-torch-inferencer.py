@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : test_torch_inferencer.py
+# File   : test-torch-inferencer.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 02/18/2018

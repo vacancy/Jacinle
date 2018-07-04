@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : test_torch_trainer.py
+# File   : test-torch-trainer.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 02/28/2018
