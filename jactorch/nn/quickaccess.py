@@ -51,7 +51,7 @@ def get_activation(act):
 
     assert type(act) is str, 'Unknown type of activation: {}.'.format(act)
     act_lower = act.lower()
-    if act_linear == 'identity':
+    if act_lower == 'identity':
         return Identity()
     elif act_lower == 'relu':
         return nn.ReLU(True)
