@@ -12,7 +12,7 @@ import torch
 
 from .shape import concat_shape, move_dim
 
-__all__ = ['logaddexp', 'logsumexp', 'logmatmulexp', 'batch_logmatmulexp']
+__all__ = ['logaddexp', 'logsumexp', 'logmatmulexp', 'batch_logmatmulexp', 'logits_and', 'logits_or']
 
 
 def logaddexp(x, y):
@@ -76,4 +76,16 @@ def batch_logmatmulexp(mat1, mat2, use_mm=False):
         out = logsumexp(out_sum, dim=-1)
 
     return out.view(concat_shape(mat1_shape[:-1], mat2_shape[2:]))
+
+
+def logits_and(x, y):
+    t = (x + y) / 2
+    f = logaddexp(logaddexp((x - y) / 2, (y - x) / 2), -t)
+    return t - f
+
+
+def logits_or(x, y):
+    f = -(x + y) / 2
+    t = logaddexp(logaddexp((x - y) / 2, (y - x) / 2), -f)
+    return t - f
 
