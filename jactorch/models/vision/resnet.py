@@ -18,7 +18,7 @@ from jactorch.io import load_state_dict
 from jactorch.nn import ResidualConvBlock, ResidualConvBottleneck
 
 
-__all__ = ['ResNet',
+__all__ = ['ResNet', 'make_resnet',
            'resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152',
            'reset_resnet_parameters']
 
