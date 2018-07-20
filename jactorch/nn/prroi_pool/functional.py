@@ -12,17 +12,22 @@
 import torch
 import torch.autograd as ag
 
-try:
-    from . import _prroi_pooling
-except ImportError:
-    raise ImportError('Can not found the compiled Precise RoI Pooling library. Run ./travis.sh in the directory first.')
-
 __all__ = ['prroi_pool2d']
+
+
+def _import_prroi_pooling():
+    try:
+        from . import _prroi_pooling
+    except ImportError:
+        raise ImportError('Can not found the compiled Precise RoI Pooling library. Run ./travis.sh in the directory first.')
+    return _prroi_pooling
 
 
 class PrRoIPool2DFunction(ag.Function):
     @staticmethod
     def forward(ctx, features, rois, pooled_height, pooled_width, spatial_scale):
+        _prroi_pooling = _import_prroi_pooling()
+
         features = features.contiguous()
         rois = rois.contiguous()
         pooled_height = int(pooled_height)
@@ -49,6 +54,8 @@ class PrRoIPool2DFunction(ag.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
+        _prroi_pooling = _import_prroi_pooling()
+
         features, rois, output = ctx.saved_tensors
         grad_input = grad_coor = None
 
