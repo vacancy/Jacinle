@@ -11,4 +11,5 @@
 from .gumbel_softmax.functional import *
 from .losses.functional import *
 from .mask.functional import *
+from .prroi_pool.functional import *
 

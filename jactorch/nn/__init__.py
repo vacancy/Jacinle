@@ -19,6 +19,7 @@ from .image_preprocess import *
 from .linear import *
 from .normalization import *
 from .probability import *
+from .prroi_pool import *
 from .quickaccess import *
 from .simple import *
 from .residual import *
