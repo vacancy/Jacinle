@@ -42,6 +42,7 @@ class VarLengthCollateMode(JacEnum):
     PAD = 'pad'
     CONCAT = 'concat'
     PAD2D = 'pad2d'
+    PADIMAGE = 'padimage'
 
 
 class VarLengthCollate(object):
@@ -259,8 +260,23 @@ class VarLengthCollateV2(object):
             result = []
             for v in values:
                 u = v.new(max_h, max_w, *uvg.get()).fill_(pad_value)
-                u[:] = pad_value
                 u[:v.size(0), :v.size(1)] = v
+                result.append(u)
+            return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
+        elif mode is VarLengthCollateMode.PADIMAGE:
+            uvg = UniqueValueGetter('Tensor sizes should match except the last 2 dims.')
+            for v in values:
+                assert v.dim() == 3, 'Support only 3 dimention input.'
+                uvg.set(v.size(0))
+            pad_value = parameters[0] if len(parameters) > 0 else 0
+
+            lengths = [v.size()[-2:] for v in values]
+            max_h, max_w = max([x[0] for x in lengths]), max([x[1] for x in lengths])
+            result = []
+            for v in values:
+                u = v.new(*uvg.get(), max_h, max_w).fill_(pad_value)
+                # TODO(Jiayuan Mao @ 07/19): support input with dim > 3.
+                u[:, :v.size(0), :v.size(1)] = v
                 result.append(u)
             return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
         else:
