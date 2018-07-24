@@ -61,9 +61,9 @@ def hflip(img, coor):
 
 
 def vflip(img, coor):
-    if random.random() < 0.5:
-        return TF.vflip(img), coor
-    return img, coor
+    coor = coor.copy()
+    coor[:, 1] = 1 - coor[:, 1]
+    return TF.vflip(img), coor
 
 
 def resize(img, coor, size, interpolation=Image.BILINEAR):

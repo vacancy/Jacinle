@@ -38,6 +38,7 @@ def user_scattered_collate(batch):
 
 
 class VarLengthCollateMode(JacEnum):
+    SKIP = 'skip'
     PAD = 'pad'
     CONCAT = 'concat'
     PAD2D = 'pad2d'
@@ -177,9 +178,12 @@ class VarLengthCollateV2(object):
             for key in batch[0]:
                 values = [d[key] for d in batch]
                 if key in self._fields:
-                    values, lengths = self(values, key=key)
-                    result[key] = values
-                    result[key + '_length'] = lengths
+                    if isinstance(self._fields[key], string_types) and VarLengthCollateMode.from_string(self._fields[key]) is VarLengthCollateMode.SKIP:
+                        result[key] = values
+                    else:
+                        values, lengths = self(values, key=key)
+                        result[key] = values
+                        result[key + '_length'] = lengths
                 else:
                     result[key] = self(values)
             return result
@@ -190,16 +194,14 @@ class VarLengthCollateV2(object):
         raise TypeError((error_msg.format(type(batch[0]))))
 
     def _stack(self, values, key=None):
-        if key is None:
-            return torch.stack(values, 0, out=out)
-
-        mode_spec = self._fields[key]
-        if isinstance(mode_spec, tuple):
-            mode = VarLengthCollateMode.from_string(mode_spec[0])
-            parameters = mode_spec[1:]
-        else:
-            mode = VarLengthCollateMode.from_string(mode_spec)
-            parameters = tuple()
+        if key is not None:
+            mode_spec = self._fields[key]
+            if isinstance(mode_spec, tuple):
+                mode = VarLengthCollateMode.from_string(mode_spec[0])
+                parameters = mode_spec[1:]
+            else:
+                mode = VarLengthCollateMode.from_string(mode_spec)
+                parameters = tuple()
 
         out = None
         if torchdl._use_shared_memory:
@@ -222,6 +224,9 @@ class VarLengthCollateV2(object):
             if numel > 0:
                 storage = values[0].storage()._new_shared(numel)
                 out = values[0].new(storage)
+
+        if key is None:
+            return torch.stack(values, 0, out=out)
 
         if mode is VarLengthCollateMode.CONCAT:
             uvg = UniqueValueGetter('Tensor sizes should match except the first dim.')
