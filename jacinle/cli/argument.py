@@ -27,6 +27,7 @@ class JacArgumentParser(argparse.ArgumentParser):
         self.register('type', 'checked_file', _type_checked_file)
         self.register('type', 'checked_dir', _type_checked_dir)
         self.register('type', 'ensured_dir', _type_ensured_dir)
+        self.register('type', 'kv', _type_kv)
         self.register('action', 'set_device', SetDeviceAction)
         self.register('action', 'as_enum', AsEnumAction)
 
@@ -56,6 +57,36 @@ def _type_ensured_dir(string):
         import jacinle.io as io
         io.mkdir(string)
     return string
+
+
+def _type_kv(string):
+    """
+    In the format of:
+        --configs "data.int_or_float=int_value; data.string='string_value'"
+    """
+
+    kvs = list(string.split(';'))
+    for i, kv in enumerate(kvs):
+        k, v = kv.split('=')
+        if v.startswith('"') or v.startswith("'"):
+            assert v.endswith('"') or v.endswith("'")
+            v = v[1:-1]
+        else:
+            v = float(v)
+            if int(v) == v:
+                v = int(v)
+        kvs[i] = (k, v)
+
+    def apply(configs):
+        for k, v in kvs:
+            print('Set: {} = {}.'.format(k, v))
+            keys = k.split('.')
+            current = configs
+            for k in keys[:-1]:
+                current = current.setdefault(k, {})
+            current[keys[-1]] = v
+
+    return apply
 
 
 class SetDeviceAction(argparse.Action):
