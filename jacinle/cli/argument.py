@@ -59,26 +59,26 @@ def _type_ensured_dir(string):
     return string
 
 
-def _type_kv(string):
-    """
-    In the format of:
-        --configs "data.int_or_float=int_value; data.string='string_value'"
-    """
+class _KV(object):
+    def __init__(self, string):
+        self.string = string
 
-    kvs = list(string.split(';'))
-    for i, kv in enumerate(kvs):
-        k, v = kv.split('=')
-        if v.startswith('"') or v.startswith("'"):
-            assert v.endswith('"') or v.endswith("'")
-            v = v[1:-1]
-        else:
-            v = float(v)
-            if int(v) == v:
-                v = int(v)
-        kvs[i] = (k, v)
+        kvs = list(string.split(';'))
+        for i, kv in enumerate(kvs):
+            k, v = kv.split('=')
+            if v.startswith('"') or v.startswith("'"):
+                assert v.endswith('"') or v.endswith("'")
+                v = v[1:-1]
+            else:
+                v = float(v)
+                if int(v) == v:
+                    v = int(v)
+            kvs[i] = (k, v)
 
-    def apply(configs):
-        for k, v in kvs:
+        self.kvs = kvs
+
+    def apply(self, configs):
+        for k, v in self.kvs:
             print('Set: {} = {}.'.format(k, v))
             keys = k.split('.')
             current = configs
@@ -86,7 +86,14 @@ def _type_kv(string):
                 current = current.setdefault(k, {})
             current[keys[-1]] = v
 
-    return apply
+
+def _type_kv(string):
+    """
+    In the format of:
+        --configs "data.int_or_float=int_value; data.string='string_value'"
+    """
+
+    return _KV(string)
 
 
 class SetDeviceAction(argparse.Action):
