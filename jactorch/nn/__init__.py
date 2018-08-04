@@ -15,6 +15,7 @@ from .losses import *
 from .cnn_layers import *
 from .container import *
 from .conv import *
+from .coord_conv import *
 from .image_preprocess import *
 from .linear import *
 from .normalization import *
