@@ -4,7 +4,7 @@
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 07/13/2018
-# 
+#
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 

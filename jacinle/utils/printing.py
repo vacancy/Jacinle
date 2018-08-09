@@ -61,7 +61,7 @@ def stprint(data, key=None, indent=0, file=None, need_lock=True):
         elif t in (dict, collections.OrderedDict):
             typename = 'dict' if t is dict else 'ordered_dict'
             keys = sorted(data.keys()) if t is dict else data.keys()
-            _indent_print(typename, indent, prefix=key, file=file)
+            _indent_print(typename + '{', indent, prefix=key, file=file)
             for k in keys:
                 v = data[k]
                 stprint(v, indent=indent + 1, key='{}: '.format(k), file=file, need_lock=False)

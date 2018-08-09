@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : scheduler.py
+# File   : value_scheduler.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 07/18/2018
