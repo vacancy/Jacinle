@@ -10,6 +10,7 @@
 
 import os.path as osp
 import argparse
+import json
 
 from jacinle.utils.enum import JacEnum
 
@@ -63,7 +64,11 @@ class _KV(object):
     def __init__(self, string):
         self.string = string
 
-        kvs = list(string.split(';'))
+        if len(self.string) > 0:
+            kvs = list(string.split(';'))
+        else:
+            kvs = []
+
         for i, kv in enumerate(kvs):
             k, v = kv.split('=')
             if v.startswith('"') or v.startswith("'"):
@@ -85,6 +90,9 @@ class _KV(object):
             for k in keys[:-1]:
                 current = current.setdefault(k, {})
             current[keys[-1]] = v
+
+    def __jsonify__(self):
+        return json.dumps(self.kvs)
 
 
 def _type_kv(string):
