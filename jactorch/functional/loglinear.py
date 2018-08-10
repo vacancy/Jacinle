@@ -19,18 +19,12 @@ def logaddexp(x, y):
     return torch.max(x, y) + torch.log(1 + torch.exp(-torch.abs(y - x)))
 
 
-def safe_log(x):
-    # mask = (x < 1e-8).float()
-    # return x.clamp(min=1e-8).log() * (1 - mask) + -1e5 * mask
-    return x.log()
-
-
 def logsumexp(inputs, dim=-1, keepdim=False):
     inputs_max = inputs.max(dim=dim, keepdim=True)[0]
     inputs = inputs - inputs_max
     if not keepdim:
         inputs_max = inputs_max.squeeze(dim)
-    return safe_log(inputs.exp().sum(dim=dim, keepdim=keepdim)) + inputs_max
+    return _safe_log(inputs.exp().sum(dim=dim, keepdim=keepdim)) + inputs_max
     # return (inputs - F.log_softmax(inputs, dim=dim)).mean(dim, keepdim=keepdim)
 
 
@@ -47,7 +41,7 @@ def logmatmulexp(mat1, mat2, use_mm=False):
         mat1 = mat1 - mat1_max
         mat2 = mat2 - mat2_max
 
-        out = safe_log(torch.matmul(mat1.exp(), mat2.exp().t()))
+        out = _safe_log(torch.matmul(mat1.exp(), mat2.exp().t()))
         out = out + mat1_max + mat2_max.t()
     else:
         out_sum = mat1.unsqueeze(1) + mat2.unsqueeze(0)
@@ -69,7 +63,7 @@ def batch_logmatmulexp(mat1, mat2, use_mm=False):
         mat1 = mat1 - mat1_max
         mat2 = mat2 - mat2_max
 
-        out = safe_log(torch.bmm(mat1.exp(), mat2.exp().permute(0, 2, 1)))
+        out = _safe_log(torch.bmm(mat1.exp(), mat2.exp().permute(0, 2, 1)))
         out = out + mat1_max + mat2_max.permute(0, 2, 1)
     else:
         out_sum = mat1.unsqueeze(2) + mat2.unsqueeze(1)
@@ -88,4 +82,10 @@ def logits_or(x, y):
     f = -(x + y) / 2
     t = logaddexp(logaddexp((x - y) / 2, (y - x) / 2), -f)
     return t - f
+
+
+def _safe_log(x):
+    # mask = (x < 1e-8).float()
+    # return x.clamp(min=1e-8).log() * (1 - mask) + -1e5 * mask
+    return x.log()
 
