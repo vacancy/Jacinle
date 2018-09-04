@@ -19,7 +19,7 @@ __all__ = ['stprint', 'stformat', 'kvprint', 'kvformat', 'print_to_string', 'pri
 
 
 def _indent_print(msg, indent, prefix=None, end='\n', file=None):
-    print(*['  '] * indent, end='', file=file)
+    print('  ' * indent, end='', file=file)
     if prefix is not None:
         print(prefix, end='', file=file)
     print(msg, end=end, file=file)
