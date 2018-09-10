@@ -83,12 +83,14 @@ class _KV(object):
         self.kvs = kvs
 
     def apply(self, configs):
+        from jacinle.utils.container import G
+
         for k, v in self.kvs:
             print('Set: {} = {}.'.format(k, v))
             keys = k.split('.')
             current = configs
             for k in keys[:-1]:
-                current = current.setdefault(k, {})
+                current = current.setdefault(k, G())
             current[keys[-1]] = v
 
     def __jsonify__(self):
