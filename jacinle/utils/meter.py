@@ -65,6 +65,9 @@ class GroupMeters(object):
         for k, v in updates.items():
             self._meters[k].update(v, n=n)
 
+    def __getitem__(self, name):
+        return self._meters[name]
+
     @property
     def sum(self):
         return {k: m.sum for k, m in self._meters.items()}
