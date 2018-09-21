@@ -25,7 +25,18 @@ class GradMulti(Function):
         return grad_output * ctx.grad_multi, None
 
 
-grad_multi = GradMulti.apply
+def grad_multi(input, grad_multi):
+    """
+    Scale the gradient with respect to the input.
+
+    Args:
+        input (Tensor): the input tensor.
+        grad_multi (float): the constant for scaling up the gradient.
+
+    Returns (Tensor): of the same value as the input. But during the back-propagation,
+    it will scale the gradient by `grad_multi`.
+    """
+    return GradMulti.apply(input, grad_multi)
 
 
 class ZeroGradV1(Function):
@@ -36,10 +47,12 @@ class ZeroGradV1(Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        return None, None
+        return None
 
 
-zero_grad_v1 = ZeroGradV1.apply
+def zero_grad_v1(input):
+    """Zero-grad the variable."""
+    return ZeroGradV1.apply(input)
 
 
 def zero_grad_v2(v):

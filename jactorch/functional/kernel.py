@@ -38,6 +38,15 @@ def inverse_distance(f_lookup, f, p=2, eps=1e-8):
 
 
 def cosine_distance(f_lookup, f):
+    """
+    Cosine distance kernel.
+
+    Args:
+        f_lookup (FloatTensor): features of the lookup keys
+        f (FloatTensor): features of the value keys
+
+    Returns (FloatTensor): the attention mask for each lookup keys.
+    """
     f_lookup = normalize(f_lookup, 2, dim=1)
     f = normalize(f, 2, dim=1)
 
@@ -45,4 +54,13 @@ def cosine_distance(f_lookup, f):
 
 
 def dot(f_lookup, f):
+    """
+    Dot product kernel, essentially a cosine distance kernel without normalization.
+
+    Args:
+        f_lookup (FloatTensor): features of the lookup keys
+        f (FloatTensor): features of the value keys
+
+    Returns (FloatTensor): the attention mask for each lookup keys.
+    """
     return torch.mm(f_lookup, f.t())

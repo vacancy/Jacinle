@@ -3,12 +3,27 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Jacinle's documentation!
-===================================
+============
+Jacinle
+============
+
+Jacinle is a personal python toolbox developed by Jiayuan Mao (github: @vacancy). It contains a range of utility functions for python development, including project configuration, file IO, image processing, inter-process communication, etc.
+
+Note
+===============
+Comming soon.
+
+Package Reference
+=================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+
+   jacinle
+   jaclearn
+   jacnp
+   jactf
+   jactorch
 
 
 Indices and tables
@@ -17,18 +32,4 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
-Modules
-==================
-
-.. toctree::
-   :maxdepth: 4
-
-   jacinle
-   jaclearn
-   jacnp
-   jactf
-   jactorch
-   vendors
 
