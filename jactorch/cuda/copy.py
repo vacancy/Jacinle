@@ -25,7 +25,7 @@ def async_copy_to(obj, dev, main_stream=None):
         dev (int): the target device.
         main_stream (stream): the main stream to be synchronized.
 
-    Returns:
+    Returns: a deep copy of the data structure, with each tensor copied to the device.
 
     """
     # Adapted from: https://github.com/pytorch/pytorch/blob/master/torch/nn/parallel/_functions.py

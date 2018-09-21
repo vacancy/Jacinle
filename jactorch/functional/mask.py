@@ -35,6 +35,7 @@ def masked_average(tensor, mask, eps=1e-8):
         eps (float): eps for numerical stability.
 
     Returns (FloatTensor): the average of the input tensor.
+
     """
     tensor = tensor.float()
     mask = mask.float()
@@ -61,6 +62,7 @@ def length_masked_reversed(tensor, lengths, dim=1):
     Returns (Tensor):
         A Variable with the same size as tensor, but with each sequence
         reversed according to its length.
+
     """
 
     assert dim == 1

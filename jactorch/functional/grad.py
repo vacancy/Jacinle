@@ -35,6 +35,7 @@ def grad_multi(input, grad_multi):
 
     Returns (Tensor): of the same value as the input. But during the back-propagation,
     it will scale the gradient by `grad_multi`.
+
     """
     return GradMulti.apply(input, grad_multi)
 

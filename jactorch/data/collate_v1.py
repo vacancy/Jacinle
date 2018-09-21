@@ -35,6 +35,7 @@ class VarLengthCollate(object):
         Args:
             fields: the fields to be collated with variant length.
             mode: the collate mode.
+
         """
         self._fields = fields
         self._mode = VarLengthCollateMode.from_string(mode)

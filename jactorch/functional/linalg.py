@@ -25,5 +25,6 @@ def normalize(tensor, p=2, dim=-1, eps=1e-8):
         eps (float): eps for numerical stability.
 
     Returns (Tensor): normalized input.
+
     """
     return tensor / tensor.norm(p, dim=dim, keepdim=True).clamp(min=eps)

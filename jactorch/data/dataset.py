@@ -22,6 +22,7 @@ class ProxyDataset(Dataset):
 
         Args:
             base_dataset (Dataset): the base dataset.
+
         """
         self._base_dataset = base_dataset
 
@@ -45,6 +46,7 @@ class ListDataset(Dataset):
 
         Args:
             list (list[Any]): the list of data.
+
         """
         self.list = list
 

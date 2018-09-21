@@ -31,6 +31,7 @@ def reversed(x, dim=-1):
         dim: the dimension to be reversed.
 
     Returns (Tensor): of same shape as `x`, but with the dimension `dim` reversed.
+
     """
     # https://github.com/pytorch/pytorch/issues/229#issuecomment-350041662
     xsize = x.size()
@@ -54,6 +55,7 @@ def one_hot(index, nr_classes):
         nr_classes (int): number of total classes.
 
     Returns (Tensor): shape `(N, nr_classes)`, one-hot representation of the class labels.
+
     """
     assert index.dim() == 1
     mask = torch.zeros(index.size(0), nr_classes, dtype=torch.float32, device=index.device)
@@ -72,6 +74,7 @@ def one_hot_nd(index, nr_classes):
         nr_classes (int): number of total classes.
 
     Returns (Tensor): one-hot representation of the class labels, the label dimension is assumed to be the last one.
+
     """
     index_size = index.size()
     return one_hot(index.view(-1), nr_classes).view(index_size + (nr_classes, ))
@@ -88,6 +91,7 @@ def one_hot_dim(index, nr_classes, dim):
         dim (int): dimension of the class label.
 
     Returns (Tensor): one-hot representation of the class labels.
+
     """
     return one_hot_nd(index, nr_classes).transpose(-1, dim)
 
@@ -105,6 +109,7 @@ def inverse_permutation(perm):
         perm (LongTensor): shape `(N, )` representing a permutation of 0 ~ N - 1.
 
     Returns (LongTensor): the inverse permutation, which satisfies: `inv[perm[x]] = x`.
+
     """
     assert perm.dim() == 1
     length = perm.size(0)
@@ -121,6 +126,7 @@ def index_one_hot(tensor, dim, index):
         index: (LongTensor): the tensor containing the indices along the `dim` dimension.
 
     Returns (Tensor): `tensor[:, :, index, :, :]`.
+
     """
     return tensor.gather(dim, index.unsqueeze(dim)).squeeze(dim)
 
@@ -133,6 +139,7 @@ def set_index_one_hot_(tensor, dim, index, value):
         tensor (Tensor): input.
         dim (int) the dimension.
         index: (LongTensor): the tensor containing the indices along the `dim` dimension.
+
     """
     if not isinstance(value, (int, float)):
         value = value.unsqueeze(dim)
@@ -147,6 +154,7 @@ def index_one_hot_ellipsis(tensor, dim, index):
         index: (LongTensor): the tensor containing the indices along the `dim` dimension.
 
     Returns (Tensor): `tensor[:, :, index, ...]`.
+
     """
     tensor_shape = tensor.size()
     tensor = tensor.view(prod(tensor_shape[:dim]), tensor_shape[dim], prod(tensor_shape[dim+1:]))
