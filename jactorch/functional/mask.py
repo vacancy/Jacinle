@@ -34,7 +34,8 @@ def masked_average(tensor, mask, eps=1e-8):
         mask (Tensor): a mask indicating the element-wise weight.
         eps (float): eps for numerical stability.
 
-    Returns (FloatTensor): the average of the input tensor.
+    Returns:
+        FloatTensor: the average of the input tensor.
 
     """
     tensor = tensor.float()
@@ -59,8 +60,8 @@ def length_masked_reversed(tensor, lengths, dim=1):
         tensor (Tensor): padded batch of variable length sequences.
         lengths (LongTensor): list of sequence lengths
 
-    Returns (Tensor):
-        A Variable with the same size as tensor, but with each sequence
+    Returns:
+        Tensor: A Variable with the same size as tensor, but with each sequence
         reversed according to its length.
 
     """

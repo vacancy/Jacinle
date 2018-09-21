@@ -60,7 +60,8 @@ class SyncMaster(object):
         Args:
             identifier: an identifier, usually is the device id.
 
-        Returns: a `SlavePipe` object which can be used to communicate with the master device.
+        Returns:
+            a `SlavePipe` object which can be used to communicate with the master device.
 
         """
         if self._activated:
@@ -82,7 +83,8 @@ class SyncMaster(object):
             master_msg: the message that the master want to send to itself. This will be placed as the first
             message when calling `master_callback`. For detailed usage, see `_SynchronizedBatchNorm` for an example.
 
-        Returns: the message to be sent back to the master device.
+        Returns:
+            the message to be sent back to the master device.
 
         """
         self._activated = True

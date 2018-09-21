@@ -18,9 +18,8 @@ from six import string_types
 
 from jacinle.utils.argument import UniqueValueGetter
 from jacinle.utils.enum import JacEnum
-from .collate_v1 import VarLengthCollate
 
-__all__ = ['user_scattered_collate', 'VarLengthCollateMode', 'VarLengthCollate', 'VarLengthCollateV2']
+__all__ = ['numpy_type_map', 'user_scattered_collate', 'VarLengthCollateMode', 'VarLengthCollate', 'VarLengthCollateV2']
 
 numpy_type_map = {
     'float64': torch.DoubleTensor,
@@ -59,20 +58,16 @@ class VarLengthCollateV2(object):
     To archive this, this module provides a fine-grained collate control over each input field and supports multiple
     ways for collating the data. It assumes that the input data is a dict. Example:
 
-    ```
-    collate_fn = VarLengthCollateV2({'sentence': 'pad', 'image': 'padimage'})
-    collate_fn({
-        'sentence': [torch.rand(3), torch.rand(4)],
-        'image': [torch.rand(3, 16, 14), torch.rand(3, 8, 12)]
-    })
-    ```
+    > collate_fn = VarLengthCollateV2({'sentence': 'pad', 'image': 'padimage'})
+    > collate_fn({
+    >     'sentence': [torch.rand(3), torch.rand(4)],
+    >     'image': [torch.rand(3, 16, 14), torch.rand(3, 8, 12)]
+    > })
 
     It can be directly passed to the DataLaoder as the parameter `collate_fn`.
 
-    ```
-    collate_fn = VarLengthCollateV2({'sentence': 'pad', 'image': 'padimage'})
-    dataloader = DataLoader(dataset, ..., collate_fn=collate_fn)
-    ```
+    > collate_fn = VarLengthCollateV2({'sentence': 'pad', 'image': 'padimage'})
+    > dataloader = DataLoader(dataset, ..., collate_fn=collate_fn)
 
     Here is a complete list of the supported collate mode:
 
@@ -84,6 +79,7 @@ class VarLengthCollateV2(object):
     4. pad2d: similar to the pad mode, it takes 2d inputs (h, w) and pads them.
     5. padimage: similar to the pad2d, except that it takes 3d inputs (d, h, w), where the d dimension will not be
     padded.
+
     """
     def __init__(self, fields):
         self._fields = fields
@@ -223,4 +219,9 @@ class VarLengthCollateV2(object):
             return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
         else:
             raise ValueError('Unknown collation mode: {}.'.format(mode))
+
+
+def VarLengthCollate(*args, **kwargs):
+    from .collate_v1 import VarLengthCollate
+    return VarLengthCollate(*args, **kwargs)
 

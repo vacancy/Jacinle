@@ -21,7 +21,8 @@ def atanh(x, eps=1e-8):
         x (FloatTensor): input.
         eps (float): eps for numerical stability.
 
-    Returns (FloatTensor): :math:`arctanh(x)`.
+    Returns:
+        FloatTensor: :math:`arctanh(x)`.
 
     """
     return 0.5 * torch.log(( (1 + x) / (1 - x).clamp(min=eps) ).clamp(min=eps))
@@ -35,7 +36,8 @@ def logit(x, eps=1e-8):
         x (FloatTensor): input.
         eps (float): eps for numerical stability.
 
-    Returns (FloatTensor): :math:`logit(x)`.
+    Returns:
+        FloatTensor: :math:`logit(x)`.
 
     """
     return -torch.log((1 / x.clamp(min=eps) - 1).clamp(min=eps))
