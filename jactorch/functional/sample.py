@@ -27,7 +27,9 @@ class SampleBernoulli(autograd.Function):
     def backward(ctx, grad_output):
         return grad_output
 
-sample_bernoulli = SampleBernoulli.apply
+
+def sample_bernoulli(input):
+    return SampleBernoulli.apply(input)
 
 
 class SampleMultinomial(autograd.Function):

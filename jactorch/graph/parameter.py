@@ -52,7 +52,8 @@ def compose_param_groups(model, *groups, filter_grad=True, verbose=True):
         *groups: groups defined by patterns, of form (pattern, special_params)
         filter_grad: only choose parameters with requires_grad=True
 
-    Returns: param_groups argument that can be passed to torch optimizers.
+    Returns:
+        param_groups argument that can be passed to torch optimizers.
 
     """
     matcher = NameMatcher([(g[0], i) for i, g in enumerate(groups)])

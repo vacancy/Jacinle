@@ -11,6 +11,21 @@
 __all__ = ['normalize']
 
 
-def normalize(a, p=2, dim=-1, eps=1e-8):
-    return a / a.norm(p, dim=dim, keepdim=True).clamp(min=eps)
+def normalize(tensor, p=2, dim=-1, eps=1e-8):
+    """
+    Normalize the input along a specific dimension.
 
+    .. math::
+        tensor = \frac{tensor}{\max(\lVert tensor \rVert_p, \epsilon)}
+
+    Args:
+        tensor (Tensor): input.
+        p (int): the exponent value in the norm formulation. Default: 2.
+        dim (int): the dimension of the normalization.
+        eps (float): eps for numerical stability.
+
+    Returns:
+        Tensor: normalized input.
+
+    """
+    return tensor / tensor.norm(p, dim=dim, keepdim=True).clamp(min=eps)

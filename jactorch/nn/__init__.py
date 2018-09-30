@@ -9,8 +9,10 @@
 # Distributed under terms of the MIT license.
 
 from .gumbel_softmax import *
+from .prroi_pool import *
 from .sync_batchnorm import *
 from .losses import *
+from .mask import *
 
 from .cnn_layers import *
 from .container import *
@@ -20,11 +22,10 @@ from .image_preprocess import *
 from .linear import *
 from .normalization import *
 from .probability import *
-from .prroi_pool import *
 from .quickaccess import *
-from .simple import *
 from .residual import *
 from .rnn_layers import *
 from .rnn_utils import *
+from .simple import *
 from .word_embedding import *
 

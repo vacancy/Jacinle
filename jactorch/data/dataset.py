@@ -14,7 +14,16 @@ __all__ = ['ProxyDataset', 'ListDataset']
 
 
 class ProxyDataset(Dataset):
+    """
+    A proxy dataset base class for wrapping a base dataset.
+    """
     def __init__(self, base_dataset):
+        """
+
+        Args:
+            base_dataset (Dataset): the base dataset.
+
+        """
         self._base_dataset = base_dataset
 
     @property
@@ -29,7 +38,16 @@ class ProxyDataset(Dataset):
 
 
 class ListDataset(Dataset):
+    """
+    Wraps a list into a pytorch Dataset.
+    """
     def __init__(self, list):
+        """
+
+        Args:
+            list (list[Any]): the list of data.
+
+        """
         self.list = list
 
     def __getitem__(self, item):

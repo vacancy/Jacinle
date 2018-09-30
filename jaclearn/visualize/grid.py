@@ -25,7 +25,8 @@ def image_grid(all_images, grid_desc):
         all_images: A list of images. Should be np.ndarray of shape (h, w, c).
         grid_desc: The grid description.
 
-    Returns: A single big image created.
+    Returns:
+        A single big image created.
     """
 
     axes_info = []

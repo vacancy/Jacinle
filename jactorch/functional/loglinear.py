@@ -16,19 +16,22 @@ __all__ = ['logaddexp', 'logsumexp', 'logmatmulexp', 'batch_logmatmulexp', 'logi
 
 
 def logaddexp(x, y):
+    """Computes :math:`log(exp(x) + exp(y))` in a numerically stable way."""
     return torch.max(x, y) + torch.log(1 + torch.exp(-torch.abs(y - x)))
 
 
-def logsumexp(inputs, dim=-1, keepdim=False):
-    inputs_max = inputs.max(dim=dim, keepdim=True)[0]
-    inputs = inputs - inputs_max
+def logsumexp(tensor, dim=-1, keepdim=False):
+    """Computes `tensor.exp().sum(dim, keepdim).log()` in a numerically stable way."""
+    inputs_max = tensor.max(dim=dim, keepdim=True)[0]
+    tensor = tensor - inputs_max
     if not keepdim:
         inputs_max = inputs_max.squeeze(dim)
-    return _safe_log(inputs.exp().sum(dim=dim, keepdim=keepdim)) + inputs_max
+    return _safe_log(tensor.exp().sum(dim=dim, keepdim=keepdim)) + inputs_max
     # return (inputs - F.log_softmax(inputs, dim=dim)).mean(dim, keepdim=keepdim)
 
 
 def logmatmulexp(mat1, mat2, use_mm=False):
+    """Computes `(mat1.exp() @ mat2.exp()).log()` in a numerically stable way."""
     mat1_shape = mat1.size()
     mat2_shape = mat2.size()
     mat1 = mat1.contiguous().view(-1, mat1_shape[-1])
@@ -51,6 +54,7 @@ def logmatmulexp(mat1, mat2, use_mm=False):
 
 
 def batch_logmatmulexp(mat1, mat2, use_mm=False):
+    """Computes `torch.bmm(mat1.exp(), mat2.exp()).log()` in a numerically stable way."""
     mat1_shape = mat1.size()
     mat2_shape = mat2.size()
     mat1 = mat1.contiguous().view(mat1_shape[0], -1, mat1_shape[-1])
@@ -73,12 +77,14 @@ def batch_logmatmulexp(mat1, mat2, use_mm=False):
 
 
 def logits_and(x, y):
+    """Computes `logit(sigmoid(x) * sigmoid(y))` in a numerically stable way."""
     t = (x + y) / 2
     f = logaddexp(logaddexp((x - y) / 2, (y - x) / 2), -t)
     return t - f
 
 
 def logits_or(x, y):
+    """Computes `logit(sigmoid(x) + sigmoid(y) - sigmoid(x) * sigmoid(y))` in a numerically stable way."""
     f = -(x + y) / 2
     t = logaddexp(logaddexp((x - y) / 2, (y - x) / 2), -f)
     return t - f
