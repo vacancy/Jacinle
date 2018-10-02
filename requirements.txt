@@ -1,7 +1,7 @@
 six
 pyyaml
 tqdm
-zmq
+pyzmq
 h5py
 numpy
 scipy
