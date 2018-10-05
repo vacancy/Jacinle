@@ -60,6 +60,9 @@ class GView(object):
     def raw(self):
         return object.__getattribute__(self, '_dict')
 
+    def update(self, other):
+        self.raw().update(other)
+
 
 class SlotAttrObject(object):
     def __init__(self, **kwargs):
