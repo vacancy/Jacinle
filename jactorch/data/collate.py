@@ -90,7 +90,7 @@ class VarLengthCollateV2(object):
 
         if key is not None:
             assert torch.is_tensor(batch[0]) or (elem_type.__module__ == 'numpy' and elem_type.__name__ != 'str_'
-                                                 and elem_type.__name__ != 'string_')
+                    and elem_type.__name__ != 'string_'), 'Invalid field: {}.'.format(key)
 
         if torch.is_tensor(batch[0]):
             return self._stack(batch, key)

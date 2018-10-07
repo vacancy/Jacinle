@@ -54,6 +54,15 @@ class GView(object):
     def __delattr__(self, k):
         del self.raw()[k]
 
+    def __getitem__(self, k):
+        return self.raw()[k]
+
+    def __setitem__(self, k, v):
+        self.raw()[k] = v
+
+    def __delitem__(self, k):
+        del self.raw()[k]
+
     def __contains__(self, k):
         return k in self.raw()
 
