@@ -14,7 +14,7 @@ from jacinle.logging import get_logger
 
 logger = get_logger(__file__)
 
-__all__ = ['ProxyDataset', 'ListDataset']
+__all__ = ['ProxyDataset', 'ListDataset', 'FilterableDatasetUnwrapped', 'FilterableDatasetView']
 
 
 class ProxyDataset(Dataset):
