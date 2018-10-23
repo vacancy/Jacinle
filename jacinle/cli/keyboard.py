@@ -44,10 +44,10 @@ def yes_or_no(question, default="yes"):
     valid = {"yes": True, "y": True, "ye": True,
              "no": False, "n": False}
 
-    quiet = os.getenv('TART_QUIET', '')
+    quiet = os.getenv('JAC_QUIET', '')
     if quiet != '':
         quiet = quiet.lower()
-        assert quiet in valid, 'Invalid TART_QUIET environ: {}.'.format(quiet) 
+        assert quiet in valid, 'Invalid JAC_QUIET environ: {}.'.format(quiet)
         choice = valid[quiet]
         sys.stdout.write('TART Quiet run:\n\t{}\n\tChoice={}\n'.format(question, 'Y' if choice else 'N'))
         return choice
