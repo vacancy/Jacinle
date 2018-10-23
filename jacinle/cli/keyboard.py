@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import os
+import sys
 import os.path as osp
 import jacinle.io as io
 
@@ -47,7 +49,7 @@ def yes_or_no(question, default="yes"):
     quiet = os.getenv('TART_QUIET', '')
     if quiet != '':
         quiet = quiet.lower()
-        assert quiet in valid, 'Invalid TART_QUIET environ: {}.'.format(quiet) 
+        assert quiet in valid, 'Invalid TART_QUIET environ: {}.'.format(quiet)
         choice = valid[quiet]
         sys.stdout.write('TART Quiet run:\n\t{}\n\tChoice={}\n'.format(question, 'Y' if choice else 'N'))
         return choice
