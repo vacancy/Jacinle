@@ -9,10 +9,11 @@
 # Distributed under terms of the MIT license.
 
 import copy
+import collections
 
 from .printing import kvformat, kvprint
 
-__all__ = ['G', 'g', 'GView', 'SlotAttrObject']
+__all__ = ['G', 'g', 'GView', 'SlotAttrObject', 'OrderedSet']
 
 
 class G(dict):
@@ -96,3 +97,27 @@ class SlotAttrObject(object):
 
     def clone(self):
         return copy.deepcopy(self)
+
+
+class OrderedSet(object):
+    def __init__(self, initial_list=None):
+        if initial_list is not None:
+            self._dict = collections.OrderedDict([(v, True) for v in initial_list])
+        else:
+            self._dict = collections.OrderedDict()
+
+    def append(self, value):
+        self._dict[value] = True
+
+    def remove(self, value):
+        del self._dict[value]
+
+    def __contains__(self, value):
+        return value in self._dict
+
+    def __iter__(self):
+        return self._dict.keys()
+
+    def as_list(self):
+        return list(self._dict.keys())
+

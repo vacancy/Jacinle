@@ -70,15 +70,15 @@ class GroupMeters(object):
 
     @property
     def sum(self):
-        return {k: m.sum for k, m in self._meters.items()}
+        return {k: m.sum for k, m in self._meters.items() if m.count > 0}
 
     @property
     def avg(self):
-        return {k: m.avg for k, m in self._meters.items()}
+        return {k: m.avg for k, m in self._meters.items() if m.count > 0}
 
     @property
     def val(self):
-        return {k: m.val for k, m in self._meters.items()}
+        return {k: m.val for k, m in self._meters.items() if m.count > 0}
 
     def format(self, caption, values, kv_format, glue):
         meters_kv = self._canonize_values(values)

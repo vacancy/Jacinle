@@ -103,7 +103,7 @@ class TrainerEnv(object):
         for param_group in self._optimizer.param_groups:
             param_group['lr'] *= decay
 
-    def step(self, feed_dict, reduce_func=default_reduce_func, cast_tensor=True):
+    def step(self, feed_dict, reduce_func=default_reduce_func, cast_tensor=False):
         assert self._model.training, 'Step a evaluation-mode model.'
 
         self.trigger_event('step:before', self)
@@ -135,7 +135,7 @@ class TrainerEnv(object):
 
         return loss_f, monitors_f, output_dict, {'time/gpu': end - begin}
 
-    def evaluate(self, feed_dict, cast_tensor=True):
+    def evaluate(self, feed_dict, cast_tensor=False):
         assert not self._model.training, 'Evaluating a training-mode model.'
         begin = time.time()
         if cast_tensor:
