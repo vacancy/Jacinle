@@ -13,11 +13,14 @@ import random
 import torch
 import torchvision.transforms as transforms
 
+import jactorch.transforms.image as jac_transforms
+
 from . import functional as F
 
 __all__ = ["Compose", "Lambda", "ToTensor", "NormalizeBbox", "DenormalizeBbox", "Normalize", "Resize", "CenterCrop", "Pad",
            "RandomCrop", "RandomHorizontalFlip", "RandomVerticalFlip", "RandomResizedCrop",
-           "LinearTransformation", "ColorJitter", "RandomRotation", "Grayscale", "RandomGrayscale"]
+           "LinearTransformation", "ColorJitter", "RandomRotation", "Grayscale", "RandomGrayscale",
+           "PadMultipleOf"]
 
 
 class Compose(transforms.Compose):
@@ -122,3 +125,9 @@ class RandomRotation(transforms.RandomRotation):
         assert self.degrees[0] == self.degrees[1] == 0
         angle = self.get_params(self.degrees)
         return F.rotate(img, bbox, angle, self.resample, self.expand, self.center)
+
+
+class PadMultipleOf(jac_transforms.PadMultipleOf):
+    def __call__(self, img, coor):
+        return F.pad_multiple_of(img, coor, self.multiple)
+

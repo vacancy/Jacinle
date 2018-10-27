@@ -62,8 +62,8 @@ class BinaryCrossEntropyLossWithProbs(AverageLoss):
 
 
 class PNBalancedBinaryCrossEntropyLossWithProbs(nn.Module):
-    def forward(self, probs, target):
-        return F.pn_balanced_binary_cross_entropy_with_probs(probs, target)
+    def forward(self, probs, target, mask=None):
+        return F.pn_balanced_binary_cross_entropy_with_probs(probs, target, mask)
 
 
 class CrossEntropyLossWithLogits(AverageLoss):

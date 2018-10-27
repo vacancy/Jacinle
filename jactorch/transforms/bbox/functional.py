@@ -54,7 +54,7 @@ def center_crop(img, bbox, output_size):
 
 def pad(img, bbox, padding, fill=0):
     img_new = TF.pad(img, padding, fill=fill)
-    bbox = bbox.bbox.copy()
+    bbox = bbox.copy()
     if isinstance(padding, int):
         padding = (padding, padding, padding, padding)
     elif len(padding) == 2:
@@ -97,4 +97,13 @@ def resized_crop(img, bbox, i, j, h, w, size, interpolation=Image.BILINEAR):
 def rotate(img, bbox, angle, resample, expand, center):
     assert angle == 0
     return img, bbox
+
+
+def pad_multiple_of(img, coor, multiple, fill=0):
+    h, w = img.height, img.width
+    hh = h - h % multiple + multiple * int(h % multiple == 0)
+    ww = w - w % multiple + multiple * int(w % multiple == 0)
+    if h != hh or w != ww:
+        return pad(img, coor, (0, 0, ww - w, hh - h), fill=fill)
+    return img, coor
 

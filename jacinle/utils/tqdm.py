@@ -37,6 +37,8 @@ def tqdm(iterable, **kwargs):
 
     if type(iterable) is int:
         iterable, total = range(iterable), iterable
+    elif type(iterable) is float:
+        iterable, total = range(int(iterable)), iterable
     else:
         try:
             total = len(iterable)

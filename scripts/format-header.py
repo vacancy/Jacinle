@@ -43,11 +43,15 @@ def log(*args, **kwargs):
 def process(filename):
     with open(filename) as f:
         lines = f.readlines()
-    
+
+    if len(lines) == 0:
+        return
+
     filetype = 'unk'
     fields = dict()
     fields['project'] = args.project
 
+    i = 0
     for i, line in enumerate(lines):
         if i == 0:
             if line.startswith('#! /usr/bin/env'):
@@ -63,10 +67,10 @@ def process(filename):
                     filetype = 'unk'
                 else:
                     filetype = 'force'
-    
+
         if filetype == 'unk':
             break
-    
+
         if not line.startswith('#'):
             break
 
@@ -100,7 +104,7 @@ def process(filename):
             if date[2] == '18':
                 date[2] = '2018'
             fields['date'] = '/'.join(date)
-    
+
         if i == 8 and filetype == 'vim':
             if not line_trim.startswith('Distributed'):
                 log('  vim-typed file error: {}'.format(filename))
@@ -114,9 +118,9 @@ def process(filename):
     if filetype == 'unk':
         logger.warn('Unkown filetype.')
         return
-    
+
     extras = lines[i:]
-    
+
     if len(fields) != 5:
         logger.warn('Incomplete header.')
 
