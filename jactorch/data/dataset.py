@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import itertools
+
 from torch.utils.data.dataset import Dataset
 
 from jacinle.logging import get_logger
@@ -132,6 +134,13 @@ class FilterableDatasetView(FilterableDatasetUnwrapped):
         logger.info('Trim the dataset: #samples = {}.'.format(length))
         return type(self)(self, indices=list(range(0, length)), filter_name='trim[{}]'.format(length))
 
+    def trim_range(self, begin, end=None):
+        if end is None:
+            end = len(self)
+        assert end <= len(self)
+        logger.info('Trim the dataset: #samples = {}.'.format(end - begin))
+        return type(self)(self, indices=list(range(begin, end)), filter_name='trimrange[{}:{}]'.format(begin, end))
+
     def split_trainval(self, split):
         assert split < len(self)
         nr_train = split
@@ -151,6 +160,9 @@ class FilterableDatasetView(FilterableDatasetUnwrapped):
                     type(self)(self, indices=list(range(0, i * block)) + list(range((i + 1) * block, len(self))), filter_name='fold{}[train]'.format(i + 1)),
                     type(self)(self, indices=list(range(i * block, (i + 1) * block)), filter_name='fold{}[val]'.format(i + 1))
             )
+
+    def repeat(self, nr_repeats):
+        return type(self)(self, indices=list(itertools.chain(*[range(len(self)) for _ in range(nr_repeats)])), filter_name='repeat[{}]'.format(nr_repeats))
 
     def __getitem__(self, index):
         if self.indices is None:

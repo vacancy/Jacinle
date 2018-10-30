@@ -43,16 +43,19 @@ def yes_or_no(question, default="yes"):
     The "answer" return value is True for "yes" or False for "no".
     """
 
-    valid = {"yes": True, "y": True, "ye": True,
-             "no": False, "n": False}
+    valid = {
+            "yes": True, "y": True, "ye": True,
+            "no": False, "n": False,
+            "default": None, "def": None, "d": None
+    }
 
     quiet = os.getenv('JAC_QUIET', '')
     if quiet != '':
         quiet = quiet.lower()
         assert quiet in valid, 'Invalid JAC_QUIET environ: {}.'.format(quiet)
         choice = valid[quiet]
-        sys.stdout.write('TART Quiet run:\n\t{}\n\tChoice={}\n'.format(question, 'Y' if choice else 'N'))
-        return choice
+        sys.stdout.write('Jacinle Quiet run:\n\tQuestion: {}\n\tChoice: {}\n'.format(question, 'Default' if choice is None else 'Yes' if choice else 'No'))
+        return choice if choice is not None else default
 
     if default is None:
         prompt = " [y/n] "

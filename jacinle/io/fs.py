@@ -24,8 +24,8 @@ from .common import get_ext
 
 __all__ = [
     'as_file_descriptor',
-    'open', 'open_h5', 'open_gz',
-    'load', 'load_h5', 'load_pkl', 'load_pklgz', 'load_npy', 'load_npz', 'load_pth',
+    'open', 'open_txt', 'open_h5', 'open_gz',
+    'load', 'load_txt', 'load_h5', 'load_pkl', 'load_pklgz', 'load_npy', 'load_npz', 'load_pth',
     'dump', 'dump_pkl', 'dump_pklgz', 'dump_npy', 'dump_npz', 'dump_pth',
     'link', 'mkdir', 'remove', 'locate_newest_file', 'io_function_registry'
 ]
@@ -42,6 +42,10 @@ def as_file_descriptor(fd_or_fname, mode='r'):
 def open_h5(file, mode, **kwargs):
     import h5py
     return h5py.File(file, mode, **kwargs)
+
+
+def open_txt(file, mode, **kwargs):
+    return open(file, mode, **kwargs)
 
 
 def open_gz(file, mode):
@@ -65,6 +69,11 @@ def load_pklgz(file, **kwargs):
 
 def load_h5(file, **kwargs):
     return open_h5(file, 'r', **kwargs)
+
+
+def load_txt(file, **kwargs):
+    with open(file, 'r', **kwargs) as f:
+        return f.readlines()
 
 
 def load_npy(file, **kwargs):
@@ -117,12 +126,14 @@ def _default_io_fallback(file, *args, **kwargs):
 
 
 io_function_registry = _IOFunctionRegistryGroup()
+io_function_registry.register('open', '.txt', open_txt)
 io_function_registry.register('open', '.h5', open_h5)
 io_function_registry.register('open', '.gz', open_gz)
 io_function_registry.register('open', '__fallback__', sys_open)
 
 io_function_registry.register('load', '.pkl',   load_pkl)
 io_function_registry.register('load', '.pklgz', load_pklgz)
+io_function_registry.register('load', '.txt',   load_txt)
 io_function_registry.register('load', '.h5',    load_h5)
 io_function_registry.register('load', '.npy',   load_npy)
 io_function_registry.register('load', '.npz',   load_npz)

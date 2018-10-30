@@ -66,7 +66,7 @@ class CenterCrop(transforms.CenterCrop):
         return F.center_crop(img, coor, self.size)
 
 
-class Pad(transforms.Pad):
+class Pad(jac_transforms.Pad):
     def __call__(self, img, coor):
         return F.pad(img, coor, self.padding, self.fill)
 
@@ -128,5 +128,5 @@ class RandomRotation(transforms.RandomRotation):
 
 class PadMultipleOf(jac_transforms.PadMultipleOf):
     def __call__(self, img, coor):
-        return F.pad_multiple_of(img, coor, self.multiple)
+        return F.pad_multiple_of(img, coor, self.multiple, mode=self.mode, fill=self.fill)
 
