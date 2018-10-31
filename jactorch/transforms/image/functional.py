@@ -35,8 +35,8 @@ def pad(img, padding, mode='constant', fill=0):
 
 def pad_multiple_of(img, multiple, mode='constant', fill=0):
     h, w = img.height, img.width
-    hh = h - h % self.multiple + self.multiple * int(h % self.multiple != 0)
-    ww = w - w % self.multiple + self.multiple * int(w % self.multiple != 0)
+    hh = h - h % multiple + multiple * int(h % multiple != 0)
+    ww = w - w % multiple + multiple * int(w % multiple != 0)
     if h != hh or w != ww:
         return pad(img, (0, 0, ww - w, hh - h), mode=mode, fill=fill)
     return img
