@@ -65,11 +65,20 @@ def tqdm_pbar(**kwargs):
 
 
 def tqdm_gofor(iterable, **kwargs):
-    kwargs.setdefault('total', len(iterable))
+    try:
+        total = len(iterable)
+    except TypeError:
+        total = None
+    kwargs.setdefault('total', total)
     return tqdm(gofor(iterable), **kwargs)
 
 
 def tqdm_zip(*iterable, **kwargs):
-    kwargs.setdefault('total', len(iterable[0]))
+    try:
+        total = len(iterable[0])
+    except TypeError:
+        total = None
+
+    kwargs.setdefault('total', total)
     return tqdm(zip(*iterable), **kwargs)
 

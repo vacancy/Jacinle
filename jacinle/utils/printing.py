@@ -83,11 +83,14 @@ def stformat(data, key=None, indent=0, max_depth=100):
     return print2format(stprint)(data, key=key, indent=indent, need_lock=False, max_depth=max_depth)
 
 
-def kvprint(data, sep=': ', end='\n', file=None, need_lock=True):
+def kvprint(data, sep=' : ', end='\n', max_key_len=None, file=None, need_lock=True):
     with kvprint.locks.synchronized(file, need_lock):
         keys = sorted(data.keys())
         lens = list(map(len, keys))
-        max_len = max(lens)
+        if max_key_len is not None:
+            max_len = max_key_len
+        else:
+            max_len = max(lens)
         for k in keys:
             print(k + ' ' * (max_len - len(k)), data[k], sep=sep, end=end, file=file, flush=True)
 
@@ -95,8 +98,8 @@ def kvprint(data, sep=': ', end='\n', file=None, need_lock=True):
 kvprint.locks = LockRegistry()
 
 
-def kvformat(data, sep=':', end='\n'):
-    return print2format(kvprint)(data, sep=sep, end=end, need_lock=False)
+def kvformat(data, sep=' : ', end='\n', max_key_len=None):
+    return print2format(kvprint)(data, sep=sep, end=end, max_key_len=max_key_len, need_lock=False)
 
 
 class _PrintToStringContext(object):
