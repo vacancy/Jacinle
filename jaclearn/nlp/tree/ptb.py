@@ -71,7 +71,7 @@ class PTBNode(Node):
 
         if len(stack) != 1:
             raise ValueError('Invalid PTB encoding.')
-    
+
         return stack[0]
 
     def to_string(self, to_string=True, compressed=True, vtype=True):
@@ -113,7 +113,7 @@ class PTBNode(Node):
             return s
 
         if compressed:
-            return ''.join(s) 
+            return ''.join(s)
         return ' '.join(s)
 
     def to_sentence(self, to_string=True):

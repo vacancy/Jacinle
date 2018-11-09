@@ -20,7 +20,7 @@ def image_grid(all_images, grid_desc):
     If the first number n is a positive number, every n images will be concatenated horizontally or vertically.
     We allow exactly one axis desc to be only [h|v], meaning the number of images of that axis will be automatically
     inferred.
-    
+
     Args:
         all_images: A list of images. Should be np.ndarray of shape (h, w, c).
         grid_desc: The grid description.

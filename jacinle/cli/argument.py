@@ -122,7 +122,7 @@ class SetDeviceAction(argparse.Action):
 
 
 class AsEnumAction(argparse.Action):
-    def __init__(self, option_strings, dest, type, nargs=None, const=None, default=None, choices=None, 
+    def __init__(self, option_strings, dest, type, nargs=None, const=None, default=None, choices=None,
                  required=False, help=None, metavar=None):
 
         assert issubclass(type, JacEnum)
@@ -133,7 +133,7 @@ class AsEnumAction(argparse.Action):
         if default is not None:
             default = self.enum_type.from_string(default)
 
-        super().__init__(option_strings=option_strings, dest=dest, nargs=nargs, const=const, default=default, 
+        super().__init__(option_strings=option_strings, dest=dest, nargs=nargs, const=const, default=default,
                          type=None, choices=choices, required=required, help=help, metavar=metavar)
 
     def __call__(self, parser, namespace, values, option_string=None):

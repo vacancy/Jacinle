@@ -97,7 +97,7 @@ def compose_bianry_tree_step_masks(tree, selection='first'):
             all(map(lambda y: y in clean_nodes, x.children))
         )}
 
-        # project it to 
+        # project it to
         allowed_projected = {x for x in clean_nodes if (
             x.sibling_ind == 0 and x.father in allowed
         )}

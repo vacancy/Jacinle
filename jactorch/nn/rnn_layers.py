@@ -22,7 +22,7 @@ __all__ = ['RNNLayer', 'LSTMLayer', 'GRULayer']
 class RNNLayerBase(nn.Module):
     """Basic RNN layer. Will be inherited by concreate implementations."""
 
-    def __init__(self, input_dim, hidden_dim, nr_layers, 
+    def __init__(self, input_dim, hidden_dim, nr_layers,
             bias=True, batch_first=True, dropout=0, bidirectional=False):
 
         super().__init__()

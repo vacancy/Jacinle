@@ -40,14 +40,14 @@ class TestPTBFormat(unittest.TestCase):
 
         answer = constituency.compose_bianry_tree_step_masks(t)
         for x, _ in answer:
-            imm = tree.PTBNode('')            
+            imm = tree.PTBNode('')
             tokens[x].attach(imm)
             tokens[x + 1].attach(imm)
             tokens = tokens[:x] + [imm] + tokens[x+2:]
 
         self.assertEqual(len(tokens), 1)
         self.assertEqual(tokens[0].to_string(vtype=False), t.to_string(vtype=False))
-        
+
 
 if __name__ == '__main__':
     unittest.main()

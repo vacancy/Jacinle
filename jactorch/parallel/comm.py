@@ -35,9 +35,9 @@ class SyncMaster(object):
 
     - During the replication, as the data parallel will trigger an callback of each module,
       all slave devices should call `register(id)` and obtain an `SlavePipe` to communicate with the master.
-    - During the forward pass, master device invokes `run_master`, all messages from slave devices will be collected, 
+    - During the forward pass, master device invokes `run_master`, all messages from slave devices will be collected,
       and passed to a registered callback.
-    - After receiving the messages, the master device should gather the information and determine to message passed back 
+    - After receiving the messages, the master device should gather the information and determine to message passed back
       to each slave devices.
 
     """

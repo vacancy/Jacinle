@@ -38,8 +38,8 @@ class TrainerEnv(object):
         self._event_manager = SimpleEventRegistry({
             'epoch:before', 'epoch:after',
             'step:before', 'step:after',
-            'forward:before', 'forward:after', 
-            'backward:before', 'backward:after', 
+            'forward:before', 'forward:after',
+            'backward:before', 'backward:after',
         })
 
     @property
@@ -98,7 +98,7 @@ class TrainerEnv(object):
     def set_learning_rate(self, lr):
         for param_group in self._optimizer.param_groups:
             param_group['lr'] = lr
-    
+
     def decay_learning_rate(self, decay):
         for param_group in self._optimizer.param_groups:
             param_group['lr'] *= decay
@@ -117,7 +117,7 @@ class TrainerEnv(object):
         loss, monitors, output_dict = self._model(feed_dict)
         self.trigger_event('forward:after', self, feed_dict, loss, monitors, output_dict)
 
-        loss = reduce_func('loss', loss) 
+        loss = reduce_func('loss', loss)
         monitors = {k: reduce_func(k, v) for k, v in monitors.items()}
 
         loss_f = as_float(loss)

@@ -85,6 +85,6 @@ def binary_traversal(root, order='lnr'):
                     yield x
                 elif x == 'r':
                     yield from dfs(x.rson)
-    
+
     return dfs(root)
 

@@ -13,7 +13,7 @@ import numpy as np
 
 from .shape import add_dim_as_except
 
-__all__ = ['mask_meshgrid', 'masked_average', 'length2mask', 'length_masked_reversed'] 
+__all__ = ['mask_meshgrid', 'masked_average', 'length2mask', 'length_masked_reversed']
 
 
 def mask_meshgrid(mask, target_dims=2):

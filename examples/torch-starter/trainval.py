@@ -243,7 +243,7 @@ def train_epoch(epoch, trainer, train_dataloader, meters):
             if args.use_tb:
                 meters.flush()
 
-            # TODO(Jiayuan Mao @ 04/23): customize the logger. 
+            # TODO(Jiayuan Mao @ 04/23): customize the logger.
             pbar.set_description(meters.format_simple(
                 'Epoch {}'.format(epoch),
                 {k: v for k, v in meters.val.items() if k.startswith('loss') or k.startswith('time')},
