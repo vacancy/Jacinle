@@ -31,7 +31,7 @@ parser.add_argument('--desc', required=True, type='checked_file', metavar='FILE'
 # training hyperparameters
 parser.add_argument('--epochs', type=int, default=100, metavar='N', help='number of total epochs to run')
 parser.add_argument('--batch-size', type=int, default=32, metavar='N', help='batch size')
-parser.add_argument('--lr', type=float, default=0.01, metavar='N', help='initial learning rate')
+parser.add_argument('--lr', type=float, default=0.001, metavar='N', help='initial learning rate')
 parser.add_argument('--iters-per-epoch', type=int, default=0, metavar='N', help='number of iterations per epoch 0=one pass of the dataset (default: 0)')
 parser.add_argument('--acc-grad', type=int, default=1, metavar='N', help='accumulated gradient (default: 1)')
 parser.add_argument('--validation-interval', type=int, default=1, metavar='N', help='validation inverval (epochs) (default: 1)')
