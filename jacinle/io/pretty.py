@@ -23,6 +23,7 @@ from jacinle.utils.printing import stformat, kvformat
 from .fs import as_file_descriptor, io_function_registry
 
 __all__ = [
+    'iter_txt',
     'pretty_dump', 'pretty_load',
     'dumps_json', 'dump_json', 'loads_json', 'load_json',
     'dumps_xml', 'dump_xml', 'loads_xml', 'load_xml',
@@ -32,6 +33,14 @@ __all__ = [
     'dumps_kv', 'dump_kv',
     'dumps_env', 'dump_env'
 ]
+
+
+def iter_txt(fd, strip=True):
+    for line in as_file_descriptor(fd):
+        line_strip = line.strip()
+        if line_strip == '':
+            continue
+        yield line_strip if strip else line
 
 
 def loads_json(value):
