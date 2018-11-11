@@ -17,24 +17,24 @@ jaclearn.embedding.constant module
     :undoc-members:
     :show-inheritance:
 
-jaclearn.embedding.embedding_utils module
------------------------------------------
+jaclearn.embedding.embedding\_utils module
+------------------------------------------
 
 .. automodule:: jaclearn.embedding.embedding_utils
     :members:
     :undoc-members:
     :show-inheritance:
 
-jaclearn.embedding.visualize_tb module
---------------------------------------
+jaclearn.embedding.visualize\_tb module
+---------------------------------------
 
 .. automodule:: jaclearn.embedding.visualize_tb
     :members:
     :undoc-members:
     :show-inheritance:
 
-jaclearn.embedding.word_embedding module
-----------------------------------------
+jaclearn.embedding.word\_embedding module
+-----------------------------------------
 
 .. automodule:: jaclearn.embedding.word_embedding
     :members:

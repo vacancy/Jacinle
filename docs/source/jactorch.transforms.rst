@@ -11,5 +11,7 @@ Subpackages
 
 .. toctree::
 
+    jactorch.transforms.bbox
     jactorch.transforms.coor
+    jactorch.transforms.image
 

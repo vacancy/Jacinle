@@ -1,6 +1,11 @@
 jactorch package
 ================
 
+.. automodule:: jactorch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 

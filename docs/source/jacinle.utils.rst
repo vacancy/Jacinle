@@ -81,6 +81,14 @@ jacinle.utils.init module
     :undoc-members:
     :show-inheritance:
 
+jacinle.utils.inspect module
+----------------------------
+
+.. automodule:: jacinle.utils.inspect
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jacinle.utils.matching module
 -----------------------------
 
@@ -149,6 +157,14 @@ jacinle.utils.tqdm module
 -------------------------
 
 .. automodule:: jacinle.utils.tqdm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+jacinle.utils.value\_scheduler module
+-------------------------------------
+
+.. automodule:: jacinle.utils.value_scheduler
     :members:
     :undoc-members:
     :show-inheritance:

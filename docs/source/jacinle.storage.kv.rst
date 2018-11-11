@@ -33,4 +33,12 @@ jacinle.storage.kv.mem module
     :undoc-members:
     :show-inheritance:
 
+jacinle.storage.kv.memcached module
+-----------------------------------
+
+.. automodule:: jacinle.storage.kv.memcached
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
