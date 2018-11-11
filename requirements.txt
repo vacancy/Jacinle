@@ -5,5 +5,6 @@ pyzmq
 h5py
 numpy
 scipy
+sklearn
 matplotlib
 lmdb
