@@ -8,3 +8,4 @@ scipy
 sklearn
 matplotlib
 lmdb
+tabulate
