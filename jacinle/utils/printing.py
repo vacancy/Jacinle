@@ -48,21 +48,26 @@ def stprint(data, key=None, indent=0, file=None, need_lock=True, max_depth=100):
         file = sys.stdout
 
     with stprint.locks.synchronized(file, need_lock):
-        if max_depth == 0:
-            _indent_print('......', indent, prefix=key, file=file)
-            return
-
         if t is tuple:
+            if max_depth == 0:
+                _indent_print('(tuple of length {}) ...'.format(len(data)), indent, prefix=key, file=file)
+                return
             _indent_print('tuple[', indent, prefix=key, file=file)
             for v in data:
                 stprint(v, indent=indent + 1, file=file, need_lock=False, max_depth=max_depth - 1)
             _indent_print(']', indent, file=file)
         elif t is list:
+            if max_depth == 0:
+                _indent_print('(list of length {}) ...'.format(len(data)), indent, prefix=key, file=file)
+                return
             _indent_print('list[', indent, prefix=key, file=file)
             for v in data:
                 stprint(v, indent=indent + 1, file=file, need_lock=False, max_depth=max_depth - 1)
             _indent_print(']', indent, file=file)
         elif t in (dict, collections.OrderedDict):
+            if max_depth == 0:
+                _indent_print('(dict of length {}) ...'.format(len(data)), indent, prefix=key, file=file)
+                return
             typename = 'dict' if t is dict else 'ordered_dict'
             keys = sorted(data.keys()) if t is dict else data.keys()
             _indent_print(typename + '{', indent, prefix=key, file=file)
