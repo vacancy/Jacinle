@@ -110,7 +110,6 @@ class HTMLTableVisualizer(object):
         self._row_counter = 0
 
     def row(self, *args, **kwargs):
-        assert self._index_file is not None
         assert self._current_columns is not None
 
         if len(args) > 0:
@@ -143,6 +142,7 @@ class HTMLTableVisualizer(object):
         self._row_counter += 1
 
     def _print(self, *args, **kwargs):
+        assert self._index_file is not None
         print(*args, file=self._index_file, **kwargs)
 
     def _flush(self):
