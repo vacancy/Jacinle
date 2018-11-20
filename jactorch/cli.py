@@ -37,5 +37,5 @@ def dump_metainfo(metainfo=None, **kwargs):
     metainfo.update(kwargs)
     metainfo.setdefault('_cmd', ' '.join(sys.argv))
     metainfo.setdefault('_git', get_git_revision_hash())
-    return io.dumps_json(metainfo)
+    return io.dumps_json(metainfo, compressed=False)
 
