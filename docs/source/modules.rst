@@ -9,4 +9,5 @@ Jacinle
    jacnp
    jactf
    jactorch
+   jacweb
    vendors

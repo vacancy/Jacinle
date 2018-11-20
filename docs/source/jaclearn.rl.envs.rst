@@ -26,8 +26,8 @@ jaclearn.rl.envs.gym module
     :undoc-members:
     :show-inheritance:
 
-jaclearn.rl.envs.gym_adapter module
------------------------------------
+jaclearn.rl.envs.gym\_adapter module
+------------------------------------
 
 .. automodule:: jaclearn.rl.envs.gym_adapter
     :members:

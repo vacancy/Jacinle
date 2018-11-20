@@ -33,6 +33,11 @@ class _InitFunctionWrapper(object):
 
 
 class JacDataLoader(DataLoader):
+    """
+    A customized dataloader class. It supports an customized initialization function on each worker, as well as
+    the initialization of random seed on different workers. It will invoke `jacinle.random.reset_global_seed` to reset
+    the random seed upon the initialization of each worker.
+    """
     def __init__(self, dataset, batch_size=1, shuffle=False, sampler=None, batch_sampler=None,
                  num_workers=0, collate_fn=default_collate, pin_memory=False, drop_last=False,
                  timeout=0, base_seed=None, worker_init_fn=None, worker_init_args=None, worker_init_kwargs=None,

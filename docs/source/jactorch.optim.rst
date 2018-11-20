@@ -9,16 +9,16 @@ jactorch.optim package
 Submodules
 ----------
 
-jactorch.optim.accum_grad module
---------------------------------
+jactorch.optim.accum\_grad module
+---------------------------------
 
 .. automodule:: jactorch.optim.accum_grad
     :members:
     :undoc-members:
     :show-inheritance:
 
-jactorch.optim.custom_optimizer module
---------------------------------------
+jactorch.optim.custom\_optimizer module
+---------------------------------------
 
 .. automodule:: jactorch.optim.custom_optimizer
     :members:
@@ -33,8 +33,8 @@ jactorch.optim.quickaccess module
     :undoc-members:
     :show-inheritance:
 
-jactorch.optim.weight_decay module
-----------------------------------
+jactorch.optim.weight\_decay module
+-----------------------------------
 
 .. automodule:: jactorch.optim.weight_decay
     :members:

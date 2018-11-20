@@ -1,5 +1,5 @@
-jaclearn.models.naive_bayes package
-===================================
+jaclearn.models.naive\_bayes package
+====================================
 
 .. automodule:: jaclearn.models.naive_bayes
     :members:
@@ -9,8 +9,8 @@ jaclearn.models.naive_bayes package
 Submodules
 ----------
 
-jaclearn.models.naive_bayes.hybrid_nb module
---------------------------------------------
+jaclearn.models.naive\_bayes.hybrid\_nb module
+----------------------------------------------
 
 .. automodule:: jaclearn.models.naive_bayes.hybrid_nb
     :members:

@@ -17,8 +17,8 @@ jacinle.comm.distrib.controller module
     :undoc-members:
     :show-inheritance:
 
-jacinle.comm.distrib.name_server module
----------------------------------------
+jacinle.comm.distrib.name\_server module
+----------------------------------------
 
 .. automodule:: jacinle.comm.distrib.name_server
     :members:

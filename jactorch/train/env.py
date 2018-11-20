@@ -38,8 +38,8 @@ class TrainerEnv(object):
         self._event_manager = SimpleEventRegistry({
             'epoch:before', 'epoch:after',
             'step:before', 'step:after',
-            'forward:before', 'forward:after', 
-            'backward:before', 'backward:after', 
+            'forward:before', 'forward:after',
+            'backward:before', 'backward:after',
         })
 
     @property
@@ -98,17 +98,18 @@ class TrainerEnv(object):
     def set_learning_rate(self, lr):
         for param_group in self._optimizer.param_groups:
             param_group['lr'] = lr
-    
+
     def decay_learning_rate(self, decay):
         for param_group in self._optimizer.param_groups:
             param_group['lr'] *= decay
 
-    def step(self, feed_dict, reduce_func=default_reduce_func):
+    def step(self, feed_dict, reduce_func=default_reduce_func, cast_tensor=False):
         assert self._model.training, 'Step a evaluation-mode model.'
 
         self.trigger_event('step:before', self)
 
-        feed_dict = as_tensor(feed_dict)
+        if cast_tensor:
+            feed_dict = as_tensor(feed_dict)
 
         begin = time.time()
 
@@ -116,7 +117,7 @@ class TrainerEnv(object):
         loss, monitors, output_dict = self._model(feed_dict)
         self.trigger_event('forward:after', self, feed_dict, loss, monitors, output_dict)
 
-        loss = reduce_func('loss', loss) 
+        loss = reduce_func('loss', loss)
         monitors = {k: reduce_func(k, v) for k, v in monitors.items()}
 
         loss_f = as_float(loss)
@@ -134,10 +135,11 @@ class TrainerEnv(object):
 
         return loss_f, monitors_f, output_dict, {'time/gpu': end - begin}
 
-    def evaluate(self, feed_dict):
+    def evaluate(self, feed_dict, cast_tensor=False):
         assert not self._model.training, 'Evaluating a training-mode model.'
         begin = time.time()
-        feed_dict = as_tensor(feed_dict)
+        if cast_tensor:
+            feed_dict = as_tensor(feed_dict)
         with torch.no_grad():
             output_dict = self._model(feed_dict)
         end = time.time()

@@ -42,8 +42,13 @@ def _gumbel_softmax_sample(logits, dim=-1, tau=1, eps=1e-10, mask=None):
 
 
 def greedy_softmax(logits, dim=-1, mask=None):
-    probs = masked_softmax(logits, mask=mask, dim=dim)
-    one_hot = one_hot_nd(probs.max(1)[1], logits.size(1))
+    # TODO(Jiayuan Mao @ 07/29): add support for dim != -1.
+    assert dim == -1, 'Greedy softmax support only dim=-1'
+    if mask is not None:
+        probs = masked_softmax(logits, mask=mask, dim=dim)
+    else:
+        probs = logits  # we only need to take the max
+    one_hot = one_hot_nd(probs.max(dim)[1], logits.size(dim))
     return one_hot
 
 
@@ -99,7 +104,7 @@ def general_softmax(logits, dim=-1, tau=1, impl='standard', mask=None, training=
     if impl is SoftmaxImplmentation.STANDARD:
         return masked_softmax(logits / tau, dim=dim)
     elif impl in (SoftmaxImplmentation.GUMBEL, SoftmaxImplmentation.GUMBEL_HARD):
-        if training:
+        if not training:
             # no need to use logits / tau
             return greedy_softmax(logits, dim=dim, mask=mask)
         if impl is SoftmaxImplmentation.GUMBEL:

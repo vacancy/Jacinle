@@ -1,7 +1,0 @@
-.vim-template: module
-=====================
-
-.. automodule:: .vim-template:
-    :members:
-    :undoc-members:
-    :show-inheritance:

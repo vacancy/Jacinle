@@ -21,7 +21,6 @@ Subpackages
     jacinle.image
     jacinle.io
     jacinle.logging
-    jacinle.random
     jacinle.storage
     jacinle.utils
 

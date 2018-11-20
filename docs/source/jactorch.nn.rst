@@ -14,13 +14,14 @@ Subpackages
     jactorch.nn.gumbel_softmax
     jactorch.nn.losses
     jactorch.nn.mask
+    jactorch.nn.prroi_pool
     jactorch.nn.sync_batchnorm
 
 Submodules
 ----------
 
-jactorch.nn.cnn_layers module
------------------------------
+jactorch.nn.cnn\_layers module
+------------------------------
 
 .. automodule:: jactorch.nn.cnn_layers
     :members:
@@ -43,6 +44,14 @@ jactorch.nn.conv module
     :undoc-members:
     :show-inheritance:
 
+jactorch.nn.coord\_conv module
+------------------------------
+
+.. automodule:: jactorch.nn.coord_conv
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jactorch.nn.functional module
 -----------------------------
 
@@ -51,8 +60,8 @@ jactorch.nn.functional module
     :undoc-members:
     :show-inheritance:
 
-jactorch.nn.image_preprocess module
------------------------------------
+jactorch.nn.image\_preprocess module
+------------------------------------
 
 .. automodule:: jactorch.nn.image_preprocess
     :members:
@@ -99,24 +108,32 @@ jactorch.nn.residual module
     :undoc-members:
     :show-inheritance:
 
-jactorch.nn.rnn_layers module
------------------------------
+jactorch.nn.rnn\_layers module
+------------------------------
 
 .. automodule:: jactorch.nn.rnn_layers
     :members:
     :undoc-members:
     :show-inheritance:
 
-jactorch.nn.rnn_utils module
-----------------------------
+jactorch.nn.rnn\_utils module
+-----------------------------
 
 .. automodule:: jactorch.nn.rnn_utils
     :members:
     :undoc-members:
     :show-inheritance:
 
-jactorch.nn.word_embedding module
----------------------------------
+jactorch.nn.simple module
+-------------------------
+
+.. automodule:: jactorch.nn.simple
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+jactorch.nn.word\_embedding module
+----------------------------------
 
 .. automodule:: jactorch.nn.word_embedding
     :members:

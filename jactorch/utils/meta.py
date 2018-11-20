@@ -18,7 +18,7 @@ from jacinle.utils.meta import stmap
 
 SKIP_TYPES = six.string_types
 
-__all__ = ['mark_volatile', 'as_tensor', 'as_variable', 'as_numpy', 'as_float', 'as_cuda', 'as_cpu']
+__all__ = ['mark_volatile', 'as_tensor', 'as_variable', 'as_numpy', 'as_float', 'as_cuda', 'as_cpu', 'as_detached']
 
 
 def _mark_volatile(o):
@@ -117,3 +117,15 @@ def _as_cuda(o):
 
 def as_cuda(obj):
     return stmap(_as_cuda, obj)
+
+
+def _as_detached(o):
+    from torch.autograd import Variable
+    if isinstance(o, Variable) or torch.is_tensor(o):
+        return o.detach()
+    return o
+
+
+def as_detached(obj):
+    return stmap(_as_detached, obj)
+

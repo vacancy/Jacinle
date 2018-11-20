@@ -18,7 +18,7 @@ from jactorch.io import load_state_dict
 
 
 __all__ = [
-    'VGG',
+    'VGG', 'make_vgg',
     'vgg11', 'vgg11_bn',
     'vgg13', 'vgg13_bn',
     'vgg16', 'vgg16_bn',

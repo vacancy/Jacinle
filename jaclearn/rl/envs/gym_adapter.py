@@ -21,52 +21,50 @@ class DiscreteToMultiDiscrete(Discrete):
     """
     Adapter that adapts the MultiDiscrete action space to a Discrete action space of any size
     The converted action can be retrieved by calling the adapter with the discrete action
-        discrete_to_multi_discrete = DiscreteToMultiDiscrete(multi_discrete)
-        discrete_action = discrete_to_multi_discrete.sample()
-        multi_discrete_action = discrete_to_multi_discrete(discrete_action)
-    It can be initialized using 3 configurations:
-    Configuration 1) - DiscreteToMultiDiscrete(multi_discrete)                   [2nd param is empty]
-        Would adapt to a Discrete action space of size (1 + nb of discrete in MultiDiscrete)
-        where
+    discrete_to_multi_discrete = DiscreteToMultiDiscrete(multi_discrete)
+    discrete_action = discrete_to_multi_discrete.sample()
+    multi_discrete_action = discrete_to_multi_discrete(discrete_action)
 
-            - 0   returns NOOP                                [  0,   0,   0, ...]
-            - 1   returns max for the first discrete space    [max,   0,   0, ...]
-            - 2   returns max for the second discrete space   [  0, max,   0, ...]
-            - etc.
+    It can be initialized using 3 configurations:
+    Configuration 1) - DiscreteToMultiDiscrete(multi_discrete) [2nd param is empty]
+    Would adapt to a Discrete action space of size (1 + nb of discrete in MultiDiscrete)
+    where
+
+        - 0   returns NOOP                                [  0,   0,   0, ...]
+        - 1   returns max for the first discrete space    [max,   0,   0, ...]
+        - 2   returns max for the second discrete space   [  0, max,   0, ...]
+        - etc.
 
     Configuration 2) - DiscreteToMultiDiscrete(multi_discrete, list_of_discrete) [2nd param is a list]
-        Would adapt to a Discrete action space of size (1 + nb of items in list_of_discrete)
-        e.g.
-        if list_of_discrete = [0, 2]
+    Would adapt to a Discrete action space of size (1 + nb of items in list_of_discrete)
+    e.g. if list_of_discrete = [0, 2]
 
-            - 0   returns NOOP                                [  0,   0,   0, ...]
-            - 1   returns max for first discrete in list      [max,   0,   0, ...]
-            - 2   returns max for second discrete in list     [  0,   0,  max, ...]
-            - etc.
+        - 0   returns NOOP                                [  0,   0,   0, ...]
+        - 1   returns max for first discrete in list      [max,   0,   0, ...]
+        - 2   returns max for second discrete in list     [  0,   0,  max, ...]
+        - etc.
 
     Configuration 3) - DiscreteToMultiDiscrete(multi_discrete, discrete_mapping) [2nd param is a dict]
-        Would adapt to a Discrete action space of size (nb_keys in discrete_mapping)
-        where discrete_mapping is a dictionnary in the format { discrete_key: multi_discrete_mapping }
-        e.g. for the Nintendo Game Controller [ [0,4], [0,1], [0,1] ] a possible mapping might be;
+    Would adapt to a Discrete action space of size (nb_keys in discrete_mapping)
+    where discrete_mapping is a dictionnary in the format { discrete_key: multi_discrete_mapping }
+    e.g. for the Nintendo Game Controller [ [0,4], [0,1], [0,1] ] a possible mapping might be;
 
-        ::
-
-        mapping = {
-            0:  [0, 0, 0],  # NOOP
-            1:  [1, 0, 0],  # Up
-            2:  [3, 0, 0],  # Down
-            3:  [2, 0, 0],  # Right
-            4:  [2, 1, 0],  # Right + A
-            5:  [2, 0, 1],  # Right + B
-            6:  [2, 1, 1],  # Right + A + B
-            7:  [4, 0, 0],  # Left
-            8:  [4, 1, 0],  # Left + A
-            9:  [4, 0, 1],  # Left + B
-            10: [4, 1, 1],  # Left + A + B
-            11: [0, 1, 0],  # A only
-            12: [0, 0, 1],  # B only,
-            13: [0, 1, 1],  # A + B
-        }
+    > mapping = {
+    >     0:  [0, 0, 0],  # NOOP
+    >     1:  [1, 0, 0],  # Up
+    >     2:  [3, 0, 0],  # Down
+    >     3:  [2, 0, 0],  # Right
+    >     4:  [2, 1, 0],  # Right + A
+    >     5:  [2, 0, 1],  # Right + B
+    >     6:  [2, 1, 1],  # Right + A + B
+    >     7:  [4, 0, 0],  # Left
+    >     8:  [4, 1, 0],  # Left + A
+    >     9:  [4, 0, 1],  # Left + B
+    >     10: [4, 1, 1],  # Left + A + B
+    >     11: [0, 1, 0],  # A only
+    >     12: [0, 0, 1],  # B only,
+    >     13: [0, 1, 1],  # A + B
+    > }
     """
     def __init__(self, multi_discrete, options=None):
         super().__init__(0)

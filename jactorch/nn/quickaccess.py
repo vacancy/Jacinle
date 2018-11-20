@@ -11,6 +11,7 @@
 import torch.nn as nn
 
 from . import sync_batchnorm as sync_bn
+from .simple import Identity
 
 __all__ = ['get_batcnnorm', 'get_dropout', 'get_activation']
 
@@ -50,7 +51,9 @@ def get_activation(act):
 
     assert type(act) is str, 'Unknown type of activation: {}.'.format(act)
     act_lower = act.lower()
-    if act_lower == 'relu':
+    if act_lower == 'identity':
+        return Identity()
+    elif act_lower == 'relu':
         return nn.ReLU(True)
     elif act_lower == 'sigmoid':
         return nn.Sigmoid()

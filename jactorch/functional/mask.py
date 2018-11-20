@@ -13,7 +13,7 @@ import numpy as np
 
 from .shape import add_dim_as_except
 
-__all__ = ['mask_meshgrid', 'masked_average', 'length2mask', 'length_masked_reversed'] 
+__all__ = ['mask_meshgrid', 'masked_average', 'length2mask', 'length_masked_reversed']
 
 
 def mask_meshgrid(mask, target_dims=2):
@@ -26,6 +26,18 @@ def mask_meshgrid(mask, target_dims=2):
 
 
 def masked_average(tensor, mask, eps=1e-8):
+    """
+    Compute the average of the tensor while ignoring some masked elements.
+
+    Args:
+        tensor (Tensor): tensor to be averaged.
+        mask (Tensor): a mask indicating the element-wise weight.
+        eps (float): eps for numerical stability.
+
+    Returns:
+        FloatTensor: the average of the input tensor.
+
+    """
     tensor = tensor.float()
     mask = mask.float()
     masked = tensor * mask
@@ -41,15 +53,17 @@ def length2mask(lengths, max_length):
 
 
 def length_masked_reversed(tensor, lengths, dim=1):
-    """Reverses sequences according to their lengths.
+    """
+    Reverses sequences according to their lengths.
 
     Args:
-        tensor (torch.Tensor): padded batch of variable length sequences.
-        lengths (torch.LongTensor): list of sequence lengths
+        tensor (Tensor): padded batch of variable length sequences.
+        lengths (LongTensor): list of sequence lengths
 
     Returns:
-        A Variable with the same size as tensor, but with each sequence
+        Tensor: A Variable with the same size as tensor, but with each sequence
         reversed according to its length.
+
     """
 
     assert dim == 1

@@ -12,4 +12,5 @@ Subpackages
 .. toctree::
 
     jaclearn.datasets.image_classification
+    jaclearn.datasets.vision
 

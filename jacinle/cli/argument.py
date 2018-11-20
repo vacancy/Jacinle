@@ -10,6 +10,7 @@
 
 import os.path as osp
 import argparse
+import json
 
 from jacinle.utils.enum import JacEnum
 
@@ -27,6 +28,7 @@ class JacArgumentParser(argparse.ArgumentParser):
         self.register('type', 'checked_file', _type_checked_file)
         self.register('type', 'checked_dir', _type_checked_dir)
         self.register('type', 'ensured_dir', _type_ensured_dir)
+        self.register('type', 'kv', _type_kv)
         self.register('action', 'set_device', SetDeviceAction)
         self.register('action', 'as_enum', AsEnumAction)
 
@@ -58,6 +60,52 @@ def _type_ensured_dir(string):
     return string
 
 
+class _KV(object):
+    def __init__(self, string):
+        self.string = string
+
+        if len(self.string) > 0:
+            kvs = list(string.split(';'))
+        else:
+            kvs = []
+
+        for i, kv in enumerate(kvs):
+            k, v = kv.split('=')
+            if v.startswith('"') or v.startswith("'"):
+                assert v.endswith('"') or v.endswith("'")
+                v = v[1:-1]
+            else:
+                v = float(v)
+                if int(v) == v:
+                    v = int(v)
+            kvs[i] = (k, v)
+
+        self.kvs = kvs
+
+    def apply(self, configs):
+        from jacinle.utils.container import G
+
+        for k, v in self.kvs:
+            print('Set: {} = {}.'.format(k, v))
+            keys = k.split('.')
+            current = configs
+            for k in keys[:-1]:
+                current = current.setdefault(k, G())
+            current[keys[-1]] = v
+
+    def __jsonify__(self):
+        return json.dumps(self.kvs)
+
+
+def _type_kv(string):
+    """
+    In the format of:
+        --configs "data.int_or_float=int_value; data.string='string_value'"
+    """
+
+    return _KV(string)
+
+
 class SetDeviceAction(argparse.Action):
     def __init__(self, option_strings, dest, format='int', set_device=True, nargs=None, const=None, default=None,
                  type=None, choices=None, required=False, help=None, metavar=None):
@@ -74,7 +122,7 @@ class SetDeviceAction(argparse.Action):
 
 
 class AsEnumAction(argparse.Action):
-    def __init__(self, option_strings, dest, type, nargs=None, const=None, default=None, choices=None, 
+    def __init__(self, option_strings, dest, type, nargs=None, const=None, default=None, choices=None,
                  required=False, help=None, metavar=None):
 
         assert issubclass(type, JacEnum)
@@ -85,7 +133,7 @@ class AsEnumAction(argparse.Action):
         if default is not None:
             default = self.enum_type.from_string(default)
 
-        super().__init__(option_strings=option_strings, dest=dest, nargs=nargs, const=const, default=default, 
+        super().__init__(option_strings=option_strings, dest=dest, nargs=nargs, const=const, default=default,
                          type=None, choices=choices, required=required, help=help, metavar=metavar)
 
     def __call__(self, parser, namespace, values, option_string=None):

@@ -7,8 +7,6 @@
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
-# https://github.com/vacancy/Synchronized-BatchNorm-PyTorch
-# Distributed under MIT License.
 
 import collections
 import contextlib
@@ -166,7 +164,7 @@ class SynchronizedBatchNorm1d(_SynchronizedBatchNorm):
     is also easy to implement, but the statistics might be inaccurate.
     Instead, in this synchronized version, the statistics will be computed
     over all training samples distributed on multiple devices.
-    
+
     Note that, for one-GPU or CPU-only case, this module behaves exactly same
     as the built-in PyTorch implementation.
 
@@ -229,7 +227,7 @@ class SynchronizedBatchNorm2d(_SynchronizedBatchNorm):
     is also easy to implement, but the statistics might be inaccurate.
     Instead, in this synchronized version, the statistics will be computed
     over all training samples distributed on multiple devices.
-    
+
     Note that, for one-GPU or CPU-only case, this module behaves exactly same
     as the built-in PyTorch implementation.
 
@@ -292,7 +290,7 @@ class SynchronizedBatchNorm3d(_SynchronizedBatchNorm):
     is also easy to implement, but the statistics might be inaccurate.
     Instead, in this synchronized version, the statistics will be computed
     over all training samples distributed on multiple devices.
-    
+
     Note that, for one-GPU or CPU-only case, this module behaves exactly same
     as the built-in PyTorch implementation.
 

@@ -8,7 +8,6 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-from jacinle.utils.context import EmptyContext
 from .kv import KVStoreBase
 
 
@@ -16,6 +15,9 @@ class MemKVStore(KVStoreBase):
     def __init__(self, readonly=False):
         super().__init__(readonly=readonly)
         self._store = dict()
+
+    def _has(self, key):
+        return key in self._store
 
     def _get(self, key, default):
         return self._store.get(key, default)
@@ -26,8 +28,8 @@ class MemKVStore(KVStoreBase):
         else:
             self._store[key] = value
 
-    def _transaction(self, *args, **kwargs):
-        return EmptyContext()
+    def _erase(self, key):
+        return self._store.pop(key)
 
     def _keys(self):
         return self._store.keys()

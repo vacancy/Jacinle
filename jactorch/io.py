@@ -23,6 +23,7 @@ __all__ = ['load_state_dict', 'load_weights']
 
 
 def load_state_dict(model, state_dict):
+    error_msg = []
     own_state = model.state_dict()
     for name, param in state_dict.items():
         if name in own_state:
@@ -32,12 +33,10 @@ def load_state_dict(model, state_dict):
             try:
                 own_state[name].copy_(param)
             except Exception:
-                raise RuntimeError('While copying the parameter named {}, '
-                                   'whose dimensions in the model are {} and '
-                                   'whose dimensions in the checkpoint are {}.'
-                                   .format(name, own_state[name].size(), param.size()))
-
-    error_msg = []
+                error_msg.append('While copying the parameter named {}, '
+                                 'whose dimensions in the model are {} and '
+                                 'whose dimensions in the checkpoint are {}.'
+                                 .format(name, own_state[name].size(), param.size()))
 
     missing = set(own_state.keys()) - set(state_dict.keys())
     if len(missing) > 0:

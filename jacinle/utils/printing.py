@@ -19,13 +19,13 @@ __all__ = ['stprint', 'stformat', 'kvprint', 'kvformat', 'print_to_string', 'pri
 
 
 def _indent_print(msg, indent, prefix=None, end='\n', file=None):
-    print(*['  '] * indent, end='', file=file)
+    print('  ' * indent, end='', file=file)
     if prefix is not None:
         print(prefix, end='', file=file)
     print(msg, end=end, file=file)
 
 
-def stprint(data, key=None, indent=0, file=None, need_lock=True):
+def stprint(data, key=None, indent=0, file=None, need_lock=True, max_depth=100):
     """
     Structure print.
 
@@ -49,22 +49,31 @@ def stprint(data, key=None, indent=0, file=None, need_lock=True):
 
     with stprint.locks.synchronized(file, need_lock):
         if t is tuple:
+            if max_depth == 0:
+                _indent_print('(tuple of length {}) ...'.format(len(data)), indent, prefix=key, file=file)
+                return
             _indent_print('tuple[', indent, prefix=key, file=file)
             for v in data:
-                stprint(v, indent=indent + 1, file=file, need_lock=False)
+                stprint(v, indent=indent + 1, file=file, need_lock=False, max_depth=max_depth - 1)
             _indent_print(']', indent, file=file)
         elif t is list:
+            if max_depth == 0:
+                _indent_print('(list of length {}) ...'.format(len(data)), indent, prefix=key, file=file)
+                return
             _indent_print('list[', indent, prefix=key, file=file)
             for v in data:
-                stprint(v, indent=indent + 1, file=file, need_lock=False)
+                stprint(v, indent=indent + 1, file=file, need_lock=False, max_depth=max_depth - 1)
             _indent_print(']', indent, file=file)
         elif t in (dict, collections.OrderedDict):
+            if max_depth == 0:
+                _indent_print('(dict of length {}) ...'.format(len(data)), indent, prefix=key, file=file)
+                return
             typename = 'dict' if t is dict else 'ordered_dict'
             keys = sorted(data.keys()) if t is dict else data.keys()
-            _indent_print(typename, indent, prefix=key, file=file)
+            _indent_print(typename + '{', indent, prefix=key, file=file)
             for k in keys:
                 v = data[k]
-                stprint(v, indent=indent + 1, key='{}: '.format(k), file=file, need_lock=False)
+                stprint(v, indent=indent + 1, key='{}: '.format(k), file=file, need_lock=False, max_depth=max_depth - 1)
             _indent_print('}', indent, file=file)
         elif t is np.ndarray:
             _indent_print('ndarray{}, dtype={}'.format(data.shape, data.dtype), indent, prefix=key, file=file)
@@ -75,15 +84,18 @@ def stprint(data, key=None, indent=0, file=None, need_lock=True):
 stprint.locks = LockRegistry()
 
 
-def stformat(data, key=None, indent=0):
-    return print2format(stprint)(data, key=key, indent=indent, need_lock=False)
+def stformat(data, key=None, indent=0, max_depth=100):
+    return print2format(stprint)(data, key=key, indent=indent, need_lock=False, max_depth=max_depth)
 
 
-def kvprint(data, sep=': ', end='\n', file=None, need_lock=True):
+def kvprint(data, sep=' : ', end='\n', max_key_len=None, file=None, need_lock=True):
     with kvprint.locks.synchronized(file, need_lock):
         keys = sorted(data.keys())
         lens = list(map(len, keys))
-        max_len = max(lens)
+        if max_key_len is not None:
+            max_len = max_key_len
+        else:
+            max_len = max(lens)
         for k in keys:
             print(k + ' ' * (max_len - len(k)), data[k], sep=sep, end=end, file=file, flush=True)
 
@@ -91,8 +103,8 @@ def kvprint(data, sep=': ', end='\n', file=None, need_lock=True):
 kvprint.locks = LockRegistry()
 
 
-def kvformat(data, sep=':', end='\n'):
-    return print2format(kvprint)(data, sep=sep, end=end, need_lock=False)
+def kvformat(data, sep=' : ', end='\n', max_key_len=None):
+    return print2format(kvprint)(data, sep=sep, end=end, max_key_len=max_key_len, need_lock=False)
 
 
 class _PrintToStringContext(object):

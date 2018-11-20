@@ -13,11 +13,13 @@ import random
 import torch
 import torchvision.transforms as transforms
 
+import jactorch.transforms.image as jac_transforms
 from . import functional as F
 
-__all__ = ["Compose", "Lambda", "ToTensor", "NormalizeCoor", "Normalize", "Resize", "CenterCrop", "Pad",
+__all__ = ["Compose", "Lambda", "ToTensor", "NormalizeCoor", "DenormalizeCoor", "Normalize", "Resize", "CenterCrop", "Pad",
            "RandomCrop", "RandomHorizontalFlip", "RandomVerticalFlip", "RandomResizedCrop",
-           "LinearTransformation", "ColorJitter", "RandomRotation", "Grayscale", "RandomGrayscale"]
+           "LinearTransformation", "ColorJitter", "RandomRotation", "Grayscale", "RandomGrayscale",
+           "PadMultipleOf"]
 
 
 class Compose(transforms.Compose):
@@ -43,6 +45,11 @@ class NormalizeCoor(object):
         return F.normalize_coor(img, coor)
 
 
+class DenormalizeCoor(object):
+    def __call__(self, img, coor):
+        return F.denormalize_coor(img, coor)
+
+
 class Normalize(transforms.Normalize):
     def __call__(self, img, coor):
         return super().__call__(img), coor
@@ -59,7 +66,7 @@ class CenterCrop(transforms.CenterCrop):
         return F.center_crop(img, coor, self.size)
 
 
-class Pad(transforms.Pad):
+class Pad(jac_transforms.Pad):
     def __call__(self, img, coor):
         return F.pad(img, coor, self.padding, self.fill)
 
@@ -113,7 +120,16 @@ class ColorJitter(transforms.ColorJitter):
 
 
 class RandomRotation(transforms.RandomRotation):
+    def __init__(self, angle, crop=False, **kwargs):
+        super().__init__(angle, **kwargs)
+        self.crop = crop
+
     def __call__(self, img, coor):
-        assert self.degrees[0] == self.degrees[1] == 0
         angle = self.get_params(self.degrees)
-        return F.rotate(img, coor, angle, self.resample, self.expand, self.center)
+        return F.rotate(img, coor, angle, self.resample, self.crop, self.expand, self.center)
+
+
+class PadMultipleOf(jac_transforms.PadMultipleOf):
+    def __call__(self, img, coor):
+        return F.pad_multiple_of(img, coor, self.multiple, mode=self.mode, fill=self.fill)
+

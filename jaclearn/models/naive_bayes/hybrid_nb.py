@@ -4,13 +4,13 @@
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 04/26/2018
-# 
+#
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
 import sklearn.naive_bayes as nb
 
-from jacinle.logging import get_logger 
+from jacinle.logging import get_logger
 from jacinle.utils.enum import JacEnum
 
 logger = get_logger(__file__)

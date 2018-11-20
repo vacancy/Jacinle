@@ -17,6 +17,7 @@ Subpackages
     jaclearn.embedding
     jaclearn.imageaug
     jaclearn.models
+    jaclearn.nlp
     jaclearn.rl
     jaclearn.visualize
 

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+	<title>Home</title>
+</head>
+<body>
+	<h1>Hello World</h1>
+    <p>You have visited this site for {{ nr_visited }} times.</p>
+    <pre style="word-wrap:break-word;white-space:pre-wrap;width:80%">
+{% for k, v in headers.items() %}- {{ k }}: {{ v }}
+{% end %}
+    </pre>
+</body>
+</html>

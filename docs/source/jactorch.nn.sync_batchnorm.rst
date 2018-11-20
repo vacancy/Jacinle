@@ -1,5 +1,5 @@
-jactorch.nn.sync_batchnorm package
-==================================
+jactorch.nn.sync\_batchnorm package
+===================================
 
 .. automodule:: jactorch.nn.sync_batchnorm
     :members:
@@ -9,8 +9,8 @@ jactorch.nn.sync_batchnorm package
 Submodules
 ----------
 
-jactorch.nn.sync_batchnorm.batchnorm module
--------------------------------------------
+jactorch.nn.sync\_batchnorm.batchnorm module
+--------------------------------------------
 
 .. automodule:: jactorch.nn.sync_batchnorm.batchnorm
     :members:

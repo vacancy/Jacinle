@@ -12,11 +12,13 @@ __all__ = ['normalize_prob', 'check_prob_normalization']
 
 
 def normalize_prob(a, dim=-1):
+    """Perform 1-norm along the specific dimension."""
     return a / a.sum(dim=dim, keepdim=True)
 
 
-def check_prob_normalization(p, atol=1e-5):
-    tot = p.sum(dim=1)
+def check_prob_normalization(p, dim=-1, atol=1e-5):
+    """Check if the probability is normalized along a specific dimension."""
+    tot = p.sum(dim=dim)
     cond = (tot > 1 - atol) * (tot < 1 + atol)
     cond = cond.prod()
     assert int(cond.data.cpu().numpy()) == 1, 'Probability normalization check failed.'

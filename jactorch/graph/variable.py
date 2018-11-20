@@ -20,7 +20,7 @@ __all__ = ['var_with', 'new_var_with', 'var_from_list']
 
 @deprecated
 def var_with(obj, ref):
-    """DEPRECATED(Jiayuan Mao): var_with has been deprecated and will be removed by 10/23/2018; please use device=ref.device instead.""" 
+    """DEPRECATED(Jiayuan Mao): var_with has been deprecated and will be removed by 10/23/2018; please use device=ref.device instead."""
     if ref.is_cuda:
         obj = obj.cuda()
     if not isinstance(obj, Variable) and isinstance(ref, Variable):

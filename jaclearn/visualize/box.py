@@ -36,7 +36,7 @@ def add_bbox_patches(ax, boxes, class_name, add_text=True, legends=None):
 def vis_bboxes(image, boxes, class_name, add_text=True, legends=None, title=None):
     title = title or "{} detection results".format(class_name)
 
-    fig, ax = plt.subplots(figsize=(12, 12))
+    fig, ax = plt.subplots(figsize=(12, int(12 / image.width * image.height)))
     fig.tight_layout()
     ax.imshow(image, aspect='equal')
     add_bbox_patches(ax, boxes, class_name, add_text=add_text, legends=legends)

@@ -44,7 +44,7 @@ if __name__ == '__main__':
     print('Chaning directory to {}'.format(docpath))
 
     Handler = http.server.SimpleHTTPRequestHandler
-    
+
     print('Serving at port {}.'.format(args.port))
     httpd = socketserver.TCPServer(("", args.port), Handler)
     httpd.serve_forever()

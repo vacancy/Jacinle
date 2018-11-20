@@ -83,9 +83,17 @@ class TBGroupMeters(GroupMeters):
         super().__init__()
         self._tb_logger = tb_logger
 
-    def update(self, updates=None, n=1, **kwargs):
+    def update(self, updates=None, value=None, n=1, **kwargs):
+        """
+        Example:
+            >>> meters.update(key, value)
+            >>> meters.update({key1: value1, key2: value2})
+            >>> meters.update(key1=value1, key2=value2)
+        """
         if updates is None:
             updates = {}
+        if updates is not None and value is not None:
+            updates = {updates: value}
         updates.update(kwargs)
         for k, v in updates.items():
             self._meters[k].update(v, n=n)
