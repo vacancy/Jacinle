@@ -58,16 +58,16 @@ class VarLengthCollateV2(object):
     To archive this, this module provides a fine-grained collate control over each input field and supports multiple
     ways for collating the data. It assumes that the input data is a dict. Example:
 
-    > collate_fn = VarLengthCollateV2({'sentence': 'pad', 'image': 'padimage'})
-    > collate_fn({
-    >     'sentence': [torch.rand(3), torch.rand(4)],
-    >     'image': [torch.rand(3, 16, 14), torch.rand(3, 8, 12)]
-    > })
+    >>> collate_fn = VarLengthCollateV2({'sentence': 'pad', 'image': 'padimage'})
+    >>> collate_fn({
+    >>>     'sentence': [torch.rand(3), torch.rand(4)],
+    >>>     'image': [torch.rand(3, 16, 14), torch.rand(3, 8, 12)]
+    >>> })
 
     It can be directly passed to the DataLaoder as the parameter `collate_fn`.
 
-    > collate_fn = VarLengthCollateV2({'sentence': 'pad', 'image': 'padimage'})
-    > dataloader = DataLoader(dataset, ..., collate_fn=collate_fn)
+    >>> collate_fn = VarLengthCollateV2({'sentence': 'pad', 'image': 'padimage'})
+    >>> dataloader = DataLoader(dataset, ..., collate_fn=collate_fn)
 
     Here is a complete list of the supported collate mode:
 
@@ -197,7 +197,7 @@ class VarLengthCollateV2(object):
             max_h, max_w = max([x[0] for x in lengths]), max([x[1] for x in lengths])
             result = []
             for v in values:
-                u = v.new(max_h, max_w, *uvg.get()).fill_(pad_value)
+                u = v.new(*(max_h, max_w, *uvg.get())).fill_(pad_value)
                 u[:v.size(0), :v.size(1)] = v
                 result.append(u)
             return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
@@ -212,9 +212,9 @@ class VarLengthCollateV2(object):
             max_h, max_w = max([x[0] for x in lengths]), max([x[1] for x in lengths])
             result = []
             for v in values:
-                u = v.new(*uvg.get(), max_h, max_w).fill_(pad_value)
+                u = v.new(*(uvg.get(), max_h, max_w)).fill_(pad_value)
                 # TODO(Jiayuan Mao @ 07/19): support input with dim > 3.
-                u[:, :v.size(0), :v.size(1)] = v
+                u[:, :v.size(1), :v.size(2)] = v
                 result.append(u)
             return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
         else:

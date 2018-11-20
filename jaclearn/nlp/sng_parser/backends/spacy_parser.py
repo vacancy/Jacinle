@@ -44,7 +44,7 @@ class SpacyParser(ParserBackend):
         except OSError as e:
             raise ImportError('Unable to load the English model. Run `python -m spacy download en` first.') from e
 
-    def parse(self, sentence):
+    def parse(self, sentence, return_doc=False):
         """
         The spaCy-based parser parse the sentence into scene graphs based on the dependency parsing
         of the sentence by spaCy.
@@ -227,6 +227,8 @@ class SpacyParser(ParserBackend):
             if relation['subject'] != None and relation['object'] != None:
                 filtered_relations.append(relation)
 
+        if return_doc:
+            return {'entities': entities, 'relations': filtered_relations}, doc
         return {'entities': entities, 'relations': filtered_relations}
 
     @staticmethod

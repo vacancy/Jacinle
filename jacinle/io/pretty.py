@@ -66,7 +66,7 @@ def dumps_txt(value):
         return buf.getvalue()
 
 
-def dumps_json(value, compressed=False):
+def dumps_json(value, compressed=True):
     if compressed:
         return json.dumps(value, cls=JsonObjectEncoder)
     return json.dumps(value, cls=JsonObjectEncoder, sort_keys=True, indent=4, separators=(',', ': '))
