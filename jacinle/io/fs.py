@@ -13,17 +13,22 @@ import os
 import os.path as osp
 import glob
 import shutil
+import six
+import contextlib
 
 import pickle
 import gzip
 import numpy as np
 
+from jacinle.logging import get_logger
 from jacinle.utils.registry import RegistryGroup, CallbackRegistry
 
 from .common import get_ext
 
+logger = get_logger(__file__)
+
 __all__ = [
-    'as_file_descriptor',
+    'as_file_descriptor', 'fs_verbose', 'set_fs_verbose',
     'open', 'open_txt', 'open_h5', 'open_gz',
     'load', 'load_txt', 'load_h5', 'load_pkl', 'load_pklgz', 'load_npy', 'load_npz', 'load_pth',
     'dump', 'dump_pkl', 'dump_pklgz', 'dump_npy', 'dump_npz', 'dump_pth',
@@ -146,15 +151,38 @@ io_function_registry.register('dump', '.npz',   dump_npz)
 io_function_registry.register('dump', '.pth',   dump_pth)
 
 
+_fs_verbose = False
+
+
+@contextlib.contextmanager
+def fs_verbose(mode=True):
+    global _fs_verbose
+
+    _fs_verbose, mode = mode, _fs_verbose
+    yield
+    _fs_verbose = mode
+
+
+def set_fs_verbose(mode):
+    global _fs_verbose
+    _fs_verbose = mode
+
+
 def open(file, mode, **kwargs):
+    if _fs_verbose and isinstance(file, six.string_types):
+        logger.info('Opening file: "{}", mode={}.'.format(file, mode))
     return io_function_registry.dispatch('open', file, mode, **kwargs)
 
 
 def load(file, **kwargs):
+    if _fs_verbose and isinstance(file, six.string_types):
+        logger.info('Loading data from file: "{}".'.format(file))
     return io_function_registry.dispatch('load', file, **kwargs)
 
 
 def dump(file, obj, **kwargs):
+    if _fs_verbose and isinstance(file, six.string_types):
+        logger.info('Dumping data to file: "{}".'.format(file))
     return io_function_registry.dispatch('dump', file, obj, **kwargs)
 
 
