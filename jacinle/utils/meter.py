@@ -95,7 +95,7 @@ class GroupMeters(object):
     def dump(self, filename, values='avg'):
         meters_kv = self._canonize_values(values)
         with open(filename, 'a') as f:
-            f.write(io.dumps_json(meters_kv))
+            f.write(io.dumps_json(meters_kv, compressed=False))
             f.write('\n')
 
     def _canonize_values(self, values):
