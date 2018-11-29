@@ -73,6 +73,9 @@ class GView(object):
     def update(self, other):
         self.raw().update(other)
 
+    def copy(self):
+        return GView(self.raw().copy())
+
 
 class SlotAttrObject(object):
     def __init__(self, **kwargs):

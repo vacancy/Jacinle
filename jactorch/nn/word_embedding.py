@@ -42,6 +42,10 @@ class WordEmbedding(nn.Module):
                 self.word_embeddings.data.std()
             )
 
+    @property
+    def weight(self):
+        return self.impl.weight
+
     def forward(self, words):
         return self.impl(words)
 
