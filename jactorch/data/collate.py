@@ -191,13 +191,14 @@ class VarLengthCollateV2(object):
             uvg = UniqueValueGetter('Tensor sizes should match except the first 2 dims.')
             for v in values:
                 uvg.set(v.size()[2:])
+            rest_size = uvg.get() or []
             pad_value = parameters[0] if len(parameters) > 0 else 0
 
             lengths = [v.size()[:2] for v in values]
             max_h, max_w = max([x[0] for x in lengths]), max([x[1] for x in lengths])
             result = []
             for v in values:
-                u = v.new(*(max_h, max_w, *uvg.get())).fill_(pad_value)
+                u = v.new(*(max_h, max_w, *rest_size)).fill_(pad_value)
                 u[:v.size(0), :v.size(1)] = v
                 result.append(u)
             return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
