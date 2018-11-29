@@ -50,7 +50,7 @@ def open_h5(file, mode, **kwargs):
 
 
 def open_txt(file, mode, **kwargs):
-    return open(file, mode, **kwargs)
+    return sys_open(file, mode, **kwargs)
 
 
 def open_gz(file, mode):
@@ -77,7 +77,7 @@ def load_h5(file, **kwargs):
 
 
 def load_txt(file, **kwargs):
-    with open(file, 'r', **kwargs) as f:
+    with sys_open(file, 'r', **kwargs) as f:
         return f.readlines()
 
 
