@@ -9,6 +9,7 @@
 # Distributed under terms of the MIT license.
 
 import sys
+import time
 import multiprocessing as mp
 import threading
 import queue
@@ -143,17 +144,31 @@ class Pool(object):
 
 
 class TQDMPool(Pool):
-    def map(self, func, iterable, chunksize=1, sort=True, total=None, desc='', callback=None, use_tqdm=True, **kwargs):
+    def map(
+            self,
+            func, iterable,
+            chunksize=1, sort=True, total=None, desc='', callback=None,
+            use_tqdm=True, update_interval=0.1, update_iters=1, **kwargs
+    ):
+
         if total is None and isinstance(iterable, collections.Sized):
             total = len(iterable)
         if use_tqdm:
             pbar = tqdm_pbar(total=total, **kwargs)
-            return super().map(func, iterable, chunksize, sort, callback=self._wrap_callback(callback, pbar, desc))
+            with pbar:
+                return super().map(func, iterable, chunksize, sort, callback=self._wrap_callback(
+                    callback, pbar, desc, update_interval=update_interval, update_iters=update_iters
+                ))
         else:
             return super().map(func, iterable, chunksize, sort, callback=callback)
 
-    def _wrap_callback(self, callback, pbar, desc):
+    def _wrap_callback(self, callback, pbar, desc, update_interval, update_iters):
+        last_update_time = 0
+        last_update_acc = 0
+
         def wrapped(i, val):
+            nonlocal last_update_time, last_update_acc
+
             if callback is not None:
                 callback(i, val)
             d = desc
@@ -162,8 +177,17 @@ class TQDMPool(Pool):
             if callable(d):
                 d = d(i, val)
             assert type(d) is str
-            pbar.set_description(desc)
-            pbar.update()
+
+            last_update_acc += 1
+            if last_update_acc >= update_iters:
+                current = time.time()
+                if current - last_update_time > update_interval:
+                    pbar.set_description(desc)
+                    pbar.update(n=last_update_acc)
+
+                    last_update_acc = 0
+                    last_update_time = current
+
         return wrapped
 
 
@@ -174,8 +198,8 @@ def _format_exc(ei):
     sio = io.StringIO()
     tb = ei[2]
     # See issues #9427, #1553375. Commented out for now.
-    #if getattr(self, 'fullstack', False):
-    #    traceback.print_stack(tb.tb_frame.f_back, file=sio)
+    # if getattr(self, 'fullstack', False):
+    #     traceback.print_stack(tb.tb_frame.f_back, file=sio)
     traceback.print_exception(ei[0], ei[1], tb, None, sio)
     s = sio.getvalue()
     sio.close()
