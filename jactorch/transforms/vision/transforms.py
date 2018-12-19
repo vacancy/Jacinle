@@ -58,6 +58,7 @@ class TransformGuide(object):
     def as_default(self):
         yield self
 
+
 default_transform_guide = {
     'image': 'image',
     'coor': 'coor',
@@ -84,12 +85,16 @@ class TransformBase(object):
             if locals()[k] is not None:
                 feed_dict[k] = locals()[k]
         feed_dict = self(feed_dict)
+
         def ret():
             for k in default_transform_guide:
                 if k in feed_dict:
                     yield feed_dict[k]
+        ret = tuple(ret())
 
-        return tuple(ret())
+        if len(ret) == 1:
+            return ret[0]
+        return ret
 
     def __call__(self, feed_dict=None, **kwargs):
         feed_dict = feed_dict or {}
