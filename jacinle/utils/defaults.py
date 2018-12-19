@@ -51,7 +51,13 @@ class DefaultsManager(object):
         def get_default(default=None):
             if default is None and default_getter is not None:
                 default = default_getter()
-            return self._get_defaults_registry(identifier).get(identifier, default)
+
+            # NB(Jiayuan Mao): cannot use .get(identifier, default), because after calling as_default, the current
+            #     default will be set to None.
+            val = self._get_defaults_registry(identifier).get(identifier, None)
+            if val is None:
+                val = default
+            return val
         return get_default
 
     def gen_set_default(self, cls):

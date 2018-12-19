@@ -49,6 +49,12 @@ class TransformGuide(object):
     def __init__(self, transform_guide):
         self.transform_guide = transform_guide
 
+    def keys(self):
+        return self.transform_guide.keys()
+
+    def items(self):
+        return self.transform_guide.items()
+
     def gen(self, feed_dict):
         for k, v in self.transform_guide.items():
             if k in feed_dict:
@@ -59,11 +65,11 @@ class TransformGuide(object):
         yield self
 
 
-default_transform_guide = {
-    'image': 'image',
-    'coor': 'coor',
-    'bbox': 'bbox'
-}
+default_transform_guide = TransformGuide({
+    'image': {'type': 'image'},
+    'coor': {'type': 'coor', 'dep': ['image']},
+    'bbox': {'type': 'bbox', 'dep': ['image']}
+})
 get_default_transform_guide = defaults_manager.gen_get_default(TransformGuide, lambda: default_transform_guide)
 
 
@@ -81,13 +87,13 @@ class TransformBase(object):
 
     def ezcall(self, image=None, coor=None, bbox=None):
         feed_dict = dict()
-        for k in default_transform_guide:
+        for k in default_transform_guide.keys():
             if locals()[k] is not None:
                 feed_dict[k] = locals()[k]
         feed_dict = self(feed_dict)
 
         def ret():
-            for k in default_transform_guide:
+            for k in default_transform_guide.keys():
                 if k in feed_dict:
                     yield feed_dict[k]
         ret = tuple(ret())
