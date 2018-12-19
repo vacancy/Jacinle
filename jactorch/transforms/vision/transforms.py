@@ -58,8 +58,12 @@ class TransformGuide(object):
     def as_default(self):
         yield self
 
-
-get_default_transform_guide = defaults_manager.gen_get_default(TransformGuide)
+default_transform_guide = {
+    'image': 'image',
+    'coor': 'coor',
+    'bbox': 'bbox'
+}
+get_default_transform_guide = defaults_manager.gen_get_default(TransformGuide, lambda: default_transform_guide)
 
 
 class TransformBase(object):
@@ -73,6 +77,19 @@ class TransformBase(object):
             if type is TransformDataTypes.IMAGE:
                 return v
         return None
+
+    def ezcall(self, image=None, coor=None, bbox=None):
+        feed_dict = dict()
+        for k in default_transform_guide:
+            if locals()[k] is not None:
+                feed_dict[k] = locals()[k]
+        feed_dict = self(feed_dict)
+        def ret():
+            for k in default_transform_guide:
+                if k in feed_dict:
+                    yield feed_dict[k]
+
+        return tuple(ret())
 
     def __call__(self, feed_dict=None, **kwargs):
         feed_dict = feed_dict or {}
@@ -123,6 +140,8 @@ class Compose(torch_transforms.Compose):
         feed_dict = super().__call__(feed_dict)
         return feed_dict
 
+    ezcall = TransformBase.ezcall
+
 
 class RandomApply(torch_transforms.RandomApply):
     def __call__(self, feed_dict=None, **kwargs):
@@ -131,6 +150,8 @@ class RandomApply(torch_transforms.RandomApply):
         feed_dict = super().__call__(feed_dict)
         return feed_dict
 
+    ezcall = TransformBase.ezcall
+
 
 class RandomOrder(torch_transforms.RandomOrder):
     def __call__(self, feed_dict=None, **kwargs):
@@ -138,6 +159,8 @@ class RandomOrder(torch_transforms.RandomOrder):
         feed_dict.update(**kwargs)
         feed_dict = super().__call__(feed_dict)
         return feed_dict
+
+    ezcall = TransformBase.ezcall
 
 
 class RandomChoice(torch_transforms.RandomChoice):
@@ -154,6 +177,8 @@ class Lambda(torch_transforms.Lambda):
         feed_dict.update(**kwargs)
         feed_dict = super().__call__(feed_dict)
         return feed_dict
+
+    ezcall = TransformBase.ezcall
 
 
 class ToTensor(TransformFunctionBase):
