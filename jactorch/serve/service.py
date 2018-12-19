@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import torch.backends.cudnn as cudnn
+
 import jactorch.io as torchio
 
 from jacinle.logging import get_logger
@@ -22,9 +24,9 @@ class TorchService(Service):
 
         if use_gpu:
             model.cuda()
-            if args.gpu_parallel:
+            if gpu_parallel:
                 from jactorch.parallel import JacDataParallel
-                model = JacDataParallel(model, device_ids=args.gpus).cuda()
+                model = JacDataParallel(model, device_ids=gpu_ids).cuda()
             cudnn.benchmark = cudnn_benchmark
 
         if torchio.load_weights(model, load):
