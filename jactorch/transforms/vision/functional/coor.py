@@ -27,7 +27,7 @@ def denormalize_coor(img, coor):
 
 def refresh_valid(img, coor):
     if coor.shape[1] == 2:
-        return img, coor
+        return coor
     assert coor.shape[1] == 3, 'Support only (x, y, valid) or (x, y) typed coordinates'
     out = coor.copy()
     for i, (x, y, v) in enumerate(coor):
