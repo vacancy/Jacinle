@@ -27,6 +27,7 @@ from .functional import bbox as fbbox
 from .functional._utils import get_rotation_matrix
 
 __all__ = [
+    "TransformDataTypes", "TransformGuide", "TransformBase", "TransformFunctionBase", "TransformFunctionBaseImageOnly",
     "Compose", "Lambda", "RandomApply", "RandomOrder", "RandomChoice",
     "ToTensor", "ToPILImage", "Normalize", "NormalizeCoordinates", "DenormalizeCoordinates",
     "Crop", "CenterCrop", "RandomCrop", "Pad", "PadMultipleOf",
@@ -38,7 +39,7 @@ __all__ = [
 ]
 
 
-class AllowedDataTypes(JacEnum):
+class TransformDataTypes(JacEnum):
     IMAGE = 'image'
     COOR = 'coor'
     BBOX = 'bbox'
@@ -51,7 +52,7 @@ class TransformGuide(object):
     def gen(self, feed_dict):
         for k, v in self.transform_guide.items():
             if k in feed_dict:
-                yield k, feed_dict[k], AllowedDataTypes.from_string(v['type']), v['dep']
+                yield k, feed_dict[k], TransformDataTypes.from_string(v['type']), v.get('dep', [])
 
     @defaults_manager.wrap_custom_as_default(is_local=True)
     def as_default(self):
@@ -69,21 +70,30 @@ class TransformBase(object):
 
     def _get_image(self, feed_dict):
         for k, v, type, dep in self.transform_guide.gen(feed_dict):
-            if type is AllowedDataTypes.IMAGE:
+            if type is TransformDataTypes.IMAGE:
                 return v
         return None
 
+    def __call__(self, feed_dict=None, **kwargs):
+        feed_dict = feed_dict or {}
+        feed_dict.update(**kwargs)
+        feed_dict = self.call_feed_dict(feed_dict)
+        return feed_dict
+
+    def call_feed_dict(self, feed_dict):
+        raise NotImplementedError()
+
 
 class TransformFunctionBase(TransformBase):
-    def __call__(self, feed_dict):
+    def call_feed_dict(self, feed_dict):
         output_dict = feed_dict.copy()
         for k, v, type, dep in self.transform_guide.gen(feed_dict):
-            if type is AllowedDataTypes.IMAGE:
+            if type is TransformDataTypes.IMAGE:
                 output_dict[k] = self.call_image(v)
-            elif type is AllowedDataTypes.COOR:
+            elif type is TransformDataTypes.COOR:
                 assert len(dep) == 1 and dep[0] in feed_dict, 'Invalid dependency for {}: {}.'.format(k, dep)
                 output_dict[k] = self.call_coor(feed_dict[dep[0]], v)
-            elif type is AllowedDataTypes.BBOX:
+            elif type is TransformDataTypes.BBOX:
                 assert len(dep) == 1 and dep[0] in feed_dict, 'Invalid dependency for {}: {}.'.format(k, dep)
                 output_dict[k] = self.call_bbox(feed_dict[dep[0]], v)
         return output_dict
@@ -107,23 +117,43 @@ class TransformFunctionBaseImageOnly(TransformFunctionBase):
 
 
 class Compose(torch_transforms.Compose):
-    pass
+    def __call__(self, feed_dict=None, **kwargs):
+        feed_dict = feed_dict or {}
+        feed_dict.update(**kwargs)
+        feed_dict = super().__call__(feed_dict)
+        return feed_dict
 
 
 class RandomApply(torch_transforms.RandomApply):
-    pass
+    def __call__(self, feed_dict=None, **kwargs):
+        feed_dict = feed_dict or {}
+        feed_dict.update(**kwargs)
+        feed_dict = super().__call__(feed_dict)
+        return feed_dict
 
 
 class RandomOrder(torch_transforms.RandomOrder):
-    pass
+    def __call__(self, feed_dict=None, **kwargs):
+        feed_dict = feed_dict or {}
+        feed_dict.update(**kwargs)
+        feed_dict = super().__call__(feed_dict)
+        return feed_dict
 
 
 class RandomChoice(torch_transforms.RandomChoice):
-    pass
+    def __call__(self, feed_dict=None, **kwargs):
+        feed_dict = feed_dict or {}
+        feed_dict.update(**kwargs)
+        feed_dict = super().__call__(feed_dict)
+        return feed_dict
 
 
 class Lambda(torch_transforms.Lambda):
-    pass
+    def __call__(self, feed_dict=None, **kwargs):
+        feed_dict = feed_dict or {}
+        feed_dict.update(**kwargs)
+        feed_dict = super().__call__(feed_dict)
+        return feed_dict
 
 
 class ToTensor(TransformFunctionBase):
@@ -211,7 +241,7 @@ class CenterCrop(TransformBase):
         super().__init__(tg)
         self.size = get_2dshape(size)
 
-    def __call__(self, feed_dict):
+    def call_feed_dict(self, feed_dict):
         img = self._get_image(feed_dict)
         w, h = img.size
         tw, th = self.size
@@ -226,15 +256,11 @@ class CenterCrop(TransformBase):
 class RandomCrop(TransformBase):
     def __init__(self, size, padding=0, pad_if_needed=False, tg=None):
         super().__init__(tg)
-        if isinstance(size, numbers.Number):
-            self.size = (int(size), int(size))
-        else:
-            self.size = size
-
+        self.size = get_2dshape(size)
         self.padding = padding
         self.pad_if_needed = pad_if_needed
 
-    def __call__(self, feed_dict):
+    def call_feed_dict(self, feed_dict):
         if self.padding > 0:
             feed_dict = Pad(self.padding, tg=self.transform_guide)(feed_dict)
 
@@ -289,7 +315,7 @@ class PadMultipleOf(TransformBase):
         self.mode = mode
         self.fill = fill
 
-    def __call__(self, feed_dict):
+    def call_feed_dict(self, feed_dict):
         img = self._get_image(feed_dict)
         h, w = img.height, img.width
         hh = h - h % self.multiple + self.multiple * int(h % self.multiple != 0)
@@ -326,7 +352,7 @@ class RandomHorizontalFlip(TransformBase):
         super().__init__(tg)
         self.p = p
 
-    def __call__(self, feed_dict):
+    def call_feed_dict(self, feed_dict):
         if random.random() < self.p:
             return HFlip(tg=self.transform_guide)(feed_dict)
         return feed_dict
@@ -340,7 +366,7 @@ class RandomVerticalFlip(TransformBase):
         super().__init__(tg)
         self.p = p
 
-    def __call__(self, feed_dict):
+    def call_feed_dict(self, feed_dict):
         if random.random() < self.p:
             return VFlip(tg=self.transform_guide)(feed_dict)
         return feed_dict
@@ -352,8 +378,7 @@ class RandomVerticalFlip(TransformBase):
 class Resize(TransformFunctionBase):
     def __init__(self, size, interpolation=Image.BILINEAR, tg=None):
         super().__init__(tg)
-        assert isinstance(size, int) or (isinstance(size, collections.Iterable) and len(size) == 2)
-        self.size = size
+        self.size = get_2dshape(size)
         self.interpolation = interpolation
 
     def call_image(self, img):
@@ -377,7 +402,8 @@ class RandomResizedCrop(TransformBase):
         self.scale = scale
         self.ratio = ratio
 
-    def __call__(self, feed_dict):
+    def call_feed_dict(self, feed_dict):
+        img = self._get_image(feed_dict)
         i, j, h, w = torch_transforms.RandomResizedCrop.get_params(img, self.scale, self.ratio)
         feed_dict = Crop(j, i, w, h, tg=self.transform_guide)(feed_dict)
         feed_dict = Resize(self.size, self.interpolation, tg=self.transform_guide)(feed_dict)
@@ -390,12 +416,7 @@ class RandomResizedCrop(TransformBase):
 class FiveCrop(TransformFunctionBase):
     def __init__(self, size, tg=None):
         super().__init__(tg)
-        self.size = size
-        if isinstance(size, numbers.Number):
-            self.size = (int(size), int(size))
-        else:
-            assert len(size) == 2, "Please provide only two dimensions (h, w) for size."
-            self.size = size
+        self.size = get_2dshape(size)
 
     def call_image(self, img):
         return fimage.five_crop(img, self.size)
@@ -407,12 +428,7 @@ class FiveCrop(TransformFunctionBase):
 class TenCrop(TransformFunctionBase):
     def __init__(self, size, tg=None):
         super().__init__(tg)
-        self.size = size
-        if isinstance(size, numbers.Number):
-            self.size = (int(size), int(size))
-        else:
-            assert len(size) == 2, "Please provide only two dimensions (h, w) for size."
-            self.size = size
+        self.size = get_2dshape(size)
 
     def call_image(self, img):
         return fimage.ten_crop(img, self.size)
@@ -451,7 +467,7 @@ class Rotate(TransformBase):
         self.center = center
         self.translate = translate
 
-    def __call__(self, feed_dict):
+    def call_feed_dict(self, feed_dict):
         img = self._get_image(feed_dict)
         matrix, extra_crop = get_rotation_matrix(img, self.angle, self.crop, self.expand, self.center, self.translate)
         feed_dict = _AffineHelper(self, matrix, tg=self.transform_guide)(feed_dict)
@@ -478,7 +494,7 @@ class RandomRotation(TransformBase):
         self.center = center
         self.translate = translate
 
-    def __call__(self, feed_dict):
+    def call_feed_dict(self, feed_dict):
         angle = torch_transforms.RandomRotation.get_params(self.degrees)
         return Rotate(angle, self.resample, self.crop, self.expand, self.center, self.translate, tg=self.transform_guide)(feed_dict)
 
