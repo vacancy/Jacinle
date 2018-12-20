@@ -55,12 +55,20 @@ class ServerPipe(object):
     def conn_info(self):
         return self._conn_info
 
-    def initialize(self):
+    def initialize(self, tcp_port=None):
         self._conn_info = []
         if self._mode == 'tcp':
-            port = self._frsock.bind_to_random_port('tcp://*')
+            if tcp_port is not None:
+                port = tcp_port[0]
+                self._frsock.bind('tcp://*:{}'.format(port))
+            else:
+                port = self._frsock.bind_to_random_port('tcp://*')
             self._conn_info.append('tcp://{}:{}'.format(get_addr(), port))
-            port = self._tosock.bind_to_random_port('tcp://*')
+            if tcp_port is not None:
+                port = tcp_port[1]
+                self._tosock.bind('tcp://*:{}'.format(port))
+            else:
+                port = self._tosock.bind_to_random_port('tcp://*')
             self._conn_info.append('tcp://{}:{}'.format(get_addr(), port))
         elif self._mode == 'ipc':
             self._conn_info.append(bind_to_random_ipc(self._frsock, self._name + '-c2s-'))
@@ -77,8 +85,8 @@ class ServerPipe(object):
         self._context.term()
 
     @contextlib.contextmanager
-    def activate(self):
-        self.initialize()
+    def activate(self, tcp_port=None):
+        self.initialize(tcp_port=tcp_port)
         try:
             yield
         finally:
@@ -156,7 +164,7 @@ class ClientPipe(object):
         finally:
             self.finalize()
 
-    def query(self, type, inp, do_recv=True):
+    def query(self, type, inp=None, do_recv=True):
         self._tosock.send(dumpb((self.identity, type, inp)), copy=False)
         if do_recv:
             out = loadb(self._frsock.recv(copy=False).bytes)

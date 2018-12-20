@@ -8,10 +8,15 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import sys
 import uuid
+import inspect
+import contextlib
 
 from jacinle.logging import get_logger
 from jacinle.comm.cs import ServerPipe, ClientPipe
+from jacinle.utils.printing import kvformat
+from jacinle.utils.exception import format_exc
 
 logger = get_logger(__file__)
 
@@ -19,41 +24,52 @@ __all__ = ['Service', 'SocketServer', 'SocketClient']
 
 
 class Service(object):
-    def __init__(self, configs=None):
+    def __init__(self, configs=None, spec=None):
         self.configs = configs
+        self.spec = spec
 
-    def serve_socket(self, name=None, spec=None):
+    def serve_socket(self, name=None, tcp_port=None):
         if name is None:
             name = self.__class__.__name__
 
-        return SocketServer(self, name, spec=spec).serve()
+        return SocketServer(self, name, tcp_port=tcp_port).serve()
 
     def initialize(self):
         pass
 
-    def call(self, feed_dict):
+    def call(self, *args, **kwargs):
         raise NotImplementedError()
 
     def finalize(self):
         pass
 
 
+class ServiceException(object):
+    def __init__(self, remote_message):
+        self.remote_message = remote_message
+
+    def __repr__(self):
+        return 'Service exception: ' + self.remote_message
+
+
 class SocketServer(object):
-    def __init__(self, service, name, spec):
+    def __init__(self, service, name, tcp_port=None):
         self.service = service
         self.name = name
-        self.spec = spec
+        self.tcp_port = tcp_port
 
         self.identifier = self.name + '-server-' + uuid.uuid4().hex
         self.server = ServerPipe(self.identifier)
+        self.server.dispatcher.register('get_name', self.call_get_name)
         self.server.dispatcher.register('get_identifier', self.call_get_identifier)
         self.server.dispatcher.register('get_conn_info', self.call_get_conn_info)
         self.server.dispatcher.register('get_spec', self.call_get_spec)
         self.server.dispatcher.register('get_configs', self.call_get_configs)
+        self.server.dispatcher.register('get_signature', self.call_get_signature)
         self.server.dispatcher.register('query', self.call_query)
 
     def serve(self):
-        with self.server.activate():
+        with self.server.activate(tcp_port=self.tcp_port):
             logger.info('Server started.')
             logger.info('  Name:       {}'.format(self.name))
             logger.info('  Identifier: {}'.format(self.identifier))
@@ -65,6 +81,9 @@ class SocketServer(object):
     def conn_info(self):
         return self.server.conn_info
 
+    def call_get_name(self, pipe, identifier, inp):
+        pipe.send(identifier, self.name)
+
     def call_get_identifier(self, pipe, identifier, inp):
         pipe.send(identifier, self.identifier)
 
@@ -72,14 +91,20 @@ class SocketServer(object):
         pipe.send(identifier, self.conn_info)
 
     def call_get_spec(self, pipe, identifier, inp):
-        pipe.send(identifier, self.sepc)
+        pipe.send(identifier, self.service.sepc)
 
     def call_get_configs(self, pipe, identifier, inp):
         pipe.send(identifier, self.service.configs)
 
+    def call_get_signature(self, pipe, identifier, inp):
+        pipe.send(identifier, repr(inspect.getfullargspec(self.service.call)))
+
     def call_query(self, pipe, identifier, feed_dict):
         logger.info('Received query from: {}.'.format(identifier))
-        output_dict = self.service.call(feed_dict)
+        try:
+            output_dict = self.service.call(*feed_dict['args'], **feed_dict['kwargs'])
+        except:
+            output_dict = ServiceException(format_exc(sys.exc_info()))
         pipe.send(identifier, output_dict)
 
 
@@ -91,12 +116,30 @@ class SocketClient(object):
 
         self.client = ClientPipe(self.identifier, conn_info=self.conn_info)
 
-    def activate(self):
+    def initialize(self):
+        self.client.initialize()
         logger.info('Client started.')
-        logger.info('  Name:       {}'.format(self.name))
-        logger.info('  Identifier: {}'.format(self.identifier))
-        logger.info('  Conn info:  {}'.format(self.conn_info))
-        return self.client.activate()
+        logger.info('  Name:              {}'.format(self.name))
+        logger.info('  Identifier:        {}'.format(self.identifier))
+        logger.info('  Conn info:         {}'.format(self.conn_info))
+        logger.info('  Server name:       {}'.format(self.get_server_name()))
+        logger.info('  Server identifier: {}'.format(self.get_server_identifier()))
+        logger.info('  Server signaature: {}'.format(self.get_signature()))
+        logger.info('  Server configs:\n' + kvformat(self.get_configs(), indent=2))
+
+    def finalize(self):
+        self.client.finalize()
+
+    @contextlib.contextmanager
+    def activate(self):
+        try:
+            self.initialize()
+            yield
+        finally:
+            self.finalize()
+
+    def get_server_name(self):
+        return self.client.query('get_name')
 
     def get_server_identifier(self):
         return self.client.query('get_identifier')
@@ -110,6 +153,15 @@ class SocketClient(object):
     def get_spec(self):
         return self.client.query('get_spec')
 
-    def call(self, feed_dict):
-        return self.client.query('query', feed_dict)
+    def get_configs(self):
+        return self.client.query('get_configs')
+
+    def get_signature(self):
+        return self.client.query('get_signature')
+
+    def call(self, *args, **kwargs):
+        output = self.client.query('query', {'args': args, 'kwargs': kwargs})
+        if isinstance(output, ServiceException):
+            raise RuntimeError(repr(output))
+        return output
 
