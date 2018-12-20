@@ -13,9 +13,10 @@ import sys
 import numpy as np
 import collections
 
+import threading
 from .registry import LockRegistry
 
-__all__ = ['stprint', 'stformat', 'kvprint', 'kvformat', 'print_to_string', 'print2format']
+__all__ = ['stprint', 'stformat', 'kvprint', 'kvformat', 'PrintToStringContext', 'print_to_string', 'print2format']
 
 
 def _indent_print(msg, indent, prefix=None, end='\n', file=None):
@@ -107,14 +108,18 @@ def kvformat(data, sep=' : ', end='\n', max_key_len=None):
     return print2format(kvprint)(data, sep=sep, end=end, max_key_len=max_key_len, need_lock=False)
 
 
-class _PrintToStringContext(object):
+class PrintToStringContext(object):
     __global_locks = LockRegistry()
 
-    def __init__(self, target='STDOUT', need_lock=True):
+    def __init__(self, target='STDOUT', stream=None, need_lock=True):
         assert target in ('STDOUT', 'STDERR')
         self._target = target
         self._need_lock = need_lock
-        self._stream = io.StringIO()
+        if stream is None:
+            self._stream = io.StringIO()
+        else:
+            self._stream = stream
+        self._stream_lock = threading.Lock()
         self._backup = None
         self._value = None
 
@@ -148,7 +153,7 @@ class _PrintToStringContext(object):
 
 
 def print_to_string(target='STDOUT'):
-    return _PrintToStringContext(target, need_lock=True)
+    return PrintToStringContext(target, need_lock=True)
 
 
 def print2format(print_func):

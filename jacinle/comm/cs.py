@@ -159,8 +159,11 @@ class ClientPipe(object):
     def query(self, type, inp, do_recv=True):
         self._tosock.send(dumpb((self.identity, type, inp)), copy=False)
         if do_recv:
-            out = loadb(self._frsock.recv(copy=False).bytes)
-            return out
+            return self.recv()
+
+    def recv(self):
+        out = loadb(self._frsock.recv(copy=False).bytes)
+        return out
 
 
 def make_cs_pair(name, nr_clients=None, mode='tcp', send_qsize=10):
