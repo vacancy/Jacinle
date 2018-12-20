@@ -14,12 +14,13 @@ from jacinle.comm.service import Service
 class MyService(Service):
     def call(self, inp):
         out = inp['a'] + inp['b']
+        print('Server string: {} {}.'.format(inp['a'], inp['b']))
         return dict(out=out)
 
 
 def main():
     s = MyService()
-    s.serve_socket()
+    s.serve_socket(tcp_port=[31001, 31002])
 
 
 if __name__ == '__main__':

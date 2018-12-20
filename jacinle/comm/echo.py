@@ -9,6 +9,12 @@
 # Distributed under terms of the MIT license.
 
 import threading
+import contextlib
+import sys
+
+from jacinle.utils.printing import PrintToStringContext
+
+__all__ = ['EchoToPipe', 'echo_from_pipe']
 
 
 class StringQueue(object):
@@ -33,7 +39,7 @@ class StringQueue(object):
             return sum(len(i) for i in self.l_buffer) + len(self.s_buffer)
 
     def read(self, count=None):
-        if count > len(self.s_buffer) or count is None:
+        if count is None or count > len(self.s_buffer):
             self._build_str()
 
         if count is None:
@@ -76,13 +82,13 @@ class EchoToPipe(object):
         while True:
             msg = self.out.read()
             if len(msg) > 0:
-                self.pipe.send(identifier, EchoMessage(1, msg))
+                self.pipe.send(self.identifier, EchoMessage(1, msg))
             msg = self.err.read()
             if len(msg) > 0:
-                self.pipe.send(identifier, EchoMessage(2, msg))
+                self.pipe.send(self.identifier, EchoMessage(2, msg))
 
             if to_close:
-                self.pipe.send(EndEcho())
+                self.pipe.send(self.identifier, EndEcho())
                 break
 
             if self.stop_event.wait(0.1):
@@ -98,12 +104,12 @@ class EchoToPipe(object):
 
     @contextlib.contextmanager
     def activate(self):
-        with self.out_ctx, self.err_ctx:
-            try:
-                self.initialize()
+        try:
+            self.initialize()
+            with self.out_ctx, self.err_ctx:
                 yield
-            finally:
-                self.finalize()
+        finally:
+            self.finalize()
 
 
 def echo_from_pipe(pipe):

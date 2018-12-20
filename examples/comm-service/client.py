@@ -9,13 +9,12 @@
 # Distributed under terms of the MIT license.
 
 import time
-import sys
 
 from jacinle.comm.service import SocketClient
 
 
 def main():
-    client = SocketClient('client', sys.argv[1:3])
+    client = SocketClient('client', ['tcp://127.0.0.1:31001', 'tcp://127.0.0.1:31002'])
     with client.activate():
         inp = dict(a=1, b=2)
         out = client.call(inp)

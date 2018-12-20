@@ -14,9 +14,11 @@ import inspect
 import contextlib
 
 from jacinle.logging import get_logger
-from jacinle.comm.cs import ServerPipe, ClientPipe
 from jacinle.utils.printing import kvformat
 from jacinle.utils.exception import format_exc
+
+from .cs import ServerPipe, ClientPipe
+from .echo import EchoToPipe, echo_from_pipe
 
 logger = get_logger(__file__)
 
@@ -102,7 +104,11 @@ class SocketServer(object):
     def call_query(self, pipe, identifier, feed_dict):
         logger.info('Received query from: {}.'.format(identifier))
         try:
-            output_dict = self.service.call(*feed_dict['args'], **feed_dict['kwargs'])
+            if feed_dict['echo']:
+                with EchoToPipe(pipe, identifier).activate():
+                    output_dict = self.service.call(*feed_dict['args'], **feed_dict['kwargs'])
+            else:
+                output_dict = self.service.call(*feed_dict['args'], **feed_dict['kwargs'])
         except:
             output_dict = ServiceException(format_exc(sys.exc_info()))
         pipe.send(identifier, output_dict)
@@ -125,7 +131,9 @@ class SocketClient(object):
         logger.info('  Server name:       {}'.format(self.get_server_name()))
         logger.info('  Server identifier: {}'.format(self.get_server_identifier()))
         logger.info('  Server signaature: {}'.format(self.get_signature()))
-        logger.info('  Server configs:\n' + kvformat(self.get_configs(), indent=2))
+        configs = self.get_configs()
+        if configs is not None:
+            logger.info('  Server configs:\n' + kvformat(configs, indent=2))
 
     def finalize(self):
         self.client.finalize()
@@ -159,8 +167,11 @@ class SocketClient(object):
     def get_signature(self):
         return self.client.query('get_signature')
 
-    def call(self, *args, **kwargs):
-        output = self.client.query('query', {'args': args, 'kwargs': kwargs})
+    def call(self, *args, echo=True, **kwargs):
+        self.client.query('query', {'args': args, 'kwargs': kwargs, 'echo': echo}, do_recv=False)
+        if echo:
+            echo_from_pipe(self.client)
+        output = self.client.recv()
         if isinstance(output, ServiceException):
             raise RuntimeError(repr(output))
         return output
