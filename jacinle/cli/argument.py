@@ -22,6 +22,7 @@ __all__ = ['JacArgumentParser']
 
 class JacArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
+        kwargs.setdefault('fromfile_prefix_chars', '@')
         super().__init__(*args, **kwargs)
 
         self.register('type', 'bool', _type_bool)

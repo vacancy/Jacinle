@@ -23,11 +23,16 @@ def get_tqdm_defaults():
 
 
 def get_current_tqdm():
+    _init_tqdm_stack()
     assert len(get_current_tqdm._stack.data) > 0, 'No registered tqdm.'
     return get_current_tqdm._stack.data[0]
 
 get_current_tqdm._stack = threading.local()
 get_current_tqdm._stack.data = list()
+
+def _init_tqdm_stack():
+    if not hasattr(get_current_tqdm._stack, 'data'):
+        get_current_tqdm._stack.data = list()
 
 
 def tqdm(iterable, **kwargs):
@@ -49,6 +54,7 @@ def tqdm(iterable, **kwargs):
         kwargs['total'] = total
 
     with _tqdm(**kwargs) as pbar:
+        _init_tqdm_stack()
         get_current_tqdm._stack.data.append(pbar)
         try:
             for data in iterable:

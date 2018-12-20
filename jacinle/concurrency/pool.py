@@ -18,6 +18,7 @@ import collections
 
 from jacinle.logging import get_logger
 from jacinle.utils.enum import JacEnum
+from jacinle.utils.exception import format_exc
 from jacinle.utils.meta import map_exec_method
 from jacinle.utils.tqdm import tqdm_pbar
 
@@ -91,7 +92,7 @@ class Pool(object):
                 self._result_queue.put(('result', result))
             except Exception:
                 print(sys.exc_info())
-                self._result_queue.put(('exc', _format_exc(sys.exc_info())))
+                self._result_queue.put(('exc', format_exc(sys.exc_info())))
 
     def _task_dispatcher(self):
         while True:
@@ -189,23 +190,6 @@ class TQDMPool(Pool):
                     last_update_time = current
 
         return wrapped
-
-
-def _format_exc(ei):
-    import io
-    import traceback
-
-    sio = io.StringIO()
-    tb = ei[2]
-    # See issues #9427, #1553375. Commented out for now.
-    # if getattr(self, 'fullstack', False):
-    #     traceback.print_stack(tb.tb_frame.f_back, file=sio)
-    traceback.print_exception(ei[0], ei[1], tb, None, sio)
-    s = sio.getvalue()
-    sio.close()
-    if s[-1:] == "\n":
-        s = s[:-1]
-    return s
 
 
 default_pool = TQDMPool(1)
