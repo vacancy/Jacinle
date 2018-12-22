@@ -90,6 +90,8 @@ def stformat(data, key=None, indent=0, max_depth=100):
 
 
 def kvprint(data, indent=0, sep=' : ', end='\n', max_key_len=None, file=None, need_lock=True):
+    if len(data) == 0:
+        return
     with kvprint.locks.synchronized(file, need_lock):
         keys = sorted(data.keys())
         lens = list(map(len, keys))

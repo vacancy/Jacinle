@@ -28,6 +28,9 @@ class StringQueue(object):
     def write(self, data):
         self.l_buffer.append(data)
 
+    def flush(self):
+        pass
+
     def _build_str(self):
         with self.lock:
             new_string = ''.join(self.l_buffer)
@@ -113,14 +116,18 @@ class EchoToPipe(object):
 
 
 def echo_from_pipe(pipe):
+    count = 0
     while True:
         msg = pipe.recv()
         if isinstance(msg, EchoMessage):
+            count += 1
             if msg.source == 1:
                 sys.stdout.write(msg.message)
             elif msg.source == 2:
                 sys.stderr.write(msg.message)
         elif isinstance(msg, EndEcho):
+            if count:
+                sys.stdout.write('\r')
             break
         else:
             raise ValueError('Unknwon echo: {}.'.format(msg))
