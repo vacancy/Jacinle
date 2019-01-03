@@ -29,6 +29,31 @@ def denormalize_box(img, bbox):
     return bbox
 
 
+def refresh_valid(img, bbox):
+    assert bbox.shape[1] in (4, 5), 'Support only (x1, y1, x2, y2, valid) or (x1, y1, x2, y2) typed coordinates'
+    has_valid_bit = bbox.shape[1] == 5
+
+    out = bbox.copy()
+    out[:, 0] = np.fmax(out[:, 0], 0)
+    out[:, 1] = np.fmax(out[:, 1], 0)
+    out[:, 2] = np.fmin(out[:, 2], img.width)
+    out[:, 3] = np.fmin(out[:, 3], img.height)
+
+    if has_valid_bit:
+        v = bbox[:, 4]
+    else:
+        v = 1
+
+    valid = (v != 0) & ((out[:, 2] - out[:, 0]) * (out[:, 3] - out[:, 1]) > 0)
+
+    if has_valid_bit:
+        invalid_indices = np.where(~valid)[0]
+        out[invalid_indices, :] = 0
+    else:
+        valid_indices = np.where(valid)[0]
+        return out[valid_indices]
+
+
 def crop(bbox, x, y, w, h):
     bbox = bbox.copy()
 

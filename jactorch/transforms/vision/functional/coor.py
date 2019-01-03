@@ -26,15 +26,24 @@ def denormalize_coor(img, coor):
 
 
 def refresh_valid(img, coor):
-    if coor.shape[1] == 2:
-        return coor
-    assert coor.shape[1] == 3, 'Support only (x, y, valid) or (x, y) typed coordinates'
-    out = coor.copy()
-    for i, (x, y, v) in enumerate(coor):
-        valid = (v == 1) and (x >= 0) and (x < img.width) and (y >= 0) and (y < img.height)
-        if not valid:
-            out[i, :] = 0
-    return out
+    assert coor.shape[1] in (2, 3), 'Support only (x, y, valid) or (x, y) typed coordinates'
+    has_valid_bit = coor.shape[1] == 3
+
+    x, y = coor[:, 0], coor[:, 1]
+    if has_valid_bit:
+        v = coor[:, 2]
+    else:
+        v = 1
+
+    valid = (v != 0) & (x >= 0) & (x < img.width) & (y >= 0) & (y < img.height)
+
+    if has_valid_bit:
+        out = coor.copy()
+        invalid_indices = np.where(~valid)[0]
+        out[invalid_indices, :] = 0
+    else:
+        valid_indices = np.where(valid)[0]
+        return coor[valid_indices]
 
 
 def crop(coor, x, y, w, h):

@@ -94,7 +94,7 @@ def refresh_valid(img, coor, force=False):
             coor = np.concatenate([coor, np.ones_like(coor[:, 0])], axis=1)
         else:
             return img, coor
-    assert coor.shape[1] == 3, 'Support only (x, y, valid) or (x, y) typed coordinates'
+    assert coor.shape[1] == 3, 'Support only (x, y, valid) or (x, y) typed coordinates.'
     out = []
     for x, y, v in coor:
         valid = (v == 1) and (x >= 0) and (x < img.width) and (y >= 0) and (y < img.height)
