@@ -201,7 +201,7 @@ class ToTensor(TransformFunctionBase):
         return torch.tensor(coor)
 
     def call_bbox(self, img, bbox):
-        bbox = fcoor.refresh_valid(img, bbox)
+        bbox = fbbox.refresh_valid(img, bbox)
         return torch.tensor(bbox)
 
     __doc__ = torch_transforms.ToTensor.__doc__
