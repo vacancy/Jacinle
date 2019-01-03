@@ -88,9 +88,12 @@ def resized_crop(img, coor, i, j, h, w, size, interpolation=Image.BILINEAR):
     return img, coor
 
 
-def refresh_valid(img, coor):
+def refresh_valid(img, coor, force=False):
     if coor.shape[1] == 2:
-        return img, coor
+        if force:
+            coor = np.concatenate([coor, np.ones_like(coor[:, 0])], axis=1)
+        else:
+            return img, coor
     assert coor.shape[1] == 3, 'Support only (x, y, valid) or (x, y) typed coordinates'
     out = []
     for x, y, v in coor:
