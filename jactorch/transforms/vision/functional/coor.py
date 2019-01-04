@@ -8,6 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import numpy as np
 from ._utils import apply_affine_transform
 
 
@@ -41,6 +42,7 @@ def refresh_valid(img, coor):
         out = coor.copy()
         invalid_indices = np.where(~valid)[0]
         out[invalid_indices, :] = 0
+        return out
     else:
         valid_indices = np.where(valid)[0]
         return coor[valid_indices]
