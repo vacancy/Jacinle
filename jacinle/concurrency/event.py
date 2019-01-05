@@ -15,7 +15,8 @@ import functools
 __all__ = [
     'MPLibExtension', 'instantiate_mplib_ext',
     'MTBooleanEvent', 'MPBooleanEvent',
-    'MTOrEvent', 'MPOrEvent'
+    'MTOrEvent', 'MPOrEvent',
+    'MTCoordinatorEvent'
 ]
 
 
@@ -123,3 +124,27 @@ def OrEvent(*events, mplib=threading):
 
 MTOrEvent = functools.partial(OrEvent, mplib=threading)
 MPOrEvent = functools.partial(OrEvent, mplib=multiprocessing)
+
+
+class MTCoordinatorEvent(object):
+    def __init__(self, nr_workers):
+        self._event = threading.Event()
+        self._queue = queue.Queue()
+        self._nr_workers = nr_workers
+
+    def broadcast(self):
+        self._event.set()
+        for i in range(self._nr_workers):
+            self._queue.get()
+        self._event.clear()
+
+    def wait(self):
+        self._event.wait()
+        self._queue.put(1)
+
+    def check(self):
+        rc = self._event.is_set()
+        if rc:
+            self._queue.put(1)
+        return rc
+
