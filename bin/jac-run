@@ -2,11 +2,10 @@
 
 JACROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/../ && pwd )"
 
-export PYTHONPATH=$JACROOT:./:$PYTHONPATH
+source $JACROOT/bin/_jac-init.sh $JACROOT
 
 if [[ $1 == *.py ]]; then
-    exec python3 $@ && exit
+    exec python3 "$@" && exit
 fi
-
-exec $@
+exec "$@"
 

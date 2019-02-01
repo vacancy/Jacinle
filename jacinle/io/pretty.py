@@ -131,6 +131,7 @@ for registry in ['load', 'pretty_load']:
     io_function_registry.register(registry, '.json', load_json)
     io_function_registry.register(registry, '.xml',  load_xml)
     io_function_registry.register(registry, '.yaml', load_yaml)
+    io_function_registry.register(registry, '.yml', load_yaml)
 
 
 for registry in ['dump', 'pretty_dump']:
@@ -138,6 +139,7 @@ for registry in ['dump', 'pretty_dump']:
     io_function_registry.register(registry, '.json',   dump_json)
     io_function_registry.register(registry, '.xml',    dump_xml)
     io_function_registry.register(registry, '.yaml',   dump_yaml)
+    io_function_registry.register(registry, '.yml',   dump_yaml)
     io_function_registry.register(registry, '.struct', dump_struct)
     io_function_registry.register(registry, '.kv',     dump_kv)
     io_function_registry.register(registry, '.env',    dump_env)
