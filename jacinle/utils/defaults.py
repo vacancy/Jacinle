@@ -15,7 +15,7 @@ import functools
 from .meta import decorator_with_optional_args
 from .naming import class_name_of_method
 
-__all__ = ['defaults_manager']
+__all__ = ['defaults_manager', 'wrap_custom_as_default', 'gen_get_default', 'gen_set_default']
 
 
 class DefaultsManager(object):
@@ -83,3 +83,6 @@ class DefaultsManager(object):
 
 
 defaults_manager = DefaultsManager()
+wrap_custom_as_default = defaults_manager.wrap_custom_as_default
+gen_get_default = defaults_manager.gen_get_default
+gen_set_default = defaults_manager.gen_set_default
