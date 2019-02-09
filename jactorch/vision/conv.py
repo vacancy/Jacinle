@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 # File   : conv.py
 # Author : Jiayuan Mao
-# Email  : maojiayuan@gmail.com # Date   : 01/04/2019
+# Email  : maojiayuan@gmail.com
+# Date   : 01/04/2019
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.

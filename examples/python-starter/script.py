@@ -5,7 +5,7 @@
 # Email  : maojiayuan@gmail.com
 # Date   : 10/25/2018
 #
-# This file is part of nimpi.
+# This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
 import six
