@@ -18,6 +18,7 @@ from jacinle.logging import get_logger
 
 logger = get_logger(__file__)
 parser = JacArgumentParser()
+parser.add_argument('files', nargs='*')
 parser.add_argument('--dir', default=os.getcwd())
 parser.add_argument('--project', default=osp.basename(os.getcwd()))
 parser.add_argument('-n', '--dry', action='store_true')
@@ -116,13 +117,13 @@ def process(filename):
         i += 1
 
     if filetype == 'unk':
-        logger.warn('Unkown filetype.')
+        logger.warning('Unkown filetype.')
         return
 
     extras = lines[i:]
 
     if len(fields) != 5:
-        logger.warn('Incomplete header.')
+        logger.warning('Incomplete header.')
 
         fields.setdefault('file', osp.basename(filename))
         fields.setdefault('author', 'Jiayuan Mao')
@@ -140,7 +141,18 @@ def main():
     logger.critical('Working directory: {}'.format(args.dir))
     logger.critical('Project name: {}'.format(args.project))
 
-    for f in glob.glob('{}/**/*.py'.format(args.dir), recursive=True):
+    if args.files:
+        files = list()
+        for f in args.files:
+            if osp.isdir(f):
+                files.extend(glob.glob('{}/**/*.py'.format(f), recursive=True))
+            else:
+                assert osp.isfile(f), f
+                files.append(f)
+    else:
+        files = glob.glob('{}/**/*.py'.format(args.dir), recursive=True)
+
+    for f in files:
         logger.info('Process: "{}"'.format(f))
         process(f)
 
