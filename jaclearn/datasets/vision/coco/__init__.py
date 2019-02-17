@@ -8,3 +8,6 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+
+from jacinle.cext.travis import auto_travis
+auto_travis(__file__)
