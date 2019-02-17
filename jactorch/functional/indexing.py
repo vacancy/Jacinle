@@ -12,13 +12,16 @@ import torch
 
 from jacinle.utils.numeric import prod
 from jactorch.utils.grad import no_grad_func
+from .shape import concat_shape
 
 __all__ = [
     'reversed',
     'one_hot', 'one_hot_nd', 'one_hot_dim',
     'inverse_permutation',
     'index_one_hot', 'set_index_one_hot_',
-    'index_one_hot_ellipsis']
+    'index_one_hot_ellipsis',
+    'batch_index_select'
+]
 
 
 def reversed(x, dim=-1):
@@ -170,3 +173,17 @@ def index_one_hot_ellipsis(tensor, dim, index):
     index = index.expand(tensor.size(0), 1, tensor.size(2))
     tensor = tensor.gather(1, index)
     return tensor.view(tensor_shape[:dim] + tensor_shape[dim+1:])
+
+
+def batch_index_select(tensor, batched_indices):
+    assert batched_indices.dim() == 2
+
+    batch_i = torch.arange(batched_indices.size(0)).to(batched_indices)
+    batch_i = batch_i.unsqueeze(-1).expand_as(batched_indices)
+    flattened_indices = batched_indices + batch_i * batched_indices.size(1)
+
+    return (tensor
+        .reshape(concat_shape(-1, tensor.size()[2:]))[flattened_indices.view(-1)]
+        .reshape(concat_shape(batched_indices.size(), tensor.size()[2:]))
+    )
+
