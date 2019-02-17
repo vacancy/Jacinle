@@ -74,6 +74,7 @@ class SpacyParser(ParserBackend):
                 lemma_span=entity.lemma_,
                 head=entity.root.text,
                 lemma_head=entity.root.lemma_,
+                span_bounds=(entity.start, entity.end),
                 modifiers=[]
             )
 

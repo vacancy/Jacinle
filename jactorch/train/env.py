@@ -125,9 +125,11 @@ class TrainerEnv(object):
 
         self._optimizer.zero_grad()
         self.trigger_event('backward:before', self, loss)
-        loss.backward()
+        if loss.requires_grad:
+            loss.backward()
         self.trigger_event('backward:after', self, loss)
-        self._optimizer.step()
+        if loss.requires_grad:
+            self._optimizer.step()
 
         end = time.time()
 

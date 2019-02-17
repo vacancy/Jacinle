@@ -21,12 +21,21 @@ from .traversal import traversal
 
 
 class PTBNode(Node):
-    def __init__(self, vtype, token=None):
+    def __init__(self, vtype, token=None, index=-1):
         super().__init__(vtype, None)
         self.token = token
+        self.index = index
+
+    @property
+    def leftmost_index(self):
+        return self.index if self.is_leaf else self.children[0].leftmost_index
+
+    @property
+    def rightmost_index(self):
+        return self.index if self.is_leaf else self.children[-1].rightmost_index
 
     @classmethod
-    def from_string(cls, encoding):
+    def from_string(cls, encoding, incl_vtype=True, default_vtype=None):
         if isinstance(encoding, six.string_types):
             steps = encoding.split()
         else:
@@ -59,13 +68,24 @@ class PTBNode(Node):
                         poped.append(x)
                     poped = poped[::-1]
 
-                    if len(poped) == 2 and isinstance(poped[1], six.string_types):  # is leaf
-                        stack.append(cls(poped[0], poped[1]))
+                    if incl_vtype:
+                        if len(poped) == 2 and isinstance(poped[1], six.string_types):  # is leaf
+                            stack.append(cls(poped[0], poped[1]))
+                        else:
+                            node = cls(poped[0])
+                            for x in poped[1:]:
+                                node.append_child(x)
+                            stack.append(node)
                     else:
-                        node = cls(poped[0])
-                        for x in poped[1:]:
-                            node.append_child(x)
-                        stack.append(node)
+                        if len(poped) == 1 and isinstance(poped[0], six.string_types):  # is leaf
+                            stack.append(cls(default_vtype, poped[0]))
+                        else:
+                            node = cls(default_vtype)
+                            for x in poped:
+                                if isinstance(x, six.string_types):
+                                    x = cls(default_vtype, x)
+                                node.append_child(x)
+                            stack.append(node)
             else:
                 stack.append(s)
 
@@ -129,4 +149,16 @@ class PTBNode(Node):
         if self.is_leaf:
             return 'VType: {} Token: {}'.format(self.vtype, self.token)
         return 'VType: {}'.format(self.vtype)
+
+    def assign_index(self, start_index=0):
+        if not self.is_leaf and self.token is not None:
+            raise ValueError('Cannot assign index for trees with non-leaf tokens.')
+
+        if self.is_leaf:
+            self.index = start_index
+            return self.index + 1
+
+        for c in self.children:
+            start_index = c.assign_index(start_index)
+        return start_index
 
