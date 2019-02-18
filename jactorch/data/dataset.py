@@ -129,6 +129,12 @@ class FilterableDatasetView(FilterableDatasetUnwrapped):
             raise ValueError('Filter results in an empty dataset.')
         return type(self)(self, indices, filter_name, filter_func)
 
+    def random_trim_length(self, length):
+        assert length < len(self)
+        logger.info('Randomly trim the dataset: #samples = {}.'.format(length))
+        indices = list(random.choice(len(self), size=length, replace=False))
+        return type(self)(self, indices=indices, filter_name='randomtrim[{}]'.format(length))
+
     def trim_length(self, length):
         assert length < len(self)
         logger.info('Trim the dataset: #samples = {}.'.format(length))
