@@ -30,6 +30,16 @@ class Node(object):
         return len(self.children)
 
     @property
+    def size(self):
+        return 1 + sum(c.size for c in self.children)
+
+    @property
+    def nr_leaves(self):
+        if self.is_leaf:
+            return 1
+        return sum(c.nr_leaves for c in self.children)
+
+    @property
     def is_leaf(self):
         return len(self.children) == 0
 

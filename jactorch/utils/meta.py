@@ -9,6 +9,7 @@
 # Distributed under terms of the MIT license.
 
 import six
+import functools
 import numpy as np
 
 import torch
@@ -119,13 +120,15 @@ def as_cuda(obj):
     return stmap(_as_cuda, obj)
 
 
-def _as_detached(o):
+def _as_detached(o, clone=False):
     from torch.autograd import Variable
     if isinstance(o, Variable) or torch.is_tensor(o):
+        if clone:
+            return o.clone().detach()
         return o.detach()
     return o
 
 
-def as_detached(obj):
-    return stmap(_as_detached, obj)
+def as_detached(obj, clone=False):
+    return stmap(functools.partial(_as_detached, clone=clone), obj)
 
