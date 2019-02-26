@@ -1,11 +1,6 @@
 jaclearn.datasets.vision.coco.pycocotools package
 =================================================
 
-.. automodule:: jaclearn.datasets.vision.coco.pycocotools
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -34,3 +29,10 @@ jaclearn.datasets.vision.coco.pycocotools.mask module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jaclearn.datasets.vision.coco.pycocotools
+    :members:
+    :undoc-members:
+    :show-inheritance:

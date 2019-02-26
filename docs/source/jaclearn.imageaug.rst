@@ -1,11 +1,6 @@
 jaclearn.imageaug package
 =========================
 
-.. automodule:: jaclearn.imageaug
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -42,3 +37,10 @@ jaclearn.imageaug.shape module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jaclearn.imageaug
+    :members:
+    :undoc-members:
+    :show-inheritance:

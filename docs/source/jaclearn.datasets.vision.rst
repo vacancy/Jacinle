@@ -1,11 +1,6 @@
 jaclearn.datasets.vision package
 ================================
 
-.. automodule:: jaclearn.datasets.vision
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
@@ -13,3 +8,10 @@ Subpackages
 
     jaclearn.datasets.vision.coco
 
+Module contents
+---------------
+
+.. automodule:: jaclearn.datasets.vision
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,11 +1,6 @@
 jactorch.utils package
 ======================
 
-.. automodule:: jactorch.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -42,3 +37,10 @@ jactorch.utils.unittest module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jactorch.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:

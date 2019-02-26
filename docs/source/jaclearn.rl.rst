@@ -1,11 +1,6 @@
 jaclearn.rl package
 ===================
 
-.. automodule:: jaclearn.rl
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
@@ -43,3 +38,10 @@ jaclearn.rl.space module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jaclearn.rl
+    :members:
+    :undoc-members:
+    :show-inheritance:

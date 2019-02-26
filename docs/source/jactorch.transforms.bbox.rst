@@ -1,11 +1,6 @@
 jactorch.transforms.bbox package
 ================================
 
-.. automodule:: jactorch.transforms.bbox
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -26,3 +21,10 @@ jactorch.transforms.bbox.transforms module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jactorch.transforms.bbox
+    :members:
+    :undoc-members:
+    :show-inheritance:

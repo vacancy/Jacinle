@@ -1,11 +1,6 @@
 jacinle.config package
 ======================
 
-.. automodule:: jacinle.config
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -26,3 +21,10 @@ jacinle.config.g module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jacinle.config
+    :members:
+    :undoc-members:
+    :show-inheritance:

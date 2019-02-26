@@ -1,11 +1,6 @@
 jaclearn.rl.envs.maze package
 =============================
 
-.. automodule:: jaclearn.rl.envs.maze
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -26,3 +21,10 @@ jaclearn.rl.envs.maze.taxi module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jaclearn.rl.envs.maze
+    :members:
+    :undoc-members:
+    :show-inheritance:

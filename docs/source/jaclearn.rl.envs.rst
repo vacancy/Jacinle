@@ -1,11 +1,6 @@
 jaclearn.rl.envs package
 ========================
 
-.. automodule:: jaclearn.rl.envs
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
@@ -26,8 +21,8 @@ jaclearn.rl.envs.gym module
     :undoc-members:
     :show-inheritance:
 
-jaclearn.rl.envs.gym\_adapter module
-------------------------------------
+jaclearn.rl.envs.gym_adapter module
+-----------------------------------
 
 .. automodule:: jaclearn.rl.envs.gym_adapter
     :members:
@@ -35,3 +30,10 @@ jaclearn.rl.envs.gym\_adapter module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jaclearn.rl.envs
+    :members:
+    :undoc-members:
+    :show-inheritance:

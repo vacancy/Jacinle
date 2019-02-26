@@ -1,11 +1,6 @@
 jaclearn.dataflow package
 =========================
 
-.. automodule:: jaclearn.dataflow
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -42,3 +37,10 @@ jaclearn.dataflow.utils module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jaclearn.dataflow
+    :members:
+    :undoc-members:
+    :show-inheritance:

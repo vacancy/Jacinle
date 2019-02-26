@@ -1,11 +1,6 @@
 jacinle.utils package
 =====================
 
-.. automodule:: jacinle.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -61,6 +56,14 @@ jacinle.utils.enum module
 -------------------------
 
 .. automodule:: jacinle.utils.enum
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+jacinle.utils.exception module
+------------------------------
+
+.. automodule:: jacinle.utils.exception
     :members:
     :undoc-members:
     :show-inheritance:
@@ -161,8 +164,8 @@ jacinle.utils.tqdm module
     :undoc-members:
     :show-inheritance:
 
-jacinle.utils.value\_scheduler module
--------------------------------------
+jacinle.utils.value_scheduler module
+------------------------------------
 
 .. automodule:: jacinle.utils.value_scheduler
     :members:
@@ -170,3 +173,10 @@ jacinle.utils.value\_scheduler module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jacinle.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:

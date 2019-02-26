@@ -2,7 +2,7 @@ Jacinle
 =======
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    jacinle
    jaclearn
@@ -10,4 +10,3 @@ Jacinle
    jactf
    jactorch
    jacweb
-   vendors

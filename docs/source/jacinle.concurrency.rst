@@ -1,11 +1,6 @@
 jacinle.concurrency package
 ===========================
 
-.. automodule:: jacinle.concurrency
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -73,8 +68,8 @@ jacinle.concurrency.shmarray module
     :undoc-members:
     :show-inheritance:
 
-jacinle.concurrency.zmq\_utils module
--------------------------------------
+jacinle.concurrency.zmq_utils module
+------------------------------------
 
 .. automodule:: jacinle.concurrency.zmq_utils
     :members:
@@ -82,3 +77,10 @@ jacinle.concurrency.zmq\_utils module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jacinle.concurrency
+    :members:
+    :undoc-members:
+    :show-inheritance:

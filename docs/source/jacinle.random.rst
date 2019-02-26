@@ -1,11 +1,6 @@
 jacinle.random package
 ======================
 
-.. automodule:: jacinle.random
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -18,3 +13,10 @@ jacinle.random.rng module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jacinle.random
+    :members:
+    :undoc-members:
+    :show-inheritance:

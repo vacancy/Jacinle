@@ -1,32 +1,19 @@
-jactorch.nn.prroi\_pool package
-===============================
-
-.. automodule:: jactorch.nn.prroi_pool
-    :members:
-    :undoc-members:
-    :show-inheritance:
+jactorch.nn.prroi_pool package
+==============================
 
 Submodules
 ----------
 
-jactorch.nn.prroi\_pool.build module
-------------------------------------
-
-.. automodule:: jactorch.nn.prroi_pool.build
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-jactorch.nn.prroi\_pool.functional module
------------------------------------------
+jactorch.nn.prroi_pool.functional module
+----------------------------------------
 
 .. automodule:: jactorch.nn.prroi_pool.functional
     :members:
     :undoc-members:
     :show-inheritance:
 
-jactorch.nn.prroi\_pool.prroi\_pool module
-------------------------------------------
+jactorch.nn.prroi_pool.prroi_pool module
+----------------------------------------
 
 .. automodule:: jactorch.nn.prroi_pool.prroi_pool
     :members:
@@ -34,3 +21,10 @@ jactorch.nn.prroi\_pool.prroi\_pool module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jactorch.nn.prroi_pool
+    :members:
+    :undoc-members:
+    :show-inheritance:
