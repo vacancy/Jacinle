@@ -10,7 +10,14 @@
 
 import lmdb
 import pickle
-import memcache
+
+try:
+    import memcache
+except ImportError:
+    from jacinle.logging import get_logger
+    logger = get_logger(__file__)
+    logger.warning('Cannot import memcache. MemcachedKVStore is unavailable.')
+    memcache = None
 
 from .kv import KVStoreBase
 
