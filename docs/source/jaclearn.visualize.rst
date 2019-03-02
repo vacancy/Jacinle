@@ -1,11 +1,6 @@
 jaclearn.visualize package
 ==========================
 
-.. automodule:: jaclearn.visualize
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -21,6 +16,14 @@ jaclearn.visualize.grid module
 ------------------------------
 
 .. automodule:: jaclearn.visualize.grid
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+jaclearn.visualize.html_table module
+------------------------------------
+
+.. automodule:: jaclearn.visualize.html_table
     :members:
     :undoc-members:
     :show-inheritance:
@@ -42,3 +45,10 @@ jaclearn.visualize.plot module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jaclearn.visualize
+    :members:
+    :undoc-members:
+    :show-inheritance:

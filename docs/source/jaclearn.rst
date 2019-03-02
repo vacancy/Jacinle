@@ -1,11 +1,6 @@
 jaclearn package
 ================
 
-.. automodule:: jaclearn
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
@@ -21,3 +16,10 @@ Subpackages
     jaclearn.rl
     jaclearn.visualize
 
+Module contents
+---------------
+
+.. automodule:: jaclearn
+    :members:
+    :undoc-members:
+    :show-inheritance:

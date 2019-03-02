@@ -1,11 +1,6 @@
 jactorch.transforms.image package
 =================================
 
-.. automodule:: jactorch.transforms.image
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -26,3 +21,10 @@ jactorch.transforms.image.transforms module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jactorch.transforms.image
+    :members:
+    :undoc-members:
+    :show-inheritance:

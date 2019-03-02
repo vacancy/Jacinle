@@ -1,11 +1,6 @@
 jacinle.logging package
 =======================
 
-.. automodule:: jacinle.logging
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -18,3 +13,10 @@ jacinle.logging.logger module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jacinle.logging
+    :members:
+    :undoc-members:
+    :show-inheritance:

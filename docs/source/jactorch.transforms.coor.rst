@@ -1,11 +1,6 @@
 jactorch.transforms.coor package
 ================================
 
-.. automodule:: jactorch.transforms.coor
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -26,3 +21,10 @@ jactorch.transforms.coor.transforms module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jactorch.transforms.coor
+    :members:
+    :undoc-members:
+    :show-inheritance:

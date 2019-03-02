@@ -1,11 +1,6 @@
 jacinle.storage package
 =======================
 
-.. automodule:: jacinle.storage
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
@@ -13,3 +8,10 @@ Subpackages
 
     jacinle.storage.kv
 
+Module contents
+---------------
+
+.. automodule:: jacinle.storage
+    :members:
+    :undoc-members:
+    :show-inheritance:

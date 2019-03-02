@@ -15,7 +15,8 @@ import multiprocessing
 try:
     from torch.utils.data.dataloader import _worker_loop, _pin_memory_loop, default_collate, DataLoader, DataLoaderIter
 except ImportError:
-    pass
+    DataLoader = object
+    DataLoaderIter = object
 
 from jacinle.random import reset_global_seed, gen_rng
 

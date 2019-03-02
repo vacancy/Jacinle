@@ -1,11 +1,6 @@
 jacinle.comm package
 ====================
 
-.. automodule:: jacinle.comm
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
@@ -32,6 +27,14 @@ jacinle.comm.cs module
     :undoc-members:
     :show-inheritance:
 
+jacinle.comm.echo module
+------------------------
+
+.. automodule:: jacinle.comm.echo
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jacinle.comm.gather module
 --------------------------
 
@@ -40,4 +43,19 @@ jacinle.comm.gather module
     :undoc-members:
     :show-inheritance:
 
+jacinle.comm.service module
+---------------------------
 
+.. automodule:: jacinle.comm.service
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: jacinle.comm
+    :members:
+    :undoc-members:
+    :show-inheritance:

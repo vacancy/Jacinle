@@ -1,11 +1,6 @@
 jacweb.web package
 ==================
 
-.. automodule:: jacweb.web
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -18,3 +13,10 @@ jacweb.web.application module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jacweb.web
+    :members:
+    :undoc-members:
+    :show-inheritance:

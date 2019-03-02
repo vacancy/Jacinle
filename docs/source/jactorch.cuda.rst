@@ -1,11 +1,6 @@
 jactorch.cuda package
 =====================
 
-.. automodule:: jactorch.cuda
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -18,3 +13,10 @@ jactorch.cuda.copy module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jactorch.cuda
+    :members:
+    :undoc-members:
+    :show-inheritance:

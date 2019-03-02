@@ -1,11 +1,6 @@
 jacweb.session package
 ======================
 
-.. automodule:: jacweb.session
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -26,3 +21,10 @@ jacweb.session.session module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jacweb.session
+    :members:
+    :undoc-members:
+    :show-inheritance:

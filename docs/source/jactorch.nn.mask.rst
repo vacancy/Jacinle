@@ -1,11 +1,6 @@
 jactorch.nn.mask package
 ========================
 
-.. automodule:: jactorch.nn.mask
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Submodules
 ----------
 
@@ -18,3 +13,10 @@ jactorch.nn.mask.functional module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jactorch.nn.mask
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,11 +1,6 @@
 jactorch package
 ================
 
-.. automodule:: jactorch
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
@@ -23,6 +18,7 @@ Subpackages
     jactorch.train
     jactorch.transforms
     jactorch.utils
+    jactorch.vision
 
 Submodules
 ----------
@@ -44,3 +40,10 @@ jactorch.io module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jactorch
+    :members:
+    :undoc-members:
+    :show-inheritance:

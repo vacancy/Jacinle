@@ -1,11 +1,6 @@
 jaclearn.datasets.vision.coco package
 =====================================
 
-.. automodule:: jaclearn.datasets.vision.coco
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
@@ -25,3 +20,10 @@ jaclearn.datasets.vision.coco.setup module
     :show-inheritance:
 
 
+Module contents
+---------------
+
+.. automodule:: jaclearn.datasets.vision.coco
+    :members:
+    :undoc-members:
+    :show-inheritance:
