@@ -40,7 +40,7 @@ class RNNLayerBase(nn.Module):
         self.reset_parameters()
 
     def flatten_parameters(self):
-        self.flatten_parameters()
+        self.rnn.flatten_parameters()
 
     def reset_parameters(self):
         for name, weight in self.rnn.named_parameters():

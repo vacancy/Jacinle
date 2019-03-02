@@ -16,7 +16,13 @@ from jacinle.logging import get_logger
 
 logger = get_logger(__file__)
 
-__all__ = ['ProxyDataset', 'ListDataset', 'FilterableDatasetUnwrapped', 'FilterableDatasetView']
+__all__ = ['IterableDatasetMixin', 'ProxyDataset', 'ListDataset', 'FilterableDatasetUnwrapped', 'FilterableDatasetView']
+
+
+class IterableDatasetMixin(object):
+    def __iter__(self):
+        for i in range(len(self)):
+            yield i, self[i]
 
 
 class ProxyDataset(Dataset):
@@ -184,3 +190,4 @@ class FilterableDatasetView(FilterableDatasetUnwrapped):
         if self.indices is None:
             return self.owner_dataset.get_metainfo(index)
         return self.owner_dataset.get_metainfo(self.indices[index])
+

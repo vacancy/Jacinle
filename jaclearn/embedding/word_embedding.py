@@ -29,12 +29,14 @@ logger = get_logger(__file__)
 special_tokens = {"&ndash;": "–", "&mdash;": "—", "@card@": "0"}
 
 
-def load_word_index(path, filter=None):
+def load_word_index(path, filter=None, format='glove'):
     """
     Loads only the word index from the embeddings file
 
     @return word to index dictionary
     """
+    assert format == 'glove'
+
     word2idx = {}  # Maps a word to the index in the embeddings matrix
 
     with open(path, 'r') as fIn:
@@ -52,13 +54,15 @@ def load_word_index(path, filter=None):
     return word2idx
 
 
-def load(path, word_index_only=False, filter=None):
+def load(path, word_index_only=False, filter=None, format='glove'):
     """
     Loads pre-trained embeddings from the specified path.
     """
 
+    assert format in ('glove', 'fasttext')
+
     if word_index_only:
-        return load_word_index(path, filter=filter)
+        return load_word_index(path, filter=filter, format=format)
 
     word2idx = {}  # Maps a word to the index in the embeddings matrix
     embeddings = []
@@ -66,7 +70,11 @@ def load(path, word_index_only=False, filter=None):
 
     with open(path, 'r', encoding='utf-8') as fIn:
         idx = 1
-        for line in fIn:
+        for lineno, line in enumerate(fIn):
+            if format == 'fasttext':
+                if lineno == 0:
+                    continue
+
             try:
                 split = line.strip().split(' ')
 
@@ -79,14 +87,14 @@ def load(path, word_index_only=False, filter=None):
                     embedding_size = len(val)
                 else:
                     if embedding_size != len(val):
-                        logger.warning('Skip invalid entry (vector length): Line#{}.'.format(idx - 1))
+                        logger.warning('Skip invalid entry (vector length): Line#{}.'.format(lineno))
                         continue
 
                 embeddings.append(val)
                 word2idx[split[0]] = idx
                 idx += 1
             except ValueError:
-                logger.warning('Skip invalid entry (encoding): Line#{}.'.format(idx - 1))
+                logger.warning('Skip invalid entry (encoding): Line#{}.'.format(lineno))
                 # 840D GloVe file has some encoding errors...
                 continue
 
