@@ -15,26 +15,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from jacinle.utils.enum import JacEnum
+from .functional import ConvPaddingMode, ConvBorderMode, padding_nd
 
 __all__ = [
-    'ConvPaddingMode', 'ConvBorderMode',
     'Conv1d', 'Conv2d', 'Conv3d',
     'ConvTranspose1d', 'ConvTranspose2d', 'ConvTranspose3d',
     'ResizeConv1d', 'ResizeConv2d', 'ResizeConv3d',
     'SequenceConvWrapper'
 ]
-
-
-class ConvPaddingMode(JacEnum):
-    DEFAULT = 'default'
-    VALID = 'valid'
-    SAME = 'same'
-
-
-class ConvBorderMode(JacEnum):
-    ZERO = 'zero'
-    REFLECT = 'reflect'
-    REPLICATE = 'replicate'
 
 
 class ConvNDBase(nn.Module):
@@ -70,48 +58,21 @@ class ConvNDBase(nn.Module):
         self.output_border_mode = ConvBorderMode.from_string(output_border_mode)
 
         if type(self).__transposed__:
-            assert self.border_mode is ConvBorderMode.ZERO, 'Only zero input padding is supported,'
+            assert self.border_mode is ConvBorderMode.ZERO, 'Only zero input padding is supported.'
             assert self.output_border_mode is ConvBorderMode.ZERO, 'Only zero output padding is supported.'
+        else:
+            assert self.output_padding == 0, 'Output padding is only available for transposed convolution.'
 
     def forward(self, input):
+        # TODO(Jiayuan Mao @ 04/05): evaluate this.
         return self._forward_conv(*self._forward_padding(input))
-
-    def _forward_padding(self, input):
-        padding = self._compute_padding(input_size=input.size()[2:])
-        if self.border_mode is ConvBorderMode.ZERO:
-            return input, padding
-
-        if input.dim() == 4:
-            padded = F.pad(input, (padding[1], padding[1], padding[0], padding[0]), mode=self.border_mode.value)
-        elif input.dim() == 5:
-            padded = F.pad(input, (padding[2], padding[2], padding[1], padding[1], padding[0], padding[0]),
-                           mode=self.border_mode.value)
-        else:
-            raise ValueError('Only 4D or 5D inputs are supported.')
-        conv_padding = self._format_tuple(0)
-        return padded, conv_padding
 
     def _forward_conv(self, padded, extra_padding, **kwargs):
         self.conv.padding = extra_padding
         return self.conv(padded, **kwargs)
 
-    def _compute_padding(self, input_size):
-        mode = self.padding_mode
-        if mode is ConvPaddingMode.DEFAULT:
-            return self._format_tuple(self.padding)
-        elif mode is ConvPaddingMode.VALID:
-            return self._format_tuple(0)
-        elif mode is ConvPaddingMode.SAME:
-            kernel_size = self.conv.kernel_size
-            assert all(map(lambda x: x % 2 == 1, kernel_size))
-            return tuple([k // 2 for k in kernel_size])
-        elif mode == ConvPaddingMode.TENSORFLOW:
-            raise NotImplementedError()
-
-    def _format_tuple(self, val):
-        if isinstance(val, collections.Iterable):
-            return tuple(val)
-        return tuple(repeat(val, type(self).__nr_dims__))
+    def _forward_padding(self, input):
+        return padding_nd(input, self.conv.kernel_size, self.padding_mode, self.border_mode)
 
 
 class Conv1d(ConvNDBase):
@@ -179,6 +140,10 @@ class ResizeConv3d(ResizeConvBase):
 
 
 class SequenceConvWrapper(nn.Module):
+    """
+    Wrapper for a sequence of Conv1D layers, support automatic dimension permutation to fit the requirement of
+    Conv1D.
+    """
     def __init__(self, *modules, batch_first=True):
         super().__init__()
         self.sequential = nn.Sequential(*modules)

@@ -55,12 +55,14 @@ def custom_kernel(image, k):
 
 
 class CustomKernel(nn.Module):
-    def __init__(self, kernel):
+    def __init__(self, kernel, padding_method='zero'):
         super().__init__()
         if not torch.is_tensor(kernel):
             kernel = torch.tensor(kernel, dtype=torch.float32)
         self.register_buffer('kernel', kernel)
+        self.padding_method = padding_method
 
     def forward(self, input):
+        # TODO(Jiayuan Mao @ 04/05): support self.padding_method
         return custom_kernel(input, self.kernel)
 

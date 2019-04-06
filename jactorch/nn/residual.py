@@ -11,7 +11,7 @@
 import torch
 import torch.nn as nn
 
-from jactorch.nn.rnn_utils import rnn_with_length
+from .rnn_utils import rnn_with_length
 from .normalization import LayerNorm
 
 __all__ = ['ResidualConvBlock', 'ResidualConvBottleneck', 'ResidualLinear', 'ResidualGRU']

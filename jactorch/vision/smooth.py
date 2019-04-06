@@ -14,7 +14,7 @@ import torch
 from jacinle.utils.argument import get_2dshape
 from .conv import CustomKernel
 
-__all__ = ['NormalizedBoxSmooth', 'normalized_box_smooth', 'GaussianSmooth', 'gaussian_smooth']
+__all__ = ['NormalizedBoxSmooth', 'normalized_box_smooth', 'GaussianSmooth', 'GaussianSmoothTruncated', 'gaussian_smooth', 'gaussian_smooth_truncated']
 
 
 class NormalizedBoxSmooth(CustomKernel):
@@ -64,6 +64,17 @@ class GaussianSmooth(CustomKernel):
         return gaussian_kernel
 
 
+class GaussianSmoothTruncated(GaussianSmooth):
+    def __init__(self, sigma, truncate=4):
+        sigma = float(sigma)
+        kernel_size = int(sigma * truncate + 0.5)
+        super().__init__(kernel_size, sigma)
+
+
 def gaussian_smooth(image, kernel_size, sigma):
     return GaussianSmooth(kernel_size, sigma)(image)
+
+
+def gaussian_smooth_truncated(image, sigma, truncate=4):
+    return GaussianSmoothTruncated(sigma, truncate=truncate)(image)
 

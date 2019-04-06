@@ -8,6 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+from .cnn.functional import *
 from .gumbel_softmax.functional import *
 from .losses.functional import *
 from .mask.functional import *

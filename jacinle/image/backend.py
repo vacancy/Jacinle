@@ -48,6 +48,15 @@ def opencv_only(func):
     return new_func
 
 
+def pil_only(func):
+    @functools.wraps(func)
+    def new_func(*args, **kwargs):
+        if Image is None:
+            assert False, 'Call {} without PIL.'.format(func)
+        return func(*args, **kwargs)
+    return new_func
+
+
 def pil_img2nd(image, require_chl3=True):
     nd = np.array(image)
     if FORCE_PIL_BGR:

@@ -124,10 +124,10 @@ class TrainerEnv(object):
         monitors_f = as_float(monitors)
 
         self._optimizer.zero_grad()
-        self.trigger_event('backward:before', self, loss)
+        self.trigger_event('backward:before', self, feed_dict, loss, monitors, output_dict)
         if loss.requires_grad:
             loss.backward()
-        self.trigger_event('backward:after', self, loss)
+        self.trigger_event('backward:after', self, feed_dict, loss, monitors, output_dict)
         if loss.requires_grad:
             self._optimizer.step()
 

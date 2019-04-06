@@ -8,9 +8,10 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-__all__ = ['atanh', 'logit']
-
 import torch
+import torch.nn.functional as F
+
+__all__ = ['atanh', 'logit', 'log_sigmoid']
 
 
 def atanh(x, eps=1e-8):
@@ -41,4 +42,8 @@ def logit(x, eps=1e-8):
 
     """
     return -torch.log((1 / x.clamp(min=eps) - 1).clamp(min=eps))
+
+
+def log_sigmoid(x):
+    return -F.softplus(-x)
 

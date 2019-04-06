@@ -11,13 +11,13 @@
 import io as _io
 import numpy as np
 
-from jacinle.image.backend import cv2, opencv_only
+from jacinle.image.backend import cv2, Image, opencv_only, pil_only
 
 __all__ = ['plot2img']
 
 
 @opencv_only
-def plot2img(plt):
+def plot2opencv(plt):
     """Convert a pyplot instance to image"""
 
     buf = _io.BytesIO()
@@ -28,3 +28,13 @@ def plot2img(plt):
     im = cv2.imdecode(rawbuf, cv2.IMREAD_COLOR)
     buf.close()
     return im
+
+
+@pil_only
+def plot2pil(plt):
+    buffer = _io.StringIO()
+    canvas = plt.get_current_fig_manager().canvas
+    canvas.draw()
+    pil = Image.fromstring('RGB', canvas.get_width_height(), canvas.tostring_rgb())
+    return pil
+
