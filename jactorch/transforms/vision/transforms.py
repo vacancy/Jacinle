@@ -24,7 +24,7 @@ from jacinle.utils.defaults import defaults_manager
 from .functional import image as fimage
 from .functional import coor as fcoor
 from .functional import bbox as fbbox
-from .functional._utils import get_rotation_matrix
+from .functional._utils import get_rotation_matrix, get_size_multiple_of
 
 __all__ = [
     "TransformDataTypes", "TransformGuide", "TransformBase", "TransformFunctionBase", "TransformFunctionBaseImageOnly",
@@ -32,7 +32,7 @@ __all__ = [
     "ToTensor", "ToPILImage", "Normalize", "NormalizeCoordinates", "DenormalizeCoordinates",
     "Crop", "CenterCrop", "RandomCrop", "Pad", "PadMultipleOf",
     "HFlip", "VFlip", "RandomHorizontalFlip", "RandomVerticalFlip",
-    "Resize", "RandomResizedCrop",
+    "Resize", "ResizeMultipleOf", "RandomResizedCrop",
     "FiveCrop", "TenCrop",
     "Rotate", "RandomRotation",
     "LinearTransformation", "ColorJitter", "RandomRotation", "Grayscale", "RandomGrayscale",
@@ -103,6 +103,9 @@ class TransformBase(object):
         return ret
 
     def __call__(self, feed_dict=None, **kwargs):
+        if feed_dict is not None and not isinstance(feed_dict, collections.Mapping):
+            return self.ezcall(feed_dict, **kwargs)
+
         feed_dict = feed_dict or {}
         feed_dict.update(**kwargs)
         feed_dict = self.call_feed_dict(feed_dict)
@@ -146,6 +149,9 @@ class TransformFunctionBaseImageOnly(TransformFunctionBase):
 
 class Compose(torch_transforms.Compose):
     def __call__(self, feed_dict=None, **kwargs):
+        if feed_dict is not None and not isinstance(feed_dict, collections.Mapping):
+            return self.ezcall(feed_dict, **kwargs)
+
         feed_dict = feed_dict or {}
         feed_dict.update(**kwargs)
         feed_dict = super().__call__(feed_dict)
@@ -156,6 +162,9 @@ class Compose(torch_transforms.Compose):
 
 class RandomApply(torch_transforms.RandomApply):
     def __call__(self, feed_dict=None, **kwargs):
+        if feed_dict is not None and not isinstance(feed_dict, collections.Mapping):
+            return self.ezcall(feed_dict, **kwargs)
+
         feed_dict = feed_dict or {}
         feed_dict.update(**kwargs)
         feed_dict = super().__call__(feed_dict)
@@ -166,6 +175,9 @@ class RandomApply(torch_transforms.RandomApply):
 
 class RandomOrder(torch_transforms.RandomOrder):
     def __call__(self, feed_dict=None, **kwargs):
+        if feed_dict is not None and not isinstance(feed_dict, collections.Mapping):
+            return self.ezcall(feed_dict, **kwargs)
+
         feed_dict = feed_dict or {}
         feed_dict.update(**kwargs)
         feed_dict = super().__call__(feed_dict)
@@ -176,6 +188,9 @@ class RandomOrder(torch_transforms.RandomOrder):
 
 class RandomChoice(torch_transforms.RandomChoice):
     def __call__(self, feed_dict=None, **kwargs):
+        if feed_dict is not None and not isinstance(feed_dict, collections.Mapping):
+            return self.ezcall(feed_dict, **kwargs)
+
         feed_dict = feed_dict or {}
         feed_dict.update(**kwargs)
         feed_dict = super().__call__(feed_dict)
@@ -184,6 +199,9 @@ class RandomChoice(torch_transforms.RandomChoice):
 
 class Lambda(torch_transforms.Lambda):
     def __call__(self, feed_dict=None, **kwargs):
+        if feed_dict is not None and not isinstance(feed_dict, collections.Mapping):
+            return self.ezcall(feed_dict, **kwargs)
+
         feed_dict = feed_dict or {}
         feed_dict.update(**kwargs)
         feed_dict = super().__call__(feed_dict)
@@ -346,17 +364,17 @@ class Pad(TransformFunctionBase):
 
 
 class PadMultipleOf(TransformBase):
-    def __init__(self, multiple, mode='constant', fill=0, tg=None):
+    def __init__(self, multiple, residual=0, mode='constant', fill=0, tg=None):
         super().__init__(tg)
         self.multiple = multiple
+        self.residual = residual
         self.mode = mode
         self.fill = fill
 
     def call_feed_dict(self, feed_dict):
         img = self._get_image(feed_dict)
         h, w = img.height, img.width
-        hh = h - h % self.multiple + self.multiple * int(h % self.multiple != 0)
-        ww = w - w % self.multiple + self.multiple * int(w % self.multiple != 0)
+        hh, ww = get_size_multiple_of(h, w, self.multiple, self.residual)
         if h != hh or w != ww:
             feed_dict = Pad((0, 0, ww - w, hh - h), mode=self.mode, fill=self.fill, tg=self.transform_guide)(feed_dict)
         return feed_dict
@@ -429,6 +447,22 @@ class Resize(TransformFunctionBase):
 
     __doc__ = torch_transforms.Resize.__doc__
     __repr__ = torch_transforms.Resize.__repr__
+
+
+class ResizeMultipleOf(TransformBase):
+    def __init__(self, multiple, residual=0, interpolation=Image.NEAREST, tg=None):
+        super().__init__(tg)
+        self.multiple = multiple
+        self.residual = residual
+        self.interpolation = interpolation
+
+    def call_feed_dict(self, feed_dict):
+        img = self._get_image(feed_dict)
+        h, w = img.height, img.width
+        hh, ww = get_size_multiple_of(h, w, self.multiple, self.residual)
+        if h != hh or w != ww:
+            feed_dict = Resize((hh, ww), interpolation=self.interpolation, tg=self.transform_guide)(feed_dict)
+        return feed_dict
 
 
 class RandomResizedCrop(TransformBase):

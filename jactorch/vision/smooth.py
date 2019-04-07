@@ -33,12 +33,12 @@ def normalized_box_smooth(image, kernel_size):
 
 
 class GaussianSmooth(CustomKernel):
-    def __init__(self, kernel_size, sigma):
+    def __init__(self, kernel_size, sigma, border_mode='reflect'):
         assert type(kernel_size) is int, 'GaussianSmooth supports only square kernel.'
         self.kernel_size = kernel_size
         self.sigma = float(sigma)
 
-        super().__init__(self._gen_kernel())
+        super().__init__(self._gen_kernel(), border_mode=border_mode)
 
     def _gen_kernel(self):
         # Create a x, y coordinate grid of shape (kernel_size, kernel_size, 2)
@@ -65,10 +65,12 @@ class GaussianSmooth(CustomKernel):
 
 
 class GaussianSmoothTruncated(GaussianSmooth):
-    def __init__(self, sigma, truncate=4):
+    def __init__(self, sigma, truncate=4, border_mode='reflect'):
         sigma = float(sigma)
         kernel_size = int(sigma * truncate + 0.5)
-        super().__init__(kernel_size, sigma)
+        if kernel_size % 2 == 0:
+            kernel_size += 1
+        super().__init__(kernel_size, sigma, border_mode=border_mode)
 
 
 def gaussian_smooth(image, kernel_size, sigma):

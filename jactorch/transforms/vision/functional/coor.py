@@ -84,7 +84,7 @@ def vflip(img, coor):
 
 
 def resize(img, coor, size):
-    w, h = size
+    h, w = size
     coor = coor.copy()
     coor[:, 0] = coor[:, 0] / img.width * w
     coor[:, 1] = coor[:, 1] / img.height * h

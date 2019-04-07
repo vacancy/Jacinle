@@ -90,7 +90,7 @@ def vflip(img, bbox):
 
 
 def resize(img, bbox, size):
-    w, h = size
+    h, w = size
     bbox = bbox.copy()
     bbox[:, 0] = bbox[:, 0] / img.width * w
     bbox[:, 1] = bbox[:, 1] / img.height * h
