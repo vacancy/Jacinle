@@ -9,8 +9,6 @@
 # Distributed under terms of the MIT license.
 # https://github.com/vacancy/SceneGraphParser
 
-import spacy
-
 __all__ = ['Parser', 'get_default_parser', 'parse']
 
 
