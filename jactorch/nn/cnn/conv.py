@@ -8,9 +8,6 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-import collections
-from itertools import repeat
-
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -72,7 +69,7 @@ class ConvNDBase(nn.Module):
         return self.conv(padded, **kwargs)
 
     def _forward_padding(self, input):
-        return padding_nd(input, self.conv.kernel_size, self.padding_mode, self.border_mode)
+        return padding_nd(input, self.conv.kernel_size, self.padding, self.padding_mode, self.border_mode)
 
 
 class Conv1d(ConvNDBase):

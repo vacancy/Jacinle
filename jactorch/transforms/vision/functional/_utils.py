@@ -63,3 +63,18 @@ def get_rotation_matrix(image, angle, crop, expand, center, translate):
 def apply_affine_transform(x, y, matrix):
     (a, b, c, d, e, f) = matrix
     return a*x + b*y + c, d*x + e*y + f
+
+
+def get_size_multiple_of(h, w, multiple, residual):
+    def _gen(x):
+        actual = x % multiple
+        if actual == residual:
+            pass
+        elif actual > residual:
+            x += multiple + residual - actual
+        elif actual < residual:
+            x += residual - actual
+        return x
+
+    return _gen(h), _gen(w)
+

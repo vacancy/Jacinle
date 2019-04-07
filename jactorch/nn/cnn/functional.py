@@ -8,7 +8,11 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import collections
+from itertools import repeat
+
 import torch.nn.functional as F
+
 from jacinle.utils.enum import JacEnum
 
 __all__ = ['ConvPaddingMode', 'ConvBorderMode', 'compute_padding_shape', 'padding_nd']
@@ -32,9 +36,11 @@ def _format_tuple(val, arity):
     return tuple(repeat(val, arity))
 
 
-def compute_padding_shape(input_size, kernel_size, mode):
+def compute_padding_shape(input_size, kernel_size, padding, mode):
+    mode = ConvPaddingMode.from_string(mode)
+
     if mode is ConvPaddingMode.DEFAULT:
-        return _format_tuple(self.padding, len(input_size))
+        return _format_tuple(padding, len(input_size))
     elif mode is ConvPaddingMode.VALID:
         return _format_tuple(0, len(input_size))
     elif mode is ConvPaddingMode.SAME:
@@ -45,8 +51,11 @@ def compute_padding_shape(input_size, kernel_size, mode):
         raise NotImplementedError()
 
 
-def padding_nd(input, kernel_size, padding_mode, border_mode):
-    padding = compute_padding_shape(input.size()[2:], kernel_size, padding_mode)
+def padding_nd(input, kernel_size, padding, padding_mode, border_mode):
+    padding_mode = ConvPaddingMode.from_string(padding_mode)
+    border_mode = ConvBorderMode.from_string(border_mode)
+
+    padding = compute_padding_shape(input.size()[2:], kernel_size, padding, padding_mode)
     if border_mode is ConvBorderMode.ZERO:
         return input, padding
 
