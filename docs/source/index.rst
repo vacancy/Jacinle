@@ -24,6 +24,7 @@ Package Reference
    jacnp
    jactf
    jactorch
+   jacweb
 
 
 Indices and tables
