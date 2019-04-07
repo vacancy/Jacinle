@@ -8,7 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-from tornado.web import Application, RequestHandler
+from tornado.web import Application, RequestHandler, _ARG_DEFAULT
 from copy import deepcopy
 
 from jacinle.logging import get_logger
@@ -86,13 +86,13 @@ class JacRequestHandler(RequestHandler):
         logger.info('{} query {} executed for {:.3f} ms'.format(self.request.remote_ip, self.request.uri, (self.__end_time - self.__start_time) * 1000))
         super().on_finish()
 
-    def get_query_argument(self, name, default=RequestHandler._ARG_DEFAULT, strip=True, type=None, danger_set=None):
+    def get_query_argument(self, name, default=_ARG_DEFAULT, strip=True, type=None, danger_set=None):
         return self._get_argument(name, default, self.request.arguments, strip, type, danger_set)
 
-    def get_body_argument(self, name, default=RequestHandler._ARG_DEFAULT, strip=True, type=None, danger_set=None):
+    def get_body_argument(self, name, default=_ARG_DEFAULT, strip=True, type=None, danger_set=None):
         return self._get_argument(name, default, self.request.body_arguments, strip, type, danger_set)
 
-    def get_argument(self, name, default=RequestHandler._ARG_DEFAULT, strip=True, type=None, danger_set=None):
+    def get_argument(self, name, default=_ARG_DEFAULT, strip=True, type=None, danger_set=None):
         return self._get_argument(name, default, self.request.arguments, strip, type, danger_set)
 
     def _get_argument(self, name, default, source, strip=True, type=None, danger_set=None):
