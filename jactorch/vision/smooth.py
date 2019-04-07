@@ -68,8 +68,7 @@ class GaussianSmoothTruncated(GaussianSmooth):
     def __init__(self, sigma, truncate=4, border_mode='reflect'):
         sigma = float(sigma)
         kernel_size = int(sigma * truncate + 0.5)
-        if kernel_size % 2 == 0:
-            kernel_size += 1
+        kernel_size = 2 * kernel_size + 1
         super().__init__(kernel_size, sigma, border_mode=border_mode)
 
 
