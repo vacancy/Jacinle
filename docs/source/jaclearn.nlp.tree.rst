@@ -1,6 +1,11 @@
 jaclearn.nlp.tree package
 =========================
 
+.. automodule:: jaclearn.nlp.tree
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -37,10 +42,3 @@ jaclearn.nlp.tree.traversal module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jaclearn.nlp.tree
-    :members:
-    :undoc-members:
-    :show-inheritance:

@@ -1,6 +1,11 @@
 jacinle.comm package
 ====================
 
+.. automodule:: jacinle.comm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -52,10 +57,3 @@ jacinle.comm.service module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jacinle.comm
-    :members:
-    :undoc-members:
-    :show-inheritance:

@@ -10,7 +10,7 @@
 
 import torch.nn as nn
 
-from jactorch.nn.cnn_layers import MLPLayer
+from jactorch.nn.cnn.layers import MLPLayer
 
 __all__ = ['MLPModel', 'MLPRegressionModel', 'MLPClassificationModel', 'LinearRegressionModel', 'LinearClassificationModel']
 

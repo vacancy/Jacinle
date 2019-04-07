@@ -13,7 +13,7 @@ import numpy as np
 
 from jacinle.image.backend import cv2, Image, opencv_only, pil_only
 
-__all__ = ['plot2img']
+__all__ = ['plot2opencv', 'plot2pil']
 
 
 @opencv_only

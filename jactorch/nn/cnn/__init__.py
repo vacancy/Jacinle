@@ -8,7 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-from .cnn_layers import *
+from .layers import *
 from .conv import *
 from .coord_conv import *
 

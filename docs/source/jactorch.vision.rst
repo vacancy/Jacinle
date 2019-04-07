@@ -1,6 +1,11 @@
 jactorch.vision package
 =======================
 
+.. automodule:: jactorch.vision
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -45,10 +50,3 @@ jactorch.vision.smooth module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.vision
-    :members:
-    :undoc-members:
-    :show-inheritance:

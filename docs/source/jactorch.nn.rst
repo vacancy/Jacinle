@@ -1,11 +1,17 @@
 jactorch.nn package
 ===================
 
+.. automodule:: jactorch.nn
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
 .. toctree::
 
+    jactorch.nn.cnn
     jactorch.nn.gumbel_softmax
     jactorch.nn.losses
     jactorch.nn.mask
@@ -15,34 +21,10 @@ Subpackages
 Submodules
 ----------
 
-jactorch.nn.cnn_layers module
------------------------------
-
-.. automodule:: jactorch.nn.cnn_layers
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 jactorch.nn.container module
 ----------------------------
 
 .. automodule:: jactorch.nn.container
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-jactorch.nn.conv module
------------------------
-
-.. automodule:: jactorch.nn.conv
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-jactorch.nn.coord_conv module
------------------------------
-
-.. automodule:: jactorch.nn.coord_conv
     :members:
     :undoc-members:
     :show-inheritance:
@@ -55,8 +37,8 @@ jactorch.nn.functional module
     :undoc-members:
     :show-inheritance:
 
-jactorch.nn.image_preprocess module
------------------------------------
+jactorch.nn.image\_preprocess module
+------------------------------------
 
 .. automodule:: jactorch.nn.image_preprocess
     :members:
@@ -103,16 +85,16 @@ jactorch.nn.residual module
     :undoc-members:
     :show-inheritance:
 
-jactorch.nn.rnn_layers module
------------------------------
+jactorch.nn.rnn\_layers module
+------------------------------
 
 .. automodule:: jactorch.nn.rnn_layers
     :members:
     :undoc-members:
     :show-inheritance:
 
-jactorch.nn.rnn_utils module
-----------------------------
+jactorch.nn.rnn\_utils module
+-----------------------------
 
 .. automodule:: jactorch.nn.rnn_utils
     :members:
@@ -127,8 +109,8 @@ jactorch.nn.simple module
     :undoc-members:
     :show-inheritance:
 
-jactorch.nn.word_embedding module
----------------------------------
+jactorch.nn.word\_embedding module
+----------------------------------
 
 .. automodule:: jactorch.nn.word_embedding
     :members:
@@ -136,10 +118,3 @@ jactorch.nn.word_embedding module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.nn
-    :members:
-    :undoc-members:
-    :show-inheritance:

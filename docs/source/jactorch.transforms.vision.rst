@@ -1,6 +1,11 @@
 jactorch.transforms.vision package
 ==================================
 
+.. automodule:: jactorch.transforms.vision
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -20,10 +25,3 @@ jactorch.transforms.vision.transforms module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.transforms.vision
-    :members:
-    :undoc-members:
-    :show-inheritance:

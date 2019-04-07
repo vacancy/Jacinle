@@ -32,6 +32,7 @@ class Parser(object):
     backend.
 
     Example::
+
     >>> parser = Parser(backend, **init_kwargs)
     >>> graph = parser.parse('A woman is playing the piano,')
     """
@@ -89,6 +90,7 @@ class Parser(object):
         method as a decorator on your class.
 
         Example::
+
         >>> @Parser.register_backend
         >>> class CustomizedBackend(Backend):
         >>>     # Your implementation follows...

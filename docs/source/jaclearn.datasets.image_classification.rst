@@ -1,27 +1,32 @@
-jaclearn.datasets.image_classification package
-==============================================
+jaclearn.datasets.image\_classification package
+===============================================
+
+.. automodule:: jaclearn.datasets.image_classification
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Submodules
 ----------
 
-jaclearn.datasets.image_classification.cifar module
----------------------------------------------------
+jaclearn.datasets.image\_classification.cifar module
+----------------------------------------------------
 
 .. automodule:: jaclearn.datasets.image_classification.cifar
     :members:
     :undoc-members:
     :show-inheritance:
 
-jaclearn.datasets.image_classification.mnist module
----------------------------------------------------
+jaclearn.datasets.image\_classification.mnist module
+----------------------------------------------------
 
 .. automodule:: jaclearn.datasets.image_classification.mnist
     :members:
     :undoc-members:
     :show-inheritance:
 
-jaclearn.datasets.image_classification.svhn module
---------------------------------------------------
+jaclearn.datasets.image\_classification.svhn module
+---------------------------------------------------
 
 .. automodule:: jaclearn.datasets.image_classification.svhn
     :members:
@@ -29,10 +34,3 @@ jaclearn.datasets.image_classification.svhn module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jaclearn.datasets.image_classification
-    :members:
-    :undoc-members:
-    :show-inheritance:

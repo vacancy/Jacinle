@@ -1,5 +1,10 @@
-jaclearn.nlp.sng_parser package
-===============================
+jaclearn.nlp.sng\_parser package
+================================
+
+.. automodule:: jaclearn.nlp.sng_parser
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Subpackages
 -----------
@@ -11,24 +16,24 @@ Subpackages
 Submodules
 ----------
 
-jaclearn.nlp.sng_parser.database module
----------------------------------------
+jaclearn.nlp.sng\_parser.database module
+----------------------------------------
 
 .. automodule:: jaclearn.nlp.sng_parser.database
     :members:
     :undoc-members:
     :show-inheritance:
 
-jaclearn.nlp.sng_parser.parser module
--------------------------------------
+jaclearn.nlp.sng\_parser.parser module
+--------------------------------------
 
 .. automodule:: jaclearn.nlp.sng_parser.parser
     :members:
     :undoc-members:
     :show-inheritance:
 
-jaclearn.nlp.sng_parser.utils module
-------------------------------------
+jaclearn.nlp.sng\_parser.utils module
+-------------------------------------
 
 .. automodule:: jaclearn.nlp.sng_parser.utils
     :members:
@@ -36,10 +41,3 @@ jaclearn.nlp.sng_parser.utils module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jaclearn.nlp.sng_parser
-    :members:
-    :undoc-members:
-    :show-inheritance:

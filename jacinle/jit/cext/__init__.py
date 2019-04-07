@@ -3,8 +3,10 @@
 # File   : __init__.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 07/19/2018
+# Date   : 02/04/2018
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
+
+from .travis import *
 

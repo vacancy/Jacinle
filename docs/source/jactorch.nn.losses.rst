@@ -1,6 +1,11 @@
 jactorch.nn.losses package
 ==========================
 
+.. automodule:: jactorch.nn.losses
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -21,10 +26,3 @@ jactorch.nn.losses.losses module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.nn.losses
-    :members:
-    :undoc-members:
-    :show-inheritance:

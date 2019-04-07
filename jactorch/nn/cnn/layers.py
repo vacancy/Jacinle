@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : cnn_layers.py
+# File   : layers.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 02/27/2018

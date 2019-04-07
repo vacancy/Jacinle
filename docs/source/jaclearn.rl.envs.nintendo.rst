@@ -1,6 +1,11 @@
 jaclearn.rl.envs.nintendo package
 =================================
 
+.. automodule:: jaclearn.rl.envs.nintendo
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -13,10 +18,3 @@ jaclearn.rl.envs.nintendo.mario module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jaclearn.rl.envs.nintendo
-    :members:
-    :undoc-members:
-    :show-inheritance:

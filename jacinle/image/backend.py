@@ -19,12 +19,17 @@ try:
     import cv2
 except ImportError:
     cv2 = None
-    try:
-        from PIL import Image
-        logger.warn('Fail to import OpenCV; use PIL library.')
-    except ImportError:
-        Image = None
-        logger.error('Can not find either PIL or OpenCV; you can not use most function in tartist.image.')
+
+try:
+    from PIL import Image
+except ImportError:
+    Image = None
+
+if cv2 is None:
+    if Image is not None:
+        logger.warning('Fail to import OpenCV; use PIL library.')
+    else:
+        logger.error('Can not find either PIL OpenCV; you can not use most function in tartist.image.')
 
 
 FORCE_PIL_BGR = True

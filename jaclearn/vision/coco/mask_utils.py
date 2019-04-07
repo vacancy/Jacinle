@@ -1,13 +1,13 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : __init__.py
+# File   : mask_utils.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 07/20/2018
+# Date   : 04/06/2019
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+from .pycocotools.mask import iou, merge, encode, decode, area, toBbox
 
-from jacinle.cext.travis import auto_travis
-auto_travis(__file__)
+__all__ = ['iou', 'merge', 'encode', 'decode', 'area', 'toBbox']

@@ -1,6 +1,11 @@
 jaclearn.rl.algo package
 ========================
 
+.. automodule:: jaclearn.rl.algo
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -21,10 +26,3 @@ jaclearn.rl.algo.math module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jaclearn.rl.algo
-    :members:
-    :undoc-members:
-    :show-inheritance:

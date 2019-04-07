@@ -35,6 +35,7 @@ if __name__ == '__main__':
 
     if args.apidoc:
         os.system('rm -rf source/jac*.rst source/modules.rst source/vendors.rst && sphinx-apidoc -f -o source/ ../ -d 2 --module-first')
+        os.system('rm -rf source/.vim*.rst')
 
     if args.make:
         os.system('make html')

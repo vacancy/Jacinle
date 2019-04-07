@@ -66,8 +66,11 @@ class VarLengthCollateV2(object):
 
     It can be directly passed to the DataLaoder as the parameter `collate_fn`.
 
+    >>> from torch.utils.data.dataloader import DataLoader
+    >>> from torch.utils.data.dataset import Dataset
+    >>> dataset = Dataset()
     >>> collate_fn = VarLengthCollateV2({'sentence': 'pad', 'image': 'padimage'})
-    >>> dataloader = DataLoader(dataset, ..., collate_fn=collate_fn)
+    >>> dataloader = DataLoader(dataset, collate_fn=collate_fn)
 
     Here is a complete list of the supported collate mode:
 

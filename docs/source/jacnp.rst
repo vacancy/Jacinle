@@ -1,6 +1,11 @@
 jacnp package
 =============
 
+.. automodule:: jacnp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -29,10 +34,3 @@ jacnp.nd module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jacnp
-    :members:
-    :undoc-members:
-    :show-inheritance:

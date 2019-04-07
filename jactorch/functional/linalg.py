@@ -12,7 +12,7 @@ __all__ = ['normalize']
 
 
 def normalize(tensor, p=2, dim=-1, eps=1e-8):
-    """
+    r"""
     Normalize the input along a specific dimension.
 
     .. math::

@@ -1,6 +1,11 @@
 jactorch.quickstart package
 ===========================
 
+.. automodule:: jactorch.quickstart
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -29,10 +34,3 @@ jactorch.quickstart.train module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.quickstart
-    :members:
-    :undoc-members:
-    :show-inheritance:

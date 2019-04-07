@@ -1,6 +1,11 @@
 jactorch.data package
 =====================
 
+.. automodule:: jactorch.data
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -12,8 +17,8 @@ jactorch.data.collate module
     :undoc-members:
     :show-inheritance:
 
-jactorch.data.collate_v1 module
--------------------------------
+jactorch.data.collate\_v1 module
+--------------------------------
 
 .. automodule:: jactorch.data.collate_v1
     :members:
@@ -28,8 +33,8 @@ jactorch.data.dataloader module
     :undoc-members:
     :show-inheritance:
 
-jactorch.data.dataloader_v030 module
-------------------------------------
+jactorch.data.dataloader\_v030 module
+-------------------------------------
 
 .. automodule:: jactorch.data.dataloader_v030
     :members:
@@ -45,10 +50,3 @@ jactorch.data.dataset module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jactorch.data
-    :members:
-    :undoc-members:
-    :show-inheritance:

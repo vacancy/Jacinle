@@ -1,6 +1,11 @@
 jacinle.io package
 ==================
 
+.. automodule:: jacinle.io
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -37,10 +42,3 @@ jacinle.io.pretty module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: jacinle.io
-    :members:
-    :undoc-members:
-    :show-inheritance:
