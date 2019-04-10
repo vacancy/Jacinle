@@ -11,16 +11,15 @@
 import math
 import torch
 
-from jacinle.utils.argument import get_2dshape
-from .conv import CustomKernel
+from .conv import CustomKernel, MaxPoolingKernelDef
 
-__all__ = ['NormalizedBoxSmooth', 'normalized_box_smooth', 'GaussianSmooth', 'GaussianSmoothTruncated', 'gaussian_smooth', 'gaussian_smooth_truncated']
+__all__ = ['NormalizedBoxSmooth', 'normalized_box_smooth', 'GaussianSmooth', 'GaussianSmoothTruncated', 'gaussian_smooth', 'gaussian_smooth_truncated', 'MaximumSmooth', 'maximum_smooth']
 
 
 class NormalizedBoxSmooth(CustomKernel):
-    def __init__(self, kernel_size):
+    def __init__(self, kernel_size, border_mode='reflect'):
         self.kernel_size = get_2dshape(kernel_size)
-        super().__init__(self._gen_kernel())
+        super().__init__(self._gen_kernel(), border_mode=border_mode)
 
     def _gen_kernel(self):
         kernel = torch.ones(self.kernel_size, dtype=torch.float32)
@@ -28,8 +27,8 @@ class NormalizedBoxSmooth(CustomKernel):
         return kernel
 
 
-def normalized_box_smooth(image, kernel_size):
-    return NormalizedBoxSmooth(kernel_size)(image)
+def normalized_box_smooth(image, kernel_size, border_mode='reflect'):
+    return NormalizedBoxSmooth(kernel_size, border_mode=border_mode).to(image.device)(image)
 
 
 class GaussianSmooth(CustomKernel):
@@ -72,10 +71,20 @@ class GaussianSmoothTruncated(GaussianSmooth):
         super().__init__(kernel_size, sigma, border_mode=border_mode)
 
 
-def gaussian_smooth(image, kernel_size, sigma):
-    return GaussianSmooth(kernel_size, sigma)(image)
+def gaussian_smooth(image, kernel_size, sigma, border_mode='reflect'):
+    return GaussianSmooth(kernel_size, sigma, border_mode=border_mode).to(image.device)(image)
 
 
-def gaussian_smooth_truncated(image, sigma, truncate=4):
-    return GaussianSmoothTruncated(sigma, truncate=truncate)(image)
+def gaussian_smooth_truncated(image, sigma, truncate=4, border_mode='reflect'):
+    return GaussianSmoothTruncated(sigma, truncate=truncate, border_mode=border_mode).to(image.device)(image)
+
+
+class MaximumSmooth(CustomKernel):
+    def __init__(self, kernel_size, border_mode='reflect'):
+        self.kernel_size = kernel_size
+        super().__init__(MaxPoolingKernelDef(self.kernel_size), border_mode=border_mode)
+
+
+def maximum_smooth(image, kernel_size, border_mode='reflect'):
+    return MaximumSmooth(kernel_size, border_mode=border_mode).to(image.device)(image)
 

@@ -146,29 +146,29 @@ class BlackHat(MorphologyOp):
 
 
 def erode(image, kernel_size, shape='rect'):
-    return Erosion(kernel_size, shape)(image)
+    return Erosion(kernel_size, shape).to(image.device)(image)
 
 
 def dilate(image, kernel_size, shape='rect'):
-    return Dilation(kernel_size, shape)(image)
+    return Dilation(kernel_size, shape).to(image.device)(image)
 
 
 def open(image, kernel_size, shape='rect'):
-    return Opening(kernel_size, shape)(image)
+    return Opening(kernel_size, shape).to(image.device)(image)
 
 
 def close(image, kernel_size, shape='rect'):
-    return Closing(kernel_size, shape)(image)
+    return Closing(kernel_size, shape).to(image.device)(image)
 
 
 def morph_grad(image, kernel_size, shape='rect'):
-    return MorphologicalGradient(kernel_size, shape)(image)
+    return MorphologicalGradient(kernel_size, shape).to(image.device)(image)
 
 
 def top_hat(image, kernel_size, shape='rect'):
-    return TopHat(kernel_size, shape)(image)
+    return TopHat(kernel_size, shape).to(image.device)(image)
 
 
 def black_hat(image, kernel_size, shape='rect'):
-    return BlackHat(kernel_size, shape)(image)
+    return BlackHat(kernel_size, shape).to(image.device)(image)
 

@@ -36,7 +36,7 @@ class ImageGradient(nn.Module):
 
 
 def image_gradient(image, return_angle=False):
-    return ImageGradient()(image, return_angle=return_angle)
+    return ImageGradient().to(image.device)(image, return_angle=return_angle)
 
 
 class SobelBase(nn.Module):
@@ -75,11 +75,11 @@ class Scharr(SobelBase):
 
 
 def sobel(image, kernel_size=3, norm=1):
-    return Sobel(kernel_size, norm)(image)
+    return Sobel(kernel_size, norm).to(image.device)(image)
 
 
 def scharr(image, norm=1):
-    return Scharr(norm)(image)
+    return Scharr(norm).to(image.device)(image)
 
 
 class Laplacian(CustomKernel):
@@ -88,5 +88,5 @@ class Laplacian(CustomKernel):
 
 
 def laplacian(image):
-    return Laplacian()(image)
+    return Laplacian().to(image.device)(image)
 

@@ -12,6 +12,7 @@ from .conv import *
 from .gradient import *
 from .morphology import *
 from .smooth import *
+from .peak import *
 
 from .geometry import *
 

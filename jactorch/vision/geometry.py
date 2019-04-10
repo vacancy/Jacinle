@@ -16,8 +16,8 @@ __all__ = ['gen_voronoi']
 
 
 def gen_voronoi(centers, height, width):
-    range_y = torch.arange(height)
-    range_x = torch.arange(width)
+    range_y = torch.arange(height, device=centers.device)
+    range_x = torch.arange(width, device=centers.device)
     y, x = jactorch.meshgrid(range_y, range_x, dim=0)
     y, x = y.reshape(-1), x.reshape(-1)
     coords = torch.stack([y, x], dim=1).float()
