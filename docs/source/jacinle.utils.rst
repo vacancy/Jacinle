@@ -65,6 +65,14 @@ jacinle.utils.enum module
     :undoc-members:
     :show-inheritance:
 
+jacinle.utils.env module
+------------------------
+
+.. automodule:: jacinle.utils.env
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jacinle.utils.exception module
 ------------------------------
 
