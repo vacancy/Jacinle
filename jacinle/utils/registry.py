@@ -52,8 +52,11 @@ class Registry(object):
             fallback_value = default
         return self._registry.get(entry, fallback_value)
 
+    def keys(self):
+        return list(self._registry.keys())
+
     def items(self):
-        return self._registry.items()
+        return list(self._registry.items())
 
 
 class DefaultRegistry(Registry):
