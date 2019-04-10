@@ -246,7 +246,7 @@ def train_epoch(epoch, trainer, train_dataloader, meters):
             # TODO(Jiayuan Mao @ 04/23): customize the logger.
             pbar.set_description(meters.format_simple(
                 'Epoch {}'.format(epoch),
-                {k: v for k, v in meters.val.items() if k.startswith('loss') or k.startswith('time')},
+                {k: v for k, v in meters.val.items() if not k.startswith('validation') and k.count('/') <= 1},
                 compressed=True
             ))
             pbar.update()
@@ -281,7 +281,7 @@ def validate_epoch(epoch, trainer, val_dataloader, meters):
 
             pbar.set_description(meters.format_simple(
                 'Epoch {} (validation)'.format(epoch),
-                {k: v for k, v in meters.val.items() if k.startswith('validation')},
+                {k: v for k, v in meters.val.items() if k.startswith('validation') and k.count('/') <= 2},
                 compressed=True
             ))
             pbar.update()

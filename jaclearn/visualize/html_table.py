@@ -20,7 +20,10 @@ from jacinle.cli.keyboard import yes_or_no
 __all__ = ['HTMLTableColumnDesc', 'HTMLTableVisualizer']
 
 
-class HTMLTableColumnDesc(collections.namedtuple('_HTMLTableColumnDesc', ['identifier', 'name', 'type', 'css'])):
+class HTMLTableColumnDesc(collections.namedtuple(
+    '_HTMLTableColumnDesc', ['identifier', 'name', 'type', 'css', 'td_css'],
+    defaults=(None, None)
+)):
     pass
 
 
@@ -95,6 +98,9 @@ class HTMLTableVisualizer(object):
         for c in columns:
             css = {} if c.css is None else c.css
             self._print('.table{}_column_{}'.format(self._table_counter, c.identifier), '{', ';'.join([k + ':' + v for k, v in css.items()]), '}')
+            css = {} if c.td_css is None else c.td_css
+            self._print('.table{}_td_{}'.format(self._table_counter, c.identifier), '{', ';'.join([k + ':' + v for k, v in css.items()]), '}')
+
         self._print('</style>')
         self._print('<h3>{}</h3>'.format(name))
         self._print('<table>')
@@ -122,8 +128,9 @@ class HTMLTableVisualizer(object):
         self._print('<tr>')
         for c in self._current_columns:
             obj = kwargs[c.identifier]
+            classname = 'table{}_td_{}'.format(self._table_counter, c.identifier)
+            self._print('  <td class="{}">'.format(classname))
             classname = 'table{}_column_{}'.format(self._table_counter, c.identifier)
-            self._print('  <td>')
             if c.type == 'file':
                 link, alt = self.canonize_link('file', obj)
                 self._print('    <a class="{}" href="{}">{}</a>'.format(classname, link, alt))

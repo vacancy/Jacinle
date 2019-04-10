@@ -27,6 +27,7 @@ from jacinle.utils.defaults import defaults_manager, wrap_custom_as_default, gen
 from jacinle.utils.deprecated import deprecated
 from jacinle.utils.enum import JacEnum
 from jacinle.utils.exception import format_exc
+from jacinle.utils.env import jac_getenv, jac_is_verbose, jac_is_debug
 from jacinle.utils.imp import load_module, load_module_filename, load_source
 from jacinle.utils.meta import (
         gofor,
@@ -46,4 +47,15 @@ from jacinle.utils.network import get_local_addr
 from jacinle.utils.numeric import safe_sum, mean, std, rms, prod, divup
 from jacinle.utils.printing import stprint, stformat, kvprint, kvformat, print_to_string
 from jacinle.utils.tqdm import get_current_tqdm, tqdm, tqdm_pbar, tqdm_gofor, tqdm_zip
+
+# For debug purpose.
+def embed(*args, **kwargs):
+    from IPython import embed
+    embed(*args, **kwargs)
+
+def pprint(*args, **kwargs):
+    from pprint import pprint
+    pprint(*args, **kwargs)
+
+from sys import exit
 

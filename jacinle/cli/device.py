@@ -13,6 +13,11 @@ import collections
 
 from jacinle.utils.enum import JacEnum
 
+__all__ = [
+    'DeviceNameFormat', 'canonlize_device_name',
+    'parse_devices', 'set_cuda_visible_devices', 'parse_and_set_devices'
+]
+
 
 class DeviceNameFormat(JacEnum):
     TENSORFLOW = 'tensorflow'
@@ -61,3 +66,4 @@ def parse_and_set_devices(devs, format=DeviceNameFormat.INT, set_device=True):
     if set_device:
         set_cuda_visible_devices(devs)
     return parse_devices(devs, format)
+
