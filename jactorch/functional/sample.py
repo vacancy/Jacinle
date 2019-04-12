@@ -62,7 +62,7 @@ def choice(a, k=1, replace=True, p=None, dtype=None, device=None):
         p (torch.Tensor, optional): an optional weight parameter. Not necessarily to be normalized.
 
     Returns:
-        sampled (torch.Tensor): 1-D outputs of k sampled data from `a`.
+        torch.Tensor: 1-D outputs of k sampled data from `a`.
     """
     try:
         import pytorch_reservoir
