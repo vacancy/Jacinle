@@ -1,0 +1,4 @@
+vendors:
+    pytorch_reservoir:
+        root: vendors/pytorch_reservoir
+

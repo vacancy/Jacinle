@@ -16,6 +16,7 @@ from .linalg import *
 from .loglinear import *
 from .mask import *
 from .meshgrid import *
+from .random import *
 from .probability import *
 from .quantization import *
 from .sample import *
