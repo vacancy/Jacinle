@@ -18,7 +18,7 @@ from jacinle.logging import get_logger
 logger = get_logger(__file__)
 
 
-def load_vendors(config, f):
+def load_vendors(root, config, bash_file):
     if 'vendors' not in config:
         return
 
@@ -26,19 +26,21 @@ def load_vendors(config, f):
         assert 'root' in v, '"root" not found in vendor: {}.'.format(k)
 
         logger.info('Loading vendor: {}.'.format(k))
-        print('export PYTHONPATH={}:$PYTHONPATH'.format(v['root']), file=f)
+        print('export PYTHONPATH={}:$PYTHONPATH'.format(osp.join(root, v['root'])), file=bash_file)
+
+
+def load_yml_config(root, bash_file):
+    yml_filename = osp.join(root, 'jacinle.yml')
+    if osp.isfile(yml_filename):
+        logger.critical('Loading jacinle config: {}.'.format(osp.abspath(yml_filename)))
+        config = io.load(yml_filename)
+        load_vendors(root, config, bash_file)
 
 
 def main():
     f = tempfile.NamedTemporaryFile('w', delete=False)
-
-    wd = os.getcwd()
-    yml_filename = osp.join(wd, 'jacinle.yml')
-    if osp.isfile(osp.join(wd, 'jacinle.yml')):
-        logger.critical('Loading jacinle config: {}.'.format(osp.abspath(yml_filename)))
-        config = io.load(yml_filename)
-        load_vendors(config, f)
-
+    load_yml_config(osp.dirname(osp.dirname(__file__)), f)
+    load_yml_config(os.getcwd(), f)
     f.close()
     print(f.name)
 

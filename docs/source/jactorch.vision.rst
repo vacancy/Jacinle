@@ -41,6 +41,14 @@ jactorch.vision.morphology module
     :undoc-members:
     :show-inheritance:
 
+jactorch.vision.peak module
+---------------------------
+
+.. automodule:: jactorch.vision.peak
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jactorch.vision.smooth module
 -----------------------------
 

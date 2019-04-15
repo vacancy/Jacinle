@@ -1,0 +1,3 @@
+[submodule "vendors/pytorch_reservoir/torch_sampling"]
+	path = vendors/pytorch_reservoir/torch_sampling
+	url = https://github.com/LeviViana/torch_sampling
