@@ -142,10 +142,10 @@ def validate_epoch(model, val_dataloader, meters):
 
             data_time = time.time() - end; end = time.time()
 
-            output_dict, extra_info = model(feed_dict)
+            output_dict = model(feed_dict)
 
             # TODO(Jiayuan Mao @ 04/26): compute the monitoring values.
-            monitors = {}
+            monitors = output['monitors']
             step_time = time.time() - end; end = time.time()
 
             # TODO(Jiayuan Mao @ 04/23): normalize the loss/other metrics by adding n=xxx if applicable.
