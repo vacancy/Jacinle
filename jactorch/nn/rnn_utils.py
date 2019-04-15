@@ -21,9 +21,17 @@ def rnn_with_length(rnn, seq_tensor, seq_lengths, initial_states, batch_first=Tr
         seq_lengths, perm_idx = seq_lengths.sort(0, descending=True)
         seq_tensor = seq_tensor[perm_idx]
         if type(initial_states) is tuple:
-            initial_states = tuple(map(lambda x: x[perm_idx], initial_states))
+            if initial_states[0].dim() == 3:  # including layers
+                initial_states = tuple(map(lambda x: x[:, perm_idx], initial_states))
+            else:
+                assert initial_states[0].dim() == 2
+                initial_states = tuple(map(lambda x: x[perm_idx], initial_states))
         else:
-            initial_states = initial_states[perm_idx]
+            if initial_states.dim() == 3:
+                initial_states = initial_states[:, perm_idx]
+            else:
+                assert initial_states.dim() == 2
+                initial_states = initial_states[perm_idx]
 
     packed_input = pack_padded_sequence(seq_tensor, seq_lengths.cpu().numpy(), batch_first=batch_first)
     packed_output, last_output = rnn(packed_input, initial_states)
