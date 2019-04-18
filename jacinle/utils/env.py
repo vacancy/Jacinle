@@ -19,7 +19,7 @@ def jac_getenv(name, default=None, type=None, prefix=None):
     if prefix is None:
         prefix = 'JAC_'
 
-    value = os.getenv(prefix + name.upper(), default)
+    value = os.getenv((prefix + name).upper(), default)
 
     if value is None:
         return None

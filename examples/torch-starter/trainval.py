@@ -22,6 +22,7 @@ from jacinle.utils.tqdm import tqdm_pbar
 from jactorch.cli import escape_desc_name, ensure_path, dump_metainfo
 from jactorch.cuda.copy import async_copy_to
 from jactorch.train import TrainerEnv
+from jactorch.utils.meta import as_float
 
 logger = get_logger(__file__)
 
@@ -269,7 +270,7 @@ def validate_epoch(epoch, trainer, val_dataloader, meters):
             output_dict, extra_info = trainer.evaluate(feed_dict)
 
             # TODO(Jiayuan Mao @ 04/26): compute the monitoring values.
-            monitors = output_dict['monitors']
+            monitors = as_float(output_dict['monitors'])
             step_time = time.time() - end; end = time.time()
 
             # TODO(Jiayuan Mao @ 04/23): normalize the loss/other metrics by adding n=xxx if applicable.
