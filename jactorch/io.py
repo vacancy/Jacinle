@@ -16,6 +16,7 @@ import torch.nn as nn
 
 import jacinle.io as io
 from jacinle.logging import get_logger
+from jacinle.utils.matching import IENameMatcher
 
 logger = get_logger(__file__)
 
@@ -50,7 +51,7 @@ def load_state_dict(model, state_dict):
         raise KeyError('\n'.join(error_msg))
 
 
-def load_weights(model, filename):
+def load_weights(model, filename, include=None, exclude=None):
     if osp.isfile(filename):
         try:
             weights = io.load(filename)
@@ -58,6 +59,13 @@ def load_weights(model, filename):
             # Hack for checkpoint.
             if 'model' in weights and 'optimizer' in weights:
                 weights = weights['model']
+
+            matcher = IENameMatcher(include, exclude)
+            with matcher:
+                weights = {k: v for k, v in weights.items() if matcher.match(k)}
+            stat = matcher.get_last_stat()
+            if len(stat[1]) > 0:
+                logger.critical('Weights {}: {}.'.format(stat[0], ', '.join(sorted(list(stat[1])))))
 
             # Build the tensors.
             for k, v in weights.items():
@@ -77,3 +85,4 @@ def load_weights(model, filename):
     else:
         logger.warning('No weights file found at specified position: {}.'.format(filename))
     return None
+

@@ -13,7 +13,7 @@ import fnmatch
 import re
 import collections
 
-__all__ = ['NameMatcher']
+__all__ = ['NameMatcher', 'IENameMatcher']
 
 
 class NameMatcher(object):
@@ -86,6 +86,64 @@ class NameMatcher(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._last_stat = self.end()
+
+    def get_last_stat(self):
+        return self._last_stat
+
+
+
+class IENameMatcher(object):
+    def __init__(self, include=None, exclude=None):
+        if include is None:
+            self.include = None
+        else:
+            self.include = NameMatcher([(i, True) for i in include])
+
+        if exclude is None:
+            self.exclude = None
+        else:
+            self.exclude = NameMatcher([(e, True) for e in exclude])
+        self._last_stat = None
+
+    def begin(self):
+        if self.include is not None:
+            self.include.begin()
+        if self.exclude is not None:
+            self.exclude.begin()
+        self._last_stat = (set(), set())
+
+    def end(self):
+        if self.include is not None:
+            self.include.end()
+        if self.exclude is not None:
+            self.exclude.end()
+
+        if len(self._last_stat[0]) < len(self._last_stat[1]):
+            self._last_stat = ('included', self._last_stat[0])
+        else:
+            self._last_stat = ('excluded', self._last_stat[1])
+
+    def match(self, k):
+        if self.include is None:
+            ret = True
+        else:
+            ret = bool(self.include.match(k))
+
+        if self.exclude is not None:
+            ret = ret and not bool(self.exclude.match(k))
+
+        if ret:
+            self._last_stat[0].add(k)
+        else:
+            self._last_stat[1].add(k)
+        return ret
+
+    def __enter__(self):
+        self.begin()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.end()
 
     def get_last_stat(self):
         return self._last_stat

@@ -70,9 +70,9 @@ class TrainerEnv(object):
         }
         try:
             torch.save(state, filename)
-            logger.info('Checkpoint saved: {}.'.format(filename))
+            logger.info('Checkpoint saved: "{}".'.format(filename))
         except Exception:
-            logger.exception('Error occurred when dump checkpoint {}.'.format(filename))
+            logger.exception('Error occurred when dump checkpoint "{}".'.format(filename))
 
     def load_checkpoint(self, filename):
         if osp.isfile(filename):
@@ -87,13 +87,13 @@ class TrainerEnv(object):
                 logger.critical('Checkpoint loaded: {}.'.format(filename))
                 return checkpoint['extra']
             except Exception:
-                logger.exception('Error occurred when load checkpoint {}.'.format(filename))
+                logger.exception('Error occurred when load checkpoint "{}".'.format(filename))
         else:
-            logger.warning('No checkpoint found at specified position: {}.'.format(filename))
+            logger.warning('No checkpoint found at specified position: "{}".'.format(filename))
         return None
 
-    def load_weights(self, filename):
-        return load_weights(self._model, filename)
+    def load_weights(self, filename, **kwargs):
+        return load_weights(self._model, filename, **kwargs)
 
     def set_learning_rate(self, lr):
         for param_group in self._optimizer.param_groups:
