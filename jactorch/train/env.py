@@ -16,7 +16,7 @@ import torch.nn as nn
 
 from jacinle.event.registry import SimpleEventRegistry
 from jacinle.logging import get_logger
-from jactorch.io import load_weights
+from jactorch.io import load_weights, state_dict, load_state_dict
 from jactorch.utils.meta import as_tensor, as_float, as_cpu
 
 logger = get_logger(__file__)
@@ -24,8 +24,15 @@ logger = get_logger(__file__)
 __all__ = ['TrainerEnv']
 
 
+def cuda_time(sync=True):
+    if sync:
+        torch.cuda.synchronize()
+    return time.time()
+
+
 def default_reduce_func(k, v):
-    return v.mean()
+    if torch.is_tensor(v):
+        return v.mean()
 
 
 class TrainerEnv(object):
@@ -60,11 +67,9 @@ class TrainerEnv(object):
     def save_checkpoint(self, filename, extra=None):
         # Hack the data parallel.
         model = self._model
-        if isinstance(model, nn.DataParallel):
-            model = model.module
 
         state = {
-            'model': as_cpu(model.state_dict()),
+            'model': state_dict(model, cpu=True),
             'optimizer': as_cpu(self._optimizer.state_dict()),
             'extra': extra
         }
@@ -82,7 +87,7 @@ class TrainerEnv(object):
 
             try:
                 checkpoint = torch.load(filename)
-                model.load_state_dict(checkpoint['model'])
+                load_state_dict(model, checkpoint['model'])
                 self._optimizer.load_state_dict(checkpoint['optimizer'])
                 logger.critical('Checkpoint loaded: {}.'.format(filename))
                 return checkpoint['extra']
@@ -103,19 +108,25 @@ class TrainerEnv(object):
         for param_group in self._optimizer.param_groups:
             param_group['lr'] *= decay
 
-    def step(self, feed_dict, reduce_func=default_reduce_func, cast_tensor=False):
+    def step(self, feed_dict, reduce_func=default_reduce_func, cast_tensor=False, measure_time=False):
         assert self._model.training, 'Step a evaluation-mode model.'
+        extra = dict()
 
         self.trigger_event('step:before', self)
 
         if cast_tensor:
             feed_dict = as_tensor(feed_dict)
 
-        begin = time.time()
+        if measure_time:
+            end_time = cuda_time()
 
         self.trigger_event('forward:before', self, feed_dict)
         loss, monitors, output_dict = self._model(feed_dict)
         self.trigger_event('forward:after', self, feed_dict, loss, monitors, output_dict)
+
+        if measure_time:
+            extra['time/forward'] = cuda_time() - end_time
+            end_time = cuda_time(False)
 
         loss = reduce_func('loss', loss)
         monitors = {k: reduce_func(k, v) for k, v in monitors.items()}
@@ -123,19 +134,30 @@ class TrainerEnv(object):
         loss_f = as_float(loss)
         monitors_f = as_float(monitors)
 
+        if measure_time:
+            extra['time/loss'] = cuda_time() - end_time
+            end_time = cuda_time(False)
+
         self._optimizer.zero_grad()
         self.trigger_event('backward:before', self, feed_dict, loss, monitors, output_dict)
         if loss.requires_grad:
             loss.backward()
+
+        if measure_time:
+            extra['time/backward'] = cuda_time() - end_time
+            end_time = cuda_time(False)
+
         self.trigger_event('backward:after', self, feed_dict, loss, monitors, output_dict)
         if loss.requires_grad:
             self._optimizer.step()
 
-        end = time.time()
+        if measure_time:
+            extra['time/optimize'] = cuda_time() - end_time
+            end_time = cuda_time(False)
 
         self.trigger_event('step:after', self)
 
-        return loss_f, monitors_f, output_dict, {'time/gpu': end - begin}
+        return loss_f, monitors_f, output_dict, extra
 
     def evaluate(self, feed_dict, cast_tensor=False):
         assert not self._model.training, 'Evaluating a training-mode model.'
