@@ -18,7 +18,7 @@ import contextlib
 __all__ = [
     'gofor',
     'run_once', 'try_run',
-    'map_exec', 'filter_exec', 'stmap',
+    'map_exec', 'filter_exec', 'first_n', 'stmap',
     'method2func', 'map_exec_method',
     'decorator_with_optional_args',
     'cond_with',
@@ -65,6 +65,18 @@ def map_exec(func, *iterables):
 
 def filter_exec(func, iterable):
     return list(filter(func, iterable))
+
+
+def first_n(iterable, n=10):
+    def gen():
+        it = iter(iterable)
+        for i in range(n):
+            try:
+                yield next(it)
+            except StopIteration:
+                return
+
+    return list(gen())
 
 
 def stmap(func, iterable):

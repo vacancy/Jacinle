@@ -32,7 +32,7 @@ from jacinle.utils.imp import load_module, load_module_filename, load_source
 from jacinle.utils.meta import (
         gofor,
         run_once, try_run,
-        map_exec, filter_exec, stmap,
+        map_exec, filter_exec, first_n, stmap,
         method2func, map_exec_method,
         decorator_with_optional_args,
         cond_with,
