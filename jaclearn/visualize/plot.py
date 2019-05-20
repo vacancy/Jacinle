@@ -17,12 +17,11 @@ __all__ = ['plot2opencv', 'plot2pil']
 
 
 @opencv_only
-def plot2opencv(plt):
+def plot2opencv(fig):
     """Convert a pyplot instance to image"""
 
     buf = _io.BytesIO()
-    plt.axis('off')
-    plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
+    fig.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
     buf.seek(0)
     rawbuf = np.frombuffer(buf.getvalue(), dtype='uint8')
     im = cv2.imdecode(rawbuf, cv2.IMREAD_COLOR)
@@ -31,10 +30,9 @@ def plot2opencv(plt):
 
 
 @pil_only
-def plot2pil(plt):
+def plot2pil(fig):
     buffer = _io.StringIO()
-    canvas = plt.get_current_fig_manager().canvas
-    canvas.draw()
-    pil = Image.fromstring('RGB', canvas.get_width_height(), canvas.tostring_rgb())
+    fig.canvas.draw()
+    pil = Image.frombytes('RGB', canvas.get_width_height(), canvas.tostring_rgb())
     return pil
 
