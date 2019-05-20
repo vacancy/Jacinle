@@ -53,15 +53,14 @@ def pn_balanced_binary_cross_entropy_with_probs(probs, target, mask=None, eps=1e
 
     pos_count = pos_mask.sum()
     neg_count = neg_mask.sum()
-    tot_count = pos_count + neg_count
 
-    pos_mask1 = pos_mask * neg_count / tot_count
-    neg_mask1 = neg_mask * pos_count / tot_count
+    pos_mask1 = pos_mask / (pos_count * 2).clamp(min=eps)
+    neg_mask1 = neg_mask / (neg_count * 2).clamp(min=eps)
 
     loss = binary_cross_entropy_with_probs(probs, target, eps)
     if mask is not None:
         loss = loss * mask
-    return (loss * pos_mask1 + loss * neg_mask1).sum() / (pos_mask1.sum() + neg_mask1.sum()).clamp(min=eps)
+    return (loss * pos_mask1 + loss * neg_mask1).sum()
 
 
 def cross_entropy_with_logits(logits, target, dim):
