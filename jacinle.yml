@@ -3,3 +3,5 @@ vendors:
         root: vendors/pytorch_reservoir
     AdvancedIndexing-PyTorch:
         root: vendors/AdvancedIndexing-PyTorch
+    SceneGraphParser:
+        root: vendors/SceneGraphParser
