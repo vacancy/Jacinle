@@ -11,6 +11,7 @@
 import torch
 import torch.autograd as autograd
 
+from jacinle.utils.vendor import requires_vendors
 from .indexing import one_hot_nd
 
 __all__ = ['sample_bernoulli', 'sample_multinomial', 'choice']
@@ -51,6 +52,7 @@ def sample_multinomial(input, dim=-1):
     return SampleMultinomial.apply(input, dim)
 
 
+@requires_vendors('pytorch_reservoir')
 def choice(a, k=1, replace=True, p=None, dtype=None, device=None):
     """
     Generates a random sample from a given 1-D array.
@@ -64,10 +66,7 @@ def choice(a, k=1, replace=True, p=None, dtype=None, device=None):
     Returns:
         torch.Tensor: 1-D outputs of k sampled data from `a`.
     """
-    try:
-        import pytorch_reservoir
-    except ImportError as e:
-        raise ImportError('Cannot load pytorch_reservoir. Make sure you have it as a vendor for Jacinle.') from e
+    import pytorch_reservoir
 
     if isinstance(a, int):
         a = torch.arange(a, dtype=dtype, device=device)

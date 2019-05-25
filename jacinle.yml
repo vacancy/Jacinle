@@ -1,4 +1,5 @@
 vendors:
-    pytorch_reservoir:
+    ReservoirSample-PyTorch:
         root: vendors/pytorch_reservoir
-
+    AdvancedIndexing-PyTorch:
+        root: vendors/AdvancedIndexing-PyTorch

@@ -11,6 +11,7 @@
 import torch
 
 from jacinle.utils.numeric import prod
+from jacinle.utils.vendor import has_vendor, requires_vendors
 from jactorch.utils.grad import no_grad_func
 from .shape import concat_shape
 
@@ -18,9 +19,11 @@ __all__ = [
     'reversed',
     'one_hot', 'one_hot_nd', 'one_hot_dim',
     'inverse_permutation',
-    'index_one_hot', 'set_index_one_hot_',
-    'index_one_hot_ellipsis',
-    'batch_index_select'
+    'index_one_hot', 'set_index_one_hot_', 'index_one_hot_ellipsis',
+    'batch', 'patch_torch_index',
+    'batched_index_select', 'batched_index_int', 'batched_index_slice', 'batched_index_vector_dim', 'batched_index_vectors',
+    'tindex', 'findex', 'vindex', 'oindex',
+    'btindex', 'bfindex', 'bvindex', 'boindex'
 ]
 
 
@@ -175,7 +178,7 @@ def index_one_hot_ellipsis(tensor, dim, index):
     return tensor.view(tensor_shape[:dim] + tensor_shape[dim+1:])
 
 
-def batch_index_select(tensor, batched_indices):
+def batched_index_select(tensor, batched_indices):
     assert batched_indices.dim() == 2
 
     batch_i = torch.arange(batched_indices.size(0)).to(batched_indices)
@@ -186,4 +189,28 @@ def batch_index_select(tensor, batched_indices):
         .reshape(concat_shape(-1, tensor.size()[2:]))[flattened_indices.view(-1)]
         .reshape(concat_shape(batched_indices.size(), tensor.size()[2:]))
     )
+
+
+if has_vendor('torch_index'):
+    from torch_index import batch
+    from torch_index import patch_torch as patch_torch_index
+    from torch_index import tindex, findex, vindex, oindex
+    from torch_index import btindex, bfindex, bvindex, boindex
+    from torch_index.batched_functional import batched_index_int, batched_index_slice, batched_index_vector_dim, batched_index_vectors
+else:
+    from jacinle.utils.meta import make_dummy_func
+    batch = slice(None, None, None)
+    patch_torch_index = requires_vendors('torch_index')(make_dummy_func())
+    tindex = requires_vendors('torch_index')(make_dummy_func())
+    findex = requires_vendors('torch_index')(make_dummy_func())
+    vindex = requires_vendors('torch_index')(make_dummy_func())
+    oindex = requires_vendors('torch_index')(make_dummy_func())
+    btindex = requires_vendors('torch_index')(make_dummy_func())
+    bfindex = requires_vendors('torch_index')(make_dummy_func())
+    bvindex = requires_vendors('torch_index')(make_dummy_func())
+    boindex = requires_vendors('torch_index')(make_dummy_func())
+    batched_index_int = requires_vendors('torch_index')(make_dummy_func())
+    batched_index_slice = requires_vendors('torch_index')(make_dummy_func())
+    batched_index_vector_dim = requires_vendors('torch_index')(make_dummy_func())
+    batched_index_vectors = requires_vendors('torch_index')(make_dummy_func())
 

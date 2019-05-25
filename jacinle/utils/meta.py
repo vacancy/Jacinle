@@ -26,7 +26,8 @@ __all__ = [
     'dict_deep_update', 'dict_deep_kv', 'dict_deep_keys',
     'assert_instance', 'assert_none', 'assert_notnone',
     'notnone_property',
-    'synchronized'
+    'synchronized',
+    'make_dummy_func'
 ]
 
 
@@ -225,4 +226,10 @@ def synchronized(mutex=None):
         return wrapped_func
 
     return wrapper
+
+
+def make_dummy_func(message=None):
+    def func(*args, **kwargs):
+        raise NotImplementedError(message)
+    return func
 

@@ -39,7 +39,7 @@ from jacinle.utils.meta import (
         merge_iterable,
         dict_deep_update, dict_deep_kv, dict_deep_keys,
         assert_instance, assert_none, assert_notnone,
-        notnone_property, synchronized
+        notnone_property, synchronized, make_dummy_func
 )
 from jacinle.utils.meter import GroupMeters
 from jacinle.utils.naming import class_name, func_name, method_name, class_name_of_method
