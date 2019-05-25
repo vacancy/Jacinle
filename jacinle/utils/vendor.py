@@ -21,7 +21,7 @@ def has_vendor(vendor):
     try:
         importlib.import_module(vendor)
     except ImportError as e:
-        return Falase
+        return False
     return True
 
 

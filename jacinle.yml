@@ -3,5 +3,10 @@ vendors:
         root: vendors/pytorch_reservoir
     AdvancedIndexing-PyTorch:
         root: vendors/AdvancedIndexing-PyTorch
+    SynchronizedBatchNorm-PyTorch:
+        root: vendors/Synchronized-BatchNorm-PyTorch
+    PreciseRoIPooling-PyTorch:
+        root: vendors/PreciseRoIPooling/pytorch
     SceneGraphParser:
         root: vendors/SceneGraphParser
+

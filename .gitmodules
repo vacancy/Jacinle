@@ -7,3 +7,9 @@
 [submodule "vendors/SceneGraphParser"]
 	path = vendors/SceneGraphParser
 	url = https://github.com/vacancy/SceneGraphParser
+[submodule "vendors/Synchronized-BatchNorm-PyTorch"]
+	path = vendors/Synchronized-BatchNorm-PyTorch
+	url = https://github.com/vacancy/Synchronized-BatchNorm-PyTorch
+[submodule "vendors/PreciseRoIPooling"]
+	path = vendors/PreciseRoIPooling
+	url = https://github.com/vacancy/PreciseRoIPooling
