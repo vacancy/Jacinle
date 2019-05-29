@@ -21,6 +21,7 @@ import gzip
 import numpy as np
 
 from jacinle.logging import get_logger
+from jacinle.utils.filelock import FileLock
 from jacinle.utils.registry import RegistryGroup, CallbackRegistry
 
 from .common import get_ext
@@ -32,6 +33,7 @@ __all__ = [
     'open', 'open_txt', 'open_h5', 'open_gz',
     'load', 'load_txt', 'load_h5', 'load_pkl', 'load_pklgz', 'load_npy', 'load_npz', 'load_pth',
     'dump', 'dump_pkl', 'dump_pklgz', 'dump_npy', 'dump_npz', 'dump_pth',
+    'safe_dump',
     'link', 'mkdir', 'remove', 'locate_newest_file', 'io_function_registry'
 ]
 
@@ -186,6 +188,30 @@ def dump(file, obj, **kwargs):
     return io_function_registry.dispatch('dump', file, obj, **kwargs)
 
 
+
+def safe_dump(fname, data, use_lock=True, use_temp=True, lock_timeout=10):
+    temp_fname = 'temp.' + fname
+    lock_fname = 'lock.' + fname
+
+    def safe_dump_inner():
+        if use_temp:
+            io.dump(temp_fname, data)
+            os.replace(temp_fname, fname)
+            return True
+        else:
+            return io.dump(temp_fname, data)
+
+    if use_lock:
+        with FileLock(lock_fname, lock_timeout) as flock:
+            if flock.is_locked:
+                return safe_dump_inner()
+            else:
+                logger.warning('Cannot lock the file: {}.'.format(fname))
+                return False
+    else:
+        return safe_dump_inner()
+
+
 def link(path_origin, *paths, use_relative_path=True):
     for item in paths:
         if os.path.exists(item):
@@ -213,3 +239,4 @@ def locate_newest_file(dirname, pattern):
     assert osp.isdir(dirname)
     fs = glob.glob(osp.join(dirname, pattern))
     return max(fs, key=osp.getmtime)
+

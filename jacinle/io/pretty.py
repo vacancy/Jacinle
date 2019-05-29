@@ -72,6 +72,10 @@ def dumps_json(value, compressed=True):
     return json.dumps(value, cls=JsonObjectEncoder, sort_keys=True, indent=4, separators=(',', ': '))
 
 
+def pretty_dumps_json(value, compressed=False):
+    return dumps_json(value, compressed=compressed)
+
+
 def dumps_xml(value, root_node='data'):
     return _dict2xml(value, root_node=root_node)
 
@@ -126,20 +130,25 @@ dump_struct = _wrap_dump(dumps_struct)
 dump_kv = _wrap_dump(dumps_kv)
 dump_env = _wrap_dump(dumps_env)
 
+pretty_dump_json = _wrap_dump(pretty_dumps_json)
+
 
 for registry in ['load', 'pretty_load']:
     io_function_registry.register(registry, '.json', load_json)
     io_function_registry.register(registry, '.xml',  load_xml)
     io_function_registry.register(registry, '.yaml', load_yaml)
-    io_function_registry.register(registry, '.yml', load_yaml)
+    io_function_registry.register(registry, '.yml',  load_yaml)
 
 
 for registry in ['dump', 'pretty_dump']:
     io_function_registry.register(registry, '.txt',    dump_txt)
-    io_function_registry.register(registry, '.json',   dump_json)
+    if registry == 'pretty_dump':
+        io_function_registry.register(registry, '.json',   pretty_dump_json)
+    else:
+        io_function_registry.register(registry, '.json',   dump_json)
     io_function_registry.register(registry, '.xml',    dump_xml)
     io_function_registry.register(registry, '.yaml',   dump_yaml)
-    io_function_registry.register(registry, '.yml',   dump_yaml)
+    io_function_registry.register(registry, '.yml',    dump_yaml)
     io_function_registry.register(registry, '.struct', dump_struct)
     io_function_registry.register(registry, '.kv',     dump_kv)
     io_function_registry.register(registry, '.env',    dump_env)
