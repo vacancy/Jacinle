@@ -26,7 +26,7 @@ class JacDataParallel(DataParallel):
     def __init__(self, module,
                  device_ids=None, output_device=None, dim=0,
                  allow_dict=True, allow_replication_callback=True,
-                 user_scattered=False, use_scatter_stream=True,
+                 user_scattered=False, use_scatter_stream=True, scatter_func=None,
                  persistent=False, copy_parameters=False, copy_buffers=True):
 
         super(DataParallel, self).__init__()
@@ -45,6 +45,7 @@ class JacDataParallel(DataParallel):
         self.allow_replication_callback = allow_replication_callback
         self.user_scattered = user_scattered
         self.use_scatter_stream = use_scatter_stream
+        self.scatter_func = scatter_func
         self.persistent = persistent
         self.copy_parameters = copy_parameters
         self.copy_buffers = copy_buffers
@@ -61,7 +62,9 @@ class JacDataParallel(DataParallel):
         return self.gather(outputs, self.output_device)
 
     def scatter(self, inputs, kwargs, device_ids):
-        if self.user_scattered:
+        if self.scatter_func is not None:
+            return self.scatter_func(inputs, kwargs, device_ids, dim=self.dim)
+        elif self.user_scattered:
             return use_user_scattered(inputs, kwargs, device_ids, use_stream=self.use_scatter_stream)
         return super().scatter(inputs, kwargs, device_ids)
 
