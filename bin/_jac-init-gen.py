@@ -12,7 +12,7 @@ import os
 import os.path as osp
 import sys
 import tempfile
-import jacinle.io as io
+import yaml
 from jacinle.logging import get_logger
 
 logger = get_logger(__file__)
@@ -33,7 +33,7 @@ def load_yml_config(root, bash_file):
     yml_filename = osp.join(root, 'jacinle.yml')
     if osp.isfile(yml_filename):
         logger.critical('Loading jacinle config: {}.'.format(osp.abspath(yml_filename)))
-        config = io.load(yml_filename)
+        config = yaml.safe_load(yml_filename)
         load_vendors(root, config, bash_file)
 
 

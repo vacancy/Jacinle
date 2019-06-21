@@ -11,7 +11,6 @@
 import os
 import sys
 import os.path as osp
-import jacinle.io as io
 
 __all__ = ['str2bool', 'yn2bool', 'yes_or_no', 'maybe_mkdir']
 
@@ -84,6 +83,7 @@ def maybe_mkdir(dirname):
     if osp.isfile(dirname):
         return
 
+    import jacinle.io as io
     if yes_or_no('Creating directory "{}"?'.format(dirname)):
         io.mkdir(dirname)
 

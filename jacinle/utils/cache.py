@@ -13,7 +13,6 @@ import collections
 import os.path as osp
 import threading
 
-import jacinle.io as io
 from .meta import synchronized
 
 __all__ = ['cached_property', 'cached_result', 'fs_cached_result']
@@ -58,6 +57,8 @@ def cached_result(func):
 
 
 def fs_cached_result(filename, force_update=False):
+    import jacinle.io as io
+
     def wrapper(func):
         @synchronized()
         @functools.wraps(func)
