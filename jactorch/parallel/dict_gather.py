@@ -46,7 +46,7 @@ def dict_gather(outputs, target_device, dim=0):
     """
     def gather_map(outputs):
         out = outputs[0]
-        if isinstance(out, Variable):
+        if isinstance(out, Variable) or torch.is_tensor(out):
             if out.dim() == 0:
                 outputs = [o.unsqueeze(0) for o in outputs]
             return Gather.apply(target_device, dim, *outputs)
