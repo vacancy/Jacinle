@@ -16,7 +16,7 @@ del init_main
 
 from jacinle.utils.env import jac_getenv, jac_is_verbose, jac_is_debug
 
-if jac_getenv('IMPORT_ALL', False, 'bool'):
+if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.cli.argument import JacArgumentParser
     from jacinle.cli.keyboard import yes_or_no, maybe_mkdir
     from jacinle.concurrency.pool import TQDMPool
