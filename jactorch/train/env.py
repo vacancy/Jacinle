@@ -54,7 +54,8 @@ class TrainerEnv(object):
         return self._model
 
     @property
-    def model_unwrapped(self, model):
+    def model_unwrapped(self):
+        model = self.model
         if isinstance(model, nn.DataParallel):
             model = model.module
         return model
