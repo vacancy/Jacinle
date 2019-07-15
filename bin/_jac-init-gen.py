@@ -12,7 +12,7 @@ import os
 import os.path as osp
 import sys
 import tempfile
-import jacinle.io as io
+import yaml
 from jacinle.logging import get_logger
 
 logger = get_logger(__file__)
@@ -29,12 +29,28 @@ def load_vendors(root, config, bash_file):
         print('export PYTHONPATH={}:$PYTHONPATH'.format(osp.join(root, v['root'])), file=bash_file)
 
 
+def load_conda_settings(root, config, bash_file):
+    if 'conda' not in config:
+        return
+    target_env = config['conda'].get('env', '')
+    if target_env != '':
+        logger.info('Using conda env: {}.'.format(target_env))
+        print("""
+if [[ $CONDA_DEFAULT_ENV != "{v}" ]]; then
+    eval "$(conda shell.bash hook)"
+    conda activate {v}
+fi
+""".format(v=target_env), file=bash_file)
+
+
 def load_yml_config(root, bash_file):
     yml_filename = osp.join(root, 'jacinle.yml')
     if osp.isfile(yml_filename):
         logger.critical('Loading jacinle config: {}.'.format(osp.abspath(yml_filename)))
-        config = io.load(yml_filename)
+        with open(yml_filename) as f:
+            config = yaml.safe_load(f.read())
         load_vendors(root, config, bash_file)
+        load_conda_settings(root, config, bash_file)
 
 
 def main():

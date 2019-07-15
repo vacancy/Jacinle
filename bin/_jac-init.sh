@@ -9,7 +9,7 @@
 JACROOT=$1
 
 export PYTHONPATH=$JACROOT:./:$PYTHONPATH
-fname=`python3 $JACROOT/bin/_jac-init-gen.py`
+fname=`JAC_IMPORT_ALL=FALSE python3 $JACROOT/bin/_jac-init-gen.py`
 source $fname
 rm -f $fname
 
