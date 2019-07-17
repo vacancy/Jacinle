@@ -49,8 +49,9 @@ def load_yml_config(root, bash_file):
         logger.critical('Loading jacinle config: {}.'.format(osp.abspath(yml_filename)))
         with open(yml_filename) as f:
             config = yaml.safe_load(f.read())
-        load_vendors(root, config, bash_file)
-        load_conda_settings(root, config, bash_file)
+        if config is not None:
+            load_vendors(root, config, bash_file)
+            load_conda_settings(root, config, bash_file)
 
 
 def main():
