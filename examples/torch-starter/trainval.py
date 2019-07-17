@@ -30,6 +30,7 @@ parser = JacArgumentParser(description='')
 parser.add_argument('--desc', required=True, type='checked_file', metavar='FILE')
 
 # training hyperparameters
+# TODO(Jiayuan Mao @ 07/16): set default arguments.
 parser.add_argument('--epochs', type=int, default=100, metavar='N', help='number of total epochs to run')
 parser.add_argument('--batch-size', type=int, default=32, metavar='N', help='batch size')
 parser.add_argument('--lr', type=float, default=0.001, metavar='N', help='initial learning rate')
@@ -61,6 +62,7 @@ parser.add_argument('--force-gpu', action='store_true', help='force the script t
 args = parser.parse_args()
 
 # filenames
+# TODO(Jiayuan Mao @ 07/16): update the series number.
 args.series_name = 'default'
 args.desc_name = escape_desc_name(args.desc)
 if not args.evaluate:
@@ -249,7 +251,7 @@ def train_epoch(epoch, trainer, train_dataloader, meters):
                 'Epoch {}'.format(epoch),
                 {k: v for k, v in meters.val.items() if not k.startswith('validation') and k.count('/') <= 1},
                 compressed=True
-            ))
+            ), refresh=False)
             pbar.update()
 
             end = time.time()
@@ -284,7 +286,7 @@ def validate_epoch(epoch, trainer, val_dataloader, meters):
                 'Epoch {} (validation)'.format(epoch),
                 {k: v for k, v in meters.val.items() if k.startswith('validation') and k.count('/') <= 2},
                 compressed=True
-            ))
+            ), refresh=False)
             pbar.update()
 
             end = time.time()
