@@ -156,7 +156,7 @@ def validate_epoch(model, val_dataloader, meters):
             if args.use_tb:
                 meters.flush()
 
-            pbar.set_description(meters.format_simple('Test', 'val', compressed=True))
+            pbar.set_description(meters.format_simple('Test', 'val', compressed=True), refresh=False)
             pbar.update()
 
             end = time.time()

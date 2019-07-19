@@ -183,7 +183,7 @@ class TQDMPool(Pool):
             if last_update_acc >= update_iters:
                 current = time.time()
                 if current - last_update_time > update_interval:
-                    pbar.set_description(desc)
+                    pbar.set_description(desc, refresh=False)
                     pbar.update(n=last_update_acc)
 
                     last_update_acc = 0
