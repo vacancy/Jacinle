@@ -43,9 +43,12 @@ def state_dict(model, include=None, exclude=None, cpu=True):
     if cpu:
         state_dict = as_cpu(state_dict)
 
-    if hasattr(model, 'extra_state_dict'):
-        state_dict[__extra_magic_name__] = model.extra_state_dict()
-
+    extra_state_dict = dict()
+    for name, module in model.named_modules():
+        if hasattr(module, 'extra_state_dict'):
+            extra_state_dict[name] = module.extra_state_dict()
+    if len(extra_state_dict) > 0:
+        state_dict[__extra_magic_name__] = extra_state_dict
     return state_dict
 
 
@@ -85,10 +88,18 @@ def load_state_dict(model, state_dict, include=None, exclude=None):
                                  .format(name, own_state[name].size(), param.size()))
 
     if extra_state_dict is not None:
-        if hasattr(model, 'load_extra_state_dict'):
+        if hasattr(model, 'load_extra_state_dict') and '' not in extra_state_dict:
+            deprecated_warning = 'DEPRECATED(Jiayuan Mao): legacy extra_state_dict has been deprecated and will be removed by 01/15/2020; please update the old checkpoints.'
+            logger.warning(deprecated_warning)
             model.load_extra_state_dict(extra_state_dict)
         else:
-            logger.warning('Extra state dict found but the model does not support load_extra_state_dict.')
+            name2module = dict(model.named_modules())
+            for name, extra in extra_state_dict.items():
+                module = name2module[name]
+                if hasattr(module, 'load_extra_state_dict'):
+                    module.load_extra_state_dict(extra)
+                else:
+                    logger.warning('Extra state dict found but the model does not support load_extra_state_dict: {}.'.format(name))
 
     missing = set(own_state.keys()) - set(state_dict.keys())
     if len(missing) > 0:
