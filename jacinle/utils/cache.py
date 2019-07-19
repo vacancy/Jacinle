@@ -29,7 +29,7 @@ class cached_property:
         self.__mutex = collections.defaultdict(threading.Lock)
 
     def __get__(self, instance, owner):
-        with self.__mutex[instance]:
+        with self.__mutex[id(instance)]:
             if instance is None:
                 return self.fget
             v = getattr(instance, self.__cache_key, None)
