@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 # File   : collate.py
 # Author : Jiayuan Mao
-# Email  : maojiayuan@gmail.com
-# Date   : 03/04/2018
+# Email  : maojiayuan@gmail.com # Date   : 03/04/2018
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
@@ -12,7 +11,6 @@ import re
 import collections
 
 import torch
-import torch.utils.data.dataloader as torchdl
 
 from six import string_types
 
@@ -20,6 +18,19 @@ from jacinle.utils.argument import UniqueValueGetter
 from jacinle.utils.enum import JacEnum
 
 __all__ = ['numpy_type_map', 'user_scattered_collate', 'VarLengthCollateMode', 'VarLengthCollate', 'VarLengthCollateV2']
+
+
+def _use_shared_memory():
+    import torch
+    if torch.__version__ < '1.1':
+        import torch.utils.data.dataloader as torchdl
+        return torchdl._use_shared_memory
+    else:
+        import torch.utils.data._utils.collate as torch_collate
+        return torch_collate._use_shared_memory
+    # TODO(Jiayuan Mao @ 07/21): sync up with the latest torch release. The github master branch seems to have
+    # introduced a new function called torchdl.get_worker_info()
+
 
 numpy_type_map = {
     'float64': torch.DoubleTensor,
@@ -146,7 +157,7 @@ class VarLengthCollateV2(object):
                 parameters = tuple()
 
         out = None
-        if torchdl._use_shared_memory:
+        if _use_shared_memory():
             # If we're in a background process, concatenate directly into a
             # shared memory tensor to avoid an extra copy
             numel = 0
