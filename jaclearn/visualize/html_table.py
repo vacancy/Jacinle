@@ -22,9 +22,11 @@ __all__ = ['HTMLTableColumnDesc', 'HTMLTableVisualizer']
 
 class HTMLTableColumnDesc(collections.namedtuple(
     '_HTMLTableColumnDesc', ['identifier', 'name', 'type', 'css', 'td_css'],
-    defaults=(None, None)
 )):
     pass
+
+"""DEPRECATED(Jiayuan Mao): __new__.__defaults__ has been deprecated and will be removed by 02/18/2020; we will move to defaults=xxx instead."""
+HTMLTableColumnDesc.__new__.__defaults__ = (None, None)
 
 
 class HTMLTableVisualizer(object):
