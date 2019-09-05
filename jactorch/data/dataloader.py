@@ -66,7 +66,7 @@ class _InitFunctionWrapper(object):
             kwargs = self._kwargs[worker_id]
             self._fn_init(worker_id, *args, **kwargs)
         if self._fn_recv is not None:
-            if len(self._pipe_master.queues) > 0:
+            if self._pipe_master is not None and len(self._pipe_master.queues) > 0:
                 self._fn_recv.worker_init(self._pipe_master.queues[worker_id])
 
 
