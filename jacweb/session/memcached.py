@@ -29,6 +29,8 @@ class MemcachedSessionManager(SessionManagerBase):
         self.cookie_prefix = cookie_prefix
         self.memcached_prefix = memcached_prefix
 
+        assert self.memcache.available
+
     def get(self, request_handler):
         session_id = hmac_key = None
         if request_handler is not None:

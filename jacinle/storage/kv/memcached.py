@@ -29,6 +29,7 @@ _encode = lambda s: s.encode('utf8')
 class MemcachedKVStore(KVStoreBase):
     def __init__(self, addr, port, readonly=False):
         super().__init__(readonly)
+        self.available = memcache is not None
 
         self.addr = addr
         self.port = port

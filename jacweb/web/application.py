@@ -8,7 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-from tornado.web import Application, RequestHandler, _ARG_DEFAULT
+from tornado.web import Application, RequestHandler
 from copy import deepcopy
 
 from jacinle.logging import get_logger
@@ -47,6 +47,9 @@ def make_app(modules, settings):
 def get_app():
     global __application__
     return __application__
+
+
+_ARG_DEFAULT = RequestHandler._ARG_DEFAULT
 
 
 class JacRequestHandler(RequestHandler):
