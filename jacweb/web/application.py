@@ -49,7 +49,10 @@ def get_app():
     return __application__
 
 
-_ARG_DEFAULT = RequestHandler._ARG_DEFAULT
+try:
+    _ARG_DEFAULT = RequestHandler._ARG_DEFAULT
+except:
+    from tornado.web import _ARG_DEFAULT
 
 
 class JacRequestHandler(RequestHandler):
