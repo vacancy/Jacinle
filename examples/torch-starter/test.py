@@ -11,6 +11,7 @@
 import time
 import os.path as osp
 
+import torch
 import torch.backends.cudnn as cudnn
 import torch.cuda as cuda
 
@@ -29,6 +30,7 @@ logger = get_logger(__file__)
 parser = JacArgumentParser(description='')
 parser.add_argument('--desc', required=True, type='checked_file', metavar='FILE')
 parser.add_argument('--load', type='checked_file', default=None, metavar='FILE', help='load the weights from a pretrained model (default: none)')
+parser.add_argument('--batch-size', type=int, default=16, metavar='N', help='batch size')
 
 # data related
 # TODO(Jiayuan Mao @ 04/23): add data related arguments.
@@ -37,6 +39,7 @@ parser.add_argument('--data-workers', type=int, default=4, metavar='N', help='th
 
 # misc
 parser.add_argument('--use-gpu', type='bool', default=True, metavar='B', help='use GPU or not')
+parser.add_argument('--use-tb', type='bool', default=False, metavar='B', help='use tensorboard or not')
 parser.add_argument('--debug', action='store_true', help='entering the debug mode, suppressing all logs to disk')
 parser.add_argument('--embed', action='store_true', help='entering embed after initialization')
 parser.add_argument('--force-gpu', action='store_true', help='force the script to use GPUs, useful when there exists on-the-ground devices')
@@ -125,7 +128,8 @@ def main():
     validation_dataloader = validation_dataset.make_dataloader(args.batch_size, shuffle=False, drop_last=False, nr_workers=args.data_workers)
 
     model.eval()
-    validate_epoch(model, validation_dataloader, meters)
+    with torch.no_grad():
+        validate_epoch(model, validation_dataloader, meters)
 
     if not args.debug:
         meters.dump(args.meter_file)

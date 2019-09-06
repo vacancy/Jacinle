@@ -11,6 +11,7 @@
 import time
 import os.path as osp
 
+import torch
 import torch.backends.cudnn as cudnn
 import torch.cuda as cuda
 
@@ -201,7 +202,8 @@ def main():
 
         if epoch % args.validation_interval == 0:
             model.eval()
-            validate_epoch(epoch, trainer, validation_dataloader, meters)
+            with torch.no_grad():
+                validate_epoch(epoch, trainer, validation_dataloader, meters)
 
         if not args.debug:
             meters.dump(args.meter_file)

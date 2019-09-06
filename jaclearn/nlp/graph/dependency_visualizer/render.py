@@ -57,7 +57,7 @@ class DependencyVisualizer(object):
             arrow_spacing, arrow_width, arrow_stroke, distance, offset_x,
             color, bg, font)
         """
-        self.compact = options.get("compact", False)
+        self.compact = options.get("compact", True)
         self.word_spacing = options.get("word_spacing", 45)
         self.arrow_spacing = options.get("arrow_spacing", 12 if self.compact else 20)
         self.arrow_width = options.get("arrow_width", 6 if self.compact else 10)
