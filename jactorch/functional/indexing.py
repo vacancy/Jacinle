@@ -43,6 +43,7 @@ def reversed(x, dim=-1):
     # https://github.com/pytorch/pytorch/issues/229#issuecomment-350041662
     xsize = x.size()
     dim = x.dim() + dim if dim < 0 else dim
+    x = x.contiguous()
     x = x.view(-1, *xsize[dim:])
     inds = torch.arange(x.size(1) - 1, -1, -1, dtype=torch.long, device=x.device)
     x = x.view(x.size(0), x.size(1), -1)[:, inds, :]
@@ -86,7 +87,7 @@ def one_hot_nd(index, nr_classes):
 
     """
     index_size = index.size()
-    return one_hot(index.view(-1), nr_classes).view(index_size + (nr_classes, ))
+    return one_hot(index.reshape(-1), nr_classes).view(index_size + (nr_classes, ))
 
 
 @no_grad_func

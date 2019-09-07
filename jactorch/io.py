@@ -113,10 +113,10 @@ def load_state_dict(model, state_dict, include=None, exclude=None):
         raise KeyError('\n'.join(error_msg))
 
 
-def load_weights(model, filename, include=None, exclude=None):
+def load_weights(model, filename, include=None, exclude=None, return_raw=True):
     if osp.isfile(filename):
         try:
-            weights = io.load(filename)
+            raw = weights = io.load(filename)
             # Hack for checkpoint.
             if 'model' in weights and 'optimizer' in weights:
                 weights = weights['model']
@@ -126,6 +126,8 @@ def load_weights(model, filename, include=None, exclude=None):
             except KeyError as e:
                 logger.warning('Unexpected or missing weights found:\n' + e.args[0])
             logger.critical('Weights loaded: {}.'.format(filename))
+            if return_raw:
+                return raw
             return True
         except Exception:
             logger.exception('Error occurred when load weights {}.'.format(filename))
