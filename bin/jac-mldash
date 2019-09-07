@@ -1,0 +1,8 @@
+#!/bin/bash -E
+
+JACROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/../ && pwd )"
+
+source $JACROOT/bin/_jac-init.sh $JACROOT
+
+exec python3 $JACROOT/vendors/JacMLDash/scripts/web-server.py "$@"
+

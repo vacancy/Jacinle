@@ -9,4 +9,5 @@ vendors:
         root: vendors/PreciseRoIPooling/pytorch
     SceneGraphParser:
         root: vendors/SceneGraphParser
-
+    JacMLDash:
+        root: vendors/JacMLDash

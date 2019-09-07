@@ -13,3 +13,6 @@
 [submodule "vendors/PreciseRoIPooling"]
 	path = vendors/PreciseRoIPooling
 	url = https://github.com/vacancy/PreciseRoIPooling
+[submodule "vendors/JacMLDash"]
+	path = vendors/JacMLDash
+	url = https://github.com/vacancy/JacMLDash
