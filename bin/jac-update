@@ -1,0 +1,12 @@
+#!/bin/bash -E
+
+JACROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/../ && pwd )"
+CUR=`pwd`
+
+cd $JACROOT
+echo "Updating Jacinle"
+git pull --recurse-submodules
+echo "Updating Submodules"
+git submodule update --init --recursive
+cd $CUR
+
