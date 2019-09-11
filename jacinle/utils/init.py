@@ -28,7 +28,7 @@ def tune_opencv():
 
 
 def enable_ipdb():
-    if jac_getenv('DEBUG', default='y', type='bool'):
+    if jac_getenv('DEBUG', default='n', type='bool'):
         from jacinle.utils.debug import hook_exception_ipdb
         hook_exception_ipdb()
 
