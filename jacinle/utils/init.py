@@ -11,6 +11,7 @@
 import os
 import sys
 import resource
+from jacinle.utils.env import jac_getenv
 
 
 def release_syslim():
@@ -26,6 +27,14 @@ def tune_opencv():
     os.environ['OPENCV_OPENCL_RUNTIME'] = ''
 
 
+def enable_ipdb():
+    if jac_getenv('DEBUG', default='y', type='bool'):
+        from jacinle.utils.debug import hook_exception_ipdb
+        hook_exception_ipdb()
+
+
 def init_main():
     release_syslim()
     tune_opencv()
+    enable_ipdb()
+
