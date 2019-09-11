@@ -68,6 +68,9 @@ class GroupMeters(object):
     def __getitem__(self, name):
         return self._meters[name]
 
+    def items(self):
+        return self._meters.items()
+
     @property
     def sum(self):
         return {k: m.sum for k, m in self._meters.items() if m.count > 0}

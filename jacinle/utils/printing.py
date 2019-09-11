@@ -19,6 +19,9 @@ from .registry import LockRegistry
 __all__ = ['stprint', 'stformat', 'kvprint', 'kvformat', 'PrintToStringContext', 'print_to_string', 'print2format']
 
 
+_DEFAULT_FLOAT_FORMAT = '{:.6f}'
+
+
 def _indent_print(msg, indent, prefix=None, end='\n', file=None):
     print('  ' * indent, end='', file=file)
     if prefix is not None:
@@ -26,7 +29,17 @@ def _indent_print(msg, indent, prefix=None, end='\n', file=None):
     print(msg, end=end, file=file)
 
 
-def stprint(data, key=None, indent=0, file=None, need_lock=True, max_depth=100):
+def format_printable_data(data, float_format=_DEFAULT_FLOAT_FORMAT):
+    t = type(data)
+    if t is np.ndarray:
+        return 'ndarray{}, dtype={}'.format(data.shape, data.dtype)
+    elif t is float:
+        return float_format.format(data)
+    else:
+        return str(data)
+
+
+def stprint(data, key=None, indent=0, file=None, float_format=_DEFAULT_FLOAT_FORMAT, need_lock=True, max_depth=100):
     """
     Structure print.
 
@@ -44,18 +57,18 @@ def stprint(data, key=None, indent=0, file=None, need_lock=True, max_depth=100):
         key: for recursion calls. Do not use it if you don't know how it works.
         indent: indent level.
     """
-    t = type(data)
     if file is None:
         file = sys.stdout
 
-    with stprint.locks.synchronized(file, need_lock):
+    def _inner(data, indent, key, max_depth):
+        t = type(data)
         if t is tuple:
             if max_depth == 0:
                 _indent_print('(tuple of length {}) ...'.format(len(data)), indent, prefix=key, file=file)
                 return
             _indent_print('tuple[', indent, prefix=key, file=file)
             for v in data:
-                stprint(v, indent=indent + 1, file=file, need_lock=False, max_depth=max_depth - 1)
+                _inner(v, indent=indent + 1, key=None, max_depth=max_depth - 1)
             _indent_print(']', indent, file=file)
         elif t is list:
             if max_depth == 0:
@@ -63,7 +76,7 @@ def stprint(data, key=None, indent=0, file=None, need_lock=True, max_depth=100):
                 return
             _indent_print('list[', indent, prefix=key, file=file)
             for v in data:
-                stprint(v, indent=indent + 1, file=file, need_lock=False, max_depth=max_depth - 1)
+                _inner(v, indent=indent + 1, key=None, max_depth=max_depth - 1)
             _indent_print(']', indent, file=file)
         elif t in (dict, collections.OrderedDict):
             if max_depth == 0:
@@ -74,12 +87,15 @@ def stprint(data, key=None, indent=0, file=None, need_lock=True, max_depth=100):
             _indent_print(typename + '{', indent, prefix=key, file=file)
             for k in keys:
                 v = data[k]
-                stprint(v, indent=indent + 1, key='{}: '.format(k), file=file, need_lock=False, max_depth=max_depth - 1)
+                _inner(v, indent=indent + 1, key='{}: '.format(k), max_depth=max_depth - 1)
             _indent_print('}', indent, file=file)
-        elif t is np.ndarray:
-            _indent_print('ndarray{}, dtype={}'.format(data.shape, data.dtype), indent, prefix=key, file=file)
         else:
-            _indent_print(data, indent, prefix=key, file=file)
+            _indent_print(format_printable_data(data, float_format=float_format), indent, prefix=key, file=file)
+
+    with stprint.locks.synchronized(file, need_lock):
+        _inner(data, indent=indent, key=key, max_depth=max_depth)
+
+    del _inner
 
 
 stprint.locks = LockRegistry()
@@ -89,7 +105,7 @@ def stformat(data, key=None, indent=0, max_depth=100):
     return print2format(stprint)(data, key=key, indent=indent, need_lock=False, max_depth=max_depth)
 
 
-def kvprint(data, indent=0, sep=' : ', end='\n', max_key_len=None, file=None, need_lock=True):
+def kvprint(data, indent=0, sep=' : ', end='\n', max_key_len=None, file=None, float_format=_DEFAULT_FLOAT_FORMAT, need_lock=True):
     if len(data) == 0:
         return
     with kvprint.locks.synchronized(file, need_lock):
@@ -101,7 +117,7 @@ def kvprint(data, indent=0, sep=' : ', end='\n', max_key_len=None, file=None, ne
             max_len = max(lens)
         for k in keys:
             print('  ' * indent, end='')
-            print(k + ' ' * (max_len - len(k)), data[k], sep=sep, end=end, file=file, flush=True)
+            print(k + ' ' * (max_len - len(k)), format_printable_data(data[k], float_format=float_format), sep=sep, end=end, file=file, flush=True)
 
 
 kvprint.locks = LockRegistry()
