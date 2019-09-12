@@ -111,7 +111,7 @@ class DependencyVisualizer(object):
                 assert len(arc) == 2
                 start, end = arc
                 label = ''
-            arc = {'start': start, 'end': end, 'label': label, 'dir': 'right'}
+            arc = {'start': start, 'end': end, 'label': label, 'dir': 'left'}
             output_arcs.append(arc)
 
         id_prefix = uuid.uuid4().hex
