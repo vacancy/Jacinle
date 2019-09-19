@@ -13,7 +13,10 @@ import collections
 import os.path as osp
 import threading
 
+from jacinle.logging import get_logger
 from .meta import synchronized
+
+logger = get_logger(__file__)
 
 __all__ = ['cached_property', 'cached_result', 'fs_cached_result']
 
@@ -56,7 +59,7 @@ def cached_result(func):
     return f
 
 
-def fs_cached_result(filename, force_update=False):
+def fs_cached_result(filename, force_update=False, verbose=False):
     import jacinle.io as io
 
     def wrapper(func):
@@ -64,11 +67,15 @@ def fs_cached_result(filename, force_update=False):
         @functools.wraps(func)
         def wrapped_func(*args, **kwargs):
             if not force_update and osp.exists(filename):
+                if verbose:
+                    logger.info('Using cached results from "{}".'.format(filename))
                 cached_value = io.load(filename)
                 if cached_value is not None:
                     return cached_value
 
             computed_value = func(*args, **kwargs)
+            if verbose:
+                logger.info('Writing result cache to "{}".'.format(filename))
             io.dump(filename, computed_value)
             return computed_value
         return wrapped_func
