@@ -35,6 +35,11 @@ class LinearLayer(nn.Sequential):
             modules.append(get_activation(activation))
         super().__init__(*modules)
 
+    def reset_parameters(self):
+        for module in self.modules():
+            if isinstance(module, nn.Linear):
+                module.reset_parameters()
+
 
 class MLPLayer(nn.Module):
     def __init__(self, input_dim, output_dim, hidden_dims, batch_norm=None, dropout=None, activation='relu', flatten=True):
@@ -58,6 +63,11 @@ class MLPLayer(nn.Module):
         modules.append(layer)
         self.mlp = nn.Sequential(*modules)
         self.flatten = flatten
+
+    def reset_parameters(self):
+        for module in self.modules():
+            if isinstance(module, nn.Linear):
+                module.reset_parameters()
 
     def forward(self, input):
         if self.flatten:
@@ -92,6 +102,11 @@ class ConvNDLayerBase(nn.Sequential):
             modules.append(get_activation(activation))
 
         super().__init__(*modules)
+
+    def reset_parameters(self):
+        for module in self.modules():
+            if 'Conv' in module.__class__.__name__:
+                module.reset_parameters()
 
 
 class Conv1dLayer(ConvNDLayerBase):
@@ -159,6 +174,11 @@ class _DeconvLayerBase(nn.Module):
         if activation is not None and activation is not False:
             post_modules.append(get_activation(activation))
         self.post_process = nn.Sequential(*post_modules)
+
+    def reset_parameters(self):
+        for module in self.modules():
+            if 'Conv' in module.__class__.__name__:
+                module.reset_parameters()
 
     def forward(self, input, output_size=None):
         if self.algo is DeconvAlgo.CONVTRANSPOSE:

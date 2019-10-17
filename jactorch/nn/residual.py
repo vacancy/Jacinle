@@ -11,6 +11,7 @@
 import torch
 import torch.nn as nn
 
+from .container import AutoResetParametersMixin
 from .rnn_utils import rnn_with_length
 from .normalization import LayerNorm
 
@@ -23,7 +24,7 @@ def _conv3x3(in_planes, out_planes, stride=1):
                      padding=1, bias=False)
 
 
-class ResidualConvBlock(nn.Module):
+class ResidualConvBlock(nn.Module, AutoResetParametersMixin):
     expansion = 1
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
@@ -55,7 +56,7 @@ class ResidualConvBlock(nn.Module):
         return out
 
 
-class ResidualConvBottleneck(nn.Module):
+class ResidualConvBottleneck(nn.Module, AutoResetParametersMixin):
     expansion = 4
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
@@ -94,7 +95,7 @@ class ResidualConvBottleneck(nn.Module):
         return out
 
 
-class ResidualLinear(nn.Module):
+class ResidualLinear(nn.Module, AutoResetParametersMixin):
     def __init__(self, hidden_dim, norm1=None, norm2=None):
         super().__init__()
         self.linear1 = nn.Linear(hidden_dim, hidden_dim)
@@ -116,7 +117,7 @@ class ResidualLinear(nn.Module):
         return f
 
 
-class ResidualGRU(nn.Module):
+class ResidualGRU(nn.Module, AutoResetParametersMixin):
     def __init__(self, hidden_dim, num_layers, bias=True, batch_first=False, dropout=0, bidirectional=False,
                  layer_norm=False):
         super().__init__()
