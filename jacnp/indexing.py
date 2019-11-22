@@ -13,6 +13,11 @@ from .nd import isndarray
 
 
 def one_hot(label, nr_classes, dtype='float32'):
+    if isinstance(label, int) or (isndarray(label) and len(label.shape) == 0):
+        out = np.zeros(nr_classes, dtype=dtype)
+        out[int(label)] = 1
+        return out
+
     assert len(label.shape) == 1
     nr_labels = label.shape[0]
     out = np.zeros((nr_labels, nr_classes), dtype=dtype)
