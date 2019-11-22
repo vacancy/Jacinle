@@ -8,11 +8,12 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import functools
 import contextlib
 from jacinle.utils.printing import kvprint
-from jacinle.utils.meta import dict_deep_kv
+from jacinle.utils.meta import dict_deep_kv, run_once
 
-__all__ = ['configs', 'def_configs', 'set_configs', 'StrictG']
+__all__ = ['configs', 'def_configs', 'def_configs_func', 'set_configs', 'set_configs_func', 'StrictG']
 
 ENABLE_CONFIG_AUTOINIT = False
 ENABLE_DEF_CONFIG = False
@@ -37,6 +38,23 @@ def def_configs():
         yield
         assert ENABLE_DEF_CONFIG
         ENABLE_DEF_CONFIG = False
+
+
+def set_configs_func(func):
+    @functools.wraps(func)
+    def wrapped(*args, **kwargs):
+        with set_configs():
+            func(*args, **kwargs)
+    return wrapped
+
+
+def def_configs_func(func):
+    @functools.wraps(func)
+    @run_once
+    def wrapped(*args, **kwargs):
+        with def_configs():
+            func(*args, **kwargs)
+    return wrapped
 
 
 class StrictG(dict):
