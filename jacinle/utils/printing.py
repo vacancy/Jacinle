@@ -22,13 +22,6 @@ __all__ = ['stprint', 'stformat', 'kvprint', 'kvformat', 'PrintToStringContext',
 _DEFAULT_FLOAT_FORMAT = '{:.6f}'
 
 
-def _indent_print(msg, indent, prefix=None, end='\n', file=None):
-    print('  ' * indent, end='', file=file)
-    if prefix is not None:
-        print(prefix, end='', file=file)
-    print(msg, end=end, file=file)
-
-
 def format_printable_data(data, float_format=_DEFAULT_FLOAT_FORMAT):
     t = type(data)
     if t is np.ndarray:
@@ -39,7 +32,7 @@ def format_printable_data(data, float_format=_DEFAULT_FLOAT_FORMAT):
         return str(data)
 
 
-def stprint(data, key=None, indent=0, file=None, float_format=_DEFAULT_FLOAT_FORMAT, need_lock=True, max_depth=100):
+def stprint(data, key=None, indent=0, file=None, indent_format='  ', end_format='\n', float_format=_DEFAULT_FLOAT_FORMAT, need_lock=True, max_depth=100):
     """
     Structure print.
 
@@ -57,40 +50,47 @@ def stprint(data, key=None, indent=0, file=None, float_format=_DEFAULT_FLOAT_FOR
         key: for recursion calls. Do not use it if you don't know how it works.
         indent: indent level.
     """
+
     if file is None:
         file = sys.stdout
+
+    def _indent_print(msg, indent, prefix=None):
+        print(indent_format * indent, end='', file=file)
+        if prefix is not None:
+            print(prefix, end='', file=file)
+        print(msg, end=end_format, file=file)
 
     def _inner(data, indent, key, max_depth):
         t = type(data)
         if t is tuple:
             if max_depth == 0:
-                _indent_print('(tuple of length {}) ...'.format(len(data)), indent, prefix=key, file=file)
+                _indent_print('(tuple of length {}) ...'.format(len(data)), indent, prefix=key)
                 return
-            _indent_print('tuple[', indent, prefix=key, file=file)
+            _indent_print('tuple[', indent, prefix=key)
             for v in data:
                 _inner(v, indent=indent + 1, key=None, max_depth=max_depth - 1)
-            _indent_print(']', indent, file=file)
+            _indent_print(']', indent)
         elif t is list:
             if max_depth == 0:
-                _indent_print('(list of length {}) ...'.format(len(data)), indent, prefix=key, file=file)
+                _indent_print('(list of length {}) ...'.format(len(data)), indent, prefix=key)
                 return
-            _indent_print('list[', indent, prefix=key, file=file)
+            _indent_print('list[', indent, prefix=key)
             for v in data:
                 _inner(v, indent=indent + 1, key=None, max_depth=max_depth - 1)
-            _indent_print(']', indent, file=file)
+            _indent_print(']', indent)
         elif t in (dict, collections.OrderedDict):
             if max_depth == 0:
-                _indent_print('(dict of length {}) ...'.format(len(data)), indent, prefix=key, file=file)
+                _indent_print('(dict of length {}) ...'.format(len(data)), indent, prefix=key)
                 return
             typename = 'dict' if t is dict else 'ordered_dict'
             keys = sorted(data.keys()) if t is dict else data.keys()
-            _indent_print(typename + '{', indent, prefix=key, file=file)
+            _indent_print(typename + '{', indent, prefix=key)
             for k in keys:
                 v = data[k]
                 _inner(v, indent=indent + 1, key='{}: '.format(k), max_depth=max_depth - 1)
-            _indent_print('}', indent, file=file)
+            _indent_print('}', indent)
         else:
-            _indent_print(format_printable_data(data, float_format=float_format), indent, prefix=key, file=file)
+            _indent_print(format_printable_data(data, float_format=float_format), indent, prefix=key)
 
     with stprint.locks.synchronized(file, need_lock):
         _inner(data, indent=indent, key=key, max_depth=max_depth)
@@ -101,8 +101,8 @@ def stprint(data, key=None, indent=0, file=None, float_format=_DEFAULT_FLOAT_FOR
 stprint.locks = LockRegistry()
 
 
-def stformat(data, key=None, indent=0, max_depth=100):
-    return print2format(stprint)(data, key=key, indent=indent, need_lock=False, max_depth=max_depth)
+def stformat(data, key=None, indent=0, max_depth=100, **kwargs):
+    return print2format(stprint)(data, key=key, indent=indent, need_lock=False, max_depth=max_depth, **kwargs)
 
 
 def kvprint(data, indent=0, sep=' : ', end='\n', max_key_len=None, file=None, float_format=_DEFAULT_FLOAT_FORMAT, need_lock=True):
