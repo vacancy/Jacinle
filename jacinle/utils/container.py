@@ -67,6 +67,9 @@ class GView(object):
     def __contains__(self, k):
         return k in self.raw()
 
+    def __iter__(self):
+        return iter(self.raw().items())
+
     def raw(self):
         return object.__getattribute__(self, '_dict')
 
@@ -75,6 +78,12 @@ class GView(object):
 
     def copy(self):
         return GView(self.raw().copy())
+
+    def format(self, sep=': ', end='\n'):
+        return kvformat(self.raw(), sep=sep, end=end)
+
+    def print(self, sep=': ', end='\n', file=None):
+        return kvprint(self.raw(), sep=sep, end=end, file=file)
 
 
 class SlotAttrObject(object):
