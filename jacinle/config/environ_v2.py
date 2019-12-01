@@ -61,6 +61,7 @@ class StrictG(dict):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self['__defined_kvs__'] = dict()
+        self['__defined_info__'] = dict()
 
     def __getattr__(self, k):
         if k not in self:
@@ -72,12 +73,41 @@ class StrictG(dict):
 
     def __setattr__(self, k, v):
         if ENABLE_DEF_CONFIG:
-            if k in self._defined_kvs or (k in self and isinstance(self[k], StrictG)):
+            if k in self.__defined_kvs__ or (k in self and isinstance(self[k], StrictG)):
                 raise AttributeError('Key "{}" has already been implicitly or explicitly defined.'.format(k))
             self.__defined_kvs__[k] = v
             self.setdefault(k, v)
+            self.validate(k)
         else:
             self[k] = v
+            self.validate(k)
+
+    def def_(self, name, type=None, choices=None, default=None, help=help):
+        if name in self.__defined_info__ or (name in self and isinstance(self[name], StrictG)):
+            raise AttributeError('Key "{}" has already been implicitly or explicitly defined.'.format(name))
+
+        self.__defined_info__[name] = {
+            'type': type,
+            'choices': choices,
+            'help': help
+        }
+        if default is not None:
+            self.setdefault(default)
+
+        if name in self:
+            self.validate(name)
+
+    def validate(self, name):
+        if name in self.__defined_info__:
+            info = self.__defined_info__[name]
+
+            value = self[name]
+            if info['type'] is not None:
+                if not isinstance(value, info['type']):
+                    raise TypeError('Key "{}" does not satisfy the type constraint: {}, got {}.'.format(name, info['type'], type(value)))
+            if info['choices'] is not None:
+                if value not in info['choices']:
+                    raise TypeError('Key "{}" should be one of the: {}, got {}.'.format(name, info['choices'], value))
 
     def find_undefined_values(self, global_prefix='configs'):
         undefined = list()
