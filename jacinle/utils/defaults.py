@@ -9,13 +9,17 @@
 # Distributed under terms of the MIT license.
 
 import threading
+import inspect
 import contextlib
 import functools
 
 from .meta import decorator_with_optional_args
 from .naming import class_name_of_method
 
-__all__ = ['defaults_manager', 'wrap_custom_as_default', 'gen_get_default', 'gen_set_default']
+__all__ = [
+    'defaults_manager', 'wrap_custom_as_default', 'gen_get_default', 'gen_set_default',
+    'ARGDEF', 'default_args'
+]
 
 
 class DefaultsManager(object):
@@ -86,3 +90,33 @@ defaults_manager = DefaultsManager()
 wrap_custom_as_default = defaults_manager.wrap_custom_as_default
 gen_get_default = defaults_manager.gen_get_default
 gen_set_default = defaults_manager.gen_set_default
+
+
+class _ARGDEFObject(object):
+    pass
+
+
+ARGDEF = _ARGDEFObject()
+
+
+@decorator_with_optional_args
+def default_args():
+    def wrapper(func):
+        sig = inspect.signature(func)
+
+        @functools.wraps(func)
+        def wrapped(*args, **kwargs):
+            bounded = sig.bind(*args, **kwargs)
+            bounded.apply_defaults()
+
+            for k, v in bounded.arguments.items():
+                if v is ARGDEF:
+                    if k in sig.parameters:
+                        default_value = sig.parameters[k].default
+                        bounded.arguments[k] = default_value
+
+            return func(*bounded.args, **bounded.kwargs)
+
+        return wrapped
+    return wrapper
+
