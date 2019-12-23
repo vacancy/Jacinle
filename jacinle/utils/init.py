@@ -11,7 +11,7 @@
 import os
 import sys
 import resource
-from jacinle.utils.env import jac_getenv
+from jacinle.utils.env import jac_is_debug, jac_getenv
 
 
 def release_syslim():
@@ -28,7 +28,7 @@ def tune_opencv():
 
 
 def enable_ipdb():
-    if jac_getenv('DEBUG', default='n', type='bool'):
+    if jac_is_debug():
         if jac_getenv('IMPORT_ALL', 'true', 'bool'):
             from jacinle.utils.debug import hook_exception_ipdb
             hook_exception_ipdb()

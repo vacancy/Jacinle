@@ -9,6 +9,7 @@
 # Distributed under terms of the MIT license.
 
 import os
+import sys
 from jacinle.cli.keyboard import str2bool
 from .cache import cached_result
 
@@ -33,11 +34,20 @@ def jac_getenv(name, default=None, type=None, prefix=None):
 
 
 @cached_result
+def jac_get_dashdebug_arg():
+    # Return True if there is a '-debug' or '--debug' arg in the argv.
+    for value in sys.argv:
+        if value in ('-debug', '--debug'):
+            return True
+    return False
+
+
+@cached_result
 def jac_is_verbose(default='n', prefix=None):
     return jac_getenv('verbose', default, type='bool', prefix=prefix)
 
 
 @cached_result
 def jac_is_debug(default='n', prefix=None):
-    return jac_getenv('debug', default, type='bool', prefix=prefix)
+    return jac_get_dashdebug_arg() or jac_getenv('debug', default, type='bool', prefix=prefix)
 
