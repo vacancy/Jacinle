@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import six
+import itertools
 import matplotlib.pyplot as plt
 
 __all__ = ['add_bbox_patches', 'vis_bboxes']
@@ -19,7 +21,10 @@ def add_bbox_patches(ax, boxes, class_name, add_text=True, legends=None):
     else:
         legends = ['' for i in range(len(boxes))]
 
-    for box, leg in zip(boxes, legends):
+    if isinstance(class_name, six.string_types):
+        class_name = itertools.repeat(class_name, len(boxes))
+
+    for box, cls, leg in zip(boxes, class_name, legends):
         ax.add_patch(plt.Rectangle(
             (box[0], box[1]), box[2] - box[0], box[3] - box[1],
             fill=False, edgecolor='green', linewidth=3.5
@@ -27,7 +32,7 @@ def add_bbox_patches(ax, boxes, class_name, add_text=True, legends=None):
         if add_text:
             ax.text(
                 box[0], box[1] - 2,
-                '{:s}{}'.format(class_name, str(leg)),
+                '{:s}{}'.format(cls, str(leg)),
                 bbox=dict(facecolor='blue', alpha=0.5), fontsize=14, color='white'
             )
     return ax

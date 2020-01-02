@@ -25,7 +25,10 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.utils.cache import cached_property, cached_result, fs_cached_result
     from jacinle.utils.container import G, g, GView, SlotAttrObject, OrderedSet
     from jacinle.utils.context import EmptyContext
-    from jacinle.utils.defaults import defaults_manager, wrap_custom_as_default, gen_get_default, gen_set_default, default_args
+    from jacinle.utils.defaults import (
+            defaults_manager, wrap_custom_as_default, gen_get_default, gen_set_default,
+            default_args, ARGDEF
+    )
     from jacinle.utils.deprecated import deprecated
     from jacinle.utils.enum import JacEnum
     from jacinle.utils.exception import format_exc

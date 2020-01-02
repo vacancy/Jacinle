@@ -25,9 +25,11 @@ def _use_shared_memory():
     if torch.__version__ < '1.1':
         import torch.utils.data.dataloader as torchdl
         return torchdl._use_shared_memory
-    else:
+    elif torch.__version__ < '1.2':
         import torch.utils.data._utils.collate as torch_collate
         return torch_collate._use_shared_memory
+    else:
+        return torch.utils.data.get_worker_info() is not None
     # TODO(Jiayuan Mao @ 07/21): sync up with the latest torch release. The github master branch seems to have
     # introduced a new function called torchdl.get_worker_info()
 

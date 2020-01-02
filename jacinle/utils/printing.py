@@ -26,6 +26,9 @@ def format_printable_data(data, float_format=_DEFAULT_FLOAT_FORMAT):
     t = type(data)
     if t is np.ndarray:
         return 'ndarray{}, dtype={}'.format(data.shape, data.dtype)
+    # Handle torch.tensor
+    if 'Tensor' in str(t):
+        return 'tensor{}, dtype={}'.format(tuple(data.shape), data.dtype)
     elif t is float:
         return float_format.format(data)
     else:
