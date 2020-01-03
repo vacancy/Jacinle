@@ -12,3 +12,12 @@
 Code inspection tools.
 """
 
+__all__ = ['bind_args']
+
+
+def bind_args(sig, *args, **kwargs):
+    bounded = sig.bind(*args, **kwargs)
+    bounded.apply_defaults()
+
+    return bounded
+
