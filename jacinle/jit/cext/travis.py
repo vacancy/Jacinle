@@ -16,6 +16,8 @@ from jacinle.logging import get_logger
 
 logger = get_logger(__file__)
 
+__all__ = ['auto_travis']
+
 
 def auto_travis(filename, required_files=None, use_glob=True):
     if required_files is None:

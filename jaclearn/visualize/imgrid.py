@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : grid.py
+# File   : imgrid.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 01/19/2018

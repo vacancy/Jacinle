@@ -12,7 +12,7 @@ import numpy as np
 
 from jacinle.image.imgio import imshow as imshow_
 from jacinle.image.imgproc import resize_minmax
-from .grid import image_grid
+from .imgrid import image_grid
 
 
 def imshow(img, resize=(600, 800), title='imshow'):

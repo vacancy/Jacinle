@@ -10,6 +10,7 @@
 
 from .cnn import *
 from .gumbel_softmax import *
+from .neural_logic import *
 from .prroi_pool import *
 from .sync_batchnorm import *
 from .losses import *

@@ -3,12 +3,12 @@
 # File   : __init__.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
-# Date   : 01/24/2018
+# Date   : 03/28/2018
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-from .batch import *
-from .indexing import *
-from .nd import *
-from .shape import *
+from .modules.neural_logic import *
+
+from .layer import *
+from .recurrent_layer import *

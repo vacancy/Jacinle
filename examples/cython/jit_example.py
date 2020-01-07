@@ -26,6 +26,7 @@ def cython_loop(n):
         s += foo(i)
     return s
 
+
 def python_loop(n):
     s = 0
     for i in range(n):

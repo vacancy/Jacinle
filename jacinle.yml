@@ -11,3 +11,5 @@ vendors:
         root: vendors/SceneGraphParser
     JacMLDash:
         root: vendors/JacMLDash
+    PyGCO:
+        root: vendors/PyGCO

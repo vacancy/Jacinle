@@ -18,6 +18,7 @@ from .naming import class_name_of_method
 
 __all__ = [
     'defaults_manager', 'wrap_custom_as_default', 'gen_get_default', 'gen_set_default',
+    'option_context',
     'ARGDEF', 'default_args'
 ]
 
@@ -92,11 +93,73 @@ gen_get_default = defaults_manager.gen_get_default
 gen_set_default = defaults_manager.gen_set_default
 
 
-class _ARGDEFObject(object):
-    pass
+class _LocalObjectSimulator(object):
+    __slots__ = ['ctx']
 
 
-ARGDEF = _ARGDEFObject()
+def option_context(name, is_local=True, **kwargs):
+    class OptionContext(object):
+        def __init__(self, **init_kwargs):
+            for k, v in kwargs.items():
+                setattr(self, k, v)
+            for k, v in init_kwargs.items():
+                assert k in kwargs
+                setattr(self, k, v)
+
+        @classmethod
+        def get_option(cls, name):
+            getattr(cls.get_default(), name)
+
+        @classmethod
+        def set_default_option(cls, name, value):
+            cls._create_default_context()
+            setattr(cls.default_context.ctx, name, value)
+
+        @classmethod
+        def get_default(cls):
+            cls._create_current_context()
+            if cls.current_context.ctx is not None:
+                return cls.current_context.ctx
+            else:
+                cls._create_default_context()
+                return cls.default_context.ctx
+
+        @contextlib.contextmanager
+        def as_default(self):
+            self.__class__._create_current_context()
+            backup = self.__class__.current_context.ctx
+            self.__class__.current_context.ctx = self
+            yield
+            self.__class__.current_context.ctx = backup
+
+        @classmethod
+        def _create_default_context(cls):
+            if hasattr(cls, 'default_context'):
+                return
+
+            if is_local:
+                cls.default_context = threading.local()
+            else:
+                cls.default_context = _LocalObjectSimulator()
+            cls.default_context.ctx = cls(**kwargs)
+
+        @classmethod
+        def _create_current_context(cls):
+            if hasattr(cls, 'current_context'):
+                return
+
+            if is_local:
+                cls.current_context = threading.local()
+            else:
+                cls.current_context = _LocalObjectSimulator()
+            cls.current_context.ctx = None
+
+    OptionContext.__name__ = name
+
+    return OptionContext
+
+
+ARGDEF = object()
 
 
 @decorator_with_optional_args

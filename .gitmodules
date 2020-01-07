@@ -16,3 +16,6 @@
 [submodule "vendors/JacMLDash"]
 	path = vendors/JacMLDash
 	url = https://github.com/vacancy/JacMLDash
+[submodule "vendors/pygco/pygco"]
+	path = vendors/PyGCO/pygco
+	url = https://github.com/vacancy/pygco
