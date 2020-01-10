@@ -13,3 +13,5 @@ vendors:
         root: vendors/JacMLDash
     PyGCO:
         root: vendors/PyGCO
+    PyPatchMatch:
+        root: vendors/PyPatchMatch

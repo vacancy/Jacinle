@@ -33,7 +33,7 @@ def auto_travis(filename, required_files=None, use_glob=True):
                 compiled = False
 
     if compiled:
-        logger.critical('Loading c extension from: "{}".'.format(dirname))
+        logger.critical('Loading c extension from: "{}".'.format(osp.realpath(dirname)))
     else:
-        logger.critical('Compiling c extension at: "{}".'.format(dirname))
+        logger.critical('Compiling c extension at: "{}".'.format(osp.realpath(dirname)))
         subprocess.check_call(['./travis.sh'], cwd=dirname)
