@@ -51,7 +51,12 @@ class _DependencyNodeVisitor(ast.NodeVisitor):
         self.dependencies = list()
 
     def visit_Call(self, node):
-        self.dependencies.append(node.func.id)
+        if isinstance(node.func, ast.Name):
+            self.dependencies.append(node.func.id)
+        else:
+            assert isinstance(node.func, ast.Attribute), type(node.func)
+            self.dependencies.append(node.func.value.id)
+
 
     def __call__(self, node):
         self.dependencies = list()
