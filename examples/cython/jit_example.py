@@ -60,6 +60,24 @@ def cython_np_sum_2d_v1(a: 'np.ndarray[np.float32_t, ndim=2]'):
 
 
 @jit_cython(force_update=True, boundscheck=False, wraparound=False)
+def cython_np_sum_2d_v1_5(a: 'np.ndarray[np.float32_t, ndim=2]'):
+    i: int = 0
+    j: int = 0
+    n: int = a.shape[0]
+    m: int = a.shape[1]
+    b: 'np.ndarray[np.float32_t, ndim=1]' = np.zeros(n, dtype=np.float32)
+    c: 'np.ndarray[np.float32_t, ndim=1]'
+    s: float = 0
+
+    for i in range(n):
+        c = a[i]
+        for j in range(m):
+            b[i] += c[j];
+
+    return b
+
+
+@jit_cython(force_update=True, boundscheck=False, wraparound=False)
 def cython_np_sum_2d_v2(a: 'np.ndarray[np.float32_t, ndim=2]'):
     i: int = 0
     j: int = 0
@@ -106,6 +124,8 @@ def main_timeit():
     arr = np.random.random(size=(1000, 1000)).astype('float32')
     print(cython_np_sum_2d_v1)
     print('Mean time: {:.3f} ms'.format(1000 * timeit.timeit('cython_np_sum_2d_v1(arr)', number=100, globals=globals())))
+    print(cython_np_sum_2d_v1_5)
+    print('Mean time: {:.3f} ms'.format(1000 * timeit.timeit('cython_np_sum_2d_v1_5(arr)', number=100, globals=globals())))
     print(cython_np_sum_2d_v2)
     print('Mean time: {:.3f} ms'.format(1000 * timeit.timeit('cython_np_sum_2d_v2(arr)', number=100, globals=globals())))
 
