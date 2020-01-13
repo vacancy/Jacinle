@@ -8,6 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import random
 import itertools
 
 from torch.utils.data.dataset import Dataset

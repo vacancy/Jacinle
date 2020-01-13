@@ -52,6 +52,8 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.utils.printing import indent_text, stprint, stformat, kvprint, kvformat, print_to_string
     from jacinle.utils.tqdm import get_current_tqdm, tqdm, tqdm_pbar, tqdm_gofor, tqdm_zip
 
+    from jacinle import io
+
     # For debug purpose.
     def embed(*args, **kwargs):
         from IPython import embed

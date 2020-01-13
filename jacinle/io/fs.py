@@ -165,7 +165,7 @@ def fs_verbose(mode=True):
     _fs_verbose = mode
 
 
-def set_fs_verbose(mode):
+def set_fs_verbose(mode=True):
     global _fs_verbose
     _fs_verbose = mode
 

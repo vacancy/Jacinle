@@ -17,6 +17,7 @@ from .losses import *
 from .mask import *
 
 from .container import *
+from .embedding import *
 from .linear import *
 from .normalization import *
 from .probability import *
