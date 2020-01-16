@@ -11,16 +11,17 @@
 import os
 import sys
 import resource
-from jacinle.utils.env import jac_is_debug, jac_getenv
+from jacinle.utils.env import jac_getenv, jac_is_debug, jac_getenv
 
 
 def release_syslim():
-    sys.setrecursionlimit(1000000)
-    try:
-        slim = 65536 * 1024
-        resource.setrlimit(resource.RLIMIT_STACK, (slim, slim))
-    except ValueError:
-        pass
+    if jac_getenv('SYSLIM', default='n', type='bool'):
+        sys.setrecursionlimit(1000000)
+        try:
+            slim = 65536 * 1024
+            resource.setrlimit(resource.RLIMIT_STACK, (slim, slim))
+        except ValueError:
+            pass
 
 
 def tune_opencv():

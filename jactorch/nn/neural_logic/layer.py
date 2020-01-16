@@ -11,8 +11,8 @@
 import torch
 import torch.nn as nn
 
-import jactorch
 from jacinle.logging import get_logger
+from jactorch.functional import length2mask, mask_meshgrid
 
 from .modules.dimension import Expander, Reducer, Permutation
 from .modules.neural_logic import NeuralLogicInference, NeuralLogicInferenceMethod
@@ -92,7 +92,7 @@ class NeuralLogicLayer(nn.Module):
         inputs_length_mask = None
         if inputs_length_or_mask is not None:
             if inputs_length_or_mask.dim() == 1:
-                inputs_length_mask = jactorch.length2mask(inputs_length, inputs.size(1))
+                inputs_length_mask = length2mask(inputs_length, inputs.size(1))
             else:
                 inputs_length_mask = inputs_length_or_mask
 
@@ -106,7 +106,7 @@ class NeuralLogicLayer(nn.Module):
             if i + 1 < len(inputs) and self.input_dims[i + 1] > 0:
                 mask = None
                 if inputs_length_mask is not None:
-                    mask = jactorch.mask_meshgrid(inputs_length_mask, i + 1)
+                    mask = mask_meshgrid(inputs_length_mask, i + 1)
                 f.append(self.dim_reducers[i](inputs[i + 1], mask))
 
             if len(f) == 0 or self.output_dims[i] == 0:

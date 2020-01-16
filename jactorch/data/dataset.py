@@ -155,7 +155,11 @@ class FilterableDatasetView(FilterableDatasetUnwrapped):
         return type(self)(self, indices=list(range(begin, end)), filter_name='trimrange[{}:{}]'.format(begin, end))
 
     def split_trainval(self, split):
-        assert split < len(self)
+        if isinstance(split, float) and 0 < split < 1:
+            split = int(len(self) * split)
+        split = int(split)
+
+        assert 0 < split < len(self)
         nr_train = split
         nr_val = len(self) - nr_train
         logger.info('Split the dataset: #training samples = {}, #validation samples = {}.'.format(nr_train, nr_val))

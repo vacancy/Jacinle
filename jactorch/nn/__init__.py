@@ -8,14 +8,6 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-from .cnn import *
-from .gumbel_softmax import *
-from .neural_logic import *
-from .prroi_pool import *
-from .sync_batchnorm import *
-from .losses import *
-from .mask import *
-
 from .container import *
 from .embedding import *
 from .linear import *
@@ -27,4 +19,12 @@ from .rnn_layers import *
 from .rnn_utils import *
 from .simple import *
 from .word_embedding import *
+
+from .cnn import *
+from .gumbel_softmax import *
+from .neural_logic import *
+from .prroi_pool import *
+from .sync_batchnorm import *
+from .losses import *
+from .mask import *
 

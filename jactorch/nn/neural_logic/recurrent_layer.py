@@ -11,8 +11,7 @@
 import torch
 import torch.nn as nn
 
-import jactorch
-
+from jactorch.functional import concat_shape
 from .modules.neural_logic import NeuralLogicInferenceMethod
 from .modules.dimension import Reducer
 from .layer import NeuralLogicMachine, _get_tuple_n
@@ -22,11 +21,11 @@ __all__ = ['RecurrentNeuralLogicMachine']
 
 class RecurrentNeuralLogicMachine(nn.Module):
     def __init__(
-            self, breadth, 
+            self, breadth,
             depth1, depth2, depth3,
             input_dims, imm_dims1, imm_dims2, output_dims,
             epsilon,
-            logic_model, logic_hidden_dim, 
+            logic_model, logic_hidden_dim,
             exclude_self=True, pre_residual=False, connections=None
     ):
 
@@ -88,7 +87,7 @@ class RecurrentNeuralLogicMachine(nn.Module):
             """zeros(batch_size, ..., h)"""
             if d is None:
                 return None
-            return torch.zeros(jactorch.concat_shape(batch_size, [n for _ in range(d)], h), dtype=dtype, device=device)
+            return torch.zeros(concat_shape(batch_size, [n for _ in range(d)], h), dtype=dtype, device=device)
 
         def _format(x):
             for i in x:
@@ -138,7 +137,7 @@ class RecurrentNeuralLogicMachine(nn.Module):
         def get_confidence(cs):
             """compute the confidence"""
             cs = [reduce(c, i) for i, c in enumerate(cs)]
-            conf = None 
+            conf = None
             for c in cs:
                 if conf is None or conf.item() > c.item():
                     conf = c
@@ -185,7 +184,7 @@ class RecurrentNeuralLogicMachine(nn.Module):
         return fs, torch.tensor(i, dtype=torch.float), last_cs, last_conf
 
     __hyperparams__ = (
-        'breadth', 
+        'breadth',
         'depth1', 'depth2', 'depth3',
         'input_dims', 'imm_dims1', 'imm_dims2', 'output_dims',
         'epsilon',
