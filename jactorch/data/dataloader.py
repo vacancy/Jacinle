@@ -61,10 +61,12 @@ class _InitFunctionWrapper(object):
     def __call__(self, worker_id):
         seed = (self._base_seed + worker_id) % 42964967296
         reset_global_seed(seed)
+
         if self._fn_init is not None:
             args = self._args[worker_id]
             kwargs = self._kwargs[worker_id]
             self._fn_init(worker_id, *args, **kwargs)
+
         if self._fn_recv is not None:
             if self._pipe_master is not None and len(self._pipe_master.queues) > 0:
                 self._fn_recv.worker_init(self._pipe_master.queues[worker_id])

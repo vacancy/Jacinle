@@ -9,9 +9,10 @@
 # Distributed under terms of the MIT license.
 
 import torch.nn as nn
-import jactorch.nn as jacnn
 
 from jacinle.utils.enum import JacEnum
+from jactorch.nn.cnn import MLPLayer
+from jactorch.nn.quickaccess import get_activation
 
 __all__ = ['NeuralLogicInferenceMethod', 'NeuralLogicInferenceBase', 'NeuralLogicInference', 'NeuralLogitsInference']
 
@@ -29,7 +30,7 @@ class NeuralLogicInferenceBase(nn.Module):
         self.output_dim = output_dim
         self.hidden_dim = hidden_dim
         if self.method is NeuralLogicInferenceMethod.MLP:
-            self.layer = nn.Sequential(jacnn.MLPLayer(input_dim, output_dim, hidden_dim))
+            self.layer = nn.Sequential(MLPLayer(input_dim, output_dim, hidden_dim))
         else:
             raise NotImplementedError('Unknown logic inference method: {}.'.format(self.method))
 
@@ -56,7 +57,7 @@ class NeuralLogicInference(NeuralLogicInferenceBase):
         super().__init__(model, input_dim, output_dim, hidden_dim)
 
         if self.method is NeuralLogicInferenceMethod.MLP:
-            self.layer.add_module(str(len(self.layer)), jacnn.get_activation(activation))
+            self.layer.add_module(str(len(self.layer)), get_activation(activation))
         else:
             raise NotImplementedError('Unknown logic inference method: {}.'.format(self.method))
 
