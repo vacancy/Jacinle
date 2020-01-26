@@ -33,6 +33,7 @@ def cuda_time(sync=True):
 def default_reduce_func(k, v):
     if torch.is_tensor(v):
         return v.mean()
+    return v
 
 
 class TrainerEnv(object):
@@ -136,7 +137,9 @@ class TrainerEnv(object):
             end_time = cuda_time(False)
 
         loss = reduce_func('loss', loss)
+        print(monitors)
         monitors = {k: reduce_func(k, v) for k, v in monitors.items()}
+        print(monitors)
 
         loss_f = as_float(loss)
         monitors_f = as_float(monitors)
