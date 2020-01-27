@@ -137,9 +137,7 @@ class TrainerEnv(object):
             end_time = cuda_time(False)
 
         loss = reduce_func('loss', loss)
-        print(monitors)
         monitors = {k: reduce_func(k, v) for k, v in monitors.items()}
-        print(monitors)
 
         loss_f = as_float(loss)
         monitors_f = as_float(monitors)
