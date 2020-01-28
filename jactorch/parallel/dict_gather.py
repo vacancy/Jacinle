@@ -12,6 +12,7 @@ import six
 import functools
 import collections
 
+import torch
 from torch.autograd import Variable
 from torch.nn.parallel.data_parallel import DataParallel
 from torch.nn.parallel._functions import Gather
