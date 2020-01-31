@@ -143,6 +143,8 @@ class FilterableDatasetView(FilterableDatasetUnwrapped):
         return type(self)(self, indices=indices, filter_name='randomtrim[{}]'.format(length))
 
     def trim_length(self, length):
+        if type(length) is float and 0 < length <= 1:
+            length = int(len(self) * length)
         assert length < len(self)
         logger.info('Trim the dataset: #samples = {}.'.format(length))
         return type(self)(self, indices=list(range(0, length)), filter_name='trim[{}]'.format(length))
