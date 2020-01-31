@@ -142,6 +142,8 @@ class HTMLTableVisualizer(object):
             elif c.type == 'text' or c.type == 'code':
                 tag = 'pre' if c.type == 'code' else 'div'
                 self._print('    <{} class="{}">{}</{}>'.format(tag, classname, obj, tag))
+            elif c.type == 'raw':
+                self._print('    {}'.format(obj))
             else:
                 raise ValueError('Unknown column type: {}.'.format(c.type))
             self._print('  </td>')

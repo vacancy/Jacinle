@@ -33,6 +33,7 @@ def cuda_time(sync=True):
 def default_reduce_func(k, v):
     if torch.is_tensor(v):
         return v.mean()
+    return v
 
 
 class TrainerEnv(object):

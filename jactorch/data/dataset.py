@@ -70,7 +70,7 @@ class ListDataset(Dataset):
         return len(self.list)
 
 
-class FilterableDatasetUnwrapped(Dataset):
+class FilterableDatasetUnwrapped(Dataset, IterableDatasetMixin):
     """
     A filterable dataset. User can call various `filter_*` operations to obtain a subset of the dataset.
     """
