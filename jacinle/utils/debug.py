@@ -10,6 +10,7 @@
 
 import sys
 import functools
+import threading
 import contextlib
 
 __all__ = ['hook_exception_ipdb', 'unhook_exception_ipdb', 'exception_hook']
@@ -55,4 +56,21 @@ def decorate_exception_hook(func):
         with exception_hook():
             return func(*args, **kwargs)
     return wrapped
+
+
+
+def _TimeoutEnterIpdbThread(locals_, cv, timeout):
+    with cv:
+        if not cv.wait(timeout):
+            import ipdb; ipdb.set_trace()
+
+
+@contextlib.contextmanager
+def timeout_ipdb(locals_, timeout=3):
+    cv = threading.Condition()
+    thread = threading.Thread(target=_TimeoutEnterIpdbThread, args=(locals_, cv, timeout))
+    thread.start()
+    yield
+    with cv:
+        cv.notify_all()
 
