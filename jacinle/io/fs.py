@@ -21,6 +21,7 @@ import gzip
 import numpy as np
 
 from jacinle.logging import get_logger
+from jacinle.utils.enum import JacEnum
 from jacinle.utils.filelock import FileLock
 from jacinle.utils.registry import RegistryGroup, CallbackRegistry
 
@@ -34,7 +35,7 @@ __all__ = [
     'load', 'load_txt', 'load_h5', 'load_pkl', 'load_pklgz', 'load_npy', 'load_npz', 'load_pth',
     'dump', 'dump_pkl', 'dump_pklgz', 'dump_npy', 'dump_npz', 'dump_pth',
     'safe_dump',
-    'link', 'mkdir', 'remove', 'locate_newest_file', 'io_function_registry'
+    'link', 'mkdir', 'lsdir', 'remove', 'locate_newest_file', 'io_function_registry'
 ]
 
 sys_open = open
@@ -227,6 +228,36 @@ def mkdir(path):
     return os.makedirs(path, exist_ok=True)
 
 
+class LSDirectoryReturnType(JacEnum):
+    BASE = 'base'
+    NAME = 'name'
+    REL = 'rel'
+    FULL = 'full'
+
+
+def lsdir(dirname, pattern=None, return_type='rel'):
+    assert '*' in dirname or osp.isdir(dirname)
+
+    return_type = LSDirectoryReturnType.from_string(return_type)
+    if pattern is not None:
+        files = glob.glob(osp.join(dirname, pattern))
+    elif '*' in dirname:
+        files = glob.glob(dirname)
+    else:
+        files = os.listdir(dirname)
+
+    if return_type is LSDirectoryReturnType.BASE:
+        return [osp.basename(f) for f in files]
+    elif return_type is LSDirectoryReturnType.NAME:
+        return [osp.splitext(osp.basename(f))[0] for f in files]
+    elif return_type is LSDirectoryReturnType.REL:
+        return files
+    elif return_type is LSDirectoryReturnType.FULL:
+        return [osp.realpath(f) for f in files]
+    else:
+        raise ValueError('Unknown lsdir return type: {}.'.format(return_type))
+
+
 def remove(file):
     if osp.exists(file):
         if osp.isdir(file):
@@ -236,7 +267,6 @@ def remove(file):
 
 
 def locate_newest_file(dirname, pattern):
-    assert osp.isdir(dirname)
-    fs = glob.glob(osp.join(dirname, pattern))
+    fs = lsdir(dirname, pattern, return_type='rel')
     return max(fs, key=osp.getmtime)
 
