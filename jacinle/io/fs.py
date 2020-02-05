@@ -233,10 +233,11 @@ class LSDirectoryReturnType(JacEnum):
     NAME = 'name'
     REL = 'rel'
     FULL = 'full'
+    REAL = 'real'
 
 
-def lsdir(dirname, pattern=None, return_type='rel'):
-    assert '*' in dirname or osp.isdir(dirname)
+def lsdir(dirname, pattern=None, return_type='full'):
+    assert '*' in dirname or '?' in dirname or osp.isdir(dirname)
 
     return_type = LSDirectoryReturnType.from_string(return_type)
     if pattern is not None:
@@ -251,9 +252,12 @@ def lsdir(dirname, pattern=None, return_type='rel'):
     elif return_type is LSDirectoryReturnType.NAME:
         return [osp.splitext(osp.basename(f))[0] for f in files]
     elif return_type is LSDirectoryReturnType.REL:
-        return files
+        assert '*' not in dirname and '?' not in dirname, 'Cannot use * or ? for relative paths.'
+        return [osp.relpath(f, dirname) for f in files]
     elif return_type is LSDirectoryReturnType.FULL:
-        return [osp.realpath(f) for f in files]
+        return files
+    elif return_type is LSDirectoryReturnType.REAL:
+        return [osp.realpath(osp.join(dirname, f)) for f in files]
     else:
         raise ValueError('Unknown lsdir return type: {}.'.format(return_type))
 
@@ -267,6 +271,6 @@ def remove(file):
 
 
 def locate_newest_file(dirname, pattern):
-    fs = lsdir(dirname, pattern, return_type='rel')
+    fs = lsdir(dirname, pattern, return_type='full')
     return max(fs, key=osp.getmtime)
 
