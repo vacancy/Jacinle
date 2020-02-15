@@ -22,6 +22,7 @@ class ConvPaddingMode(JacEnum):
     DEFAULT = 'default'
     VALID = 'valid'
     SAME = 'same'
+    TENSORFLOW = 'tensorflow'
 
 
 class ConvBorderMode(JacEnum):

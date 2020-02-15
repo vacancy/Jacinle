@@ -12,6 +12,7 @@ import io
 import sys
 import numpy as np
 import collections
+import contextlib
 
 import threading
 from .registry import LockRegistry
@@ -192,6 +193,13 @@ class PrintToStringContext(object):
 
 def print_to_string(target='STDOUT'):
     return PrintToStringContext(target, need_lock=True)
+
+
+@contextlib.contextmanager
+def print_to(print_func, target='STDOUT'):
+    with PrintToStringContext(target, need_lock=True) as ctx:
+        yield
+    print_func(ctx.get())
 
 
 def print2format(print_func):
