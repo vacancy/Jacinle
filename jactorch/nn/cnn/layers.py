@@ -35,6 +35,9 @@ class LinearLayer(nn.Sequential):
             modules.append(get_activation(activation))
         super().__init__(*modules)
 
+        self.in_features = in_features
+        self.out_features = out_features
+
     def reset_parameters(self):
         for module in self.modules():
             if isinstance(module, nn.Linear):
@@ -44,6 +47,10 @@ class LinearLayer(nn.Sequential):
 class MLPLayer(nn.Module):
     def __init__(self, input_dim, output_dim, hidden_dims, batch_norm=None, dropout=None, activation='relu', flatten=True):
         super().__init__()
+
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+        self.hidden_dims = hidden_dims
 
         if hidden_dims is None:
             hidden_dims = []
@@ -103,6 +110,16 @@ class ConvNDLayerBase(nn.Sequential):
 
         super().__init__(*modules)
 
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.kernel_size = kernel_size
+        self.stride = stride
+        self.padding_mode = padding_mode
+        self.padding = padding
+        self.border_mode = border_mode
+        self.dilation = dilation
+        self.groups = groups
+
     def reset_parameters(self):
         for module in self.modules():
             if 'Conv' in module.__class__.__name__:
@@ -138,6 +155,16 @@ class _DeconvLayerBase(nn.Module):
 
         super().__init__()
 
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.kernel_size = kernel_size
+        self.stride = stride
+        self.padding_mode = padding_mode
+        self.padding = padding
+        self.border_mode = border_mode
+        self.dilation = dilation
+        self.groups = groups
+
         if bias is None:
             bias = (batch_norm is None)
         self.algo = algo = DeconvAlgo.from_string(algo)
@@ -153,8 +180,6 @@ class _DeconvLayerBase(nn.Module):
                 padding_mode=padding_mode, padding=padding, border_mode='zero',
                 dilation=dilation, groups=groups, bias=bias
             )
-            self.output_size = output_size
-            self.scale_factor = scale_factor
         elif algo is DeconvAlgo.RESIZECONV:
             clz_name = 'ResizeConv{}d'.format(nr_dims)
             stride = stride or 1
@@ -165,6 +190,9 @@ class _DeconvLayerBase(nn.Module):
                 dilation=dilation, groups=groups, bias=bias,
                 output_size=output_size, scale_factor=scale_factor, resize_mode=resize_mode
             )
+
+        self.output_size = output_size
+        self.scale_factor = scale_factor
 
         post_modules = []
         if batch_norm is not None and batch_norm is not False:

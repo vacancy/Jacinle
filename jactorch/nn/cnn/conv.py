@@ -64,12 +64,18 @@ class ConvNDBase(nn.Module):
         # TODO(Jiayuan Mao @ 04/05): evaluate this.
         return self._forward_conv(*self._forward_padding(input))
 
-    def _forward_conv(self, padded, extra_padding, **kwargs):
+    def _forward_conv(self, padded, extra_padding, extra_padding_mode=None, **kwargs):
         self.conv.padding = extra_padding
+        if extra_padding_mode is not None:
+            self.conv.padding_mode = extra_padding_mode
         return self.conv(padded, **kwargs)
 
     def _forward_padding(self, input):
-        return padding_nd(input, self.conv.kernel_size, self.padding, self.padding_mode, self.border_mode)
+        use_pytorch_padding_mode = hasattr(self.conv, 'padding_mode')
+        return padding_nd(
+            input, self.conv.kernel_size, self.padding, self.padding_mode, self.border_mode,
+            use_pytorch_padding_mode=use_pytorch_padding_mode
+        )
 
 
 class Conv1d(ConvNDBase):

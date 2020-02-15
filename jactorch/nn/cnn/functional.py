@@ -51,11 +51,15 @@ def compute_padding_shape(input_size, kernel_size, padding, mode):
         raise NotImplementedError()
 
 
-def padding_nd(input, kernel_size, padding, padding_mode, border_mode):
+def padding_nd(input, kernel_size, padding, padding_mode, border_mode, use_pytorch_padding_mode=False):
     padding_mode = ConvPaddingMode.from_string(padding_mode)
     border_mode = ConvBorderMode.from_string(border_mode)
 
     padding = compute_padding_shape(input.size()[2:], kernel_size, padding, padding_mode)
+
+    if use_pytorch_padding_mode:
+        return input, padding, border_mode.value
+
     if border_mode is ConvBorderMode.ZERO:
         return input, padding
 
