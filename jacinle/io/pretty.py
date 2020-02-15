@@ -47,8 +47,8 @@ def loads_json(value):
     return json.loads(value)
 
 
-def loads_xml(value):
-    return _xml2dict(et.fromstring(value))
+def loads_xml(value, **kwargs):
+    return _xml2dict(et.fromstring(value), **kwargs)
 
 
 def loads_yaml(value):
@@ -76,8 +76,8 @@ def pretty_dumps_json(value, compressed=False):
     return dumps_json(value, compressed=compressed)
 
 
-def dumps_xml(value, root_node='data'):
-    return _dict2xml(value, root_node=root_node)
+def dumps_xml(value, **kwargs):
+    return _dict2xml(value, **kwargs)
 
 
 def dumps_yaml(value):
@@ -162,10 +162,13 @@ def pretty_dump(file, obj, **kwargs):
     return io_function_registry.dispatch('pretty_dump', file, obj, **kwargs)
 
 
-def _dict2xml(d, indent=4, *, root_node=None, root_indent=0):
+def _dict2xml(d, indent=4, *, root_node=None, root_indent=0, name_key='__name__', attribute_key='__attribute__'):
     """Adapted from: https://gist.github.com/reimund/5435343/"""
 
     indent_str = '\n' + ' ' * (indent * root_indent)
+
+    if root_node is None and name_key is not None:
+        root_node = d[name_key]
 
     wrap = False if root_node is None or isinstance(d, list) else True
     root = 'data' if root_node is None else root_node
@@ -175,6 +178,9 @@ def _dict2xml(d, indent=4, *, root_node=None, root_indent=0):
 
     if isinstance(d, dict):
         for key, value in d.items():
+            if attribute_key is not None and key == attribute_key:
+                continue
+
             if isinstance(value, dict):
                 children.append(_dict2xml(value, indent=indent, root_node=key, root_indent=root_indent+1))
             elif isinstance(value, list):
@@ -186,6 +192,11 @@ def _dict2xml(d, indent=4, *, root_node=None, root_indent=0):
             children.append(_dict2xml(value, indent=indent, root_node=root_singular, root_indent=root_indent+1))
 
     end_tag = '>' if len(children) > 0 else '/>'
+
+    if attribute_key is not None and attribute_key in d:
+        for key, value in d['attribute_key'].items():
+            xml += f' {key}="{value}"'
+    xml = xml.strip()
 
     if wrap or isinstance(d, dict):
         xml = indent_str + '<' + root + xml + end_tag
@@ -200,9 +211,17 @@ def _dict2xml(d, indent=4, *, root_node=None, root_indent=0):
     return xml
 
 
-def _xml2dict(element):
+def _xml2dict(element, name_key='__name__', attribute_key='__attribute__'):
     output_dict = {}
-    output_dict.update(element.attrib)
+
+    if name_key is not None:
+        output_dict[name_key] = element.tag
+
+    if attribute_key is None:
+        output_dict.update(element.attrib)
+    else:
+        output_dict[attribute_key] = element.attrib
+
     if len(output_dict) == 0 and len(element) == 0:
         return element.text  # is a leaf node
 
