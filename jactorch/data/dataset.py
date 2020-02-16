@@ -181,7 +181,8 @@ class FilterableDatasetView(FilterableDatasetUnwrapped):
             )
 
     def repeat(self, nr_repeats):
-        return type(self)(self, indices=list(itertools.chain(*[range(len(self)) for _ in range(nr_repeats)])), filter_name='repeat[{}]'.format(nr_repeats))
+        indices = list(itertools.chain(*[range(len(self)) for _ in range(nr_repeats)]))
+        return type(self)(self, indices=indices, filter_name='repeat[{}]'.format(nr_repeats))
 
     def __getitem__(self, index):
         if self.indices is None:

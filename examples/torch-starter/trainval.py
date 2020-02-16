@@ -19,6 +19,7 @@ from jacinle.cli.argument import JacArgumentParser
 from jacinle.logging import get_logger, set_output_file
 from jacinle.utils.imp import load_source
 from jacinle.utils.tqdm import tqdm_pbar
+from jaclearn.mldash import MLDashClient
 
 from jactorch.cli import escape_desc_name, ensure_path, dump_metainfo
 from jactorch.cuda.copy import async_copy_to
@@ -29,6 +30,8 @@ logger = get_logger(__file__)
 
 parser = JacArgumentParser(description='')
 parser.add_argument('--desc', required=True, type='checked_file', metavar='FILE')
+parser.add_argument('--expr', default='default', metavar='S', help='experiment name')
+parser.add_argument('--config', type='kv', metavar='CFG', help='extra config')
 
 # training hyperparameters
 # TODO(Jiayuan Mao @ 07/16): set default arguments.
@@ -72,7 +75,14 @@ else:
     args.run_name = 'val-{}'.format(time.strftime('%Y-%m-%d-%H-%M-%S'))
 
 desc = load_source(args.desc)
-configs = desc.configs
+if args.config is not None:
+    args.config.apply(configs)
+
+# NB(Jiayuan Mao @ 02/15): compatible with the old version.
+if hasattr(desc, 'configs'):
+    configs = desc.configs
+else:
+    from jacinle.config.environ_v2 import configs
 
 if args.use_gpu:
     nr_devs = cuda.device_count()
@@ -82,21 +92,35 @@ if args.use_gpu:
     args.gpus = [i for i in range(nr_devs)]
     args.gpu_parallel = (nr_devs > 1)
 
+mldash = MLDashClient('dumps')
+
 
 def main():
     # directories
     if not args.debug:
-        args.dump_dir = ensure_path(osp.join('dumps', args.series_name, args.desc_name))
+        args.dump_dir = ensure_path(osp.join('dumps', args.series_name, args.desc_name, args.run_name))
         args.ckpt_dir = ensure_path(osp.join(args.dump_dir, 'checkpoints'))
-        args.meta_dir = ensure_path(osp.join(args.dump_dir, 'meta'))
-        args.meta_file = osp.join(args.meta_dir, args.run_name + '.json')
-        args.log_file = osp.join(args.meta_dir, args.run_name + '.log')
-        args.meter_file = osp.join(args.meta_dir, args.run_name + '.meter.json')
+        args.vis_dir = ensure_path(osp.join(args.dump_dir, 'visualizations'))
+        args.meta_file = osp.join(args.dump_dir, 'metainfo.json')
+        args.log_file = osp.join(args.dump_dir, 'log.log')
+        args.meter_file = osp.join(args.dump_dir, 'meter.json')
 
         # Initialize the tensorboard.
         if args.use_tb:
-            args.tb_dir_root = ensure_path(osp.join(args.dump_dir, 'tensorboard'))
-            args.tb_dir = ensure_path(osp.join(args.tb_dir_root, args.run_name))
+            args.tb_dir = ensure_path(osp.join(args.dump_dir, 'tensorboard'))
+        else:
+            args.tb_dir = None
+
+        mldash.init(
+            desc_name=args.series_name + '/' + args.desc_name,
+            expr_name=args.expr,
+            run_name=args.run_name,
+            args=args,
+            highlight_args=parser,
+            configs=configs,
+        )
+
+        mldash.update(metainfo_file=args.meta_file, log_file=args.log_file, meter_file=args.meter_file, tb_dir=args.tb_dir)
 
     if not args.debug:
         logger.critical('Writing logs to file: "{}".'.format(args.log_file))
@@ -200,13 +224,23 @@ def main():
         model.train()
         train_epoch(epoch, trainer, train_dataloader, meters)
 
-        if epoch % args.validation_interval == 0:
+        if args.validation_interval > 0 and epoch % args.validation_interval == 0:
             model.eval()
             with torch.no_grad():
                 validate_epoch(epoch, trainer, validation_dataloader, meters)
 
         if not args.debug:
             meters.dump(args.meter_file)
+
+        # TODO(Jiayuan Mao @ 02/15): config the MLDash.
+        if not args.debug:
+            mldash.log_metric('epoch', epoch, desc=False, expr=False)
+            for key, value in meters.items():
+                if key.startswith('loss') or key.startswith('validation/loss'):
+                    mldash.log_metric_min(key, value.avg)
+            for key, value in meters.items():
+                if key.startswith('acc') or key.startswith('validation/acc'):
+                    mldash.log_metric_max(key, value.avg)
 
         logger.critical(meters.format_simple('Epoch = {}'.format(epoch), compressed=False))
 

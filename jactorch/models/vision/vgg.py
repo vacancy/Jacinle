@@ -127,9 +127,6 @@ def make_vgg(cfg_id, batch_norm, pretrained, url_id, incl_fcs=True, num_classes=
         try:
             load_state_dict(model, pretrained_model)
         except KeyError:
-            from jacinle.logging import get_logger
-            logger = get_logger(__file__)
-            logger.exception('test')
             pass  # Intentionally ignore the key error.
     return model
 

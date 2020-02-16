@@ -48,6 +48,14 @@ class ConvNDBase(nn.Module):
                 output_padding=output_padding
             )
 
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.kernel_size = kernel_size
+        self.stride = stride
+        self.padding = padding
+        self.dilation = dilation
+        self.groups = groups
+
         self.padding_mode = ConvPaddingMode.from_string(padding_mode)
         self.padding = padding
         self.border_mode = ConvBorderMode.from_string(border_mode)
@@ -59,6 +67,14 @@ class ConvNDBase(nn.Module):
             assert self.output_border_mode is ConvBorderMode.ZERO, 'Only zero output padding is supported.'
         else:
             assert self.output_padding == 0, 'Output padding is only available for transposed convolution.'
+
+    @property
+    def input_dim(self):
+        return self.in_channels
+
+    @property
+    def output_dim(self):
+        return self.out_channels
 
     def forward(self, input):
         # TODO(Jiayuan Mao @ 04/05): evaluate this.

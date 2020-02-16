@@ -38,6 +38,14 @@ class LinearLayer(nn.Sequential):
         self.in_features = in_features
         self.out_features = out_features
 
+    @property
+    def input_dim(self):
+        return self.in_features
+
+    @property
+    def output_dim(self):
+        return self.out_features
+
     def reset_parameters(self):
         for module in self.modules():
             if isinstance(module, nn.Linear):
@@ -125,6 +133,14 @@ class ConvNDLayerBase(nn.Sequential):
             if 'Conv' in module.__class__.__name__:
                 module.reset_parameters()
 
+    @property
+    def input_dim(self):
+        return self.in_channels
+
+    @property
+    def output_dim(self):
+        return self.out_channels
+
 
 class Conv1dLayer(ConvNDLayerBase):
     __nr_dims__ = 1
@@ -202,6 +218,14 @@ class _DeconvLayerBase(nn.Module):
         if activation is not None and activation is not False:
             post_modules.append(get_activation(activation))
         self.post_process = nn.Sequential(*post_modules)
+
+    @property
+    def input_dim(self):
+        return self.in_channels
+
+    @property
+    def output_dim(self):
+        return self.out_channels
 
     def reset_parameters(self):
         for module in self.modules():
