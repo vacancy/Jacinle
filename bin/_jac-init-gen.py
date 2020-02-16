@@ -43,8 +43,18 @@ fi
 """.format(v=target_env), file=bash_file)
 
 
-def load_yml_config(root, bash_file):
-    yml_filename = osp.join(root, 'jacinle.yml')
+def load_yml_config(root, bash_file, recursive=False):
+    if recursive:
+        last_root = None
+        while root != last_root:
+            yml_filename = osp.join(root, 'jacinle.yml')
+            if osp.isfile(yml_filename):
+                break
+            last_root = root
+            root = osp.dirname(root)
+    else:
+        yml_filename = osp.join(root, 'jacinle.yml')
+
     if osp.isfile(yml_filename):
         logger.critical('Loading jacinle config: {}.'.format(osp.abspath(yml_filename)))
         with open(yml_filename) as f:
@@ -57,7 +67,7 @@ def load_yml_config(root, bash_file):
 def main():
     f = tempfile.NamedTemporaryFile('w', delete=False)
     load_yml_config(osp.dirname(osp.dirname(__file__)), f)
-    load_yml_config(os.getcwd(), f)
+    load_yml_config(os.getcwd(), f, recursive=True)
     f.close()
     print(f.name)
 
