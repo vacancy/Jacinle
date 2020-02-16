@@ -11,3 +11,5 @@
 from .custom_optimizer import *
 from .accum_grad import *
 from .weight_decay import *
+from .optimizer_group import *
+

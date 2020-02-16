@@ -117,6 +117,9 @@ class TrainerEnv(object):
             param_group['lr'] *= decay
 
     def step(self, feed_dict, reduce_func=default_reduce_func, cast_tensor=False, measure_time=False):
+        if hasattr(self.model, 'train_step'):
+            return self.model.train_step(self.optimizer, feed_dict)
+
         assert self._model.training, 'Step a evaluation-mode model.'
         extra = dict()
 

@@ -55,7 +55,7 @@ class AccumGrad(CustomizedOptimizer):
                 d_p = p.grad.data
                 param_state = self._base_optimizer.state[p]
 
-                # MJY:: we ensure that grad_buffer does not require grad.
+                # NB(Jiayuan Mao @ 02/16): we guarantee that grad_buffer does not require grad.
                 if 'grad_buffer' not in param_state:
                     buf = param_state['grad_buffer'] = d_p.clone()
                 else:
