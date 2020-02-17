@@ -20,7 +20,7 @@ from .registry import LockRegistry
 __all__ = [
     'indent_text',
     'stprint', 'stformat', 'kvprint', 'kvformat',
-    'PrintToStringContext', 'print_to_string', 'print2format'
+    'PrintToStringContext', 'print_to_string', 'print_to', 'print2format'
 ]
 
 
@@ -196,10 +196,13 @@ def print_to_string(target='STDOUT'):
 
 
 @contextlib.contextmanager
-def print_to(print_func, target='STDOUT'):
+def print_to(print_func, target='STDOUT', rstrip=True):
     with PrintToStringContext(target, need_lock=True) as ctx:
         yield
-    print_func(ctx.get())
+    out_str = ctx.get()
+    if rstrip:
+        out_str = out_str.rstrip()
+    print_func(out_str)
 
 
 def print2format(print_func):

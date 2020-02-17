@@ -12,12 +12,17 @@ import os.path as osp
 import argparse
 import json
 
+from jacinle.logging import get_logger
 from jacinle.utils.enum import JacEnum
+from jacinle.utils.printing import print_to
+from jacinle.utils.container import G
 
 from .device import DeviceNameFormat, parse_and_set_devices
 from .keyboard import str2bool
 
 __all__ = ['JacArgumentParser']
+
+logger = get_logger(__file__)
 
 
 class JacArgumentParser(argparse.ArgumentParser):
@@ -84,15 +89,15 @@ class _KV(object):
         self.kvs = kvs
 
     def apply(self, configs):
-        from jacinle.utils.container import G
-
-        for k, v in self.kvs:
-            print('Set: {} = {}.'.format(k, v))
-            keys = k.split('.')
-            current = configs
-            for k in keys[:-1]:
-                current = current.setdefault(k, G())
-            current[keys[-1]] = v
+        with print_to(logger.info):
+            print('Applying KVs:')
+            for k, v in self.kvs:
+                print('  kv.{} = {}.'.format(k, v))
+                keys = k.split('.')
+                current = configs
+                for k in keys[:-1]:
+                    current = current.setdefault(k, G())
+                current[keys[-1]] = v
 
     def __jsonify__(self):
         return json.dumps(self.kvs)
