@@ -180,6 +180,8 @@ def _dict2xml(d, indent=4, *, root_node=None, root_indent=0, name_key='__name__'
         for key, value in d.items():
             if attribute_key is not None and key == attribute_key:
                 continue
+            if name_key is not None and key == name_key:
+                continue
 
             if isinstance(value, dict):
                 children.append(_dict2xml(value, indent=indent, root_node=key, root_indent=root_indent+1))
@@ -194,9 +196,8 @@ def _dict2xml(d, indent=4, *, root_node=None, root_indent=0, name_key='__name__'
     end_tag = '>' if len(children) > 0 else '/>'
 
     if attribute_key is not None and attribute_key in d:
-        for key, value in d['attribute_key'].items():
+        for key, value in d[attribute_key].items():
             xml += f' {key}="{value}"'
-    xml = xml.strip()
 
     if wrap or isinstance(d, dict):
         xml = indent_str + '<' + root + xml + end_tag
