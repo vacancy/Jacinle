@@ -15,7 +15,7 @@ from torch.utils.data.dataloader import DataLoader, default_collate
 
 from jacinle.random import reset_global_seed, gen_seed
 
-__all__ = ['JacDataLoader']
+__all__ = ['JacDataLoader', 'JacDataLoaderMultiGPUWrapper', 'DataLoaderPipeMaster', 'DataLoaderPipeSlave']
 
 
 class DataLoaderPipeMaster(object):
@@ -107,6 +107,22 @@ class JacDataLoader(DataLoader):
             self.pipe_master.send(data)
 
 
-if torch.__version__ < '0.3.1':
-    from .dataloader_v030 import JacDataLoader
+class JacDataLoaderMultiGPUWrapper(object):
+    def __init__(self, dataloader, gpus):
+        self.dataloader = dataloader
+        self.gpus = gpus
+        self.gpu_parallel = len(gpus) > 1
 
+    def __iter__(self):
+        it = iter(self.dataloader)
+        while True:
+            gpu_data = list()
+            for i in range(len(self.gpus)):
+                try:
+                    gpu_data.append(next(it))
+                except StopIteration:
+                    break
+            if self.gpu_parallel:
+                return gpu_data
+            else:
+                return gpu_data[0]

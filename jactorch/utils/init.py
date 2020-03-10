@@ -10,10 +10,14 @@
 
 
 def register_rng():
-    import torch
     from jacinle.random.rng import global_rng_registry
-    # This will also automatically initialize cuda seeds.
-    global_rng_registry.register('torch', lambda: torch.manual_seed)
+
+    try:
+        import torch
+        # This will also automatically initialize cuda seeds.
+        global_rng_registry.register('torch', lambda: torch.manual_seed)
+    except ImportError:
+        pass
 
 
 def init_main():

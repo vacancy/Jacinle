@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : dataloader_v030.py
+# File   : dataloader_torch030.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 03/01/2018

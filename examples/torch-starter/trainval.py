@@ -75,14 +75,15 @@ else:
     args.run_name = 'val-{}'.format(time.strftime('%Y-%m-%d-%H-%M-%S'))
 
 desc = load_source(args.desc)
-if args.config is not None:
-    args.config.apply(configs)
 
 # NB(Jiayuan Mao @ 02/15): compatible with the old version.
 if hasattr(desc, 'configs'):
     configs = desc.configs
 else:
     from jacinle.config.environ_v2 import configs
+
+if args.config is not None:
+    args.config.apply(configs)
 
 if args.use_gpu:
     nr_devs = cuda.device_count()
@@ -152,8 +153,8 @@ def main():
         # Use the customized data parallel if applicable.
         if args.gpu_parallel:
             from jactorch.parallel import JacDataParallel
-            # from jactorch.parallel import UserScatteredJacDataParallel as JacDataParallel
-            model = JacDataParallel(model, device_ids=args.gpus).cuda()
+            # Set user_scattered because we will add a multi GPU wrapper to the dataloader. See below.
+            model = JacDataParallel(model, device_ids=args.gpus, user_scattered=True).cuda()
         # TODO(Jiayuan Mao @ 04/23): disable the cudnn benchmark.
         # Disable the cudnn benchmark.
         cudnn.benchmark = False
@@ -205,6 +206,11 @@ def main():
     logger.critical('Building the data loader.')
     train_dataloader = train_dataset.make_dataloader(args.batch_size, shuffle=True, drop_last=True, nr_workers=args.data_workers)
     validation_dataloader = validation_dataset.make_dataloader(args.batch_size, shuffle=False, drop_last=False, nr_workers=args.data_workers)
+
+    if args.use_gpu and args.gpu_parallel:
+        from jactorch.data.dataloader import JacDataLoaderMultiGPUWrapper
+        train_dataloader = JacDataLoaderMultiGPUWrapper(train_dataloader, args.gpus)
+        validation_dataloader = JacDataLoaderMultiGPUWrapper(validation_dataloader, args.gpus)
 
     if args.evaluate:
         epoch = 0

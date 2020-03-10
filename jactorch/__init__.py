@@ -8,11 +8,18 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-from .cuda import *
-from .functional import *
-from .graph import *
-from .utils import *
-from .io import *
+
+try:
+    from .cuda import *
+    from .functional import *
+    from .graph import *
+    from .utils import *
+    from .io import *
+except ImportError:
+    from jacinle.logging import get_logger
+    logger = get_logger(__file__)
+    logger.exception('Import error is raised during initializing the jactorch package. Please make sure that the torch '
+                     'package is correctly installed')
 
 from jactorch.utils.init import init_main
 

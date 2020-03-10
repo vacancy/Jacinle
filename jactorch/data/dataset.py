@@ -11,13 +11,30 @@
 import random
 import itertools
 
-from torch.utils.data.dataset import Dataset
-
 from jacinle.logging import get_logger
 
 logger = get_logger(__file__)
 
 __all__ = ['IterableDatasetMixin', 'ProxyDataset', 'ListDataset', 'FilterableDatasetUnwrapped', 'FilterableDatasetView']
+
+
+class Dataset(object):
+    """An abstract class representing a Dataset.
+
+    All other datasets should subclass it. All subclasses should override
+    ``__len__``, that provides the size of the dataset, and ``__getitem__``,
+    supporting integer indexing in range from 0 to len(self) exclusive.
+    """
+
+    def __getitem__(self, index):
+        raise NotImplementedError
+
+    def __len__(self):
+        raise NotImplementedError
+
+    def __add__(self, other):
+        from torch.utils.data.dataset import ConcatDataset
+        return ConcatDataset([self, other])
 
 
 class IterableDatasetMixin(object):

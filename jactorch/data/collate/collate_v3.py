@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : collate.py
+# File   : collate_v3.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com # Date   : 03/04/2018
 #
@@ -14,54 +14,38 @@ import torch
 
 from six import string_types
 
+from torch.nn.parallel._functions import Gather
 from jacinle.utils.argument import UniqueValueGetter
 from jacinle.utils.enum import JacEnum
+from jactorch.data.layout import DataLayout, DataLayoutType
+from .utils import use_shared_memory, numpy_type_map
 
-__all__ = ['numpy_type_map', 'user_scattered_collate', 'VarLengthCollateMode', 'VarLengthCollate', 'VarLengthCollateV2']
-
-
-def _use_shared_memory():
-    import torch
-    if torch.__version__ < '1.1':
-        import torch.utils.data.dataloader as torchdl
-        return torchdl._use_shared_memory
-    elif torch.__version__ < '1.2':
-        import torch.utils.data._utils.collate as torch_collate
-        return torch_collate._use_shared_memory
-    else:
-        return torch.utils.data.get_worker_info() is not None
-    # TODO(Jiayuan Mao @ 07/21): sync up with the latest torch release. The github master branch seems to have
-    # introduced a new function called torchdl.get_worker_info()
+__all__ = [
+    'VarLengthCollateV3'
+]
 
 
-numpy_type_map = {
-    'float64': torch.DoubleTensor,
-    'float32': torch.FloatTensor,
-    'float16': torch.HalfTensor,
-    'int64': torch.LongTensor,
-    'int32': torch.IntTensor,
-    'int16': torch.ShortTensor,
-    'int8': torch.CharTensor,
-    'uint8': torch.ByteTensor,
-}
+class _VarLengthCollateV3Stack(object):
+    def apply(self, feed_dict, key):
+        raise NotImplementedError()
 
 
-def user_scattered_collate(batch):
-    """
-    A helper function indicating that no collation needs to be done.
-    """
-    return batch
+class _VarLengthCollateV3ArrayStack(_VarLengthCollateV3Stack):
+    def __init__(self, array, length):
+        self.array = array
+        self.length = length
+
+    def apply(self, feed_dict, key):
+        feed_dict[key] = self.array
+        feed_dict[key + 'length'] = self.length
 
 
-class VarLengthCollateMode(JacEnum):
-    SKIP = 'skip'
-    CONCAT = 'concat'
-    PAD = 'pad'
-    PAD2D = 'pad2d'
-    PADIMAGE = 'padimage'
+class VarLengthCollateV3Mode(JacEnum):
+    COLLATE = 'collate'  # for data loader collating.
+    GATHER = 'gather'   # for data parallel gathering.
 
 
-class VarLengthCollateV2(object):
+class VarLengthCollateV3(object):
     """
     Collate a batch of data from multiple workers.
     It supports data of variant length. For example, a batch may contain sentences of different length to be
@@ -97,19 +81,35 @@ class VarLengthCollateV2(object):
     padded.
 
     """
-    def __init__(self, fields):
-        self._fields = fields
+    def __init__(
+        self, layout, mode='collate',
+        gather_device=None, gather_dim=0,
+    ):
 
-    def __call__(self, batch, key=None):
+        self.layout = layout
+        if isinstance(self.layout, dict):
+            self.layout = DataLayout(self.layout)
+        self.mode = VarLengthCollateV3Mode.from_string(mode)
+        self.gather_device = gather_device
+        self.gather_dim = gather_dim
+
+    def __call__(self, batch, flatten_key=None, layout_spec=None):
+        if flatten_key is not None and flatten_key in self.layout:
+            layout_spec = self.layout[flatten_key]
+
+        if layout_spec.type is DataLayoutType.SKIP:
+            return batch
+
         error_msg = "Batch must contain tensors, numbers, dicts or lists; found {}."
         elem_type = type(batch[0])
-
-        if key is not None:
-            assert torch.is_tensor(batch[0]) or (elem_type.__module__ == 'numpy' and elem_type.__name__ != 'str_'
-                    and elem_type.__name__ != 'string_'), 'Invalid field: {}.'.format(key)
+        if layout_spec is not None:
+            assert (
+                torch.is_tensor(batch[0]) or
+                (elem_type.__module__ == 'numpy' and elem_type.__name__ != 'str_' and elem_type.__name__ != 'string_')
+            ), 'Invalid layout type for: {}.'.format(flatten_key)
 
         if torch.is_tensor(batch[0]):
-            return self._stack(batch, key)
+            return self._stack(batch, layout_spec, maybe_cuda=True)
         elif elem_type.__module__ == 'numpy' and elem_type.__name__ != 'str_' \
                 and elem_type.__name__ != 'string_':
             elem = batch[0]
@@ -117,62 +117,71 @@ class VarLengthCollateV2(object):
                 # array of string classes and object
                 if re.search('[SaUO]', elem.dtype.str) is not None:
                     raise TypeError(error_msg.format(elem.dtype))
-
-                return self._stack([torch.from_numpy(b) for b in batch], key)
+                return self._stack([torch.from_numpy(b) for b in batch], layout_spec, maybe_cuda=False)
             if elem.shape == ():  # scalars
                 py_type = float if elem.dtype.name.startswith('float') else int
                 return numpy_type_map[elem.dtype.name](list(map(py_type, batch)))
+
         elif isinstance(batch[0], int):
             return torch.LongTensor(batch)
         elif isinstance(batch[0], float):
             return torch.DoubleTensor(batch)
         elif isinstance(batch[0], string_types):
             return batch
+
         elif isinstance(batch[0], collections.Mapping):
-            result = {}
+            result = dict()
             for key in batch[0]:
                 values = [d[key] for d in batch]
-                if key in self._fields:
-                    if isinstance(self._fields[key], string_types) and VarLengthCollateMode.from_string(self._fields[key]) is VarLengthCollateMode.SKIP:
-                        result[key] = values
-                    else:
-                        values, lengths = self(values, key=key)
-                        result[key] = values
-                        result[key + '_length'] = lengths
+                next_key = key if flatten_key is None else f'{flatten_key}.{key}'
+                values = self(values, flatten_key=next_key, layout_spec=layout_spec)
+                if isinstance(values, _VarLengthCollateV3Stack):
+                    values.apply(result, key)
                 else:
-                    result[key] = self(values)
+                    result[key] = values
             return result
         elif isinstance(batch[0], collections.Sequence):
             transposed = zip(*batch)
-            return [self(samples) for samples in transposed]
+            # Add .{index} only if it's inside a dict already.
+            return [
+                self(samples, flatten_key=None if flatten_key is None else f'{flatten_key}.{i}',
+                     layout_spec=layout_spec)
+                for i, samples in enumerate(transposed)
+            ]
 
         raise TypeError((error_msg.format(type(batch[0]))))
 
-    def _stack(self, values, key=None):
-        if key is not None:
-            mode_spec = self._fields[key]
-            if isinstance(mode_spec, tuple):
-                mode = VarLengthCollateMode.from_string(mode_spec[0])
-                parameters = mode_spec[1:]
-            else:
-                mode = VarLengthCollateMode.from_string(mode_spec)
-                parameters = tuple()
+    def _stack_raw(self, values, out, maybe_cuda):
+        if self.mode is VarLengthCollateV3Mode.GATHER and maybe_cuda:
+            if values[0].dim() == 0:
+                values = [o.unsqueeze(0) for o in values]
+            return Gather.apply(self.gather_device, self.gather_dim, *values)
+        else:
+            return torch.stack(values, 0, out=out)
+
+    def _stack(self, values, spec=None, maybe_cuda=True):
+        mode = spec.type if spec is not None else None
 
         out = None
-        if _use_shared_memory():
+        if self.mode is VarLengthCollateV3Mode.COLLATE and use_shared_memory():
             # If we're in a background process, concatenate directly into a
             # shared memory tensor to avoid an extra copy
             numel = 0
-            if key is not None:
-                if mode is VarLengthCollateMode.PAD:
-                    numel = max([x.numel() for x in values]) * len(values)
-                elif mode is VarLengthCollateMode.CONCAT:
+            if mode is not None:
+                if mode is DataLayoutType.CONCAT:
                     numel = sum([x.numel() for x in values])
-                elif mode is VarLengthCollateMode.PAD2D:
+                elif mode is DataLayoutType.PAD:
+                    numel = max([x.numel() for x in values]) * len(values)
+                elif mode is DataLayoutType.PAD2D:
                     max_h = max([x.size(0) for x in values])
                     max_w = max([x.size(1) for x in values])
                     hw = max_h * max_w
                     numel = sum([x.numel() // x.size(0) // x.size(1) * hw for x in values])
+                elif mode is DataLayoutType.PADIMAGE:
+                    max_h = max([x.size(1) for x in values])
+                    max_w = max([x.size(2) for x in values])
+                    hw = max_h * max_w
+                    numel = sum([x.numel() // x.size(1) // x.size(2) * hw for x in values])
             else:
                 numel = sum([x.numel() for x in values])
 
@@ -180,20 +189,20 @@ class VarLengthCollateV2(object):
                 storage = values[0].storage()._new_shared(numel)
                 out = values[0].new(storage)
 
-        if key is None:
-            return torch.stack(values, 0, out=out)
+        if mode is None:
+            return self._stack_raw(values, out=out, maybe_cuda=maybe_cuda)
 
-        if mode is VarLengthCollateMode.CONCAT:
+        if mode is DataLayoutType.CONCAT:
             uvg = UniqueValueGetter('Tensor sizes should match except the first dim.')
             for v in values:
                 uvg.set(v.size()[1:])
             lengths = [v.size(0) for v in values]
-            return torch.cat(values, 0, out=out), torch.LongTensor(lengths)
-        elif mode is VarLengthCollateMode.PAD:
+            return self._stack_raw(values, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths)
+        elif mode is DataLayoutType.PAD:
             uvg = UniqueValueGetter('Tensor sizes should match except the first dim.')
             for v in values:
                 uvg.set(v.size()[1:])
-            pad_value = parameters[0] if len(parameters) > 0 else 0
+            pad_value = spec.fill
 
             lengths = [v.size(0) for v in values]
             max_length = max(lengths)
@@ -202,13 +211,13 @@ class VarLengthCollateV2(object):
                 if v.size(0) < max_length:
                     v = torch.cat([v, v.new(*((max_length - v.size(0), ) + v.size()[1:])).fill_(pad_value)], dim=0)
                 result.append(v)
-            return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
-        elif mode is VarLengthCollateMode.PAD2D:
+            return self._stack_raw(result, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths)
+        elif mode is DataLayoutType.PAD2D:
             uvg = UniqueValueGetter('Tensor sizes should match except the first 2 dims.')
             for v in values:
                 uvg.set(v.size()[2:])
             rest_size = uvg.get() or []
-            pad_value = parameters[0] if len(parameters) > 0 else 0
+            pad_value = spec.fill
 
             lengths = [v.size()[:2] for v in values]
             max_h, max_w = max([x[0] for x in lengths]), max([x[1] for x in lengths])
@@ -217,13 +226,13 @@ class VarLengthCollateV2(object):
                 u = v.new(*(max_h, max_w, *rest_size)).fill_(pad_value)
                 u[:v.size(0), :v.size(1)] = v
                 result.append(u)
-            return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
-        elif mode is VarLengthCollateMode.PADIMAGE:
+            return self._stack_raw(result, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths)
+        elif mode is DataLayoutType.PADIMAGE:
             uvg = UniqueValueGetter('Tensor sizes should match except the last 2 dims.')
             for v in values:
-                assert v.dim() == 3, 'Support only 3 dimention input.'
+                assert v.dim() == 3, 'Support only 3-dimensional input.'
                 uvg.set(v.size(0))
-            pad_value = parameters[0] if len(parameters) > 0 else 0
+            pad_value = spec.fill
 
             lengths = [v.size()[-2:] for v in values]
             max_h, max_w = max([x[0] for x in lengths]), max([x[1] for x in lengths])
@@ -233,12 +242,7 @@ class VarLengthCollateV2(object):
                 # TODO(Jiayuan Mao @ 07/19): support input with dim > 3.
                 u[:, :v.size(1), :v.size(2)] = v
                 result.append(u)
-            return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
+            return self._stack_raw(result, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths)
         else:
             raise ValueError('Unknown collation mode: {}.'.format(mode))
-
-
-def VarLengthCollate(*args, **kwargs):
-    from .collate_v1 import VarLengthCollate
-    return VarLengthCollate(*args, **kwargs)
 

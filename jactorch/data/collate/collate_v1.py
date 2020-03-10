@@ -17,17 +17,17 @@ import re
 import collections
 
 import torch
-import torch.utils.data.dataloader as torchdl
 
 from six import string_types
 
 from jacinle.utils.argument import UniqueValueGetter
-from .collate import numpy_type_map, VarLengthCollateMode
+from .utils import numpy_type_map
+from .collate import use_shared_memory, numpy_type_map, VarLengthCollateMode, VarLengthCollateMode
 
-__all__ = ['VarLengthCollate']
+__all__ = ['VarLengthCollateV1']
 
 
-class VarLengthCollate(object):
+class VarLengthCollateV1(object):
     def __init__(self, fields, mode='pad'):
         """
         VarLengthCollate is deprecated in favor of VarLengthCollateV2.
@@ -92,7 +92,7 @@ class VarLengthCollate(object):
         uvg.get()
 
         out = None
-        if torchdl._use_shared_memory:
+        if use_shared_memory():
             # If we're in a background process, concatenate directly into a
             # shared memory tensor to avoid an extra copy
             numel = 0

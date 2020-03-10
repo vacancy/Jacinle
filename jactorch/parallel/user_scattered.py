@@ -12,9 +12,8 @@ import torch.cuda as cuda
 from torch.nn.parallel.data_parallel import DataParallel
 
 from jactorch.cuda.copy import async_copy_to
-from jactorch.data.collate import user_scattered_collate
 
-__all__ = ['UserScatteredDataParallel', 'use_user_scattered', 'user_scattered_collate']
+__all__ = ['UserScatteredDataParallel', 'use_user_scattered']
 
 
 class UserScatteredDataParallel(DataParallel):
@@ -26,7 +25,6 @@ class UserScatteredDataParallel(DataParallel):
 
 def use_user_scattered(inputs, kwargs, device_ids, use_stream=True):
     assert len(inputs) == 1
-
     inputs = inputs[0]
     if use_stream:
         inputs = _async_copy_stream(inputs, device_ids)

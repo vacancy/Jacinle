@@ -16,13 +16,16 @@ from jactorch.functional.shape import add_dim_as_except
 __all__ = ['masked_softmax', 'length_masked_softmax']
 
 
-def masked_softmax(logits, mask=None, dim=-1):
-    eps = 1e-20
+def masked_softmax(logits, mask=None, dim=-1, eps=1e-20, ninf=-1e4):
+    if logits is not None:
+        logits = logits * mask + ninf * (1 - mask)
+
     probs = F.softmax(logits, dim=dim)
     if mask is not None:
         mask = mask.float()
         probs = probs * mask + eps
         probs = probs / probs.sum(dim, keepdim=True)
+
     return probs
 
 

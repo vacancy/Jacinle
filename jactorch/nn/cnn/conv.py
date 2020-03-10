@@ -8,10 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import collections
 import torch.nn as nn
-import torch.nn.functional as F
-
-from jacinle.utils.enum import JacEnum
 from .functional import ConvPaddingMode, ConvBorderMode, padding_nd
 
 __all__ = [

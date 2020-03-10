@@ -41,5 +41,6 @@ def main():
         if i == 9:
             dataloader.send_to_worker({'global_index': 10086})
 
+
 if __name__ == '__main__':
     main()

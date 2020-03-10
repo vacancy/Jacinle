@@ -24,7 +24,7 @@ args = parser.parse_args()
 
 
 def main():
-    from IPython import embed()
+    from IPython import embed; embed()
 
 
 if __name__ == '__main__':
