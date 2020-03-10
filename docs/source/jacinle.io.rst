@@ -41,4 +41,12 @@ jacinle.io.pretty module
     :undoc-members:
     :show-inheritance:
 
+jacinle.io.tempfile module
+--------------------------
+
+.. automodule:: jacinle.io.tempfile
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 

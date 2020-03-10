@@ -17,8 +17,8 @@ jactorch.nn.cnn.conv module
     :undoc-members:
     :show-inheritance:
 
-jactorch.nn.cnn.coord\_conv module
-----------------------------------
+jactorch.nn.cnn.coord_conv module
+---------------------------------
 
 .. automodule:: jactorch.nn.cnn.coord_conv
     :members:
