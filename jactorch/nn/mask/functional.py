@@ -17,7 +17,7 @@ __all__ = ['masked_softmax', 'length_masked_softmax']
 
 
 def masked_softmax(logits, mask=None, dim=-1, eps=1e-20, ninf=-1e4):
-    if logits is not None:
+    if mask is not None:
         logits = logits * mask + ninf * (1 - mask)
 
     probs = F.softmax(logits, dim=dim)
