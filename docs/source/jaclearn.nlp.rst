@@ -11,6 +11,7 @@ Subpackages
 
 .. toctree::
 
+    jaclearn.nlp.graph
     jaclearn.nlp.sng_parser
     jaclearn.nlp.tree
 

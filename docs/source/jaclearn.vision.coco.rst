@@ -16,8 +16,8 @@ Subpackages
 Submodules
 ----------
 
-jaclearn.vision.coco.mask\_utils module
----------------------------------------
+jaclearn.vision.coco.mask_utils module
+--------------------------------------
 
 .. automodule:: jaclearn.vision.coco.mask_utils
     :members:

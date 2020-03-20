@@ -41,6 +41,14 @@ jacinle.utils.context module
     :undoc-members:
     :show-inheritance:
 
+jacinle.utils.debug module
+--------------------------
+
+.. automodule:: jacinle.utils.debug
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jacinle.utils.defaults module
 -----------------------------
 
@@ -77,6 +85,14 @@ jacinle.utils.exception module
 ------------------------------
 
 .. automodule:: jacinle.utils.exception
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+jacinle.utils.filelock module
+-----------------------------
+
+.. automodule:: jacinle.utils.filelock
     :members:
     :undoc-members:
     :show-inheritance:
@@ -177,10 +193,18 @@ jacinle.utils.tqdm module
     :undoc-members:
     :show-inheritance:
 
-jacinle.utils.value\_scheduler module
--------------------------------------
+jacinle.utils.value_scheduler module
+------------------------------------
 
 .. automodule:: jacinle.utils.value_scheduler
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+jacinle.utils.vendor module
+---------------------------
+
+.. automodule:: jacinle.utils.vendor
     :members:
     :undoc-members:
     :show-inheritance:

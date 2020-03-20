@@ -21,7 +21,7 @@ import torch
 from six import string_types
 
 from jacinle.utils.argument import UniqueValueGetter
-from .utils import use_shared_memory, numpy_type_map, VarLengthCollateMode, VarLengthCollateMode
+from .utils import use_shared_memory, numpy_type_map, VarLengthCollateMode
 
 __all__ = ['VarLengthCollateV1']
 

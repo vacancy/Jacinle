@@ -9,8 +9,8 @@ jacinle.jit.cython package
 Submodules
 ----------
 
-jacinle.jit.cython.jit\_compile module
---------------------------------------
+jacinle.jit.cython.jit_compile module
+-------------------------------------
 
 .. automodule:: jacinle.jit.cython.jit_compile
     :members:

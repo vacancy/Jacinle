@@ -9,8 +9,8 @@ jaclearn.rl.envs.simple package
 Submodules
 ----------
 
-jaclearn.rl.envs.simple.move\_right module
-------------------------------------------
+jaclearn.rl.envs.simple.move_right module
+-----------------------------------------
 
 .. automodule:: jaclearn.rl.envs.simple.move_right
     :members:

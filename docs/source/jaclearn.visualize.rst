@@ -17,18 +17,18 @@ jaclearn.visualize.box module
     :undoc-members:
     :show-inheritance:
 
-jaclearn.visualize.grid module
-------------------------------
+jaclearn.visualize.html_table module
+------------------------------------
 
-.. automodule:: jaclearn.visualize.grid
+.. automodule:: jaclearn.visualize.html_table
     :members:
     :undoc-members:
     :show-inheritance:
 
-jaclearn.visualize.html\_table module
--------------------------------------
+jaclearn.visualize.imgrid module
+--------------------------------
 
-.. automodule:: jaclearn.visualize.html_table
+.. automodule:: jaclearn.visualize.imgrid
     :members:
     :undoc-members:
     :show-inheritance:

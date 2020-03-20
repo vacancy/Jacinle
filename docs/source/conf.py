@@ -20,6 +20,14 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../../'))
+import yaml
+with open(os.path.abspath('../../jacinle.yml')) as f:
+    jacinle_config = yaml.safe_load(f)
+print(jacinle_config)
+for r in jacinle_config['vendors'].values():
+    sys.path.insert(0, os.path.join(os.path.abspath('../../'), r['root']))
+
+print(sys.path)
 
 # -- General configuration ------------------------------------------------
 

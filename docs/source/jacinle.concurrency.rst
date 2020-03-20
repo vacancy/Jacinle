@@ -73,8 +73,8 @@ jacinle.concurrency.shmarray module
     :undoc-members:
     :show-inheritance:
 
-jacinle.concurrency.zmq\_utils module
--------------------------------------
+jacinle.concurrency.zmq_utils module
+------------------------------------
 
 .. automodule:: jacinle.concurrency.zmq_utils
     :members:

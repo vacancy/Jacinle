@@ -33,4 +33,12 @@ jacnp.nd module
     :undoc-members:
     :show-inheritance:
 
+jacnp.shape module
+------------------
+
+.. automodule:: jacnp.shape
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 

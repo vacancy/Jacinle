@@ -1,5 +1,5 @@
-jactorch.nn.gumbel\_softmax package
-===================================
+jactorch.nn.gumbel_softmax package
+==================================
 
 .. automodule:: jactorch.nn.gumbel_softmax
     :members:
@@ -9,16 +9,16 @@ jactorch.nn.gumbel\_softmax package
 Submodules
 ----------
 
-jactorch.nn.gumbel\_softmax.functional module
----------------------------------------------
+jactorch.nn.gumbel_softmax.functional module
+--------------------------------------------
 
 .. automodule:: jactorch.nn.gumbel_softmax.functional
     :members:
     :undoc-members:
     :show-inheritance:
 
-jactorch.nn.gumbel\_softmax.softmax module
-------------------------------------------
+jactorch.nn.gumbel_softmax.softmax module
+-----------------------------------------
 
 .. automodule:: jactorch.nn.gumbel_softmax.softmax
     :members:
