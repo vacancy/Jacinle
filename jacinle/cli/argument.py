@@ -77,13 +77,18 @@ class _KV(object):
 
         for i, kv in enumerate(kvs):
             k, v = kv.split('=')
+
             if v.startswith('"') or v.startswith("'"):
                 assert v.endswith('"') or v.endswith("'")
                 v = v[1:-1]
-            else:
+
+            try:
                 v = float(v)
                 if int(v) == v:
                     v = int(v)
+            except:
+                pass
+
             kvs[i] = (k, v)
 
         self.kvs = kvs
