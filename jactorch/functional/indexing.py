@@ -187,7 +187,7 @@ def leftmost_nonzero(tensor, dim):
         torch.arange(tensor.size(dim) - 1, -1, -1, dtype=torch.int64, device=tensor.device),
         tensor, dim
     )
-    return (tensor.int64() * tensor.size(dim) + indices).argmax(dim=dim)
+    return (tensor.to(torch.int64) * tensor.size(dim) + indices).argmax(dim=dim)
 
 
 def rightmost_nonzero(tensor, dim):
@@ -196,7 +196,7 @@ def rightmost_nonzero(tensor, dim):
         torch.arange(tensor.size(dim), dtype=torch.int64, device=tensor.device),
         tensor, dim
     )
-    return (tensor.int64() * tensor.size(dim) + indices).argmax(dim=dim)
+    return (tensor.to(torch.int64) * tensor.size(dim) + indices).argmax(dim=dim)
 
 
 def batched_index_select(tensor, batched_indices):

@@ -8,13 +8,18 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-import tensorflow as tf
 import numpy as np
 import scipy.misc
 try:
     from StringIO import StringIO as BytesIO  # Python 2.7
 except ImportError:
     from io import BytesIO  # Python 3.x
+
+import tensorflow
+if tensorflow.__version__ >= '1.14.0':
+    import tensorflow.compat.v1 as tf
+else:
+    import tensorflow as tf
 
 from jacinle.utils.meter import GroupMeters
 
