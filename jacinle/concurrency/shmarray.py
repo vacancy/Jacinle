@@ -65,11 +65,13 @@ class shmarray(numpy.ndarray):
 
         # some magic (copied from numpy.ctypeslib) to make sure the ctypes array
         # has the array interface
+
         tp = type(ctypesArray)
         try:
             tp.__array_interface__
         except AttributeError:
-            ctypeslib.prep_array(tp)
+            if hasattr(ctypeslib, 'prep_array'):
+                ctypeslib.prep_array(tp)
 
         obj = numpy.ndarray.__new__(cls, shape, dtype, ctypesArray, offset, strides,
                                     order)

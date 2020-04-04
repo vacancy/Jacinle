@@ -37,7 +37,7 @@ class _VarLengthCollateV3ArrayStack(_VarLengthCollateV3Stack):
 
     def apply(self, feed_dict, key):
         feed_dict[key] = self.array
-        feed_dict[key + 'length'] = self.length
+        feed_dict[key + '_length'] = self.length
 
 
 class VarLengthCollateV3Mode(JacEnum):
@@ -97,7 +97,7 @@ class VarLengthCollateV3(object):
         if flatten_key is not None and flatten_key in self.layout:
             layout_spec = self.layout[flatten_key]
 
-        if layout_spec.type is DataLayoutType.SKIP:
+        if layout_spec is not None and layout_spec.type is DataLayoutType.SKIP:
             return batch
 
         error_msg = "Batch must contain tensors, numbers, dicts or lists; found {}."
@@ -197,7 +197,7 @@ class VarLengthCollateV3(object):
             for v in values:
                 uvg.set(v.size()[1:])
             lengths = [v.size(0) for v in values]
-            return self._stack_raw(values, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths)
+            return _VarLengthCollateV3ArrayStack(self._stack_raw(result, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths))
         elif mode is DataLayoutType.PAD:
             uvg = UniqueValueGetter('Tensor sizes should match except the first dim.')
             for v in values:
@@ -211,7 +211,7 @@ class VarLengthCollateV3(object):
                 if v.size(0) < max_length:
                     v = torch.cat([v, v.new(*((max_length - v.size(0), ) + v.size()[1:])).fill_(pad_value)], dim=0)
                 result.append(v)
-            return self._stack_raw(result, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths)
+            return _VarLengthCollateV3ArrayStack(self._stack_raw(result, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths))
         elif mode is DataLayoutType.PAD2D:
             uvg = UniqueValueGetter('Tensor sizes should match except the first 2 dims.')
             for v in values:
@@ -226,7 +226,7 @@ class VarLengthCollateV3(object):
                 u = v.new(*(max_h, max_w, *rest_size)).fill_(pad_value)
                 u[:v.size(0), :v.size(1)] = v
                 result.append(u)
-            return self._stack_raw(result, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths)
+            return _VarLengthCollateV3ArrayStack(self._stack_raw(result, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths))
         elif mode is DataLayoutType.PADIMAGE:
             uvg = UniqueValueGetter('Tensor sizes should match except the last 2 dims.')
             for v in values:
@@ -242,7 +242,7 @@ class VarLengthCollateV3(object):
                 # TODO(Jiayuan Mao @ 07/19): support input with dim > 3.
                 u[:, :v.size(1), :v.size(2)] = v
                 result.append(u)
-            return self._stack_raw(result, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths)
+            return _VarLengthCollateV3ArrayStack(self._stack_raw(result, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths))
         else:
             raise ValueError('Unknown collation mode: {}.'.format(mode))
 

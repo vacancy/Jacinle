@@ -113,6 +113,10 @@ class JacDataLoaderMultiGPUWrapper(object):
         self.gpus = gpus
         self.gpu_parallel = len(gpus) > 1
 
+    @property
+    def unwrapped(self):
+        return self.dataloader
+
     def __iter__(self):
         it = iter(self.dataloader)
         while True:
@@ -123,6 +127,10 @@ class JacDataLoaderMultiGPUWrapper(object):
                 except StopIteration:
                     break
             if self.gpu_parallel:
-                return gpu_data
+                yield gpu_data
             else:
-                return gpu_data[0]
+                yield gpu_data[0]
+
+    def __len__(self):
+        return len(self.dataloader)
+
