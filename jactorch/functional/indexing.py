@@ -13,15 +13,17 @@ import torch
 from jacinle.utils.numeric import prod
 from jacinle.utils.vendor import has_vendor, requires_vendors
 from jactorch.utils.grad import no_grad_func
-from .shape import concat_shape
+from .shape import concat_shape, add_dim_as_except
 
 __all__ = [
     'reversed',
     'one_hot', 'one_hot_nd', 'one_hot_dim',
     'inverse_permutation',
     'index_one_hot', 'set_index_one_hot_', 'index_one_hot_ellipsis',
+    'leftmost_nonzero', 'rightmost_nonzero',
     'batch', 'patch_torch_index',
-    'batched_index_select', 'batched_index_int', 'batched_index_slice', 'batched_index_vector_dim', 'batched_index_vectors',
+    'batched_index_select',
+    'batched_index_int', 'batched_index_slice', 'batched_index_vector_dim', 'batched_index_vectors',
     'tindex', 'findex', 'vindex', 'oindex',
     'btindex', 'bfindex', 'bvindex', 'boindex'
 ]
@@ -177,6 +179,24 @@ def index_one_hot_ellipsis(tensor, dim, index):
     index = index.expand(tensor.size(0), 1, tensor.size(2))
     tensor = tensor.gather(1, index)
     return tensor.view(tensor_shape[:dim] + tensor_shape[dim+1:])
+
+
+def leftmost_nonzero(tensor, dim):
+    """Return the smallest nonzero index along the `dim` axis. The tensor should be binary."""
+    indices = add_dim_as_except(
+        torch.arange(tensor.size(dim) - 1, -1, -1, dtype=torch.int64, device=tensor.device),
+        tensor, dim
+    )
+    return (tensor.int64() * tensor.size(dim) + indices).argmax(dim=dim)
+
+
+def rightmost_nonzero(tensor, dim):
+    """Return the smallest nonzero index along the `dim` axis. The tensor should be binary."""
+    indices = add_dim_as_except(
+        torch.arange(tensor.size(dim), dtype=torch.int64, device=tensor.device),
+        tensor, dim
+    )
+    return (tensor.int64() * tensor.size(dim) + indices).argmax(dim=dim)
 
 
 def batched_index_select(tensor, batched_indices):
