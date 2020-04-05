@@ -116,7 +116,7 @@ class TrainerEnv(object):
         for param_group in self._optimizer.param_groups:
             param_group['lr'] *= decay
 
-    def step(self, feed_dict, reduce_func=default_reduce_func, cast_tensor=False, measure_time=False):
+    def step(self, feed_dict, grad_clip=0., reduce_func=default_reduce_func, cast_tensor=False, measure_time=False):
         if hasattr(self.model, 'train_step'):
             return self.model.train_step(self.optimizer, feed_dict)
 
@@ -153,6 +153,9 @@ class TrainerEnv(object):
         self.trigger_event('backward:before', self, feed_dict, loss, monitors, output_dict)
         if loss.requires_grad:
             loss.backward()
+            if grad_clip > 0:
+                from torch.nn.utils.clip_grad import clip_grad_norm_
+                clip_grad_norm_(self.model.parameters(), grad_clip)
 
         if measure_time:
             extra['time/backward'] = cuda_time() - end_time

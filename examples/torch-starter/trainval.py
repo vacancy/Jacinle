@@ -112,17 +112,6 @@ def main():
         else:
             args.tb_dir = None
 
-        mldash.init(
-            desc_name=args.series_name + '/' + args.desc_name,
-            expr_name=args.expr,
-            run_name=args.run_name,
-            args=args,
-            highlight_args=parser,
-            configs=configs,
-        )
-
-        mldash.update(metainfo_file=args.meta_file, log_file=args.log_file, meter_file=args.meter_file, tb_dir=args.tb_dir)
-
     if not args.debug:
         logger.critical('Writing logs to file: "{}".'.format(args.log_file))
         set_output_file(args.log_file)
@@ -194,7 +183,21 @@ def main():
         meters = GroupMeters()
 
     if not args.debug:
+        logger.critical('Writing metainfo to file: "{}".'.format(args.meta_file))
+        with open(args.meta_file, 'w') as f:
+            f.write(dump_metainfo(args=args.__dict__, configs=configs))
         logger.critical('Writing meter logs to file: "{}".'.format(args.meter_file))
+
+        logger.critical('Initializing MLDash.')
+        mldash.init(
+            desc_name=args.series_name + '/' + args.desc_name,
+            expr_name=args.expr,
+            run_name=args.run_name,
+            args=args,
+            highlight_args=parser,
+            configs=configs,
+        )
+        mldash.update(metainfo_file=args.meta_file, log_file=args.log_file, meter_file=args.meter_file, tb_dir=args.tb_dir)
 
     if args.embed:
         from IPython import embed; embed()
