@@ -102,6 +102,10 @@ def option_context(name, is_local=True, **kwargs):
         def __init__(self, **init_kwargs):
             for k, v in kwargs.items():
                 setattr(self, k, v)
+            if hasattr(self.__class__, 'current_context') and self.__class__.current_context.ctx is not None:
+                c = self.__class__.get_default()
+                for k in kwargs:
+                    setattr(self, k, getattr(c, k))
             for k, v in init_kwargs.items():
                 assert k in kwargs
                 setattr(self, k, v)

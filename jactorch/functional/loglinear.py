@@ -20,14 +20,19 @@ def logaddexp(x, y):
     return torch.max(x, y) + torch.log(1 + torch.exp(-torch.abs(y - x)))
 
 
-def logsumexp(tensor, dim=-1, keepdim=False):
+def logsumexp(tensor, dim=None, keepdim=False):
     """Computes `tensor.exp().sum(dim, keepdim).log()` in a numerically stable way."""
+    if dim is None:
+        tensor = tensor.reshape(-1)
+        dim = -1
+
     inputs_max = tensor.max(dim=dim, keepdim=True)[0]
     tensor = tensor - inputs_max
     if not keepdim:
         inputs_max = inputs_max.squeeze(dim)
-    return _safe_log(tensor.exp().sum(dim=dim, keepdim=keepdim)) + inputs_max
-    # return (inputs - F.log_softmax(inputs, dim=dim)).mean(dim, keepdim=keepdim)
+
+    out = _safe_log(tensor.exp().sum(dim=dim, keepdim=keepdim)) + inputs_max
+    return out
 
 
 def logmatmulexp(mat1, mat2, use_mm=False):
