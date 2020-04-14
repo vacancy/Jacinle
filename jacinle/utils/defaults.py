@@ -162,8 +162,7 @@ def option_context(name, is_local=True, **kwargs):
 ARGDEF = object()
 
 
-@decorator_with_optional_args
-def default_args():
+def default_args(func):
     def wrapper(func):
         sig = inspect.signature(func)
 
@@ -181,5 +180,5 @@ def default_args():
             return func(*bounded.args, **bounded.kwargs)
 
         return wrapped
-    return wrapper
+    return wrapper(func)
 
