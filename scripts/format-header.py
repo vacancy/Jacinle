@@ -18,8 +18,9 @@ from jacinle.logging import get_logger
 
 logger = get_logger(__file__)
 parser = JacArgumentParser()
-parser.add_argument('files', nargs='*')
 parser.add_argument('--dir', default=os.getcwd())
+parser.add_argument('--include', nargs='*')
+parser.add_argument('--exclude', nargs='*')
 parser.add_argument('--project', default=osp.basename(os.getcwd()))
 parser.add_argument('-n', '--dry', action='store_true')
 parser.add_argument('-f', '--force', action='store_true')
@@ -137,20 +138,49 @@ def process(filename):
                 f.writelines(extras)
 
 
+def myglob(root, exclude):
+    output = list()
+    exclude = set(exclude)
+    def myglob_inner(dir):
+        nonlocal output
+
+        full_dir = osp.join(root, dir) if dir is not None else root
+        for subdir in os.listdir(full_dir):
+            if subdir.startswith('.'):
+                continue
+            subdir = osp.join(dir, subdir) if dir is not None else subdir
+            if subdir in exclude:
+                continue
+            full_subdir = osp.join(root, subdir)
+            if osp.isfile(full_subdir) and full_subdir.endswith('.py'):
+                output.append(full_subdir)
+            elif osp.isdir(full_subdir):
+                myglob_inner(subdir)
+    try:
+        myglob_inner(None)
+        return output
+    finally:
+        del myglob_inner
+
+
 def main():
     logger.critical('Working directory: {}'.format(args.dir))
     logger.critical('Project name: {}'.format(args.project))
 
-    if args.files:
-        files = list()
+    files = list()
+
+    if args.include:
         for f in args.files:
             if osp.isdir(f):
                 files.extend(glob.glob('{}/**/*.py'.format(f), recursive=True))
             else:
                 assert osp.isfile(f), f
                 files.append(f)
+
+    if args.exclude:
+        files.extend(myglob(args.dir, args.exclude))
     else:
-        files = glob.glob('{}/**/*.py'.format(args.dir), recursive=True)
+        files.exclude(glob.glob('{}/**/*.py'.format(args.dir), recursive=True))
 
     for f in files:
         logger.info('Process: "{}"'.format(f))

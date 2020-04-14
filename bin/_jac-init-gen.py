@@ -18,8 +18,17 @@ from jacinle.logging import get_logger
 logger = get_logger(__file__)
 
 
+def load_system_settings(root, config, bash_file):
+    if 'system' not in config or config['system'] is None:
+        return
+    envs = config['system'].get('envs', {})
+    for k, v in envs.items():
+        logger.info('Export system environment variable {} = {}.'.format(k, v))
+        print('export {}={}'.format(k, v), file=bash_file)
+
+
 def load_vendors(root, config, bash_file):
-    if 'vendors' not in config:
+    if 'vendors' not in config or config['vendors'] is None:
         return
 
     for k, v in config['vendors'].items():
@@ -30,7 +39,7 @@ def load_vendors(root, config, bash_file):
 
 
 def load_conda_settings(root, config, bash_file):
-    if 'conda' not in config:
+    if 'conda' not in config or config['conda'] is None:
         return
     target_env = config['conda'].get('env', '')
     if target_env != '':
@@ -60,6 +69,7 @@ def load_yml_config(root, bash_file, recursive=False):
         with open(yml_filename) as f:
             config = yaml.safe_load(f.read())
         if config is not None:
+            load_system_settings(root, config, bash_file)
             load_vendors(root, config, bash_file)
             load_conda_settings(root, config, bash_file)
 
