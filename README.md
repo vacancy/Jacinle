@@ -6,7 +6,7 @@ including project configuration, file IO, image processing, inter-process commun
 ## Installation and Usage
 Step 1: clone the Jacinle package, and add the bin path to your PATH environment.
 ```
-git clone https://github.com/vacancy/Jacinle
+git clone https://github.com/vacancy/Jacinle --recursive
 export PATH=<path_to_jacinle>/bin:$PATH
 ```
 
