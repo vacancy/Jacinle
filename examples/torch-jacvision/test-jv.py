@@ -5,6 +5,7 @@
 # Email  : maojiayuan@gmail.com
 # Date   : 01/04/2019
 #
+# This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
 import os.path as osp

@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 # File   : _inspect_mate.py
 # Author : Sanhe Hu
+# Email  : maojiayuan@gmail.com
 # Date   : 01/03/2020
-# 
-# This file is part of Jacinle
+#
+# This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
 """

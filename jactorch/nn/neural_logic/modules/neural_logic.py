@@ -5,7 +5,7 @@
 # Email  : maojiayuan@gmail.com
 # Date   : 03/28/2018
 #
-# This file is part of TextualReasoning-PyTorch.
+# This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
 import torch.nn as nn

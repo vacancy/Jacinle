@@ -1,11 +1,11 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : rotation_v2.py
+# File   : rotation.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 12/04/2019
 #
-# This file is part of MetaLMP.
+# This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
 # Copyright (c) 2009-2017, Matthew Brett and Christoph Gohlke

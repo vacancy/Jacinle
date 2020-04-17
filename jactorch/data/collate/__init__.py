@@ -5,7 +5,7 @@
 # Email  : maojiayuan@gmail.com
 # Date   : 03/09/2020
 #
-# This file is part of NSCL-PyTorch.
+# This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
 from .collate_v2 import VarLengthCollateV2

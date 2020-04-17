@@ -180,7 +180,7 @@ def main():
     if args.exclude:
         files.extend(myglob(args.dir, args.exclude))
     else:
-        files.exclude(glob.glob('{}/**/*.py'.format(args.dir), recursive=True))
+        files.extend(glob.glob('{}/**/*.py'.format(args.dir), recursive=True))
 
     for f in files:
         logger.info('Process: "{}"'.format(f))

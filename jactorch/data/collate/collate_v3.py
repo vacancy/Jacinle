@@ -3,6 +3,7 @@
 # File   : collate_v3.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com # Date   : 03/04/2018
+# Date   : 04/04/2020
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
