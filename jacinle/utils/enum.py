@@ -18,6 +18,9 @@ class JacEnum(enum.Enum):
 
     @classmethod
     def from_string(cls, value):
+        value = _canonize_enum_value(value, True)
+        if hasattr(cls, value):
+            return getattr(cls, value)
         value = _canonize_enum_value(value)
         return cls(value)
 
@@ -51,7 +54,11 @@ class JacEnum(enum.Enum):
         return self.value
 
 
-def _canonize_enum_value(value):
+def _canonize_enum_value(value, cap=False):
     if type(value) is str:
-        value = value.lower()
+        if cap:
+            value = value.upper()
+        else:
+            value = value.lower()
     return value
+
