@@ -9,10 +9,10 @@
 # Distributed under terms of the MIT license.
 
 import numpy as np
-import logic_induction
+from jaclearn.logic.propositional.logic_induction import search
 
 inputs = np.array([[0, 0], [0, 1], [1, 0], [1, 1]], dtype='uint8')
 outputs = np.array([[0], [1], [1], [0]], dtype='uint8')
 input_names = ['x', 'y']
-print(logic_induction.search(inputs, outputs, input_names))
+print(search(inputs, outputs, input_names))
 
