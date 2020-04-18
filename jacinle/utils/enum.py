@@ -8,6 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import six
 import enum
 
 __all__ = ['JacEnum']
@@ -19,7 +20,7 @@ class JacEnum(enum.Enum):
     @classmethod
     def from_string(cls, value):
         value = _canonize_enum_value(value, True)
-        if hasattr(cls, value):
+        if isinstance(value, six.string_types) and hasattr(cls, value):
             return getattr(cls, value)
         value = _canonize_enum_value(value)
         return cls(value)
@@ -55,7 +56,7 @@ class JacEnum(enum.Enum):
 
 
 def _canonize_enum_value(value, cap=False):
-    if type(value) is str:
+    if isinstance(value, six.string_types):
         if cap:
             value = value.upper()
         else:
