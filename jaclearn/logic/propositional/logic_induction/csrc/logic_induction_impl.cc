@@ -172,25 +172,43 @@ std::string LogicInduction::search() {
     for (size_t depth = 1; depth < m_config->depth; ++depth) {
         expr_arrvec new_exprs;
         if (m_config->type == GENERAL_TYPE) {
-            std::cerr << "depth=" << depth + 1 << " NOT #exprs=" << exprs[2].size()<< std::endl;
+            std::cerr << "depth=" << depth + 1 << " NOT #exprs=" << exprs[2].size() << std::endl;
             for (auto &&e: exprs[2]) {
                 new_exprs[1].emplace_back(std::shared_ptr<LogicExpression>(new Not(e)));
             }
-            std::cerr << "depth=" << depth + 1 << " NOT #exprs=" << exprs[3].size()<< std::endl;
+            std::cerr << "depth=" << depth + 1 << " NOT #exprs=" << exprs[3].size() << std::endl;
             for (auto &&e: exprs[3]) {
                 new_exprs[1].emplace_back(std::shared_ptr<LogicExpression>(new Not(e)));
             }
         }
         if (m_config->type == GENERAL_TYPE || m_config->type == CONJUNCTION_TYPE) {
-            for (int e1t: {0, 1, 3}) for (int e2t: {0, 1, 2, 3})
-            for (auto &&e1: exprs[e1t]) for (auto &&e2: exprs[e2t]) {
-                new_exprs[2].emplace_back(std::shared_ptr<LogicExpression>(new And(e1, e2)));
+            for (int e1t: {0, 1, 3}) for (int e2t: {0, 1, 2, 3}) {
+                std::cerr << "depth=" << depth + 1 << " AND #exprs=" << exprs[e1t].size() << ", " << exprs[e2t].size() << std::endl;
+                for (auto &&e1: exprs[e1t]) for (auto &&e2: exprs[e2t]) {
+                    auto e = std::shared_ptr<LogicExpression>(new And(e1, e2));
+                    if (depth < m_config->depth - 1) {
+                        new_exprs[2].emplace_back(e);
+                    } else {
+                        if (e->coverage(m_context) >= m_config -> coverage) {
+                            return e->to_string(m_context);
+                        }
+                    }
+                }
             }
         }
         if (m_config->type == GENERAL_TYPE || m_config->type == DISJUNCTION_TYPE) {
-            for (int e1t: {0, 1, 2}) for (int e2t: {0, 1, 2, 3})
-            for (auto &&e1: exprs[e1t]) for (auto &&e2: exprs[e2t]) {
-                new_exprs[3].emplace_back(std::shared_ptr<LogicExpression>(new Or(e1, e2)));
+            for (int e1t: {0, 1, 2}) for (int e2t: {0, 1, 2, 3}) {
+                std::cerr << "depth=" << depth + 1 << " OR #exprs=" << exprs[e1t].size() << ", " << exprs[e2t].size() << std::endl;
+                for (auto &&e1: exprs[e1t]) for (auto &&e2: exprs[e2t]) {
+                    auto e = std::shared_ptr<LogicExpression>(new Or(e1, e2));
+                    if (depth < m_config->depth - 1) {
+                        new_exprs[3].emplace_back(e);
+                    } else {
+                        if (e->coverage(m_context) >= m_config -> coverage) {
+                            return e->to_string(m_context);
+                        }
+                    }
+                }
             }
         }
 
