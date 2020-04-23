@@ -36,7 +36,8 @@ __all__ = [
     'load', 'load_txt', 'load_h5', 'load_pkl', 'load_pklgz', 'load_npy', 'load_npz', 'load_mat', 'load_pth',
     'dump', 'dump_pkl', 'dump_pklgz', 'dump_npy', 'dump_npz', 'dump_mat', 'dump_pth',
     'safe_dump',
-    'link', 'mkdir', 'lsdir', 'remove', 'locate_newest_file', 'io_function_registry'
+    'link', 'mkdir', 'lsdir', 'remove', 'locate_newest_file',
+    'io_function_registry'
 ]
 
 sys_open = open
@@ -200,7 +201,6 @@ def dump(file, obj, **kwargs):
     return io_function_registry.dispatch('dump', file, obj, **kwargs)
 
 
-
 def safe_dump(fname, data, use_lock=True, use_temp=True, lock_timeout=10):
     temp_fname = 'temp.' + fname
     lock_fname = 'lock.' + fname
@@ -252,7 +252,7 @@ def lsdir(dirname, pattern=None, return_type='full'):
 
     return_type = LSDirectoryReturnType.from_string(return_type)
     if pattern is not None:
-        files = glob.glob(osp.join(dirname, pattern))
+        files = glob.glob(osp.join(dirname, pattern), recursive=True)
     elif '*' in dirname:
         files = glob.glob(dirname)
     else:
@@ -283,5 +283,7 @@ def remove(file):
 
 def locate_newest_file(dirname, pattern):
     fs = lsdir(dirname, pattern, return_type='full')
+    if len(fs) == 0:
+        return None
     return max(fs, key=osp.getmtime)
 
