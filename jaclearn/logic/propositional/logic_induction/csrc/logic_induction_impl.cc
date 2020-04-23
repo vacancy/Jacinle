@@ -9,6 +9,9 @@
 
 #include "logic_induction.h"
 #include <iostream>
+#include <array>
+
+#define FAST_SEARCH
 
 const std::vector<bool> &LogicExpression::eval(LogicInductionContext *ctx) {
     if (!m_evaluated) {
@@ -89,16 +92,29 @@ std::string Or::to_string(LogicInductionContext *ctx) const {
 
 }
 
+#ifndef FAST_SEARCH
+
+static std::shared_ptr<LogicExpression> _check_solution(const std::vector<std::shared_ptr<LogicExpression>> &expr, LogicInductionContext *m_context, LogicInductionConfig *config) {
+    for (auto &&e: expr) {
+        if (e->coverage(m_context) >= m_config->coverage) {
+            return e;
+        }
+    }
+    return nullptr;
+}
+
 std::string LogicInduction::search() {
-    std::vector<std::shared_ptr<LogicExpression>> exprs;
+    using expr_vec = std::vector<std::shared_ptr<LogicExpression>>;
+    expr_vec exprs;
     for (size_t i = 0; i < m_config->nr_input_variables; ++i) {
         exprs.emplace_back(std::shared_ptr<LogicExpression>(new Literal(i, false)));
         exprs.emplace_back(std::shared_ptr<LogicExpression>(new Literal(i, true)));
     }
-    if (_check_solution(exprs)) return m_solution->to_string(m_context);
+    auto solution = _check_solution(exprs, m_context, m_config);
+    if (solution) return solution->to_string(m_context);
 
     for (size_t depth = 1; depth < m_config->depth; ++depth) {
-        std::vector<std::shared_ptr<LogicExpression>> new_exprs;
+        expr_vec new_exprs;
         if (m_config->type == GENERAL_TYPE) {
             for (auto &&e: exprs) {
                 if (e->type_str() != "NOT" and e->type_str() != "LITERAL") {
@@ -119,22 +135,77 @@ std::string LogicInduction::search() {
             }
         }
 
-        if (_check_solution(new_exprs)) return m_solution->to_string(m_context);
+        auto solution = _check_solution(new_exprs, m_context, m_config);
+        if (solution) return solution->to_string(m_context);
         exprs.insert(exprs.end(), new_exprs.begin(), new_exprs.end());
+
+        std::cerr << "depth=" << depth + 1 << " #exprs=" << exprs.size()<< std::endl;
     }
 
     return "";
 }
 
-bool LogicInduction::_check_solution(std::vector<std::shared_ptr<LogicExpression>> expr) {
-    for (auto &&e: expr) {
+#else
+
+using expr_vec = std::vector<std::shared_ptr<LogicExpression>>;
+using expr_arrvec = std::array<expr_vec, 4>;
+
+static std::shared_ptr<LogicExpression> _check_solution(const expr_arrvec &expr, LogicInductionContext *m_context, LogicInductionConfig *m_config) {
+    for (int i: {0, 1, 2, 3}) for (auto &&e: expr[i]) {
         if (e->coverage(m_context) >= m_config->coverage) {
-            m_solution = e;
-            return true;
+            return e;
         }
     }
-    return false;
+    return nullptr;
 }
+
+std::string LogicInduction::search() {
+    expr_arrvec exprs;
+    for (size_t i = 0; i < m_config->nr_input_variables; ++i) {
+        exprs[0].emplace_back(std::shared_ptr<LogicExpression>(new Literal(i, false)));
+        exprs[0].emplace_back(std::shared_ptr<LogicExpression>(new Literal(i, true)));
+    }
+
+    auto solution = _check_solution(exprs, m_context, m_config);
+    if (solution) return solution->to_string(m_context);
+
+    for (size_t depth = 1; depth < m_config->depth; ++depth) {
+        expr_arrvec new_exprs;
+        if (m_config->type == GENERAL_TYPE) {
+            std::cerr << "depth=" << depth + 1 << " NOT #exprs=" << exprs[2].size()<< std::endl;
+            for (auto &&e: exprs[2]) {
+                new_exprs[1].emplace_back(std::shared_ptr<LogicExpression>(new Not(e)));
+            }
+            std::cerr << "depth=" << depth + 1 << " NOT #exprs=" << exprs[3].size()<< std::endl;
+            for (auto &&e: exprs[3]) {
+                new_exprs[1].emplace_back(std::shared_ptr<LogicExpression>(new Not(e)));
+            }
+        }
+        if (m_config->type == GENERAL_TYPE || m_config->type == CONJUNCTION_TYPE) {
+            for (int e1t: {0, 1, 3}) for (int e2t: {0, 1, 2, 3})
+            for (auto &&e1: exprs[e1t]) for (auto &&e2: exprs[e2t]) {
+                new_exprs[2].emplace_back(std::shared_ptr<LogicExpression>(new And(e1, e2)));
+            }
+        }
+        if (m_config->type == GENERAL_TYPE || m_config->type == DISJUNCTION_TYPE) {
+            for (int e1t: {0, 1, 2}) for (int e2t: {0, 1, 2, 3})
+            for (auto &&e1: exprs[e1t]) for (auto &&e2: exprs[e2t]) {
+                new_exprs[3].emplace_back(std::shared_ptr<LogicExpression>(new Or(e1, e2)));
+            }
+        }
+
+        auto solution = _check_solution(new_exprs, m_context, m_config);
+        if (solution) return solution->to_string(m_context);
+
+        for (int i: {0, 1, 2, 3}) {
+            exprs[i].insert(exprs[i].end(), new_exprs[i].begin(), new_exprs[i].end());
+        }
+    }
+
+    return "";
+}
+
+#endif
 
 
 #if false

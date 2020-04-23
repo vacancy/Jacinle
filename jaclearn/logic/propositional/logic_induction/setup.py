@@ -20,7 +20,7 @@ ext_modules = [
         sources=['csrc/logic_induction_impl.cc', 'logic_induction.pyx'],
         include_dirs = [np.get_include(), 'src'],
         language='c++',
-        extra_compile_args=['-Wno-cpp', '-Wno-unused-function', '-std=c++14'],
+        extra_compile_args=['-Wno-cpp', '-Wno-unused-function', '-std=c++14', '-Ofast'],
     )
 ]
 

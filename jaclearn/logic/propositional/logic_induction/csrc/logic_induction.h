@@ -126,8 +126,6 @@ public:
     std::string search();
 
 private:
-    bool _check_solution(std::vector<std::shared_ptr<LogicExpression>> expr);
-
     LogicInductionConfig *m_config;
     LogicInductionContext *m_context;
     std::shared_ptr<LogicExpression> m_solution;
