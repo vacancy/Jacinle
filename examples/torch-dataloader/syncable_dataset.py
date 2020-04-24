@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : main.py
+# File   : syncable_dataset.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 08/26/2019

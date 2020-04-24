@@ -152,13 +152,16 @@ class VarLengthCollateV3(object):
 
         raise TypeError((error_msg.format(type(batch[0]))))
 
-    def _stack_raw(self, values, out, maybe_cuda):
+    def _stack_raw(self, values, out, maybe_cuda, is_concat=False):
         if self.mode is VarLengthCollateV3Mode.GATHER and maybe_cuda:
             if values[0].dim() == 0:
                 values = [o.unsqueeze(0) for o in values]
             return Gather.apply(self.gather_device, self.gather_dim, *values)
         else:
-            return torch.stack(values, 0, out=out)
+            if is_concat:
+                return torch.cat(values, 0, out=out)
+            else:
+                return torch.stack(values, 0, out=out)
 
     def _stack(self, values, spec=None, maybe_cuda=True):
         mode = spec.type if spec is not None else None
@@ -198,7 +201,7 @@ class VarLengthCollateV3(object):
             for v in values:
                 uvg.set(v.size()[1:])
             lengths = [v.size(0) for v in values]
-            return _VarLengthCollateV3ArrayStack(self._stack_raw(result, out=out, maybe_cuda=maybe_cuda), torch.LongTensor(lengths))
+            return _VarLengthCollateV3ArrayStack(self._stack_raw(values, out=out, maybe_cuda=maybe_cuda, is_concat=True), torch.LongTensor(lengths))
         elif mode is DataLayoutType.PAD:
             uvg = UniqueValueGetter('Tensor sizes should match except the first dim.')
             for v in values:
