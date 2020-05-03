@@ -25,10 +25,14 @@ from jactorch.cuda.copy import async_copy_to
 from jactorch.io import load_weights
 from jactorch.utils.meta import as_float
 
+from jaclearn.mldash import MLDashClient
+
 logger = get_logger(__file__)
 
 parser = JacArgumentParser(description='')
 parser.add_argument('--desc', required=True, type='checked_file', metavar='FILE')
+parser.add_argument('--expr', default=None, metavar='S', help='experiment name')
+parser.add_argument('--config', type='kv', nargs='*', metavar='CFG', help='extra config')
 parser.add_argument('--load', type='checked_file', default=None, metavar='FILE', help='load the weights from a pretrained model (default: none)')
 parser.add_argument('--batch-size', type=int, default=16, metavar='N', help='batch size')
 
@@ -45,14 +49,24 @@ parser.add_argument('--embed', action='store_true', help='entering embed after i
 parser.add_argument('--force-gpu', action='store_true', help='force the script to use GPUs, useful when there exists on-the-ground devices')
 
 args = parser.parse_args()
+mldash = MLDashClient('dumps')
 
-# filenames
+# TODO(Jiayuan Mao @ 05/03): change the filename settings.
 args.series_name = 'default'
 args.desc_name = escape_desc_name(args.desc)
 args.run_name = 'test-{}'.format(time.strftime('%Y-%m-%d-%H-%M-%S'))
 
 desc = load_source(args.desc)
-configs = desc.configs
+
+# NB(Jiayuan Mao @ 02/15): compatible with the old version.
+if hasattr(desc, 'configs'):
+    configs = desc.configs
+else:
+    from jacinle.config.environ_v2 import configs
+
+if args.config is not None:
+    for c in args.config:
+        c.apply(configs)
 
 if args.use_gpu:
     nr_devs = cuda.device_count()
@@ -66,24 +80,25 @@ if args.use_gpu:
 def main():
     # directories
     if not args.debug:
-        args.dump_dir = ensure_path(osp.join('dumps', args.series_name, args.desc_name))
-        args.ckpt_dir = ensure_path(osp.join(args.dump_dir, 'checkpoints'))
-        args.meta_dir = ensure_path(osp.join(args.dump_dir, 'meta'))
-        args.meta_file = osp.join(args.meta_dir, args.run_name + '.json')
-        args.log_file = osp.join(args.meta_dir, args.run_name + '.log')
-        args.meter_file = osp.join(args.meta_dir, args.run_name + '.meter.json')
+        args.dump_dir = ensure_path(osp.join('dumps', args.series_name, args.expr, args.desc_name, args.run_name))
+        args.meta_file = osp.join(args.dump_dir, 'metainfo.json')
+        args.log_file = osp.join(args.dump_dir, 'log.log')
+        args.meter_file = osp.join(args.dump_dir, 'meter.json')
+        args.vis_dir = osp.join(args.dump_dir, 'visualizations')
+
+        # Initialize the tensorboard.
+        if args.use_tb:
+            args.tb_dir = ensure_path(osp.join(args.dump_dir, 'tensorboard'))
+        else:
+            args.tb_dir = None
 
     if not args.debug:
         logger.critical('Writing logs to file: "{}".'.format(args.log_file))
         set_output_file(args.log_file)
 
-        logger.critical('Writing metainfo to file: "{}".'.format(args.meta_file))
-        with open(args.meta_file, 'w') as f:
-            f.write(dump_metainfo(args=args.__dict__, configs=configs))
-    else:
-        if args.use_tb:
-            logger.warning('Disabling the tensorboard in the debug mode.'.format(args.meta_file))
-            args.use_tb = False
+    if args.debug and args.use_tb:
+        logger.warning('Disabling the tensorboard in the debug mode.')
+        args.use_tb = False
 
     # TODO(Jiayuan Mao @ 04/23): load the dataset.
     logger.critical('Loading the dataset.')
@@ -105,8 +120,12 @@ def main():
         # Disable the cudnn benchmark.
         cudnn.benchmark = False
 
-    if load_weights(model, args.load):
-        logger.critical('Loaded weights from pretrained model: "{}".'.format(args.load))
+    parent_meta_file = None
+    if args.load is not None:
+        raw = load_weights(model, args.load, return_raw=True)
+        if raw is not None:
+            logger.critical('Loaded weights from pretrained model: "{}".'.format(args.load))
+            parent_meta_file = raw['extra']['meta_file']
 
     if args.use_tb:
         from jactorch.train.tb import TBLogger, TBGroupMeters
@@ -119,6 +138,29 @@ def main():
 
     if not args.debug:
         logger.critical('Writing meter logs to file: "{}".'.format(args.meter_file))
+
+        logger.critical('Writing metainfo to file: "{}".'.format(args.meta_file))
+        with open(args.meta_file, 'w') as f:
+            f.write(dump_metainfo(args=args.__dict__, configs=configs))
+
+        logger.critical('Initializing MLDash.')
+        mldash.init(
+            desc_name=args.series_name + '/' + args.desc_name,
+            expr_name=args.expr,
+            run_name=args.run_name,
+            args=args,
+            highlight_args=parser,
+            configs=configs,
+        )
+        mldash.update(metainfo_file=args.meta_file, log_file=args.log_file, meter_file=args.meter_file, tb_dir=args.tb_dir)
+
+        if parent_meta_file is not None:
+            try:
+                parent_run = io.load(parent_meta_file)['args']['run_name']
+                logger.critical('Setting parent run: {}.'.format(parent_run))
+                mldash.update_parent(parent_run, is_master=False)
+            except:
+                logger.exception('Exception occurred during loading metainfo.')
 
     if args.embed:
         from IPython import embed; embed()
@@ -150,7 +192,7 @@ def validate_epoch(model, val_dataloader, meters):
             output_dict = model(feed_dict)
 
             # TODO(Jiayuan Mao @ 04/26): compute the monitoring values.
-            monitors = as_float(output['monitors'])
+            monitors = as_float(output_dict['monitors'])
             step_time = time.time() - end; end = time.time()
 
             # TODO(Jiayuan Mao @ 04/23): normalize the loss/other metrics by adding n=xxx if applicable.

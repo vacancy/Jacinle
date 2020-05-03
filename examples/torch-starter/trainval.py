@@ -99,7 +99,7 @@ mldash = MLDashClient('dumps')
 def main():
     # directories
     if not args.debug:
-        args.dump_dir = ensure_path(osp.join('dumps', args.series_name, args.desc_name, args.run_name))
+        args.dump_dir = ensure_path(osp.join('dumps', args.series_name, args.expr, args.desc_name, args.run_name))
         args.ckpt_dir = ensure_path(osp.join(args.dump_dir, 'checkpoints'))
         args.vis_dir = ensure_path(osp.join(args.dump_dir, 'visualizations'))
         args.meta_file = osp.join(args.dump_dir, 'metainfo.json')

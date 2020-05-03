@@ -62,7 +62,7 @@ class HTMLTableVisualizer(object):
     def begin_html(self):
         if osp.isfile(self.visdir):
             raise FileExistsError('Visualization dir "{}" is a file.'.format(self.visdir))
-        elif osp.isdir(self.visdir):
+        elif osp.isdir(self.visdir) and osp.isfile(self.get_index_filename()):
             if yes_or_no('Visualization dir "{}" is not empty. Do you want to overwrite?'.format(self.visdir)):
                 shutil.rmtree(self.visdir)
             else:

@@ -97,7 +97,7 @@ class _KV(object):
         with print_to(logger.info):
             print('Applying KVs:')
             for k, v in self.kvs:
-                print('  kv.{} = {}.'.format(k, v))
+                print('  kv.{} = {}'.format(k, v))
                 keys = k.split('.')
                 current = configs
                 for k in keys[:-1]:
