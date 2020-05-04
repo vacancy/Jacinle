@@ -15,6 +15,7 @@ import torch
 import torch.backends.cudnn as cudnn
 import torch.cuda as cuda
 
+import jacinle.io as io
 from jacinle.cli.argument import JacArgumentParser
 from jacinle.logging import get_logger, set_output_file
 from jacinle.utils.imp import load_source
@@ -31,9 +32,9 @@ logger = get_logger(__file__)
 
 parser = JacArgumentParser(description='')
 parser.add_argument('--desc', required=True, type='checked_file', metavar='FILE')
-parser.add_argument('--expr', default=None, metavar='S', help='experiment name')
+parser.add_argument('--expr', default='default', metavar='S', help='experiment name')
 parser.add_argument('--config', type='kv', nargs='*', metavar='CFG', help='extra config')
-parser.add_argument('--load', type='checked_file', default=None, metavar='FILE', help='load the weights from a pretrained model (default: none)')
+parser.add_argument('--load', type='checked_file', default=None, metavar='FILE', help='load the weights from a pretrained model')
 parser.add_argument('--batch-size', type=int, default=16, metavar='N', help='batch size')
 
 # data related

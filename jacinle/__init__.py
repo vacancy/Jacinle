@@ -39,7 +39,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
             map_exec, filter_exec, first_n, stmap,
             method2func, map_exec_method,
             decorator_with_optional_args,
-            cond_with,
+            cond_with, cond_with_group,
             merge_iterable,
             dict_deep_update, dict_deep_kv, dict_deep_keys,
             assert_instance, assert_none, assert_notnone,

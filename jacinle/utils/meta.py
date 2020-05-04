@@ -21,7 +21,7 @@ __all__ = [
     'map_exec', 'filter_exec', 'first_n', 'stmap',
     'method2func', 'map_exec_method',
     'decorator_with_optional_args',
-    'cond_with',
+    'cond_with', 'cond_with_group',
     'merge_iterable',
     'dict_deep_update', 'dict_deep_kv', 'dict_deep_keys',
     'assert_instance', 'assert_none', 'assert_notnone',
@@ -130,8 +130,18 @@ def decorator_with_optional_args(func=None, *, is_method=False):
 @contextlib.contextmanager
 def cond_with(with_statement, cond):
     if cond:
-        with with_statement:
-            yield
+        with with_statement as res:
+            yield res
+    else:
+        yield
+
+
+@contextlib.contextmanager
+def cond_with_group(cond, *with_statement):
+    if cond:
+        with contextlib.ExitStack() as stack:
+            res = [stack.enter_context(ctx) for ctx in with_statement]
+            yield res
     else:
         yield
 

@@ -28,6 +28,7 @@ logger = get_logger(__file__)
 class JacArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('fromfile_prefix_chars', '@')
+        kwargs.setdefault('formatter_class', argparse.ArgumentDefaultsHelpFormatter)
         super().__init__(*args, **kwargs)
 
         self.register('type', 'bool', _type_bool)

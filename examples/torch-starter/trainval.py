@@ -31,22 +31,22 @@ logger = get_logger(__file__)
 parser = JacArgumentParser(description='')
 parser.add_argument('--desc', required=True, type='checked_file', metavar='FILE')
 parser.add_argument('--expr', default='default', metavar='S', help='experiment name')
-parser.add_argument('--config', type='kv', metavar='CFG', help='extra config')
+parser.add_argument('--config', type='kv', nargs='*', metavar='CFG', help='extra config')
 
 # training hyperparameters
 # TODO(Jiayuan Mao @ 07/16): set default arguments.
 parser.add_argument('--epochs', type=int, default=100, metavar='N', help='number of total epochs to run')
 parser.add_argument('--batch-size', type=int, default=32, metavar='N', help='batch size')
 parser.add_argument('--lr', type=float, default=0.001, metavar='N', help='initial learning rate')
-parser.add_argument('--iters-per-epoch', type=int, default=0, metavar='N', help='number of iterations per epoch 0=one pass of the dataset (default: 0)')
-parser.add_argument('--acc-grad', type=int, default=1, metavar='N', help='accumulated gradient (default: 1)')
-parser.add_argument('--validation-interval', type=int, default=1, metavar='N', help='validation inverval (epochs) (default: 1)')
+parser.add_argument('--iters-per-epoch', type=int, default=0, metavar='N', help='number of iterations per epoch 0=one pass of the dataset')
+parser.add_argument('--acc-grad', type=int, default=1, metavar='N', help='accumulated gradient')
+parser.add_argument('--validation-interval', type=int, default=1, metavar='N', help='validation inverval (epochs)')
 
 # finetuning and snapshot
-parser.add_argument('--load', type='checked_file', default=None, metavar='FILE', help='load the weights from a pretrained model (default: none)')
-parser.add_argument('--resume', type='checked_file', default=None, metavar='FILE', help='path to latest checkpoint (default: none)')
+parser.add_argument('--load', type='checked_file', default=None, metavar='FILE', help='load the weights from a pretrained model')
+parser.add_argument('--resume', type='checked_file', default=None, metavar='FILE', help='path to latest checkpoint')
 parser.add_argument('--start-epoch', type=int, default=0, metavar='N', help='manual epoch number')
-parser.add_argument('--save-interval', type=int, default=10, metavar='N', help='model save interval (epochs) (default: 10)')
+parser.add_argument('--save-interval', type=int, default=10, metavar='N', help='model save interval (epochs)')
 
 # evaluation only
 parser.add_argument('--evaluate', action='store_true', help='evaluate the performance of the model and exit')
@@ -83,7 +83,8 @@ else:
     from jacinle.config.environ_v2 import configs
 
 if args.config is not None:
-    args.config.apply(configs)
+    for c in args.config:
+        c.apply(configs)
 
 if args.use_gpu:
     nr_devs = cuda.device_count()
