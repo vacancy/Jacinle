@@ -81,7 +81,7 @@ if args.use_gpu:
 def main():
     # directories
     if not args.debug:
-        args.dump_dir = ensure_path(osp.join('dumps', args.series_name, args.expr, args.desc_name, args.run_name))
+        args.dump_dir = ensure_path(osp.join('dumps', args.series_name, args.desc_name, args.expr, args.run_name))
         args.meta_file = osp.join(args.dump_dir, 'metainfo.json')
         args.log_file = osp.join(args.dump_dir, 'log.log')
         args.meter_file = osp.join(args.dump_dir, 'meter.json')
