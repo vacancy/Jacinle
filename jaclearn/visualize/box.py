@@ -10,12 +10,15 @@
 
 import six
 import itertools
+import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
+from typing import List, Union, Optional
 
 __all__ = ['add_bbox_patches', 'vis_bboxes']
 
 
-def add_bbox_patches(ax, boxes, class_name, add_text=True, legends=None):
+def add_bbox_patches(ax, boxes: np.ndarray, class_name: Union[str, List[str]], add_text=True, legends: Optional[Union[str, List[str]]] = None):
     if legends is not None:
         assert len(legends) == len(boxes)
     else:
@@ -38,7 +41,7 @@ def add_bbox_patches(ax, boxes, class_name, add_text=True, legends=None):
     return ax
 
 
-def vis_bboxes(image, boxes, class_name, add_text=True, legends=None, title=None):
+def vis_bboxes(image: Image.Image, boxes: np.ndarray, class_name: Union[str, List[str]], add_text=True, legends: Optional[Union[str, List[str]]] = None, title: Optional[str] = None):
     title = title or "{} detection results".format(class_name)
 
     fig, ax = plt.subplots(figsize=(12, int(12 / image.width * image.height)))
@@ -49,3 +52,4 @@ def vis_bboxes(image, boxes, class_name, add_text=True, legends=None, title=None
     ax.axis('off')
 
     return fig, ax
+

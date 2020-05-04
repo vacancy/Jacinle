@@ -10,10 +10,12 @@
 
 import io as _io
 import numpy as np
+from PIL import Image
 
 from jacinle.image.backend import cv2, Image, opencv_only, pil_only
+from jacinle.utils.enum import JacEnum
 
-__all__ = ['plot2opencv', 'plot2pil']
+__all__ = ['plot2opencv', 'plot2pil', 'heatmap2pil']
 
 
 @opencv_only
@@ -35,3 +37,35 @@ def plot2pil(fig):
     canvas.draw()
     pil = Image.frombytes('RGB', canvas.get_width_height(), canvas.tostring_rgb())
     return pil
+
+
+class HeatmapNormalization(JacEnum):
+    NONE = 'none'
+    RANGE = 'range'
+    INSTANCE = 'instance'
+
+
+@pil_only
+def heatmap2pil(heatmap, normalization='none', minval=0, maxval=1):
+    heatmap = _to_numpy(heatmap)
+
+    normalization = HeatmapNormalization.from_string(normalization)
+    if normalization is HeatmapNormalization.NONE:
+        pass
+    elif normalization is HeatmapNormalization.MINMAX:
+        heatmap = (heatmap - minval) / (maxval - minval)
+    elif normalization is HeatmapNormalization.INSTANCE:
+        minval, maxval = heatmap.min(), heatmap.max()
+        heatmap = (heatmap - minval) / (maxval - minval)
+    else:
+        raise ValueError('Unknown heatmap normalization: {}.'.format(normalization))
+
+    return Image.fromarray((heatmap * 255).astype('uint8'))
+
+
+def _to_numpy(obj):
+    # NB(Jiayuan Mao @ 05/03): hack for pytorch tensors.
+    if hasattr(obj, 'cpu'):
+        obj = obj.cpu()
+    return np.array(obj)
+

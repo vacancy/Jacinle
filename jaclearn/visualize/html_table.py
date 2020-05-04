@@ -22,11 +22,9 @@ __all__ = ['HTMLTableColumnDesc', 'HTMLTableVisualizer']
 
 class HTMLTableColumnDesc(collections.namedtuple(
     '_HTMLTableColumnDesc', ['identifier', 'name', 'type', 'css', 'td_css'],
+    defaults=(None, None)
 )):
     pass
-
-"""DEPRECATED(Jiayuan Mao): __new__.__defaults__ has been deprecated and will be removed by 02/18/2020; we will move to defaults=xxx instead."""
-HTMLTableColumnDesc.__new__.__defaults__ = (None, None)
 
 
 class HTMLTableVisualizer(object):
@@ -102,8 +100,8 @@ class HTMLTableVisualizer(object):
             self._print('.table{}_column_{}'.format(self._table_counter, c.identifier), '{', ';'.join([k + ':' + v for k, v in css.items()]), '}')
             css = {} if c.td_css is None else c.td_css
             self._print('.table{}_td_{}'.format(self._table_counter, c.identifier), '{', ';'.join([k + ':' + v for k, v in css.items()]), '}')
-
         self._print('</style>')
+
         self._print('<h3>{}</h3>'.format(name))
         self._print('<table>')
         self._print('<tr>')

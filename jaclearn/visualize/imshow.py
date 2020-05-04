@@ -50,3 +50,4 @@ def batch_show(batch, nr_show=16, grid_desc=('4v', '4h'), resize=(600, 800), tit
     img = image_grid(batch, grid_desc)
     img = resize_minmax(img, *resize, interpolation='NEAREST')
     imshow_(title, img)
+

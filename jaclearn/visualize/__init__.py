@@ -7,3 +7,9 @@
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
+
+from .box import *
+from .imgrid import *
+from .imshow import *
+from .plot import *
+
