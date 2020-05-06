@@ -54,14 +54,10 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
 
     from jacinle import io
 
-    # For debug purpose.
-    def embed(*args, **kwargs):
-        from IPython import embed
-        embed(*args, **kwargs)
-
-    def pprint(*args, **kwargs):
-        from pprint import pprint
-        pprint(*args, **kwargs)
-
+    from IPython import embed
+    from pprint import pprint
     from sys import exit
+
+    JAC_VERBOSE = jac_is_verbose()
+    JAC_DEBUG = jac_is_debug()
 
