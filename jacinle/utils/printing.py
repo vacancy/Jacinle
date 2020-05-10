@@ -137,7 +137,7 @@ def kvprint(data, indent=0, sep=' : ', end='\n', max_key_len=None, file=None, fl
             max_len = max(lens)
         for k in keys:
             print('  ' * indent, end='')
-            print(k + ' ' * (max_len - len(k)), format_printable_data(data[k], float_format=float_format), sep=sep, end=end, file=file, flush=True)
+            print(k + ' ' * max(max_len - len(k), 0), format_printable_data(data[k], float_format=float_format), sep=sep, end=end, file=file, flush=True)
 
 
 kvprint.locks = LockRegistry()

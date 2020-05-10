@@ -49,7 +49,16 @@ class HTMLTableVisualizer(object):
         self._table_counter = 0
         self._row_counter = 0
 
-        self._current_columns = None
+        self._all_table_specs = dict()
+        self._current_table_spec_stack = list()
+
+    @property
+    def _current_table_spec(self):
+        return self._current_table_spec_stack[-1]
+
+    @property
+    def _current_columns(self):
+        return self._all_table_specs[self._current_table_spec_stack[-1]]
 
     @contextlib.contextmanager
     def html(self):
@@ -85,38 +94,55 @@ class HTMLTableVisualizer(object):
         self._index_file.close()
         self._index_file = None
 
-    @contextlib.contextmanager
-    def table(self, name, columns):
-        self.begin_table(name, columns)
-        yield self
-        self.end_table()
-
-    def begin_table(self, name, columns):
-        self._current_columns = columns
-
+    def define_table(self, columns):
+        spec_id = len(self._all_table_specs)
         self._print('<style>')
         for c in columns:
             css = {} if c.css is None else c.css
-            self._print('.table{}_column_{}'.format(self._table_counter, c.identifier), '{', ';'.join([k + ':' + v for k, v in css.items()]), '}')
+            self._print('.table{}_column_{}'.format(spec_id, c.identifier), '{', ';'.join([k + ':' + v for k, v in css.items()]), '}')
             css = {} if c.td_css is None else c.td_css
-            self._print('.table{}_td_{}'.format(self._table_counter, c.identifier), '{', ';'.join([k + ':' + v for k, v in css.items()]), '}')
+            self._print('.table{}_td_{}'.format(spec_id, c.identifier), '{', ';'.join([k + ':' + v for k, v in css.items()]), '}')
         self._print('</style>')
+        self._all_table_specs[spec_id] = columns
+        return spec_id
 
-        self._print('<h3>{}</h3>'.format(name))
+    @contextlib.contextmanager
+    def table(self, name, columns_or_spec_id):
+        self.begin_table(name, columns_or_spec_id)
+        yield self
+        self.end_table()
+
+    def begin_table(self, name, columns_or_spec_id):
+        subtable = len(self._current_table_spec_stack) > 0
+        if subtable:
+            self._print('<tr><td style="padding-left:50px" colspan="{}">'.format(len(self._current_columns)))
+
+        if isinstance(columns_or_spec_id, int):
+            self._current_table_spec_stack.append(columns_or_spec_id)
+        else:
+            self._current_table_spec_stack.append(self.define_table(columns_or_spec_id))
+
+        if name is not None:
+            self._print('<h3>{}</h3>'.format(name))
+
         self._print('<table>')
         self._print('<tr>')
-        for c in columns:
+        for c in self._current_columns:
             self._print('  <td><b>{}</b></td>'.format(c.name))
         self._print('</tr>')
 
     def end_table(self):
         self._print('</table>')
-        self._current_columns = None
+        self._current_table_spec_stack.pop()
         self._table_counter += 1
         self._row_counter = 0
 
+        subtable = len(self._current_table_spec_stack) > 0
+        if subtable:
+            self._print('</td></tr>')
+
     def row(self, *args, **kwargs):
-        assert self._current_columns is not None
+        assert len(self._current_table_spec_stack) > 0
 
         if len(args) > 0:
             assert len(kwargs) == 0 and len(args) == len(self._current_columns)
@@ -128,9 +154,9 @@ class HTMLTableVisualizer(object):
         self._print('<tr>')
         for c in self._current_columns:
             obj = kwargs[c.identifier]
-            classname = 'table{}_td_{}'.format(self._table_counter, c.identifier)
+            classname = 'table{}_td_{}'.format(self._current_table_spec, c.identifier)
             self._print('  <td class="{}">'.format(classname))
-            classname = 'table{}_column_{}'.format(self._table_counter, c.identifier)
+            classname = 'table{}_column_{}'.format(self._current_table_spec, c.identifier)
             if c.type == 'file':
                 link, alt = self.canonize_link('file', obj)
                 self._print('    <a class="{}" href="{}">{}</a>'.format(classname, link, alt))
