@@ -157,7 +157,9 @@ class HTMLTableVisualizer(object):
             classname = 'table{}_td_{}'.format(self._current_table_spec, c.identifier)
             self._print('  <td class="{}">'.format(classname))
             classname = 'table{}_column_{}'.format(self._current_table_spec, c.identifier)
-            if c.type == 'file':
+            if obj is None:
+                pass
+            elif c.type == 'file':
                 link, alt = self.canonize_link('file', obj)
                 self._print('    <a class="{}" href="{}">{}</a>'.format(classname, link, alt))
             elif c.type == 'image' or c.type == 'figure':
