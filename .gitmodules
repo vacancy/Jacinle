@@ -22,3 +22,6 @@
 [submodule "vendors/PyPatchMatch"]
 	path = vendors/PyPatchMatch
 	url = https://github.com/vacancy/PyPatchMatch
+[submodule "vendors/PyGCO/pygco_inpaint"]
+	path = vendors/PyGCO/pygco_inpaint
+	url = https://github.com/vacancy/gco_python

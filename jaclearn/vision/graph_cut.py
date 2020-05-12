@@ -9,4 +9,5 @@
 # Distributed under terms of the MIT license.
 
 from pygco import cut_general_graph, cut_grid_graph, cut_grid_graph_simple
+from pygco_inpaint import cut_simple, cut_simple_vh, cut_from_graph, cut_inpaint
 
