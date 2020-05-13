@@ -9,5 +9,4 @@ sklearn
 matplotlib
 lmdb
 tabulate
-ipython
 ipdb
