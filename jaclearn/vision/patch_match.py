@@ -8,7 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-from patch_match import inpaint
+from patch_match import inpaint, inpaint_regularity
 
-__all__ = ['inpaint']
+__all__ = ['inpaint', 'inpaint_regularity']
 
