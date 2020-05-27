@@ -14,7 +14,7 @@ from .shape import broadcast, concat_shape
 __all__ = ['meshgrid', 'meshgrid_exclude_self']
 
 
-def meshgrid(input1, input2=None, dim=1):
+def meshgrid(input1, input2=None, dim=-1):
     """Perform np.meshgrid along given axis. It will generate a new dimension after dim."""
     if input2 is None:
         input2 = input1
