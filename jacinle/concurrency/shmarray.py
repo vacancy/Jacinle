@@ -62,6 +62,19 @@ class shmarray(numpy.ndarray):
 
     def __new__(cls, ctypesArray, shape, dtype=float,
                 strides=None, offset=0, order=None):
+        """
+        Create a new array with the given shape and type.
+
+        Args:
+            cls: (todo): write your description
+            ctypesArray: (str): write your description
+            shape: (int): write your description
+            dtype: (todo): write your description
+            float: (todo): write your description
+            strides: (int): write your description
+            offset: (float): write your description
+            order: (todo): write your description
+        """
 
         # some magic (copied from numpy.ctypeslib) to make sure the ctypes array
         # has the array interface
@@ -83,6 +96,13 @@ class shmarray(numpy.ndarray):
         return obj
 
     def __array_finalize__(self, obj):
+        """
+        Finalize ctypes to ctypes.
+
+        Args:
+            self: (todo): write your description
+            obj: (todo): write your description
+        """
 
         if obj is None: return
 
@@ -96,6 +116,12 @@ class shmarray(numpy.ndarray):
         return shmarray, (self.ctypesArray, self.shape, self.dtype, self.strides)  # , self.offset, self.order)
 
     def __reduce__(self):
+        """
+        Reduce the result.
+
+        Args:
+            self: (todo): write your description
+        """
         return __reduce_ex__(self, 0)
 
 

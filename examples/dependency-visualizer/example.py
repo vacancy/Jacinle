@@ -13,6 +13,11 @@ from jaclearn.nlp.graph.dependency_visualizer import visualize_simple_svg
 
 
 def main():
+    """
+    Visualize dependency graph.
+
+    Args:
+    """
     svg = visualize_simple_svg('a b c', [(0, 1, 'tag1'), (1, 2)])
 
     from jaclearn.nlp.graph.dependency_visualizer.templates import TPL_PAGE

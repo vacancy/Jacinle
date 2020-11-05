@@ -96,6 +96,12 @@ def logits_or(x, y):
 
 
 def _safe_log(x):
+    """
+    Return the log of x.
+
+    Args:
+        x: (todo): write your description
+    """
     # mask = (x < 1e-8).float()
     # return x.clamp(min=1e-8).log() * (1 - mask) + -1e5 * mask
     return x.log()

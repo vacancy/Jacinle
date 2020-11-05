@@ -22,6 +22,15 @@ __all__ = [
 
 
 def weighted_loss(loss, target, weight, ignore_index):
+    """
+    Compute the loss.
+
+    Args:
+        loss: (todo): write your description
+        target: (todo): write your description
+        weight: (str): write your description
+        ignore_index: (bool): write your description
+    """
     if weight is not None:
         weight = weight[target]
     else:
@@ -36,6 +45,14 @@ def weighted_loss(loss, target, weight, ignore_index):
 
 
 def binary_cross_entropy_with_probs(probs, target, eps=1e-6):
+    """
+    Calculate the entropy of a binary.
+
+    Args:
+        probs: (todo): write your description
+        target: (todo): write your description
+        eps: (float): write your description
+    """
     probs_1m = 1 - probs
     target_1m = 1 - target
     loss = -target * probs.clamp(min=eps).log() - target_1m * probs_1m.clamp(min=eps).log()
@@ -44,6 +61,15 @@ def binary_cross_entropy_with_probs(probs, target, eps=1e-6):
 
 
 def pn_balanced_binary_cross_entropy_with_probs(probs, target, mask=None, eps=1e-6):
+    """
+    Calculate the binary entropy.
+
+    Args:
+        probs: (todo): write your description
+        target: (todo): write your description
+        mask: (array): write your description
+        eps: (float): write your description
+    """
     pos_mask = (target > 0.5).float()
     neg_mask = 1 - pos_mask
 
@@ -64,22 +90,54 @@ def pn_balanced_binary_cross_entropy_with_probs(probs, target, mask=None, eps=1e
 
 
 def cross_entropy_with_logits(logits, target, dim):
+    """
+    Compute the entropy.
+
+    Args:
+        logits: (todo): write your description
+        target: (todo): write your description
+        dim: (int): write your description
+    """
     log_prob = F.log_softmax(logits, dim)
     neg_xent = index_one_hot(log_prob, dim, target)
     return -neg_xent
 
 
 def l2_loss(output, target):
+    """
+    L2 loss.
+
+    Args:
+        output: (todo): write your description
+        target: (str): write your description
+    """
     return 0.5 * ((output - target) ** 2)
 
 
 def cross_entropy_with_probs(probs, target, dim=-1, eps=1e-8):
+    """
+    Calculate the cross entropy.
+
+    Args:
+        probs: (todo): write your description
+        target: (todo): write your description
+        dim: (int): write your description
+        eps: (float): write your description
+    """
     log_prob = torch.log(probs.clamp(min=eps))
     neg_xent = index_one_hot(log_prob, dim, target)
     return -neg_xent
 
 
 def smooth_l1(output, target, sigma):
+    """
+    R calculate a gaussian.
+
+    Args:
+        output: (todo): write your description
+        target: (todo): write your description
+        sigma: (float): write your description
+    """
     sigma2 = sigma * sigma
     x = output - target
     a = (x >= 1.0 / sigma2).float()
@@ -89,6 +147,13 @@ def smooth_l1(output, target, sigma):
 
 
 def cosine_loss(output, target):
+    """
+    R calculate the cosine loss.
+
+    Args:
+        output: (todo): write your description
+        target: (todo): write your description
+    """
     input1 = normalize(output, eps=1e-6)
     input2 = normalize(target, eps=1e-6)
     loss = 1 - (input1 * input2).sum(dim=-1)

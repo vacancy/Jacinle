@@ -12,12 +12,24 @@ __all__ = ['mark_freezed', 'mark_unfreezed']
 
 
 def mark_freezed(model):
+    """
+    Mark all free free free parameters as free.
+
+    Args:
+        model: (todo): write your description
+    """
     model.eval()  # Turn off all BatchNorm / Dropout
     for p in model.parameters():
         p.requires_grad = False
 
 
 def mark_unfreezed(model):
+    """
+    Mark all gradients as unfreezed.
+
+    Args:
+        model: (todo): write your description
+    """
     model.train()  # Turn on all BatchNorm / Dropout
     for p in model.parameters():
         p.requires_grad = True

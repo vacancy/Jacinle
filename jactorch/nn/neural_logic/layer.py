@@ -23,6 +23,14 @@ logger = get_logger(__file__)
 
 
 def _get_tuple_n(x, n, tp):
+    """
+    Convert a tuple to tuple.
+
+    Args:
+        x: (todo): write your description
+        n: (todo): write your description
+        tp: (todo): write your description
+    """
     assert tp is not list
     if type(x) is tp:
         x = [x, ] * n
@@ -40,6 +48,23 @@ class NeuralLogicLayer(nn.Module):
             activation='sigmoid',  # neural logic model
             use_exists=True, min_val=0., max_val=1., # neural reduction
     ):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            breadth: (todo): write your description
+            input_dims: (int): write your description
+            output_dims: (int): write your description
+            logic_model: (todo): write your description
+            logic_hidden_dim: (int): write your description
+            exclude_self: (todo): write your description
+            residual: (todo): write your description
+            activation: (str): write your description
+            use_exists: (bool): write your description
+            min_val: (float): write your description
+            max_val: (float): write your description
+        """
         super().__init__()
         if breadth > 3:
             logger.warn('Using LogicLayer with breadth > 3 may cause speed and memory issue.')
@@ -85,6 +110,14 @@ class NeuralLogicLayer(nn.Module):
                 self.output_dims[i] += input_dims[i]
 
     def forward(self, inputs, inputs_length_or_mask=None):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            inputs: (todo): write your description
+            inputs_length_or_mask: (todo): write your description
+        """
         assert len(inputs) > 1, 'Does not support breadth == 0.'
         assert len(inputs) == self.max_order + 1
         outputs = []
@@ -134,6 +167,15 @@ class NeuralLogicLayer(nn.Module):
 
     @classmethod
     def make_prog_block_parser(cls, parser, defaults, prefix=None):
+        """
+        Creates a default parser that parser.
+
+        Args:
+            cls: (todo): write your description
+            parser: (todo): write your description
+            defaults: (dict): write your description
+            prefix: (str): write your description
+        """
         for k, v in cls.__hyperparam_defaults__.items():
             defaults.setdefault(k, v)
 
@@ -157,6 +199,15 @@ class NeuralLogicLayer(nn.Module):
 
     @classmethod
     def from_args(cls, input_dims, output_dims, args, prefix=None, **kwargs):
+        """
+        Create a new instance of this class from an existing parameters.
+
+        Args:
+            cls: (todo): write your description
+            input_dims: (todo): write your description
+            output_dims: (todo): write your description
+            prefix: (str): write your description
+        """
         if prefix is None:
             prefix = ''
         else:
@@ -177,6 +228,26 @@ class NeuralLogicMachine(nn.Module):
             residual=False, io_residual=False, connections=None, activation='sigmoid',
             min_val=0., max_val=1., use_exists=True
     ):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            depth: (float): write your description
+            breadth: (todo): write your description
+            input_dims: (int): write your description
+            output_dims: (int): write your description
+            logic_model: (todo): write your description
+            logic_hidden_dim: (int): write your description
+            exclude_self: (todo): write your description
+            residual: (todo): write your description
+            io_residual: (todo): write your description
+            connections: (todo): write your description
+            activation: (str): write your description
+            min_val: (float): write your description
+            max_val: (float): write your description
+            use_exists: (bool): write your description
+        """
         super().__init__()
         self.depth = depth
         self.breadth = breadth
@@ -190,6 +261,13 @@ class NeuralLogicMachine(nn.Module):
         assert not (self.residual and self.io_residual)
 
         def add_(x, y):
+            """
+            Add two lists of x y * y * y *.
+
+            Args:
+                x: (int): write your description
+                y: (int): write your description
+            """
             for i in range(len(y)):
                 x[i] += y[i]
             return x
@@ -214,6 +292,15 @@ class NeuralLogicMachine(nn.Module):
             self.output_dims = current_dims
 
     def _mask(self, a, i, masked_value):
+        """
+        Mask the mask of a given mask.
+
+        Args:
+            self: (todo): write your description
+            a: (str): write your description
+            i: (str): write your description
+            masked_value: (array): write your description
+        """
         if self.connections is not None:
             assert i < len(self.connections)
             mask = self.connections[i]
@@ -223,6 +310,15 @@ class NeuralLogicMachine(nn.Module):
         return a
 
     def forward(self, inputs, inputs_length_or_mask=None, depth=None):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            inputs: (todo): write your description
+            inputs_length_or_mask: (todo): write your description
+            depth: (todo): write your description
+        """
         outputs = [None for _ in range(self.breadth + 1)]
         f = inputs
 
@@ -231,6 +327,13 @@ class NeuralLogicMachine(nn.Module):
             assert depth <= self.depth
 
         def merge(x, y):
+            """
+            Merge two lists.
+
+            Args:
+                x: (str): write your description
+                y: (str): write your description
+            """
             if x is None:
                 return y
             if y is None:
@@ -267,6 +370,15 @@ class NeuralLogicMachine(nn.Module):
 
     @classmethod
     def make_prog_block_parser(cls, parser, defaults, prefix=None):
+        """
+        Creates a parser that creates a parser.
+
+        Args:
+            cls: (todo): write your description
+            parser: (todo): write your description
+            defaults: (dict): write your description
+            prefix: (str): write your description
+        """
         for k, v in cls.__hyperparam_defaults__.items():
             defaults.setdefault(k, v)
 
@@ -294,6 +406,15 @@ class NeuralLogicMachine(nn.Module):
 
     @classmethod
     def from_args(cls, input_dims, output_dims, args, prefix=None, **kwargs):
+        """
+        Create a new instance of this class from an existing parameters.
+
+        Args:
+            cls: (todo): write your description
+            input_dims: (todo): write your description
+            output_dims: (todo): write your description
+            prefix: (str): write your description
+        """
         if prefix is None:
             prefix = ''
         else:

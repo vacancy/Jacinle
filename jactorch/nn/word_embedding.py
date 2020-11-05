@@ -17,6 +17,15 @@ __all__ = ['WordEmbedding']
 
 class WordEmbedding(nn.Module):
     def __init__(self, word_embeddings, nr_extra_words, fake=False):
+        """
+        Initialize embeddings. : param word_embed : np.
+
+        Args:
+            self: (todo): write your description
+            word_embeddings: (todo): write your description
+            nr_extra_words: (str): write your description
+            fake: (todo): write your description
+        """
         super().__init__()
         self.nr_words = word_embeddings.shape[0]
         self.nr_extra_words = nr_extra_words
@@ -36,6 +45,12 @@ class WordEmbedding(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
+        """
+        Reset embeddings.
+
+        Args:
+            self: (todo): write your description
+        """
         if not self.fake:
             self.extra_word_embeddings.data.normal_(
                 self.word_embeddings.data.mean(),
@@ -44,8 +59,21 @@ class WordEmbedding(nn.Module):
 
     @property
     def weight(self):
+        """
+        The weight of the weight.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.impl.weight
 
     def forward(self, words):
+        """
+        Forward the given word.
+
+        Args:
+            self: (todo): write your description
+            words: (todo): write your description
+        """
         return self.impl(words)
 

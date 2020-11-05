@@ -20,6 +20,18 @@ logger = get_logger(__file__)
 
 class TorchService(Service):
     def load_model(self, desc, load, use_gpu, gpu_parallel=False, gpu_ids=None, cudnn_benchmark=False, args=None, **kwargs):
+        """
+        Load a model from disk.
+
+        Args:
+            self: (str): write your description
+            desc: (str): write your description
+            load: (str): write your description
+            use_gpu: (bool): write your description
+            gpu_parallel: (str): write your description
+            gpu_ids: (str): write your description
+            cudnn_benchmark: (str): write your description
+        """
         model = desc.make_model(args, **kwargs)
 
         if use_gpu:

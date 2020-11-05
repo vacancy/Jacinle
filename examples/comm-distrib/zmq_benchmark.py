@@ -23,12 +23,24 @@ counter = itertools.count()
 
 
 def recv_thread(q):
+    """
+    Receive a thread from the queue.
+
+    Args:
+        q: (todo): write your description
+    """
     while True:
         q.recv()
         next(counter)
 
 
 def mainloop_pull(q):
+    """
+    The main loop.
+
+    Args:
+        q: (todo): write your description
+    """
     current = next(counter)
     prob_interval = 1
 
@@ -45,6 +57,13 @@ def mainloop_pull(q):
 
 
 def mainloop_push(worker_id, pipe):
+    """
+    Push a worker to the worker.
+
+    Args:
+        worker_id: (str): write your description
+        pipe: (todo): write your description
+    """
     print('Initialized: worker_id=#{}.'.format(worker_id))
     with pipe.activate():
         while True:
@@ -54,6 +73,11 @@ def mainloop_push(worker_id, pipe):
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     pull, pushs = make_gather_pair('jaincle-test', nr_workers=1, mode='tcp')
     push_procs = [mp.Process(target=mainloop_push, args=(i, p)) for i, p in enumerate(pushs)]
     map_exec_method('start', push_procs)

@@ -25,6 +25,16 @@ __all__ = ['ResNet', 'make_resnet',
 
 class ResNet(nn.Module):
     def __init__(self, block, layers, incl_gap=False, num_classes=1000):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            block: (todo): write your description
+            layers: (list): write your description
+            incl_gap: (todo): write your description
+            num_classes: (int): write your description
+        """
         super(ResNet, self).__init__()
 
         self.incl_gap = incl_gap
@@ -46,9 +56,25 @@ class ResNet(nn.Module):
             self.fc = nn.Linear(512 * block.expansion, num_classes)
 
     def reset_parameters(self):
+        """
+        Reset all parameters.
+
+        Args:
+            self: (todo): write your description
+        """
         return reset_resnet_parameters(self)
 
     def _make_layer(self, block, planes, blocks, stride=1):
+        """
+        Make a layer.
+
+        Args:
+            self: (todo): write your description
+            block: (todo): write your description
+            planes: (todo): write your description
+            blocks: (todo): write your description
+            stride: (int): write your description
+        """
         downsample = None
         if stride != 1 or self.inplanes != planes * block.expansion:
             downsample = nn.Sequential(
@@ -66,6 +92,13 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
+        """
+        Perform forward computation.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -104,6 +137,15 @@ model_urls = {
 
 
 def make_resnet(net_id, pretrained, incl_gap=True, num_classes=1000):
+    """
+    Make a resnet model.
+
+    Args:
+        net_id: (str): write your description
+        pretrained: (bool): write your description
+        incl_gap: (todo): write your description
+        num_classes: (int): write your description
+    """
     model = ResNet(*cfgs[net_id], incl_gap=incl_gap, num_classes=num_classes)
     if pretrained:
         pretrained_model = model_zoo.load_url(model_urls[net_id])
@@ -119,6 +161,12 @@ def make_resnet(net_id, pretrained, incl_gap=True, num_classes=1000):
 
 
 def make_resnet_contructor(net_id):
+    """
+    Make a resnet_id
+
+    Args:
+        net_id: (str): write your description
+    """
     func = functools.partial(make_resnet, net_id=net_id)
     func.__name__ = net_id
     func.__doc__ = net_id.replace('resnet', 'ResNet-')
@@ -133,6 +181,14 @@ resnet152 = make_resnet_contructor('resnet152')
 
 
 def reset_resnet_parameters(m, fc_std=0.01, bfc_std=0.001):
+    """
+    Reset parameters.
+
+    Args:
+        m: (todo): write your description
+        fc_std: (todo): write your description
+        bfc_std: (todo): write your description
+    """
     if isinstance(m, nn.Conv2d):
         n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
         m.weight.data.normal_(0, math.sqrt(2. / n))

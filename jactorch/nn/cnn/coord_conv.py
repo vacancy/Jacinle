@@ -25,6 +25,15 @@ __all__ = ['CoordConv']
 
 class CoordConv(nn.Module):
     def __init__(self, in_channels, out_channels, *args, use_radius=False, **kwargs):
+        """
+        Initialize the channel.
+
+        Args:
+            self: (todo): write your description
+            in_channels: (int): write your description
+            out_channels: (int): write your description
+            use_radius: (bool): write your description
+        """
         super().__init__()
 
         self.addcoords = _AddCoords(use_radius=use_radius)
@@ -32,6 +41,13 @@ class CoordConv(nn.Module):
         self.conv = nn.Conv2d(in_channels, out_channels, *args, **kwargs)
 
     def forward(self, x):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         f = self.addcoords(x)
         f = self.conv(f)
         return f
@@ -39,15 +55,35 @@ class CoordConv(nn.Module):
 
 class _AddCoords(nn.Module):
     def __init__(self, use_radius=False):
+        """
+        Initialize the radius.
+
+        Args:
+            self: (todo): write your description
+            use_radius: (bool): write your description
+        """
         super().__init__()
 
         self.use_radius = use_radius
         self.extra_channels = 3 if self.use_radius else 2
 
     def forward(self, input):
+        """
+        Perform forward computation.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+        """
         batch_size, _, h, w = input.size()
 
         def gen(length):
+            """
+            Generate a generator
+
+            Args:
+                length: (int): write your description
+            """
             return -1 + torch.arange(length, dtype=input.dtype, device=input.device) / (length - 1) * 2
 
         results = [input]

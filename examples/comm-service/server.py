@@ -13,12 +13,24 @@ from jacinle.comm.service import Service
 
 class MyService(Service):
     def call(self, inp):
+        """
+        Execute the call.
+
+        Args:
+            self: (todo): write your description
+            inp: (todo): write your description
+        """
         out = inp['a'] + inp['b']
         print('Server string: {} {}.'.format(inp['a'], inp['b']))
         return dict(out=out)
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     s = MyService()
     s.serve_socket(tcp_port=[31001, 31002])
 

@@ -33,6 +33,13 @@ class MorphologyKernelType(JacEnum):
 
 
 def get_morphology_kernel(shape, kernel_size):
+    """
+    Get kernel kernel.
+
+    Args:
+        shape: (int): write your description
+        kernel_size: (int): write your description
+    """
     shape = MorphologyKernelType.from_string(shape)
     kernel_size = get_2dshape(kernel_size)
 
@@ -59,6 +66,12 @@ def get_morphology_kernel(shape, kernel_size):
 
 
 def _cvt_morphology_kernel(kernel):
+    """
+    Cvt kernel.
+
+    Args:
+        kernel: (todo): write your description
+    """
     tot_size = kernel.size(0) * kernel.size(1)
     indices = torch.arange(tot_size)
     flatten_kernel = kernel.view(-1)
@@ -71,12 +84,28 @@ def _cvt_morphology_kernel(kernel):
 
 class MorphologyOp(nn.Module):
     def __init__(self, kernel_size, shape='rect'):
+        """
+        Initialize kernel.
+
+        Args:
+            self: (todo): write your description
+            kernel_size: (int): write your description
+            shape: (int): write your description
+        """
         super().__init__()
         kernel = get_morphology_kernel(shape, kernel_size)
         kernel = _cvt_morphology_kernel(kernel)
         self.register_buffer('kernel', kernel)
 
     def forward_morphology(self, image, op=None):
+        """
+        Forwardology to be a single image.
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+            op: (todo): write your description
+        """
         k = self.kernel
         if image.dim() == 2:
             expanded = F.conv2d(image.unsqueeze(0).unsqueeze(0), k, padding=(k.shape[2] // 2, k.shape[3] // 2))
@@ -98,77 +127,210 @@ class MorphologyOp(nn.Module):
             return result
 
     def erode(self, image):
+        """
+        Erode an image.
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         return self.forward_morphology(image, torch.min)
 
     def dilate(self, image):
+        """
+        Dilate the image.
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         return self.forward_morphology(image, torch.max)
 
     def open(self, image):
+        """
+        Opens an image.
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         return self.dilate(self.erode(image))
 
     def close(self, image):
+        """
+        Closes an image.
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         return self.erode(self.dilate(image))
 
 
 class Erosion(MorphologyOp):
     def forward(self, image):
+        """
+        Forward image
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         return self.erode(image)
 
 
 class Dilation(MorphologyOp):
     def forward(self, image):
+        """
+        Forward image : image
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         return self.dilate(image)
 
 
 class Opening(MorphologyOp):
     def forward(self, image):
+        """
+        Forward an image
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         return self.open(image)
 
 
 class Closing(MorphologyOp):
     def forward(self, image):
+        """
+        Forward an image
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         return self.close(image)
 
 
 class MorphologicalGradient(MorphologyOp):
     def forward(self, image):
+        """
+        Parameters ---------- image : image
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         return self.dilate(image) - self.erode(image)
 
 
 class TopHat(MorphologyOp):
     def forward(self, image):
+        """
+        Forward an image
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         return image - self.open(image)
 
 
 class BlackHat(MorphologyOp):
     def forward(self, image):
+        """
+        Forward an image
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         return self.close(image) - image
 
 
 def erode(image, kernel_size, shape='rect'):
+    """
+    Erase an image to an image.
+
+    Args:
+        image: (array): write your description
+        kernel_size: (int): write your description
+        shape: (int): write your description
+    """
     return Erosion(kernel_size, shape).to(image.device)(image)
 
 
 def dilate(image, kernel_size, shape='rect'):
+    """
+    Dilate an image.
+
+    Args:
+        image: (array): write your description
+        kernel_size: (int): write your description
+        shape: (int): write your description
+    """
     return Dilation(kernel_size, shape).to(image.device)(image)
 
 
 def open(image, kernel_size, shape='rect'):
+    """
+    Open an image.
+
+    Args:
+        image: (array): write your description
+        kernel_size: (int): write your description
+        shape: (int): write your description
+    """
     return Opening(kernel_size, shape).to(image.device)(image)
 
 
 def close(image, kernel_size, shape='rect'):
+    """
+    Close an image
+
+    Args:
+        image: (array): write your description
+        kernel_size: (int): write your description
+        shape: (int): write your description
+    """
     return Closing(kernel_size, shape).to(image.device)(image)
 
 
 def morph_grad(image, kernel_size, shape='rect'):
+    """
+    Morphological gradient.
+
+    Args:
+        image: (array): write your description
+        kernel_size: (int): write your description
+        shape: (int): write your description
+    """
     return MorphologicalGradient(kernel_size, shape).to(image.device)(image)
 
 
 def top_hat(image, kernel_size, shape='rect'):
+    """
+    Return an image.
+
+    Args:
+        image: (array): write your description
+        kernel_size: (int): write your description
+        shape: (int): write your description
+    """
     return TopHat(kernel_size, shape).to(image.device)(image)
 
 
 def black_hat(image, kernel_size, shape='rect'):
+    """
+    BlackHat kernel.
+
+    Args:
+        image: (array): write your description
+        kernel_size: (int): write your description
+        shape: (int): write your description
+    """
     return BlackHat(kernel_size, shape).to(image.device)(image)
 

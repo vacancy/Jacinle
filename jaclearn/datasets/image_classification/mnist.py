@@ -21,6 +21,14 @@ __all__ = ['load_mnist']
 def load_mnist(data_dir,
                data_file='mnist.pkl.gz',
                origin='http://www.iro.umontreal.ca/~lisa/deep/data/mnist/mnist.pkl.gz'):
+    """
+    Load the mnist dataset.
+
+    Args:
+        data_dir: (str): write your description
+        data_file: (str): write your description
+        origin: (str): write your description
+    """
 
     dataset = osp.join(data_dir, data_file)
 

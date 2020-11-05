@@ -19,6 +19,13 @@ __all__ = ['imread', 'imwrite', 'imshow']
 
 
 def imread(path, *, shuffle=False):
+    """
+    Reads an image from a file.
+
+    Args:
+        path: (str): write your description
+        shuffle: (bool): write your description
+    """
     if not osp.exists(path):
         return None
     i = backend.imread(path)
@@ -30,12 +37,28 @@ def imread(path, *, shuffle=False):
 
 
 def imwrite(path, img, *, shuffle=False):
+    """
+    Write an image to disk.
+
+    Args:
+        path: (str): write your description
+        img: (array): write your description
+        shuffle: (bool): write your description
+    """
     if shuffle:
         img = dimshuffle(img, 'channel_last')
     backend.imwrite(path, img)
 
 
 def imshow(title, img, *, shuffle=False):
+    """
+    Display an image
+
+    Args:
+        title: (str): write your description
+        img: (array): write your description
+        shuffle: (bool): write your description
+    """
     if shuffle:
         img = dimshuffle(img, 'channel_last')
     backend.imshow(title, img)

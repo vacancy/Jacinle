@@ -79,6 +79,11 @@ if args.use_gpu:
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     # directories
     if not args.debug:
         args.dump_dir = ensure_path(osp.join('dumps', args.series_name, args.desc_name, args.expr, args.run_name))
@@ -181,6 +186,14 @@ def main():
 
 
 def validate_epoch(model, val_dataloader, meters):
+    """
+    Validate the model.
+
+    Args:
+        model: (str): write your description
+        val_dataloader: (todo): write your description
+        meters: (todo): write your description
+    """
     end = time.time()
     with tqdm_pbar(total=len(val_dataloader)) as pbar:
         for feed_dict in val_dataloader:

@@ -23,6 +23,16 @@ class LearnedPositionalEmbedding(nn.Embedding):
     """
 
     def __init__(self, num_embeddings, embedding_dim, padding_idx=0, left_pad=False):
+        """
+        Initialize the embeddings.
+
+        Args:
+            self: (todo): write your description
+            num_embeddings: (int): write your description
+            embedding_dim: (int): write your description
+            padding_idx: (str): write your description
+            left_pad: (str): write your description
+        """
         super().__init__(num_embeddings, embedding_dim, padding_idx)
         self.left_pad = left_pad
 

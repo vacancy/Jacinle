@@ -13,6 +13,11 @@ from jacinle.utils.enum import JacEnum
 
 
 def use_shared_memory():
+    """
+    Retrieve shared memory memory.
+
+    Args:
+    """
     if torch.__version__ < '1.1':
         import torch.utils.data.dataloader as torchdl
         return torchdl._use_shared_memory

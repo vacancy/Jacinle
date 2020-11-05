@@ -16,6 +16,12 @@ from jacinle.utils.meta import map_exec_method
 
 
 def mainloop_push(pipe):
+    """
+    The main loop
+
+    Args:
+        pipe: (todo): write your description
+    """
     with pipe.activate():
         while True:
             msg = dict(text='Hello world!', time=time.strftime('%H:%M:%S'))
@@ -25,6 +31,13 @@ def mainloop_push(pipe):
 
 
 def mainloop_pull(worker_id, pipe):
+    """
+    The main loop.
+
+    Args:
+        worker_id: (str): write your description
+        pipe: (todo): write your description
+    """
     print('Initialized: worker_id=#{}.'.format(worker_id))
     try:
         with pipe.activate():
@@ -38,6 +51,11 @@ def mainloop_pull(worker_id, pipe):
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     push, pulls = make_broadcast_pair('jaincle-test', nr_workers=1, mode='ipc')
     pull_procs = [mp.Process(target=mainloop_pull, args=(i, p)) for i, p in enumerate(pulls)]
     map_exec_method('start', pull_procs)

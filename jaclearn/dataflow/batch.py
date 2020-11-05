@@ -24,6 +24,14 @@ __all__ = ['BatchDataFlow', 'EpochDataFlow']
 
 
 def batch_default_filler(buffer, idx, val):
+    """
+    Go through a buffer into a buffer.
+
+    Args:
+        buffer: (todo): write your description
+        idx: (int): write your description
+        val: (todo): write your description
+    """
     for k, v in gofor(val):
         if k in buffer:
             buffer[k][idx] = v
@@ -37,6 +45,17 @@ class BatchDataFlow(SimpleDataFlowBase):
     _stop_event = None
 
     def __init__(self, source, batch_size, sample_dict, filler=batch_default_filler):
+        """
+        Initialize a batch.
+
+        Args:
+            self: (todo): write your description
+            source: (str): write your description
+            batch_size: (int): write your description
+            sample_dict: (dict): write your description
+            filler: (str): write your description
+            batch_default_filler: (str): write your description
+        """
         super().__init__()
         self._source = source
         self._batch_size = batch_size
@@ -44,19 +63,43 @@ class BatchDataFlow(SimpleDataFlowBase):
         self._filler = filler
 
     def _initialize(self):
+        """
+        Initialize the buffer.
+
+        Args:
+            self: (todo): write your description
+        """
         self._initialize_buffer()
         self._initialize_filler()
 
     def _initialize_buffer(self):
+        """
+        Initialize the buffer.
+
+        Args:
+            self: (todo): write your description
+        """
         self._buffer = [deepcopy(self._sample_dict) for _ in range(2)]
 
     def _initialize_filler(self):
+        """
+        Initialize the event loop.
+
+        Args:
+            self: (todo): write your description
+        """
         self._cond = [MTBooleanEvent() for _ in range(2)]
         self._stop_event = Event()
         self._filler_thread = Thread(target=self._filler_mainloop, name=str(self) + ':filler', daemon=True)
         self._filler_thread.start()
 
     def _filler_mainloop(self):
+        """
+        The main loop.
+
+        Args:
+            self: (todo): write your description
+        """
         current = 0
         it = iter(self._source)
         try:
@@ -73,6 +116,12 @@ class BatchDataFlow(SimpleDataFlowBase):
             self._stop_event.set()
 
     def _gen(self):
+        """
+        Generate a generator that yields the next item.
+
+        Args:
+            self: (todo): write your description
+        """
         current = 0
         while True:
             self._cond[current].wait_true()
@@ -83,20 +132,46 @@ class BatchDataFlow(SimpleDataFlowBase):
             current = 1 - current
 
     def _len(self):
+        """
+        Returns the length of the batch.
+
+        Args:
+            self: (todo): write your description
+        """
         length = len(self._source)
         return None if length is None else length // self._batch_size
 
 
 class EpochDataFlow(SimpleDataFlowBase):
     def __init__(self, source, epoch_size):
+        """
+        Initialize a new epoch.
+
+        Args:
+            self: (todo): write your description
+            source: (str): write your description
+            epoch_size: (int): write your description
+        """
         self._source = source
         self._source_iter = None
         self._epoch_size = epoch_size
 
     def _initialize(self):
+        """
+        Initialize the source.
+
+        Args:
+            self: (todo): write your description
+        """
         self._source_iter = iter(self._source)
 
     def _gen(self):
+        """
+        Generate an iterator that yields each epoch.
+
+        Args:
+            self: (todo): write your description
+        """
         for i in range(self._epoch_size):
             try:
                 yield next(self._source_iter)
@@ -104,4 +179,10 @@ class EpochDataFlow(SimpleDataFlowBase):
                 return
 
     def _len(self):
+        """
+        The number of the number.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._epoch_size

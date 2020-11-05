@@ -52,6 +52,14 @@ def exclude_mask(input, cnt=2, dim=1):
 
 
 def mask_value(input, mask, value):
+    """
+    Mask a mask.
+
+    Args:
+        input: (array): write your description
+        mask: (array): write your description
+        value: (todo): write your description
+    """
     assert input.dim() == mask.dim()
     return input * mask + value * (1 - mask)
 

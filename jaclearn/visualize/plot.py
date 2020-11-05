@@ -33,6 +33,12 @@ def plot2opencv(fig):
 
 @pil_only
 def plot2pil(fig):
+    """
+    Plot the pilio figure.
+
+    Args:
+        fig: (todo): write your description
+    """
     canvas = fig.canvas
     canvas.draw()
     pil = Image.frombytes('RGB', canvas.get_width_height(), canvas.tostring_rgb())
@@ -47,6 +53,15 @@ class HeatmapNormalization(JacEnum):
 
 @pil_only
 def heatmap2pil(heatmap, normalization='none', minval=0, maxval=1):
+    """
+    Convert a pil image to a pil image.
+
+    Args:
+        heatmap: (array): write your description
+        normalization: (todo): write your description
+        minval: (float): write your description
+        maxval: (int): write your description
+    """
     heatmap = _to_numpy(heatmap)
 
     normalization = HeatmapNormalization.from_string(normalization)
@@ -64,6 +79,12 @@ def heatmap2pil(heatmap, normalization='none', minval=0, maxval=1):
 
 
 def _to_numpy(obj):
+    """
+    Convert obj to numpy. ndumpy.
+
+    Args:
+        obj: (todo): write your description
+    """
     # NB(Jiayuan Mao @ 05/03): hack for pytorch tensors.
     if hasattr(obj, 'cpu'):
         obj = obj.cpu()

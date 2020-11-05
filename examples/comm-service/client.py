@@ -14,6 +14,11 @@ from jacinle.comm.service import SocketClient
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     client = SocketClient('client', ['tcp://127.0.0.1:31001', 'tcp://127.0.0.1:31002'])
     with client.activate():
         inp = dict(a=1, b=2)

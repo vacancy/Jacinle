@@ -15,19 +15,45 @@ from .custom_optimizer import CustomizedOptimizer
 
 class AccumGrad(CustomizedOptimizer):
     def __init__(self, base_optimizer, nr_acc):
+        """
+        Initialize the optimizer.
+
+        Args:
+            self: (todo): write your description
+            base_optimizer: (todo): write your description
+            nr_acc: (todo): write your description
+        """
         self._base_optimizer = base_optimizer
         self._nr_acc = nr_acc
         self._current = 0
 
     @property
     def state(self):
+        """
+        : return : return state of the optimizer.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._base_optimizer.state
 
     @property
     def param_groups(self):
+        """
+        Return a list of the param_groups of this parameter.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._base_optimizer.param_groups
 
     def state_dict(self):
+        """
+        Return the current state of the current state.
+
+        Args:
+            self: (todo): write your description
+        """
         # TODO(Jiayuan Mao @ 05/08): use a separate method to store all grad_buffer.
         return {
             'base_optimizer': self._base_optimizer.state_dict(),
@@ -35,13 +61,33 @@ class AccumGrad(CustomizedOptimizer):
         }
 
     def load_state_dict(self, state_dict):
+        """
+        Loads the optimizer from a dictionary.
+
+        Args:
+            self: (todo): write your description
+            state_dict: (dict): write your description
+        """
         self._current = state_dict['current']
         return self._base_optimizer.load_state_dict(state_dict['base_optimizer'])
 
     def zero_grad(self):
+        """
+        The number of the gradient
+
+        Args:
+            self: (todo): write your description
+        """
         return self._base_optimizer.zero_grad()
 
     def step(self, closure=None):
+        """
+        Perform an optimizer.
+
+        Args:
+            self: (todo): write your description
+            closure: (callable): write your description
+        """
         loss = None
         if closure is not None:
             loss = closure()

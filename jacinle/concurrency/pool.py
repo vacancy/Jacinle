@@ -35,12 +35,31 @@ class _ResultType(JacEnum):
 
 class Pool(object):
     def Queue(self, *args, **kwargs):
+        """
+        Create a : class from the queue.
+
+        Args:
+            self: (todo): write your description
+        """
         return mp.Queue(*args, **kwargs)
 
     def Process(self, *args, **kwargs):
+        """
+        Wrap the process.
+
+        Args:
+            self: (todo): write your description
+        """
         return mp.Process(*args, **kwargs)
 
     def __init__(self, nr_workers=None):
+        """
+        Initialize workers.
+
+        Args:
+            self: (todo): write your description
+            nr_workers: (todo): write your description
+        """
         if nr_workers is None:
             nr_workers = mp.cpu_count()
         self._nr_workers = nr_workers
@@ -55,6 +74,12 @@ class Pool(object):
         self.__started = False
 
     def start(self):
+        """
+        Start the worker threads.
+
+        Args:
+            self: (todo): write your description
+        """
         assert not self.__started
         self._task_queue = self.Queue(maxsize=self._nr_workers * 8)
         self._result_queue = self.Queue(maxsize=self._nr_workers * 8)
@@ -70,15 +95,34 @@ class Pool(object):
         self.__started = True
 
     def try_start(self):
+        """
+        Try to start the task.
+
+        Args:
+            self: (todo): write your description
+        """
         if not self.__started:
             self.start()
 
     def terminate(self):
+        """
+        Terminates the worker threads.
+
+        Args:
+            self: (todo): write your description
+        """
         self._task_dispatcher_queue.put(None)
         self._task_dispatcher_thread.join()
         map_exec_method('join', self._worker_pool)
 
     def _worker(self, worker_id):
+        """
+        Process a worker.
+
+        Args:
+            self: (todo): write your description
+            worker_id: (str): write your description
+        """
         while True:
             task = self._task_queue.get()
             if task is None:
@@ -95,6 +139,12 @@ class Pool(object):
                 self._result_queue.put(('exc', format_exc(sys.exc_info())))
 
     def _task_dispatcher(self):
+        """
+        Process the queued tasks.
+
+        Args:
+            self: (todo): write your description
+        """
         while True:
             task_desc = self._task_dispatcher_queue.get()
             if task_desc is None:
@@ -117,6 +167,17 @@ class Pool(object):
             self._result_queue.put(('count', nr_total))
 
     def map(self, func, iterable, chunksize=1, sort=True, callback=None):
+        """
+        Map an iterable function.
+
+        Args:
+            self: (todo): write your description
+            func: (todo): write your description
+            iterable: (todo): write your description
+            chunksize: (int): write your description
+            sort: (callable): write your description
+            callback: (todo): write your description
+        """
         self.try_start()
         self._task_dispatcher_queue.put((func, iterable, chunksize))
 
@@ -151,6 +212,22 @@ class TQDMPool(Pool):
             chunksize=1, sort=True, total=None, desc='', callback=None,
             use_tqdm=True, update_interval=0.1, update_iters=1, **kwargs
     ):
+        """
+        Map a function over an iterable iterable.
+
+        Args:
+            self: (todo): write your description
+            func: (todo): write your description
+            iterable: (todo): write your description
+            chunksize: (int): write your description
+            sort: (callable): write your description
+            total: (str): write your description
+            desc: (str): write your description
+            callback: (todo): write your description
+            use_tqdm: (bool): write your description
+            update_interval: (int): write your description
+            update_iters: (int): write your description
+        """
 
         if total is None and isinstance(iterable, collections.Sized):
             total = len(iterable)
@@ -164,10 +241,28 @@ class TQDMPool(Pool):
             return super().map(func, iterable, chunksize, sort, callback=callback)
 
     def _wrap_callback(self, callback, pbar, desc, update_interval, update_iters):
+        """
+        Decorator to make a function.
+
+        Args:
+            self: (todo): write your description
+            callback: (callable): write your description
+            pbar: (todo): write your description
+            desc: (str): write your description
+            update_interval: (int): write your description
+            update_iters: (int): write your description
+        """
         last_update_time = 0
         last_update_acc = 0
 
         def wrapped(i, val):
+            """
+            Wrapper for _update_update. eof.
+
+            Args:
+                i: (int): write your description
+                val: (todo): write your description
+            """
             nonlocal last_update_time, last_update_acc
 
             if callback is not None:

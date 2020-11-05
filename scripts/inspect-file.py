@@ -17,6 +17,11 @@ args = parser.parse_args()
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     for i, filename in enumerate(args.filename):
         globals()[f'f{i + 1}'] = io.load(filename)
 

@@ -213,17 +213,40 @@ if __name__ == "__main__":
 
         @property
         def property_method(self):
+            """
+            Returns the method name.
+
+            Args:
+                self: (todo): write your description
+            """
             return "property_method"
 
         def regular_method(self):
+            """
+            Return the regular expression.
+
+            Args:
+                self: (todo): write your description
+            """
             return "regular_method"
 
         @staticmethod
         def static_method():
+            """
+            Decorator for a static method
+
+            Args:
+            """
             return "static_method"
 
         @classmethod
         def class_method(cls):
+            """
+            Decorator for class methods.
+
+            Args:
+                cls: (todo): write your description
+            """
             return "class_method"
 
     class MyClass(Base):
@@ -282,6 +305,11 @@ if __name__ == "__main__":
     export_true_table()
 
     def test_is_attribute_property_method_regular_method_static_method_class_method():
+        """
+        Determine whether a class is a static method.
+
+        Args:
+        """
         assert is_attribute(MyClass, "attribute", MyClass.attribute)
         assert is_property_method(
             MyClass, "property_method", MyClass.property_method)
@@ -318,7 +346,18 @@ if __name__ == "__main__":
     test_is_attribute_property_method_regular_method_static_method_class_method()
 
     def test_getter():
+        """
+        Return a dictionary of items from the given in the given items.
+
+        Args:
+        """
         def items_to_keys(items):
+            """
+            Return a list of items from items.
+
+            Args:
+                items: (todo): write your description
+            """
             return set([item[0] for item in items])
 
         assert items_to_keys(get_attributes(MyClass)) == {"attribute"}

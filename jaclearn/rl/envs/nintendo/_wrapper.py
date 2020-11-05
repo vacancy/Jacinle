@@ -28,6 +28,13 @@ class GymNintendoWrapper(gym.Wrapper):
         Only supports one config, which maps to the most logical discrete space possible
     """
     def __init__(self, env):
+        """
+        Initialize the environment.
+
+        Args:
+            self: (todo): write your description
+            env: (todo): write your description
+        """
         super().__init__(env)
         # Nintendo Game Controller
         mapping = {
@@ -49,4 +56,11 @@ class GymNintendoWrapper(gym.Wrapper):
         self.action_space = DiscreteToMultiDiscrete(self.action_space, mapping)
 
     def _step(self, action):
+        """
+        Perform an action.
+
+        Args:
+            self: (todo): write your description
+            action: (int): write your description
+        """
         return self.env._step(self.action_space(action))

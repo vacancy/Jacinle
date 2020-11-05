@@ -21,11 +21,28 @@ __all__ = ['ProbabilityLinear', 'ProbabilityBilinear', 'ProbabilityNLinear']
 
 class ProbabilityLinear(nn.Linear):
     def __init__(self, in_features, out_features, bias=False, norm=True):
+        """
+        Initialize features.
+
+        Args:
+            self: (todo): write your description
+            in_features: (int): write your description
+            out_features: (int): write your description
+            bias: (float): write your description
+            norm: (todo): write your description
+        """
         assert bias is False, 'Bias regularization for SOFTMAX is not implemented.'
         super().__init__(in_features, out_features, bias)
         self.norm = norm
 
     def forward(self, input):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+        """
         weight = self._regulize_parameter(self.weight)
         output = F.linear(input, weight, None)
         if self.norm:
@@ -33,16 +50,42 @@ class ProbabilityLinear(nn.Linear):
         return output
 
     def _regulize_parameter(self, p):
+        """
+        Regulize the parameter p.
+
+        Args:
+            self: (todo): write your description
+            p: (todo): write your description
+        """
         return F.softmax(p, dim=0)
 
 
 class ProbabilityBilinear(nn.Bilinear):
     def __init__(self, in1_features, in2_features, out_features, bias=False, norm=True):
+        """
+        Initialize features.
+
+        Args:
+            self: (todo): write your description
+            in1_features: (int): write your description
+            in2_features: (int): write your description
+            out_features: (int): write your description
+            bias: (float): write your description
+            norm: (todo): write your description
+        """
         assert bias is False, 'Bias regularization for SOFTMAX is not implemented.'
         super().__init__(in1_features, in2_features, out_features, bias)
         self.norm = norm
 
     def forward(self, input1, input2):
+        """
+        Parameters ---------- input1 : int input2
+
+        Args:
+            self: (todo): write your description
+            input1: (todo): write your description
+            input2: (todo): write your description
+        """
         weight = self._regulize_parameter(self.weight)
         output = F.bilinear(input1, input2, weight, None)
         if self.norm:
@@ -50,11 +93,27 @@ class ProbabilityBilinear(nn.Bilinear):
         return output
 
     def _regulize_parameter(self, p):
+        """
+        Regulize the parameter p.
+
+        Args:
+            self: (todo): write your description
+            p: (todo): write your description
+        """
         return F.softmax(p, dim=0)
 
 
 class ProbabilityNLinear(nn.Module):
     def __new__(cls, *nr_categories, bias=False, norm=True):
+        """
+        Create a new : class.
+
+        Args:
+            cls: (todo): write your description
+            nr_categories: (todo): write your description
+            bias: (float): write your description
+            norm: (todo): write your description
+        """
         if len(nr_categories) == 2:
             return ProbabilityLinear(*nr_categories, bias=bias, norm=norm)
         elif len(nr_categories) == 3:
@@ -63,6 +122,15 @@ class ProbabilityNLinear(nn.Module):
             return super().__new__(cls)
 
     def __init__(self, *nr_categories, bias=False, norm=True):
+        """
+        Initialize the internal state.
+
+        Args:
+            self: (todo): write your description
+            nr_categories: (str): write your description
+            bias: (float): write your description
+            norm: (todo): write your description
+        """
         super().__init__()
         assert bias is False, 'Bias regularization for SOFTMAX is not implemented.'
 
@@ -73,10 +141,23 @@ class ProbabilityNLinear(nn.Module):
         self.norm = norm
 
     def reset_parameters(self):
+        """
+        Reset the parameters.
+
+        Args:
+            self: (todo): write your description
+        """
         stdv = 1. / math.sqrt(self.weight.size(1))
         self.weight.data.uniform_(-stdv, stdv)
 
     def forward(self, *inputs):
+        """
+        Calculate the weights.
+
+        Args:
+            self: (todo): write your description
+            inputs: (todo): write your description
+        """
         f = self._regulize_parameter(self.weight)
         for i in reversed(inputs):
             f = (f * i).sum(dim=-1)
@@ -85,4 +166,11 @@ class ProbabilityNLinear(nn.Module):
         return f
 
     def _regulize_parameter(self, p):
+        """
+        Regulize the parameter p.
+
+        Args:
+            self: (todo): write your description
+            p: (todo): write your description
+        """
         return F.softmax(p, dim=0)

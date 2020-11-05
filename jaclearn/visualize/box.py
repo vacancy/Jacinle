@@ -19,6 +19,19 @@ __all__ = ['add_bbox_patches', 'vis_bboxes']
 
 
 def add_bbox_patches(ax, boxes: np.ndarray, class_name: Union[str, List[str]], add_text=True, legends: Optional[Union[str, List[str]]] = None):
+    """
+    Add bounding boxes to axes.
+
+    Args:
+        ax: (todo): write your description
+        boxes: (todo): write your description
+        np: (todo): write your description
+        ndarray: (array): write your description
+        class_name: (str): write your description
+        add_text: (str): write your description
+        legends: (list): write your description
+        Optional: (todo): write your description
+    """
     if legends is not None:
         assert len(legends) == len(boxes)
     else:
@@ -42,6 +55,21 @@ def add_bbox_patches(ax, boxes: np.ndarray, class_name: Union[str, List[str]], a
 
 
 def vis_bboxes(image: Image.Image, boxes: np.ndarray, class_name: Union[str, List[str]], add_text=True, legends: Optional[Union[str, List[str]]] = None, title: Optional[str] = None):
+    """
+    Plot bounding boxes.
+
+    Args:
+        image: (array): write your description
+        Image: (array): write your description
+        Image: (array): write your description
+        boxes: (list): write your description
+        np: (int): write your description
+        ndarray: (array): write your description
+        class_name: (str): write your description
+        add_text: (str): write your description
+        legends: (todo): write your description
+        title: (str): write your description
+    """
     title = title or "{} detection results".format(class_name)
 
     fig, ax = plt.subplots(figsize=(12, int(12 / image.width * image.height)))

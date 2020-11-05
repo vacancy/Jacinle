@@ -15,6 +15,11 @@ from jacinle.utils.printing import stprint
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     q = DistribInputPipe('jacinle.test')
     with control(pipes=[q]):
         for i in range(10):

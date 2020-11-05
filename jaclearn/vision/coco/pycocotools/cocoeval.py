@@ -88,6 +88,13 @@ class COCOeval:
         :return: None
         '''
         def _toMask(anns, coco):
+            """
+            Convert a list of rle to grr : rle.
+
+            Args:
+                anns: (str): write your description
+                coco: (todo): write your description
+            """
             # modify ann['segmentation'] by reference
             for ann in anns:
                 rle = coco.annToRLE(ann)
@@ -162,6 +169,14 @@ class COCOeval:
         print('DONE (t={:0.2f}s).'.format(toc-tic))
 
     def computeIoU(self, imgId, catId):
+        """
+        Compute the iou image
+
+        Args:
+            self: (todo): write your description
+            imgId: (array): write your description
+            catId: (str): write your description
+        """
         p = self.params
         if p.useCats:
             gt = self._gts[imgId,catId]
@@ -191,6 +206,14 @@ class COCOeval:
         return ious
 
     def computeOks(self, imgId, catId):
+        """
+        Compute the oks
+
+        Args:
+            self: (todo): write your description
+            imgId: (array): write your description
+            catId: (str): write your description
+        """
         p = self.params
         # dimention here should be Nxm
         gts = self._gts[imgId, catId]
@@ -426,6 +449,15 @@ class COCOeval:
         Note this functin can *only* be applied on the default parameter setting
         '''
         def _summarize( ap=1, iouThr=None, areaRng='all', maxDets=100 ):
+            """
+            Compute the mean of the mean area.
+
+            Args:
+                ap: (todo): write your description
+                iouThr: (str): write your description
+                areaRng: (todo): write your description
+                maxDets: (int): write your description
+            """
             p = self.params
             iStr = ' {:<18} {} @[ IoU={:<9} | area={:>6s} | maxDets={:>3d} ] = {:0.3f}'
             titleStr = 'Average Precision' if ap == 1 else 'Average Recall'
@@ -457,6 +489,11 @@ class COCOeval:
             print(iStr.format(titleStr, typeStr, iouStr, areaRng, maxDets, mean_s))
             return mean_s
         def _summarizeDets():
+            """
+            Summarize the sum of - sum of the values in the values.
+
+            Args:
+            """
             stats = np.zeros((12,))
             stats[0] = _summarize(1)
             stats[1] = _summarize(1, iouThr=.5, maxDets=self.params.maxDets[2])
@@ -472,6 +509,11 @@ class COCOeval:
             stats[11] = _summarize(0, areaRng='large', maxDets=self.params.maxDets[2])
             return stats
         def _summarizeKps():
+            """
+            Calculate sum of the sum of - qubits.
+
+            Args:
+            """
             stats = np.zeros((10,))
             stats[0] = _summarize(1, maxDets=20)
             stats[1] = _summarize(1, maxDets=20, iouThr=.5)
@@ -494,6 +536,12 @@ class COCOeval:
         self.stats = summarize()
 
     def __str__(self):
+        """
+        Returns a string representation of the string.
+
+        Args:
+            self: (todo): write your description
+        """
         self.summarize()
 
 class Params:
@@ -501,6 +549,12 @@ class Params:
     Params for coco evaluation api
     '''
     def setDetParams(self):
+        """
+        Sets the mask parameters for this image
+
+        Args:
+            self: (todo): write your description
+        """
         self.imgIds = []
         self.catIds = []
         # np.arange causes trouble.  the data point on arange is slightly larger than the true value
@@ -512,6 +566,12 @@ class Params:
         self.useCats = 1
 
     def setKpParams(self):
+        """
+        Set the mask parameters
+
+        Args:
+            self: (todo): write your description
+        """
         self.imgIds = []
         self.catIds = []
         # np.arange causes trouble.  the data point on arange is slightly larger than the true value
@@ -523,6 +583,13 @@ class Params:
         self.useCats = 1
 
     def __init__(self, iouType='segm'):
+        """
+        Initialize iou image
+
+        Args:
+            self: (todo): write your description
+            iouType: (todo): write your description
+        """
         if iouType == 'segm' or iouType == 'bbox':
             self.setDetParams()
         elif iouType == 'keypoints':

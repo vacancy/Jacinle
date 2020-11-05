@@ -17,6 +17,12 @@ __quit_action__ = 32767
 
 
 def automake(name, *args, **kwargs):
+    """
+    Automakeake. automake.
+
+    Args:
+        name: (str): write your description
+    """
     if name.startswith('gym.'):
         name = name[4:]
         from ..envs.gym import GymRLEnv

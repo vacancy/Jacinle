@@ -22,10 +22,25 @@ __all__ = [
 
 class MaxPoolingKernelDef(object):
     def __init__(self, kernel_size):
+        """
+        Initialize kernel_size.
+
+        Args:
+            self: (todo): write your description
+            kernel_size: (int): write your description
+        """
         self.kernel_size = get_2dshape(kernel_size)
 
 
 def custom_kernel(image, k, border_mode='zero'):
+    """
+    Custom kernel kernel.
+
+    Args:
+        image: (todo): write your description
+        k: (todo): write your description
+        border_mode: (todo): write your description
+    """
     border_mode = ConvBorderMode.from_string(border_mode)
 
     if not isinstance(k, MaxPoolingKernelDef):
@@ -70,6 +85,14 @@ def custom_kernel(image, k, border_mode='zero'):
 
 class CustomKernel(nn.Module):
     def __init__(self, kernel, border_mode='zero'):
+        """
+        Initialize the kernel.
+
+        Args:
+            self: (todo): write your description
+            kernel: (todo): write your description
+            border_mode: (str): write your description
+        """
         super().__init__()
         if not isinstance(kernel, MaxPoolingKernelDef):
             if not torch.is_tensor(kernel):
@@ -81,5 +104,12 @@ class CustomKernel(nn.Module):
         self.border_mode = ConvBorderMode.from_string(border_mode)
 
     def forward(self, input):
+        """
+        Forward forward kernel.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+        """
         return custom_kernel(input, self.kernel, self.border_mode)
 

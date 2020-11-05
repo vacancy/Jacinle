@@ -28,6 +28,15 @@ _DEFAULT_FLOAT_FORMAT = '{:.6f}'
 
 
 def indent_text(text, level=1, indent_format=None, tabsize=None):
+    """
+    Indent a string.
+
+    Args:
+        text: (str): write your description
+        level: (str): write your description
+        indent_format: (str): write your description
+        tabsize: (int): write your description
+    """
     if indent_format is not None:
         assert tabsize is None, 'Cannot provide both indent format and tabsize.'
     if tabsize is not None:
@@ -40,6 +49,14 @@ def indent_text(text, level=1, indent_format=None, tabsize=None):
 
 
 def format_printable_data(data, float_format=_DEFAULT_FLOAT_FORMAT):
+    """
+    Format a formatted string to printable data.
+
+    Args:
+        data: (array): write your description
+        float_format: (str): write your description
+        _DEFAULT_FLOAT_FORMAT: (str): write your description
+    """
     t = type(data)
     if t is np.ndarray:
         return 'ndarray{}, dtype={}'.format(data.shape, data.dtype)
@@ -75,12 +92,29 @@ def stprint(data, key=None, indent=0, file=None, indent_format='  ', end_format=
         file = sys.stdout
 
     def _indent_print(msg, indent, prefix=None):
+        """
+        Prints a message to the given message.
+
+        Args:
+            msg: (str): write your description
+            indent: (int): write your description
+            prefix: (str): write your description
+        """
         print(indent_format * indent, end='', file=file)
         if prefix is not None:
             print(prefix, end='', file=file)
         print(msg, end=end_format, file=file)
 
     def _inner(data, indent, key, max_depth):
+        """
+        Prints a nested dict.
+
+        Args:
+            data: (dict): write your description
+            indent: (todo): write your description
+            key: (str): write your description
+            max_depth: (int): write your description
+        """
         t = type(data)
         if t is tuple:
             if max_depth == 0:
@@ -122,10 +156,33 @@ stprint.locks = LockRegistry()
 
 
 def stformat(data, key=None, indent=0, max_depth=100, **kwargs):
+    """
+    Stformat data to stdout.
+
+    Args:
+        data: (array): write your description
+        key: (str): write your description
+        indent: (str): write your description
+        max_depth: (int): write your description
+    """
     return print2format(stprint)(data, key=key, indent=indent, need_lock=False, max_depth=max_depth, **kwargs)
 
 
 def kvprint(data, indent=0, sep=' : ', end='\n', max_key_len=None, file=None, float_format=_DEFAULT_FLOAT_FORMAT, need_lock=True):
+    """
+    Print the kvprint data.
+
+    Args:
+        data: (dict): write your description
+        indent: (int): write your description
+        sep: (todo): write your description
+        end: (int): write your description
+        max_key_len: (int): write your description
+        file: (str): write your description
+        float_format: (str): write your description
+        _DEFAULT_FLOAT_FORMAT: (str): write your description
+        need_lock: (todo): write your description
+    """
     if len(data) == 0:
         return
     with kvprint.locks.synchronized(file, need_lock):
@@ -144,6 +201,16 @@ kvprint.locks = LockRegistry()
 
 
 def kvformat(data, indent=0, sep=' : ', end='\n', max_key_len=None):
+    """
+    Kvformat data
+
+    Args:
+        data: (array): write your description
+        indent: (int): write your description
+        sep: (todo): write your description
+        end: (int): write your description
+        max_key_len: (int): write your description
+    """
     return print2format(kvprint)(data, indent=indent, sep=sep, end=end, max_key_len=max_key_len, need_lock=False)
 
 
@@ -151,6 +218,15 @@ class PrintToStringContext(object):
     __global_locks = LockRegistry()
 
     def __init__(self, target='STDOUT', stream=None, need_lock=True):
+        """
+        Initialize the stream.
+
+        Args:
+            self: (todo): write your description
+            target: (todo): write your description
+            stream: (todo): write your description
+            need_lock: (todo): write your description
+        """
         assert target in ('STDOUT', 'STDERR')
         self._target = target
         self._need_lock = need_lock
@@ -163,6 +239,13 @@ class PrintToStringContext(object):
         self._value = None
 
     def _swap(self, rhs):
+        """
+        Swap the right - op.
+
+        Args:
+            self: (todo): write your description
+            rhs: (todo): write your description
+        """
         if self._target == 'STDOUT':
             sys.stdout, rhs = rhs, sys.stdout
         else:
@@ -171,32 +254,73 @@ class PrintToStringContext(object):
         return rhs
 
     def __enter__(self):
+        """
+        Starts the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         if self._need_lock:
             self.__global_locks[self._target].acquire()
         self._backup = self._swap(self._stream)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """
+        Called when the given exception is raised.
+
+        Args:
+            self: (todo): write your description
+            exc_type: (todo): write your description
+            exc_val: (todo): write your description
+            exc_tb: (todo): write your description
+        """
         self._stream = self._swap(self._backup)
         if self._need_lock:
             self.__global_locks[self._target].release()
 
     def _ensure_value(self):
+        """
+        Close the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         if self._value is None:
             self._value = self._stream.getvalue()
             self._stream.close()
 
     def get(self):
+        """
+        Get the value of this field.
+
+        Args:
+            self: (todo): write your description
+        """
         self._ensure_value()
         return self._value
 
 
 def print_to_string(target='STDOUT'):
+    """
+    Prints the string to a string
+
+    Args:
+        target: (str): write your description
+    """
     return PrintToStringContext(target, need_lock=True)
 
 
 @contextlib.contextmanager
 def print_to(print_func, target='STDOUT', rstrip=True):
+    """
+    Prints a string of the given function.
+
+    Args:
+        print_func: (todo): write your description
+        target: (str): write your description
+        rstrip: (str): write your description
+    """
     with PrintToStringContext(target, need_lock=True) as ctx:
         yield
     out_str = ctx.get()
@@ -206,7 +330,18 @@ def print_to(print_func, target='STDOUT', rstrip=True):
 
 
 def print2format(print_func):
+    """
+    Print a formatted string to print_func.
+
+    Args:
+        print_func: (todo): write your description
+    """
     def format_func(*args, **kwargs):
+        """
+        Formats a function that formats.
+
+        Args:
+        """
         f = io.StringIO()
         print_func(*args, file=f, **kwargs)
         value = f.getvalue()

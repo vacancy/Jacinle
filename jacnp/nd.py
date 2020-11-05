@@ -19,6 +19,12 @@ __all__ = [
 
 
 def isndarray(arr):
+    """
+    Returns true if arr is a numpy array.
+
+    Args:
+        arr: (array): write your description
+    """
     return isinstance(arr, np.ndarray)
 
 
@@ -27,6 +33,12 @@ is_ndarray = isndarray
 
 
 def nd_concat(lst):
+    """
+    Concatenate numpy array.
+
+    Args:
+        lst: (todo): write your description
+    """
     if len(lst) == 0:
         return None
     elif len(lst) == 1:
@@ -36,6 +48,12 @@ def nd_concat(lst):
 
 
 def nd_len(arr):
+    """
+    Return the length of arr.
+
+    Args:
+        arr: (array): write your description
+    """
     if type(arr) in (int, float):
         return 1
     if isndarray(arr):
@@ -44,6 +62,12 @@ def nd_len(arr):
 
 
 def nd_batch_size(thing):
+    """
+    Return the size of a thing.
+
+    Args:
+        thing: (todo): write your description
+    """
     if type(thing) in (tuple, list):
         return nd_len(thing[0])
     elif type(thing) in (dict, collections.OrderedDict):
@@ -53,6 +77,13 @@ def nd_batch_size(thing):
 
 
 def size_split_n(full_size, n):
+    """
+    Split the size of the last nrest.
+
+    Args:
+        full_size: (int): write your description
+        n: (str): write your description
+    """
     if full_size is None:
         return None
     result = [full_size // n] * n
@@ -63,6 +94,13 @@ def size_split_n(full_size, n):
 
 
 def nd_split_n(ndarray, n):
+    """
+    Split an n - like n n - grams into n - grams into n elements.
+
+    Args:
+        ndarray: (array): write your description
+        n: (str): write your description
+    """
     sub_sizes = size_split_n(len(ndarray), n)
     res = []
     cur = 0

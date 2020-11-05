@@ -25,12 +25,25 @@ __all__ = ['TrainerEnv']
 
 
 def cuda_time(sync=True):
+    """
+    Cuda time of the current task.
+
+    Args:
+        sync: (todo): write your description
+    """
     if sync:
         torch.cuda.synchronize()
     return time.time()
 
 
 def default_reduce_func(k, v):
+    """
+    Reduce function for a function.
+
+    Args:
+        k: (todo): write your description
+        v: (array): write your description
+    """
     if torch.is_tensor(v):
         return v.mean()
     return v
@@ -38,6 +51,14 @@ def default_reduce_func(k, v):
 
 class TrainerEnv(object):
     def __init__(self, model, optimizer):
+        """
+        Initialize the optimizer.
+
+        Args:
+            self: (todo): write your description
+            model: (todo): write your description
+            optimizer: (todo): write your description
+        """
         self._model = model
         self._optimizer = optimizer
 
@@ -52,10 +73,22 @@ class TrainerEnv(object):
 
     @property
     def model(self):
+        """
+        Return the model instance.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._model
 
     @property
     def model_unwrapped(self):
+        """
+        Unwraps model instances.
+
+        Args:
+            self: (todo): write your description
+        """
         model = self.model
         if isinstance(model, nn.DataParallel):
             model = model.module
@@ -63,16 +96,45 @@ class TrainerEnv(object):
 
     @property
     def optimizer(self):
+        """
+        Return the optimizer.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._optimizer
 
     def register_event(self, name, callback):
+        """
+        Register a new event.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+            callback: (todo): write your description
+        """
         logger.info('Register trainer event: name={}, callback={}.'.format(name, callback.__module__ + '.' + callback.__name__))
         self._event_manager.register(name, callback)
 
     def trigger_event(self, name, *args, **kwargs):
+        """
+        Triggers an event.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+        """
         self._event_manager.trigger(name, *args, **kwargs)
 
     def save_checkpoint(self, filename, extra=None):
+        """
+        Save the model to disk.
+
+        Args:
+            self: (todo): write your description
+            filename: (str): write your description
+            extra: (dict): write your description
+        """
         # Hack the data parallel.
         model = self._model
 
@@ -88,6 +150,13 @@ class TrainerEnv(object):
             logger.exception('Error occurred when dump checkpoint "{}".'.format(filename))
 
     def load_checkpoint(self, filename):
+        """
+        Load checkpoint from file.
+
+        Args:
+            self: (todo): write your description
+            filename: (str): write your description
+        """
         if osp.isfile(filename):
             model = self._model
             if isinstance(model, nn.DataParallel):
@@ -106,17 +175,50 @@ class TrainerEnv(object):
         return None
 
     def load_weights(self, filename, **kwargs):
+        """
+        Load model from file.
+
+        Args:
+            self: (todo): write your description
+            filename: (str): write your description
+        """
         return load_weights(self._model, filename, **kwargs)
 
     def set_learning_rate(self, lr):
+        """
+        Set learning rate of the optimizer.
+
+        Args:
+            self: (float): write your description
+            lr: (float): write your description
+        """
         for param_group in self._optimizer.param_groups:
             param_group['lr'] = lr
 
     def decay_learning_rate(self, decay):
+        """
+        Decay learning rate.
+
+        Args:
+            self: (todo): write your description
+            decay: (todo): write your description
+        """
         for param_group in self._optimizer.param_groups:
             param_group['lr'] *= decay
 
     def step(self, feed_dict, grad_clip=0., reduce_func=default_reduce_func, cast_tensor=False, measure_time=False):
+        """
+        Perform a single optimization step.
+
+        Args:
+            self: (todo): write your description
+            feed_dict: (dict): write your description
+            grad_clip: (array): write your description
+            reduce_func: (todo): write your description
+            default_reduce_func: (todo): write your description
+            cast_tensor: (todo): write your description
+            measure_time: (bool): write your description
+        """
         if hasattr(self.model, 'train_step'):
             return self.model.train_step(self.optimizer, feed_dict)
 
@@ -174,6 +276,14 @@ class TrainerEnv(object):
         return loss_f, monitors_f, output_dict, extra
 
     def evaluate(self, feed_dict, cast_tensor=False):
+        """
+        Evaluate the model.
+
+        Args:
+            self: (todo): write your description
+            feed_dict: (dict): write your description
+            cast_tensor: (todo): write your description
+        """
         assert not self._model.training, 'Evaluating a training-mode model.'
         begin = time.time()
         if cast_tensor:

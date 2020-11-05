@@ -22,6 +22,14 @@ __all__ = ['JacProcess']
 
 class JacProcess(multiprocessing.Process):
     def __init__(self, *args, extra_env=None, seed=None, **kwargs):
+        """
+        Initialize the environment.
+
+        Args:
+            self: (todo): write your description
+            extra_env: (str): write your description
+            seed: (int): write your description
+        """
         super().__init__(*args, **kwargs)
         if seed is None:
             seed = gen_seed()
@@ -29,6 +37,12 @@ class JacProcess(multiprocessing.Process):
         self._seed = seed
 
     def run(self):
+        """
+        Runs the environment.
+
+        Args:
+            self: (todo): write your description
+        """
         if self._extra_env is not None:
             update_env(self._extra_env)
         reset_global_seed(self._seed)
@@ -36,5 +50,11 @@ class JacProcess(multiprocessing.Process):
         super().run()
 
     def __call__(self):
+        """
+        Call the call.
+
+        Args:
+            self: (todo): write your description
+        """
         self.start()
         self.join()

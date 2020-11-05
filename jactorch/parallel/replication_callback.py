@@ -62,6 +62,14 @@ class ReplicationCallbackDataParallel(DataParallel):
     """
 
     def replicate(self, module, device_ids):
+        """
+        Replicate the given module.
+
+        Args:
+            self: (todo): write your description
+            module: (todo): write your description
+            device_ids: (str): write your description
+        """
         modules = super(ReplicationCallbackDataParallel, self).replicate(module, device_ids)
         exec_data_parallel_replication_callback(modules)
         return modules
@@ -87,6 +95,13 @@ def patch_replication_callback(data_parallel):
 
     @functools.wraps(old_replicate)
     def new_replicate(module, device_ids):
+        """
+        Create a new : class.
+
+        Args:
+            module: (todo): write your description
+            device_ids: (int): write your description
+        """
         modules = old_replicate(module, device_ids)
         exec_data_parallel_replication_callback(modules)
         return modules

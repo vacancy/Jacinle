@@ -24,9 +24,22 @@ class _FakeDataset(Dataset):
     _value = None
 
     def __len__(self):
+        """
+        Returns the number of bytes in bytes.
+
+        Args:
+            self: (todo): write your description
+        """
         return 2
 
     def __getitem__(self, index):
+        """
+        Return an item from cache.
+
+        Args:
+            self: (todo): write your description
+            index: (int): write your description
+        """
         if self._value is None:
             self._value = random.rand()
         time.sleep(0.1)
@@ -34,17 +47,36 @@ class _FakeDataset(Dataset):
 
 
 def _my_init_func(worker_id, msg):
+    """
+    Initialize the worker.
+
+    Args:
+        worker_id: (str): write your description
+        msg: (str): write your description
+    """
     print('Worker #{}: {}. (Seed: {})'.format(worker_id, msg, random.get_state()[1].std()))
 
 
 class TestTorchDataLoader(unittest.TestCase):
     def test_torch_dataloader(self):
+        """
+        Test if the test test test.
+
+        Args:
+            self: (todo): write your description
+        """
         ds = _FakeDataset()
         dl = DataLoader(ds, num_workers=2)
         res = list(dl)
         self.assertEqual(as_float(res[0]), as_float(res[1]))
 
     def test_jac_dataloader(self):
+        """
+        Initialize the jacobian process.
+
+        Args:
+            self: (todo): write your description
+        """
         ds = _FakeDataset()
         dl = JacDataLoader(ds, num_workers=2, worker_init_fn=_my_init_func, worker_init_args=[('hello', ), ('world', )])
         res = list(dl)

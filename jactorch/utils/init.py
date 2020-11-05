@@ -10,6 +10,11 @@
 
 
 def register_rng():
+    """
+    Register a random rng.
+
+    Args:
+    """
     from jacinle.random.rng import global_rng_registry
 
     try:
@@ -21,4 +26,9 @@ def register_rng():
 
 
 def init_main():
+    """
+    Initialize main main main function.
+
+    Args:
+    """
     register_rng()

@@ -20,6 +20,11 @@ counter = itertools.count()
 
 
 def recv_thread():
+    """
+    Receive a thread.
+
+    Args:
+    """
     q = DistribInputPipe('jacinle.test')
     with control(pipes=[q]):
         while True:
@@ -28,6 +33,11 @@ def recv_thread():
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     current = next(counter)
     prob_interval = 1
 

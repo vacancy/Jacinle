@@ -29,13 +29,38 @@ class TBLogger(object):
     # https://raw.githubusercontent.com/SherlockLiao/pytorch-beginner/
 
     def __init__(self, log_dir):
+        """
+        Initialize the logger.
+
+        Args:
+            self: (todo): write your description
+            log_dir: (str): write your description
+        """
         self.writer = tf.summary.FileWriter(log_dir)
 
     def scalar_summary(self, tag, value, step):
+        """
+        Write a scalar summary.
+
+        Args:
+            self: (todo): write your description
+            tag: (str): write your description
+            value: (todo): write your description
+            step: (int): write your description
+        """
         summary = tf.Summary(value=[tf.Summary.Value(tag=tag, simple_value=value)])
         self.writer.add_summary(summary, step)
 
     def image_summary(self, tag, images, step):
+        """
+        Print summary.
+
+        Args:
+            self: (todo): write your description
+            tag: (str): write your description
+            images: (todo): write your description
+            step: (todo): write your description
+        """
         img_summaries = []
         for i, img in enumerate(images):
             # Write the image to a string
@@ -55,6 +80,16 @@ class TBLogger(object):
         self.writer.add_summary(summary, step)
 
     def histo_summary(self, tag, values, step, bins=1000):
+        """
+        Write histogram of values.
+
+        Args:
+            self: (todo): write your description
+            tag: (str): write your description
+            values: (str): write your description
+            step: (int): write your description
+            bins: (int): write your description
+        """
         # Create a histogram using numpy
         counts, bin_edges = np.histogram(values, bins=bins)
 
@@ -80,11 +115,24 @@ class TBLogger(object):
         self.writer.add_summary(summary, step)
 
     def flush(self):
+        """
+        Flush the write buffers.
+
+        Args:
+            self: (todo): write your description
+        """
         self.writer.flush()
 
 
 class TBGroupMeters(GroupMeters):
     def __init__(self, tb_logger):
+        """
+        Initialize a logger.
+
+        Args:
+            self: (todo): write your description
+            tb_logger: (todo): write your description
+        """
         super().__init__()
         self._tb_logger = tb_logger
 
@@ -105,4 +153,10 @@ class TBGroupMeters(GroupMeters):
             self._tb_logger.scalar_summary(k, self._meters[k].val, self._meters[k].tot_count)
 
     def flush(self):
+        """
+        Flush the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         self._tb_logger.flush()

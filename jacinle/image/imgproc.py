@@ -29,6 +29,13 @@ __all__ = [
 
 
 def _get_crop2d_rest(img, target_shape):
+    """
+    Get the shape of image.
+
+    Args:
+        img: (todo): write your description
+        target_shape: (todo): write your description
+    """
     source_shape = img.shape[:2]
     target_shape = get_2dshape(target_shape)
     rest_shape = source_shape[0] - target_shape[0], source_shape[1] - target_shape[1]
@@ -37,31 +44,80 @@ def _get_crop2d_rest(img, target_shape):
 
 
 def _crop2d(img, start, size):
+    """
+    Crops an image to size
+
+    Args:
+        img: (array): write your description
+        start: (list): write your description
+        size: (int): write your description
+    """
     return img[start[0]:start[0] + size[0], start[1]:start[1] + size[1]]
 
 
 def resize(img, size, interpolation='LINEAR'):
+    """
+    Resize image
+
+    Args:
+        img: (array): write your description
+        size: (int): write your description
+        interpolation: (int): write your description
+    """
     size = get_2dshape(size)
     return backend.resize(img, (size[1], size[0]), interpolation=interpolation)
 
 
 def resize_wh(img, size_wh, interpolation='LINEAR'):
+    """
+    Resize image
+
+    Args:
+        img: (array): write your description
+        size_wh: (int): write your description
+        interpolation: (str): write your description
+    """
     size_wh = get_2dshape(size_wh)
     return backend.resize(img, size_wh, interpolation=interpolation)
 
 
 def resize_scale(img, scale, interpolation='LINEAR'):
+    """
+    Resize an image.
+
+    Args:
+        img: (array): write your description
+        scale: (float): write your description
+        interpolation: (int): write your description
+    """
     scale = get_2dshape(scale, type=float)
     new_size = math.ceil(img.shape[0] * scale[0]), math.ceil(img.shape[1] * scale[1])
     return resize(img, new_size, interpolation=interpolation)
 
 
 def resize_scale_wh(img, scale_wh, interpolation='LINEAR'):
+    """
+    Resize an image.
+
+    Args:
+        img: (array): write your description
+        scale_wh: (float): write your description
+        interpolation: (str): write your description
+    """
     scale_wh = get_2dshape(scale_wh, type=float)
     return resize_scale(img, (scale_wh[1], scale_wh[0]), interpolation=interpolation)
 
 
 def resize_minmax(img, min_dim, max_dim=None, interpolation='LINEAR'):
+    """
+    Resize a min / max_dim.
+
+    Args:
+        img: (array): write your description
+        min_dim: (int): write your description
+        max_dim: (int): write your description
+        interpolation: (str): write your description
+    """
     if max_dim is None:
         max_dim = min_dim
     min_dim, max_dim = min(min_dim, max_dim), max(min_dim, max_dim)
@@ -74,6 +130,17 @@ def resize_minmax(img, min_dim, max_dim=None, interpolation='LINEAR'):
 
 
 def crop(image, l, t, w, h, extra_crop=None):
+    """
+    Crop image to image.
+
+    Args:
+        image: (array): write your description
+        l: (array): write your description
+        t: (array): write your description
+        w: (array): write your description
+        h: (array): write your description
+        extra_crop: (str): write your description
+    """
     if extra_crop is not None and extra_crop != 1:
         new_w, new_h = round(w * extra_crop), round(h * extra_crop)
         l -= (new_w - w) // 2
@@ -128,6 +195,13 @@ class ShuffleType(JacEnum):
 
 
 def dimshuffle(img, shuffle_type):
+    """
+    Dimshuffle an image.
+
+    Args:
+        img: (array): write your description
+        shuffle_type: (bool): write your description
+    """
     shuffle_type = ShuffleType.from_string(shuffle_type)
     assert len(img.shape) in (2, 3, 4), 'Image should be of dims 2, 3 or 4'
 
@@ -146,12 +220,29 @@ def dimshuffle(img, shuffle_type):
 
 
 def clip(img):
+    """
+    Clip an image to a specified ].
+
+    Args:
+        img: (array): write your description
+    """
     return np.minimum(255, np.maximum(0, img))
 
 
 def clip_decorator(func):
+    """
+    Decorator to clip the image.
+
+    Args:
+        func: (todo): write your description
+    """
     @functools.wraps(func)
     def new_func(*args, **kwargs):
+        """
+        Creates a new image from a newline.
+
+        Args:
+        """
         img = func(*args, **kwargs)
         return clip(img)
 
@@ -159,6 +250,12 @@ def clip_decorator(func):
 
 
 def grayscale(img):
+    """
+    Grays a 2dims with a shape.
+
+    Args:
+        img: (array): write your description
+    """
     assert len(img.shape) == 3 and img.shape[2] == 3
     w = np.array([0.114, 0.587, 0.299]).reshape(1, 1, 3)
     img = (img * w).sum(axis=2, keepdims=True)
@@ -167,11 +264,25 @@ def grayscale(img):
 
 @clip_decorator
 def brightness(img, alpha):
+    """
+    Brightness brightness of the image.
+
+    Args:
+        img: (array): write your description
+        alpha: (float): write your description
+    """
     return img * alpha
 
 
 @clip_decorator
 def contrast(img, alpha):
+    """
+    Contrastcale
+
+    Args:
+        img: (array): write your description
+        alpha: (float): write your description
+    """
     gs = grayscale(img)
     gs[:] = gs.mean()
     img = img * alpha + gs * (1 - alpha)
@@ -180,6 +291,13 @@ def contrast(img, alpha):
 
 @clip_decorator
 def saturation(img, alpha):
+    """
+    Saturation image
+
+    Args:
+        img: (array): write your description
+        alpha: (float): write your description
+    """
     gs = grayscale(img)
     img = img * alpha + gs * (1 - alpha)
     return img

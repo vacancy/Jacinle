@@ -28,6 +28,26 @@ class RecurrentNeuralLogicMachine(nn.Module):
             logic_model, logic_hidden_dim,
             exclude_self=True, pre_residual=False, connections=None
     ):
+        """
+        Initialize the graph.
+
+        Args:
+            self: (todo): write your description
+            breadth: (todo): write your description
+            depth1: (float): write your description
+            depth2: (float): write your description
+            depth3: (float): write your description
+            input_dims: (int): write your description
+            imm_dims1: (int): write your description
+            imm_dims2: (int): write your description
+            output_dims: (int): write your description
+            epsilon: (float): write your description
+            logic_model: (todo): write your description
+            logic_hidden_dim: (int): write your description
+            exclude_self: (todo): write your description
+            pre_residual: (todo): write your description
+            connections: (todo): write your description
+        """
 
         super().__init__()
 
@@ -76,6 +96,14 @@ class RecurrentNeuralLogicMachine(nn.Module):
         self.epsilon = epsilon
 
     def forward(self, inputs, max_depths=1000):
+        """
+        R iterate over a batch.
+
+        Args:
+            self: (todo): write your description
+            inputs: (todo): write your description
+            max_depths: (int): write your description
+        """
         for i in inputs:
             if i is not None:
                 batch_size, n = i.size()[:2]
@@ -90,6 +118,12 @@ class RecurrentNeuralLogicMachine(nn.Module):
             return torch.zeros(concat_shape(batch_size, [n for _ in range(d)], h), dtype=dtype, device=device)
 
         def _format(x):
+            """
+            Yields the given size.
+
+            Args:
+                x: (todo): write your description
+            """
             for i in x:
                 if i is None:
                     yield i
@@ -97,9 +131,22 @@ class RecurrentNeuralLogicMachine(nn.Module):
                     yield i.size()
 
         def print_list(*args, **kwargs):
+            """
+            R print_list
+
+            Args:
+            """
             print(*[list(_format(x)) for x in args], **kwargs)
 
         def concat(x, y, z):
+            """
+            Concatenate a list.
+
+            Args:
+                x: (tuple): write your description
+                y: (tuple): write your description
+                z: (tuple): write your description
+            """
             def _concat():
                 """output[i] = concat(x[i], y[i], z[i]). x[i] can be None"""
                 for i, j, k in zip(x, y, z):
@@ -110,13 +157,34 @@ class RecurrentNeuralLogicMachine(nn.Module):
             return list(_concat())
 
         def chunk(x, n, dim):
+            """
+            Yields n - sized chunks.
+
+            Args:
+                x: (int): write your description
+                n: (int): write your description
+                dim: (int): write your description
+            """
             def _chunk():
+                """
+                Yield successive chunks.
+
+                Args:
+                """
                 for i in x:
                     yield i.chunk(n, dim=dim)
             chunks = list(_chunk())
             return list(zip(*chunks))
 
         def elem_op(x, y, op):
+            """
+            Yields all elements of a list.
+
+            Args:
+                x: (todo): write your description
+                y: (todo): write your description
+                op: (todo): write your description
+            """
             def _add():
                 """output[i] = x[i] + y[i]."""
                 for i, j in zip(x, y):
@@ -200,6 +268,15 @@ class RecurrentNeuralLogicMachine(nn.Module):
 
     @classmethod
     def make_prog_block_parser(cls, parser, defaults, prefix=None):
+        """
+        Create a default parser for the default parser.
+
+        Args:
+            cls: (todo): write your description
+            parser: (todo): write your description
+            defaults: (dict): write your description
+            prefix: (str): write your description
+        """
         for k, v in cls.__hyperparam_defaults__.items():
             defaults.setdefault(k, v)
 
@@ -237,6 +314,15 @@ class RecurrentNeuralLogicMachine(nn.Module):
 
     @classmethod
     def from_args(cls, input_dims, output_dims, args, prefix=None, **kwargs):
+        """
+        Create a new instance of this class from an existing parameters.
+
+        Args:
+            cls: (todo): write your description
+            input_dims: (todo): write your description
+            output_dims: (todo): write your description
+            prefix: (str): write your description
+        """
         if prefix is None:
             prefix = ''
         else:

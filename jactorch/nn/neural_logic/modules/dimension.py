@@ -22,10 +22,25 @@ __all__ = ['Expander', 'Reducer', 'Permutation']
 
 class Expander(nn.Module):
     def __init__(self, dim):
+        """
+        Initialize the dimension.
+
+        Args:
+            self: (todo): write your description
+            dim: (int): write your description
+        """
         super().__init__()
         self.dim = dim
 
     def forward(self, input, n=None):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+            n: (todo): write your description
+        """
         if self.dim == 0:
             assert n is not None
         elif n is None:
@@ -34,11 +49,29 @@ class Expander(nn.Module):
         return broadcast(input.unsqueeze(dim), dim, n)
 
     def get_output_dim(self, input_dim):
+        """
+        Get the dimensions of the output dimension.
+
+        Args:
+            self: (todo): write your description
+            input_dim: (todo): write your description
+        """
         return input_dim
 
 
 class Reducer(nn.Module):
     def __init__(self, dim, exclude_self=True, exists=True, min_val=0., max_val=0.):
+        """
+        Initialize the dimension.
+
+        Args:
+            self: (todo): write your description
+            dim: (int): write your description
+            exclude_self: (todo): write your description
+            exists: (bool): write your description
+            min_val: (float): write your description
+            max_val: (float): write your description
+        """
         super().__init__()
         self.dim = dim
         self.exclude_self = exclude_self
@@ -47,6 +80,14 @@ class Reducer(nn.Module):
         self.max_val = max_val
 
     def forward(self, input, mask=None):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+            mask: (todo): write your description
+        """
         shape = input.size()
         inp0, inp1 = input, input
 
@@ -71,6 +112,13 @@ class Reducer(nn.Module):
         return torch.max(inp0, dim=-2)[0].view(shape)
 
     def get_output_dim(self, input_dim):
+        """
+        Returns the dimensions of the output dimension.
+
+        Args:
+            self: (todo): write your description
+            input_dim: (todo): write your description
+        """
         if self.exists:
             return input_dim * 2
         return input_dim
@@ -78,10 +126,24 @@ class Reducer(nn.Module):
 
 class Permutation(nn.Module):
     def __init__(self, dim):
+        """
+        Initialize the dimension.
+
+        Args:
+            self: (todo): write your description
+            dim: (int): write your description
+        """
         super().__init__()
         self.dim = dim
 
     def forward(self, input):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+        """
         if self.dim <= 1:
             return input
         nr_dims = len(input.size())
@@ -96,6 +158,13 @@ class Permutation(nn.Module):
         return torch.cat(res, dim=-1)
 
     def get_output_dim(self, input_dim):
+        """
+        Get the output dimension for a dimension.
+
+        Args:
+            self: (todo): write your description
+            input_dim: (todo): write your description
+        """
         mul = 1
         for i in range(self.dim):
             mul *= i + 1

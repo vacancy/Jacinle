@@ -24,6 +24,20 @@ __all__ = ['JacDataLoader', 'JacDataLoaderIter']
 
 
 def _worker_loop_seed(worker_id, dataset, index_queue, data_queue, collate_fn, seed, worker_init_fn, worker_init_args, worker_init_kwargs):
+    """
+    The worker loop.
+
+    Args:
+        worker_id: (str): write your description
+        dataset: (todo): write your description
+        index_queue: (str): write your description
+        data_queue: (str): write your description
+        collate_fn: (todo): write your description
+        seed: (int): write your description
+        worker_init_fn: (str): write your description
+        worker_init_args: (dict): write your description
+        worker_init_kwargs: (dict): write your description
+    """
     reset_global_seed(seed)
     if worker_init_fn is not None:
         worker_init_fn(worker_id, *worker_init_args, **worker_init_kwargs)
@@ -32,6 +46,13 @@ def _worker_loop_seed(worker_id, dataset, index_queue, data_queue, collate_fn, s
 
 class JacDataLoaderIter(DataLoaderIter):
     def __init__(self, loader):
+        """
+        Initialize the worker.
+
+        Args:
+            self: (todo): write your description
+            loader: (todo): write your description
+        """
         self.dataset = loader.dataset
         self.collate_fn = loader.collate_fn
         self.batch_sampler = loader.batch_sampler
@@ -87,6 +108,26 @@ class JacDataLoader(DataLoader):
     def __init__(self, dataset, batch_size=1, shuffle=False, sampler=None, batch_sampler=None,
                  num_workers=0, collate_fn=default_collate, pin_memory=False, drop_last=False, seed=None,
                  worker_init_fn=None, worker_init_args=None, worker_init_kwargs=None):
+        """
+        Initialize the worker.
+
+        Args:
+            self: (todo): write your description
+            dataset: (todo): write your description
+            batch_size: (int): write your description
+            shuffle: (bool): write your description
+            sampler: (todo): write your description
+            batch_sampler: (todo): write your description
+            num_workers: (int): write your description
+            collate_fn: (todo): write your description
+            default_collate: (str): write your description
+            pin_memory: (str): write your description
+            drop_last: (todo): write your description
+            seed: (int): write your description
+            worker_init_fn: (str): write your description
+            worker_init_args: (dict): write your description
+            worker_init_kwargs: (dict): write your description
+        """
         super().__init__(dataset, batch_size=batch_size, shuffle=shuffle, sampler=sampler, batch_sampler=batch_sampler,
                          num_workers=num_workers, collate_fn=collate_fn, pin_memory=pin_memory, drop_last=drop_last)
         self.worker_init_fn = worker_init_fn
@@ -102,8 +143,20 @@ class JacDataLoader(DataLoader):
             self.worker_init_kwargs = worker_init_kwargs if worker_init_kwargs is not None else {}
 
     def __iter__(self):
+        """
+        Returns an iterator of this : class
+
+        Args:
+            self: (todo): write your description
+        """
         return JacDataLoaderIter(self)
 
     def gen_seeds(self):
+        """
+        Generate a random seed.
+
+        Args:
+            self: (todo): write your description
+        """
         assert self.num_workers > 0
         return self.seed_generator.randint(4294967296, size=self.num_workers).tolist()

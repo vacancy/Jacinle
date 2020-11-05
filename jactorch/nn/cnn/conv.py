@@ -28,6 +28,24 @@ class ConvNDBase(nn.Module):
                  padding_mode='default', padding=0, border_mode='zero',
                  output_padding=0, output_border_mode='zero',
                  dilation=1, groups=1, bias=True):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            in_channels: (int): write your description
+            out_channels: (int): write your description
+            kernel_size: (int): write your description
+            stride: (int): write your description
+            padding_mode: (str): write your description
+            padding: (str): write your description
+            border_mode: (str): write your description
+            output_padding: (str): write your description
+            output_border_mode: (str): write your description
+            dilation: (todo): write your description
+            groups: (list): write your description
+            bias: (float): write your description
+        """
 
         super().__init__()
 
@@ -68,23 +86,58 @@ class ConvNDBase(nn.Module):
 
     @property
     def input_dim(self):
+        """
+        Return the dimension.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.in_channels
 
     @property
     def output_dim(self):
+        """
+        Return the dimensions.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.out_channels
 
     def forward(self, input):
+        """
+        R forward forward forward.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+        """
         # TODO(Jiayuan Mao @ 04/05): evaluate this.
         return self._forward_conv(*self._forward_padding(input))
 
     def _forward_conv(self, padded, extra_padding, extra_padding_mode=None, **kwargs):
+        """
+        Parameters ---------- padded.
+
+        Args:
+            self: (todo): write your description
+            padded: (todo): write your description
+            extra_padding: (todo): write your description
+            extra_padding_mode: (todo): write your description
+        """
         self.conv.padding = extra_padding
         if extra_padding_mode is not None:
             self.conv.padding_mode = extra_padding_mode
         return self.conv(padded, **kwargs)
 
     def _forward_padding(self, input):
+        """
+        Forward padding.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+        """
         use_pytorch_padding_mode = hasattr(self.conv, 'padding_mode')
         return padding_nd(
             input, self.conv.kernel_size, self.padding, self.padding_mode, self.border_mode,
@@ -108,6 +161,15 @@ class ConvTransposeNDBase(ConvNDBase):
     __transposed__ = True
 
     def forward(self, input, output_size=None, scale_factor=None):
+        """
+        R forward computation.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+            output_size: (int): write your description
+            scale_factor: (float): write your description
+        """
         if output_size is None:
             if scale_factor is not None:
                 if isinstance(scale_factor, collections.Sequence):
@@ -134,6 +196,25 @@ class ResizeConvBase(ConvNDBase):
                  padding_mode='same', padding=0, border_mode='replicate',
                  dilation=1, groups=1, bias=True,
                  output_size=None, scale_factor=None, resize_mode='nearest'):
+        """
+        Initialize the convolution layer.
+
+        Args:
+            self: (todo): write your description
+            in_channels: (int): write your description
+            out_channels: (int): write your description
+            kernel_size: (int): write your description
+            stride: (int): write your description
+            padding_mode: (str): write your description
+            padding: (str): write your description
+            border_mode: (str): write your description
+            dilation: (todo): write your description
+            groups: (list): write your description
+            bias: (float): write your description
+            output_size: (int): write your description
+            scale_factor: (array): write your description
+            resize_mode: (int): write your description
+        """
 
         super().__init__(in_channels, out_channels, kernel_size, stride=stride,
                          padding_mode=padding_mode, padding=padding, border_mode=border_mode,
@@ -141,6 +222,13 @@ class ResizeConvBase(ConvNDBase):
         self.upsample = nn.Upsample(size=output_size, scale_factor=scale_factor, mode=resize_mode)
 
     def forward(self, input):
+        """
+        Evaluate forward forward.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+        """
         return super().forward(self.upsample(input))
 
 
@@ -162,11 +250,26 @@ class SequenceConvWrapper(nn.Module):
     Conv1D.
     """
     def __init__(self, *modules, batch_first=True):
+        """
+        Initialize the batch.
+
+        Args:
+            self: (todo): write your description
+            modules: (str): write your description
+            batch_first: (str): write your description
+        """
         super().__init__()
         self.sequential = nn.Sequential(*modules)
         self.batch_first = batch_first
 
     def forward(self, input):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+        """
         assert input.dim() == 3, 'Expect 3-dim input, but got: {}.'.format(input.size())
         if self.batch_first:
             input = input.permute(0, 2, 1)

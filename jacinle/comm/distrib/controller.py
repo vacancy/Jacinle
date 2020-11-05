@@ -32,26 +32,71 @@ __all__ = [
 # mapping from pipe_name => list of pipe
 class ControllerPipeStorage(collections.defaultdict):
     def __init__(self):
+        """
+        Initialize the internal method
+
+        Args:
+            self: (todo): write your description
+        """
         super().__init__(list)
 
     def pipe_info(self):
+        """
+        Returns a list of all registered keys.
+
+        Args:
+            self: (dict): write your description
+        """
         return [(k, p.identifier) for k, pipes in self.items() for p in pipes]
 
     def put(self, pipe):
+        """
+        Add a new pipe to the queue.
+
+        Args:
+            self: (todo): write your description
+            pipe: (str): write your description
+        """
         self[pipe.name].append(pipe)
 
     @staticmethod
     def fn_filter_notempty(pipe):
+        """
+        Return true if - filter_notempty.
+
+        Args:
+            pipe: (todo): write your description
+        """
         return not pipe.empty()
 
     def filter_notempty(self, name):
+        """
+        Returns a filter by name that name.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+        """
         return list(filter(ControllerPipeStorage.fn_filter_notempty, self[name]))
 
     @staticmethod
     def fn_filter_notfull(pipe):
+        """
+        Return a new filter function filterfull filter functions.
+
+        Args:
+            pipe: (todo): write your description
+        """
         return not pipe.full()
 
     def filter_notfull(self, name):
+        """
+        Filter a list of the given name.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+        """
         return list(filter(ControllerPipeStorage.fn_filter_notfull, self[name]))
 
 
@@ -65,6 +110,12 @@ UnicastMessage = collections.namedtuple('UnicastMessage', ['from_identifier', 't
 
 class Controller(object):
     def __init__(self):
+        """
+        Initialize the consumer.
+
+        Args:
+            self: (todo): write your description
+        """
         self._uid = utils.uid()
         self._addr = utils.get_addr()
 
@@ -108,16 +159,37 @@ class Controller(object):
         self._stop_event = threading.Event()
 
     def socket(self, socket_type):
+        """
+        Create a socket socket.
+
+        Args:
+            self: (todo): write your description
+            socket_type: (int): write your description
+        """
         sock = self._context.socket(socket_type)
         self._all_socks.add(sock)
         return sock
 
     def close_socket(self, sock):
+        """
+        Closes the socket.
+
+        Args:
+            self: (todo): write your description
+            sock: (todo): write your description
+        """
         utils.graceful_close(sock)
         self._all_socks.remove(sock)
         return self
 
     def initialize(self, pipes=None):
+        """
+        Initialize zmq daemon.
+
+        Args:
+            self: (todo): write your description
+            pipes: (array): write your description
+        """
         pipes = pipes or []
 
         for pipe in pipes:
@@ -190,6 +262,12 @@ class Controller(object):
             i.start()
 
     def finalize(self):
+        """
+        Finalize all the socket instances.
+
+        Args:
+            self: (todo): write your description
+        """
         self._stop_event.set()
         for i in self._all_threads:
             i.join()
@@ -197,6 +275,12 @@ class Controller(object):
             utils.graceful_close(sock)
 
     def _main(self):
+        """
+        The main loop.
+
+        Args:
+            self: (todo): write your description
+        """
         wait = 0
         while True:
             if self._stop_event.wait(wait / 1000):
@@ -217,6 +301,12 @@ class Controller(object):
                 wait = wait + 1 if wait < 50 else 50
 
     def _main_heartbeat(self):
+        """
+        Main loop.
+
+        Args:
+            self: (todo): write your description
+        """
         while True:
             self._control_mqueue.put(ControlMessage(self._ns_socket, None, {
                 'action': _configs.Actions.NS_HEARTBEAT_REQ,
@@ -227,6 +317,13 @@ class Controller(object):
                 break
 
     def _main_do_control_recv(self, socks):
+        """
+        Control the control control control control.
+
+        Args:
+            self: (todo): write your description
+            socks: (todo): write your description
+        """
         nr_done = 0
 
         # ns
@@ -250,6 +347,12 @@ class Controller(object):
         return nr_done
 
     def _main_do_control_send(self):
+        """
+        Main control control control control loop.
+
+        Args:
+            self: (todo): write your description
+        """
         nr_scheduled = self._control_mqueue.qsize()
         nr_done = 0
         for i in range(nr_scheduled):
@@ -267,6 +370,13 @@ class Controller(object):
         return nr_done
 
     def _main_do_data_recv(self, in_socks):
+        """
+        The main loop.
+
+        Args:
+            self: (todo): write your description
+            in_socks: (int): write your description
+        """
         nr_done = 0
         for name in self._input_from:
             cache = self._input_cache.pop(name, None)
@@ -298,6 +408,12 @@ class Controller(object):
         return nr_done
 
     def _main_do_data_send(self):
+        """
+        The main loop.
+
+        Args:
+            self: (todo): write your description
+        """
         nr_done = 0
         for name in self._omanager.keys():
             cache = self._output_cache.get(name, None)
@@ -345,6 +461,13 @@ class Controller(object):
     # BEGIN:: Connection
 
     def _initialize_recv_peers(self, results):
+        """
+        Initialize peers.
+
+        Args:
+            self: (todo): write your description
+            results: (todo): write your description
+        """
         for peers in results.values():
             for info in peers:
                 uid = info['uid']
@@ -353,6 +476,13 @@ class Controller(object):
                     self._do_setup_ctl_peer(uid)
 
     def _do_setup_ctl_peer(self, uid):
+        """
+        Executes the peers
+
+        Args:
+            self: (todo): write your description
+            uid: (todo): write your description
+        """
         info, sock = self._controller_peers[uid]
         if sock is not None:
             return
@@ -369,6 +499,14 @@ class Controller(object):
         logger.info('Connecting to "{}".'.format(uid))
 
     def _on_ctl_connect_req(self, identifier, msg):
+        """
+        Respond to a connection.
+
+        Args:
+            self: (todo): write your description
+            identifier: (todo): write your description
+            msg: (str): write your description
+        """
         uid, pipes = msg['uid'], msg['inputs']
 
         flag = False
@@ -410,6 +548,13 @@ class Controller(object):
             }, countdown=_configs.CTL_CTL_SND_COUNTDOWN))
 
     def _on_ctl_connect_rep(self, msg):
+        """
+        Callback invoked when the connection handler.
+
+        Args:
+            self: (todo): write your description
+            msg: (str): write your description
+        """
         uid, conn = msg['uid'], msg['conn']
 
         if len(conn) and uid not in self._input_from:
@@ -425,6 +570,14 @@ class Controller(object):
         }, countdown=_configs.CTL_CTL_SND_COUNTDOWN))
 
     def _on_ctl_connected_req(self, identifier, msg):
+        """
+        Callback invoked when a request is received.
+
+        Args:
+            self: (todo): write your description
+            identifier: (todo): write your description
+            msg: (str): write your description
+        """
         self._control_mqueue.put(ControlMessage(self._control_router, identifier, {
             'action': _configs.Actions.CTL_CONNECTED_REP,
             'uid': self._uid
@@ -434,6 +587,14 @@ class Controller(object):
     # END:: Connection
 
     def _on_ctl_notify_open_req(self, identifier, msg):
+        """
+        Callback invoked when a connection is received from the client.
+
+        Args:
+            self: (todo): write your description
+            identifier: (todo): write your description
+            msg: (str): write your description
+        """
         uid = msg['uid']
         if uid not in self._controller_peers:
             self._controller_peers[uid] = ControllerPeer(msg['info'], None)
@@ -445,6 +606,14 @@ class Controller(object):
         logger.info('Found new controller: "{}".'.format(uid))
 
     def _on_ctl_notify_close_req(self, identifier, msg):
+        """
+        Called when a connection.
+
+        Args:
+            self: (todo): write your description
+            identifier: (todo): write your description
+            msg: (str): write your description
+        """
         uid = msg['uid']
         if uid in self._controller_peers:
             peer = self._controller_peers.pop(uid)
@@ -474,6 +643,12 @@ class Controller(object):
 
 @contextlib.contextmanager
 def control(pipes):
+    """
+    A context manager. control control.
+
+    Args:
+        pipes: (list): write your description
+    """
     ctl = Controller()
     ctl.initialize(pipes)
     yield ctl

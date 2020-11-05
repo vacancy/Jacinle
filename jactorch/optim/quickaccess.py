@@ -13,6 +13,13 @@ import jactorch.optim as jacoptim
 
 
 def get_optimizer(optimizer, model, *args, **kwargs):
+    """
+    Get the optimizer.
+
+    Args:
+        optimizer: (str): write your description
+        model: (todo): write your description
+    """
     if isinstance(optimizer, (optim.Optimizer, jacoptim.CustomizedOptimizer)):
         return optimizer
 

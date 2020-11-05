@@ -16,19 +16,48 @@ __all__ = ['EpochBatchSampler', 'SimpleBatchSampler']
 
 class _SizedGenerator(object):
     def __init__(self, generator, length):
+        """
+        Initialize the generator.
+
+        Args:
+            self: (todo): write your description
+            generator: (todo): write your description
+            length: (int): write your description
+        """
         self._generator = generator
         self._length = length
 
     def __iter__(self):
+        """
+        Iterate over the iterator.
+
+        Args:
+            self: (todo): write your description
+        """
         for i in self._generator:
             yield i
 
     def __len__(self):
+        """
+        Returns the length of the field.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._length
 
 
 class RenamedDictSamplerBase(object):
     def _gen_renamed(self, data, keys, renames=None):
+        """
+        Yields the key.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+            keys: (list): write your description
+            renames: (str): write your description
+        """
         if renames is None:
             return self._gen(data, keys)
 
@@ -37,16 +66,41 @@ class RenamedDictSamplerBase(object):
             yield {k1: v[k2] for k1, k2 in zip(renames, keys)}
 
     def _gen(self, data, keys):
+        """
+        Generate data.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+            keys: (list): write your description
+        """
         raise NotImplementedError()
 
 
 class EpochBatchSampler(RenamedDictSamplerBase):
     def __init__(self, batch_size, epoch_size, rng=None):
+        """
+        Initialize the _rng.
+
+        Args:
+            self: (todo): write your description
+            batch_size: (int): write your description
+            epoch_size: (int): write your description
+            rng: (int): write your description
+        """
         self._batch_size = batch_size
         self._epoch_size = epoch_size
         self._rng = rng or gen_rng()
 
     def _gen(self, data, keys):
+        """
+        Generate an iterator over the given keys.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+            keys: (list): write your description
+        """
         n = len(data[keys[0]])
         for i in range(self._epoch_size):
             this_idx = self._rng.randint(n, size=self._batch_size)
@@ -54,16 +108,42 @@ class EpochBatchSampler(RenamedDictSamplerBase):
             yield this
 
     def __call__(self, data, keys, renames=None):
+        """
+        Call a call call.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+            keys: (list): write your description
+            renames: (str): write your description
+        """
         return _SizedGenerator(self._gen_renamed(data, keys, renames), self._epoch_size)
 
 
 class SimpleBatchSampler(RenamedDictSamplerBase):
     def __init__(self, batch_size, nr_repeat, rng=None):
+        """
+        Initialize a batch.
+
+        Args:
+            self: (todo): write your description
+            batch_size: (int): write your description
+            nr_repeat: (int): write your description
+            rng: (int): write your description
+        """
         self._batch_size = batch_size
         self._nr_repeat = nr_repeat
         self._rng = rng or gen_rng()
 
     def _gen(self, data, keys):
+        """
+        Yields chunks of the given keys.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+            keys: (list): write your description
+        """
         n = len(data[keys[0]])
 
         for i in range(self._nr_repeat):
@@ -74,8 +154,25 @@ class SimpleBatchSampler(RenamedDictSamplerBase):
                 yield this
 
     def _len(self, data, keys):
+        """
+        Return the number of rows in the dataset.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+            keys: (list): write your description
+        """
         n = len(data[keys[0]])
         return self._nr_repeat * (n // self._batch_size)
 
     def __call__(self, data, keys, renames=None):
+        """
+        Calls call call.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+            keys: (list): write your description
+            renames: (str): write your description
+        """
         return _SizedGenerator(self._gen_renamed(data, keys, renames), self._len(data, keys))

@@ -25,6 +25,14 @@ GATHER_HWM = 2
 
 class GatherInputPipe(object):
     def __init__(self, name, mode='tcp'):
+        """
+        Initialize the socket.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+            mode: (todo): write your description
+        """
         self._name = name
         self._mode = mode
         self._conn_info = None
@@ -35,9 +43,21 @@ class GatherInputPipe(object):
 
     @notnone_property
     def conn_info(self):
+        """
+        Return the connection info.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._conn_info
 
     def initialize(self):
+        """
+        Initialize the connection.
+
+        Args:
+            self: (todo): write your description
+        """
         if self._conn_info is not None:
             return
 
@@ -48,11 +68,23 @@ class GatherInputPipe(object):
             self._conn_info = bind_to_random_ipc(self._sock, self._name)
 
     def finalize(self):
+        """
+        Finalize the socket.
+
+        Args:
+            self: (todo): write your description
+        """
         graceful_close(self._sock)
         self._context.term()
 
     @contextlib.contextmanager
     def activate(self):
+        """
+        A context manager which this context manager.
+
+        Args:
+            self: (todo): write your description
+        """
         self.initialize()
         try:
             yield
@@ -60,6 +92,12 @@ class GatherInputPipe(object):
             self.finalize()
 
     def recv(self):
+        """
+        Receive a message from the socket.
+
+        Args:
+            self: (todo): write your description
+        """
         try:
             return loadb(self._sock.recv(copy=False).bytes)
         except zmq.ContextTerminated:
@@ -68,6 +106,14 @@ class GatherInputPipe(object):
 
 class GatherOutputPipe(object):
     def __init__(self, conn_info, send_qsize=10):
+        """
+        Initialize a connection pool.
+
+        Args:
+            self: (todo): write your description
+            conn_info: (todo): write your description
+            send_qsize: (int): write your description
+        """
         self._conn_info = conn_info
         self._send_qsize = send_qsize
 
@@ -77,6 +123,12 @@ class GatherOutputPipe(object):
         self._send_thread = None
 
     def initialize(self):
+        """
+        Initialize the socket.
+
+        Args:
+            self: (todo): write your description
+        """
         self._context = zmq.Context()
         self._sock = self._context.socket(zmq.PUSH)
         self._sock.set_hwm(GATHER_HWM)
@@ -87,11 +139,23 @@ class GatherOutputPipe(object):
         self._send_thread.start()
 
     def finalize(self):
+        """
+        Finalize the socket.
+
+        Args:
+            self: (todo): write your description
+        """
         graceful_close(self._sock)
         self._context.term()
 
     @contextlib.contextmanager
     def activate(self):
+        """
+        A context manager which this context manager.
+
+        Args:
+            self: (todo): write your description
+        """
         self.initialize()
         try:
             yield
@@ -99,6 +163,12 @@ class GatherOutputPipe(object):
             self.finalize()
 
     def mainloop_send(self):
+        """
+        The main loop.
+
+        Args:
+            self: (todo): write your description
+        """
         try:
             while True:
                 job = self._send_queue.get()
@@ -107,11 +177,27 @@ class GatherOutputPipe(object):
             pass
 
     def send(self, payload):
+        """
+        Send a message to the queue.
+
+        Args:
+            self: (todo): write your description
+            payload: (dict): write your description
+        """
         self._send_queue.put(payload)
         return self
 
 
 def make_gather_pair(name, nr_workers=None, mode='tcp', send_qsize=10):
+    """
+    Gathers a pair
+
+    Args:
+        name: (str): write your description
+        nr_workers: (todo): write your description
+        mode: (str): write your description
+        send_qsize: (int): write your description
+    """
     pull = GatherInputPipe(name, mode=mode)
     pull.initialize()
     nr_pushs = nr_workers or 1

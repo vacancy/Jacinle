@@ -20,10 +20,26 @@ class UserScatteredDataParallel(DataParallel):
     use_copy_stream = True
 
     def scatter(self, inputs, kwargs, device_ids):
+        """
+        Perform a scatter plot.
+
+        Args:
+            self: (str): write your description
+            inputs: (str): write your description
+            device_ids: (int): write your description
+        """
         return use_user_scattered(inputs, kwargs, device_ids, use_stream=self.use_copy_stream)
 
 
 def use_user_scattered(inputs, kwargs, device_ids, use_stream=True):
+    """
+    .. versionadded_scattered
+
+    Args:
+        inputs: (todo): write your description
+        device_ids: (int): write your description
+        use_stream: (str): write your description
+    """
     assert len(inputs) == 1
     inputs = inputs[0]
     if use_stream:
@@ -39,6 +55,13 @@ def use_user_scattered(inputs, kwargs, device_ids, use_stream=True):
 
 
 def _async_copy(inputs, device_ids):
+    """
+    Assembles a set of inputs.
+
+    Args:
+        inputs: (todo): write your description
+        device_ids: (str): write your description
+    """
     nr_devs = len(device_ids)
     assert type(inputs) in (tuple, list)
     assert len(inputs) == nr_devs
@@ -52,6 +75,13 @@ def _async_copy(inputs, device_ids):
 
 
 def _async_copy_stream(inputs, device_ids):
+    """
+    Make a copy of the device.
+
+    Args:
+        inputs: (array): write your description
+        device_ids: (int): write your description
+    """
     nr_devs = len(device_ids)
     assert type(inputs) in (tuple, list)
     assert len(inputs) == nr_devs

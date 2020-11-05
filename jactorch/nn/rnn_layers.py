@@ -24,6 +24,19 @@ class RNNLayerBase(nn.Module):
 
     def __init__(self, input_dim, hidden_dim, nr_layers,
             bias=True, batch_first=True, dropout=0, bidirectional=False):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            input_dim: (int): write your description
+            hidden_dim: (int): write your description
+            nr_layers: (list): write your description
+            bias: (float): write your description
+            batch_first: (str): write your description
+            dropout: (str): write your description
+            bidirectional: (str): write your description
+        """
 
         super().__init__()
 
@@ -40,9 +53,21 @@ class RNNLayerBase(nn.Module):
         self.reset_parameters()
 
     def flatten_parameters(self):
+        """
+        Flatten the parameters in - place.
+
+        Args:
+            self: (todo): write your description
+        """
         self.rnn.flatten_parameters()
 
     def reset_parameters(self):
+        """
+        Reset the hyperparameters.
+
+        Args:
+            self: (todo): write your description
+        """
         for name, weight in self.rnn.named_parameters():
             if name.startswith('weight'):
                 nn.init.orthogonal_(weight)
@@ -51,11 +76,27 @@ class RNNLayerBase(nn.Module):
                 weight.data.zero_()
 
     def forward(self, input, input_lengths, sorted=False):
+        """
+        Parameters ---------- inputs.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+            input_lengths: (todo): write your description
+            sorted: (bool): write your description
+        """
         initial_states = self.zero_state(input)
         rnn_output, last_output = rnn_with_length(self.rnn, input, input_lengths, initial_states, batch_first=self.batch_first, sorted=sorted)
         return rnn_output, self.extract_last_output(last_output)
 
     def zero_state(self, input):
+        """
+        Reshape the state.
+
+        Args:
+            self: (todo): write your description
+            input: (array): write your description
+        """
         batch_dim = 0 if self.batch_first else 1
         batch_size = input.size(batch_dim)
         hidden_size = self.rnn.hidden_size
@@ -69,6 +110,13 @@ class RNNLayerBase(nn.Module):
         return gen()
 
     def extract_last_output(self, rnn_last_output):
+        """
+        Extract the last rnn output.
+
+        Args:
+            self: (todo): write your description
+            rnn_last_output: (bool): write your description
+        """
         if self.rnn.bidirectional:
             extract = lambda x: torch.cat((x[-2], x[-1]), dim=-1)
         else:
@@ -79,6 +127,12 @@ class RNNLayerBase(nn.Module):
 
     @property
     def state_is_tuple(self):
+        """
+        Return a tuple of the state of a tuple.
+
+        Args:
+            self: (todo): write your description
+        """
         return 'lstm' in type(self.rnn).__name__.lower()
 
 

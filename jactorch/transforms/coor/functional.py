@@ -19,6 +19,13 @@ from jacinle.utils.argument import get_2dshape
 
 
 def normalize_coor(img, coor):
+    """
+    Normalize image
+
+    Args:
+        img: (array): write your description
+        coor: (array): write your description
+    """
     coor = coor.copy()
     coor[:, 0] /= img.width
     coor[:, 1] /= img.height
@@ -26,6 +33,13 @@ def normalize_coor(img, coor):
 
 
 def denormalize_coor(img, coor):
+    """
+    Denormalize image to width height
+
+    Args:
+        img: (array): write your description
+        coor: (array): write your description
+    """
     coor = coor.copy()
     coor[:, 0] *= img.width
     coor[:, 1] *= img.height
@@ -33,6 +47,17 @@ def denormalize_coor(img, coor):
 
 
 def crop(img, coor, i, j, h, w):
+    """
+    Crops image to image to image
+
+    Args:
+        img: (array): write your description
+        coor: (array): write your description
+        i: (array): write your description
+        j: (array): write your description
+        h: (array): write your description
+        w: (array): write your description
+    """
     coor = coor.copy()
 
     coor[:, 0] = (coor[:, 0] - j / img.width) * (img.width / w)
@@ -41,6 +66,14 @@ def crop(img, coor, i, j, h, w):
 
 
 def center_crop(img, coor, output_size):
+    """
+    Crops the image to the image.
+
+    Args:
+        img: (array): write your description
+        coor: (todo): write your description
+        output_size: (int): write your description
+    """
     output_size = get_2dshape(output_size)
     w, h = img.size
     th, tw = output_size
@@ -50,6 +83,16 @@ def center_crop(img, coor, output_size):
 
 
 def pad(img, coor, padding, mode='constant', fill=0):
+    """
+    Pad image with padding.
+
+    Args:
+        img: (array): write your description
+        coor: (array): write your description
+        padding: (float): write your description
+        mode: (todo): write your description
+        fill: (str): write your description
+    """
     if isinstance(padding, int):
         padding = (padding, padding, padding, padding)
     elif len(padding) == 2:
@@ -66,29 +109,77 @@ def pad(img, coor, padding, mode='constant', fill=0):
 
 
 def hflip(img, coor):
+    """
+    Flip an image
+
+    Args:
+        img: (array): write your description
+        coor: (array): write your description
+    """
     coor = coor.copy()
     coor[:, 0] = 1 - coor[:, 0]
     return TF.hflip(img), coor
 
 
 def vflip(img, coor):
+    """
+    Flip an array.
+
+    Args:
+        img: (array): write your description
+        coor: (array): write your description
+    """
     coor = coor.copy()
     coor[:, 1] = 1 - coor[:, 1]
     return TF.vflip(img), coor
 
 
 def resize(img, coor, size, interpolation=Image.BILINEAR):
+    """
+    Resize an image
+
+    Args:
+        img: (array): write your description
+        coor: (array): write your description
+        size: (int): write your description
+        interpolation: (int): write your description
+        Image: (array): write your description
+        BILINEAR: (array): write your description
+    """
     # Assuming coordinates are 0/1-normalized.
     return TF.resize(img, size, interpolation=interpolation), coor
 
 
 def resized_crop(img, coor, i, j, h, w, size, interpolation=Image.BILINEAR):
+    """
+    Resize an image
+
+    Args:
+        img: (array): write your description
+        coor: (todo): write your description
+        i: (array): write your description
+        j: (array): write your description
+        h: (array): write your description
+        w: (array): write your description
+        size: (int): write your description
+        interpolation: (str): write your description
+        Image: (array): write your description
+        BILINEAR: (str): write your description
+    """
     img, coor = crop(img, coor, i, j, h, w)
     img, coor = resize(img, coor, size, interpolation)
     return img, coor
 
 
 def refresh_valid(img, coor, force=False):
+    """
+    Refresh the image
+
+    Args:
+        img: (array): write your description
+        coor: (todo): write your description
+        force: (bool): write your description
+    """
     if coor.shape[1] == 2:
         if force:
             coor = np.concatenate([coor, np.ones_like(coor[:, 0])], axis=1)
@@ -106,6 +197,19 @@ def refresh_valid(img, coor, force=False):
 
 
 def rotate(img, coor, angle, resample, crop_, expand, center=None, translate=None):
+    """
+    Rotate an image by angle
+
+    Args:
+        img: (array): write your description
+        coor: (int): write your description
+        angle: (float): write your description
+        resample: (int): write your description
+        crop_: (int): write your description
+        expand: (bool): write your description
+        center: (float): write your description
+        translate: (list): write your description
+    """
     assert translate is None
     img_new = TF.rotate(img, angle, resample=resample, expand=expand, center=center)
     matrix, extra_crop = get_rotation_matrix(img, angle, crop_, expand, center, translate)
@@ -121,6 +225,16 @@ def rotate(img, coor, angle, resample, crop_, expand, center=None, translate=Non
 
 
 def pad_multiple_of(img, coor, multiple, mode='constant', fill=0):
+    """
+    Pad image to pad
+
+    Args:
+        img: (array): write your description
+        coor: (todo): write your description
+        multiple: (bool): write your description
+        mode: (todo): write your description
+        fill: (str): write your description
+    """
     h, w = img.height, img.width
     hh = h - h % multiple + multiple * int(h % multiple != 0)
     ww = w - w % multiple + multiple * int(w % multiple != 0)
@@ -130,6 +244,17 @@ def pad_multiple_of(img, coor, multiple, mode='constant', fill=0):
 
 
 def get_rotation_matrix(image, angle, crop, expand, center, translate):
+    """
+    Get rotation matrix.
+
+    Args:
+        image: (array): write your description
+        angle: (float): write your description
+        crop: (float): write your description
+        expand: (bool): write your description
+        center: (float): write your description
+        translate: (todo): write your description
+    """
     w, h = image.size
     if translate is None:
         translate = (0, 0)
@@ -181,6 +306,14 @@ def get_rotation_matrix(image, angle, crop, expand, center, translate):
 
 
 def apply_affine_transform(x, y, matrix):
+    """
+    Apply a transformation to a.
+
+    Args:
+        x: (todo): write your description
+        y: (todo): write your description
+        matrix: (array): write your description
+    """
     (a, b, c, d, e, f) = matrix
     return a*x + b*y + c, d*x + e*y + f
 

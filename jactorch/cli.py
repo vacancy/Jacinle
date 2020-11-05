@@ -17,6 +17,12 @@ from jacinle.cli.git import get_git_revision_hash
 
 
 def escape_desc_name(filename):
+    """
+    Escape the name for an element.
+
+    Args:
+        filename: (str): write your description
+    """
     basename = osp.basename(filename)
     if basename.endswith('.py'):
         basename = basename[:-3]
@@ -25,6 +31,12 @@ def escape_desc_name(filename):
 
 
 def ensure_path(path):
+    """
+    Ensure that path exists.
+
+    Args:
+        path: (str): write your description
+    """
     if not osp.exists(path):
         print('Creating directory: "{}".'.format(path))
         os.makedirs(path, exist_ok=True)
@@ -32,6 +44,12 @@ def ensure_path(path):
 
 
 def dump_metainfo(metainfo=None, **kwargs):
+    """
+    Serialize metrics to json - formatted as a dict.
+
+    Args:
+        metainfo: (todo): write your description
+    """
     if metainfo is None:
         metainfo = {}
     metainfo.update(kwargs)

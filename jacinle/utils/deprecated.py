@@ -19,8 +19,19 @@ __all__ = ['deprecated']
 
 
 def deprecated(func):
+    """
+    A decorator to mark function.
+
+    Args:
+        func: (callable): write your description
+    """
     @functools.wraps(func)
     def new_func(*args, **kwargs):
+        """
+        Decorator to mark a function as deprecated.
+
+        Args:
+        """
         if func not in deprecated.logged:
             deprecated.logged.add(func)
             logger.warning(func.__doc__)

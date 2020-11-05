@@ -30,6 +30,25 @@ class JacDataParallel(DataParallel):
                  scatter_func=None,
                  use_dict_gather=True, dict_gather_layout=None,
                  persistent=False, copy_parameters=False, copy_buffers=True):
+        """
+        Initialize the device.
+
+        Args:
+            self: (todo): write your description
+            module: (str): write your description
+            device_ids: (str): write your description
+            output_device: (int): write your description
+            dim: (int): write your description
+            allow_replication_callback: (bool): write your description
+            user_scattered: (todo): write your description
+            use_scatter_stream: (todo): write your description
+            scatter_func: (todo): write your description
+            use_dict_gather: (todo): write your description
+            dict_gather_layout: (todo): write your description
+            persistent: (bool): write your description
+            copy_parameters: (todo): write your description
+            copy_buffers: (int): write your description
+        """
 
         super(DataParallel, self).__init__()
         if device_ids is None:
@@ -59,6 +78,13 @@ class JacDataParallel(DataParallel):
         self.replicas = nn.ModuleList()
 
     def forward(self, *inputs, **kwargs):
+        """
+        Perform forward computation.
+
+        Args:
+            self: (todo): write your description
+            inputs: (todo): write your description
+        """
         inputs, kwargs = self.scatter(inputs, kwargs, self.device_ids)
         if len(self.device_ids) == 1:
             inputs = async_copy_to(inputs, 0)
@@ -70,6 +96,14 @@ class JacDataParallel(DataParallel):
         return self.gather(outputs, self.output_device)
 
     def scatter(self, inputs, kwargs, device_ids):
+        """
+        Perform a scatter plot.
+
+        Args:
+            self: (todo): write your description
+            inputs: (str): write your description
+            device_ids: (int): write your description
+        """
         if self.scatter_func is not None:
             return self.scatter_func(inputs, kwargs, device_ids, dim=self.dim)
         elif self.user_scattered:
@@ -77,11 +111,27 @@ class JacDataParallel(DataParallel):
         return super().scatter(inputs, kwargs, device_ids)
 
     def gather(self, outputs, output_device):
+        """
+        Gather the outputs from a dictionary.
+
+        Args:
+            self: (todo): write your description
+            outputs: (todo): write your description
+            output_device: (todo): write your description
+        """
         if self.use_dict_gather:
             return data_parallel_dict_gather(self, outputs, output_device, layout=self.dict_gather_layout)
         return super().gather(outputs, output_device)
 
     def replicate(self, module, device_ids):
+        """
+        Replicate the replicas.
+
+        Args:
+            self: (todo): write your description
+            module: (todo): write your description
+            device_ids: (str): write your description
+        """
         if self.persistent or len(self.replicas) == 0:
             if not self.persistent:
                 modules = super().replicate(module, device_ids)
@@ -100,5 +150,11 @@ class JacDataParallel(DataParallel):
 
 class UserScatteredJacDataParallel(JacDataParallel):
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the init.
+
+        Args:
+            self: (todo): write your description
+        """
         kwargs.setdefault('user_scattered', True)
         super().__init__(*args, **kwargs)

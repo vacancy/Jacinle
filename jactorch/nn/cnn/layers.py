@@ -23,6 +23,18 @@ __all__ = [
 
 class LinearLayer(nn.Sequential):
     def __init__(self, in_features, out_features, batch_norm=None, dropout=None, bias=None, activation=None):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            in_features: (int): write your description
+            out_features: (int): write your description
+            batch_norm: (str): write your description
+            dropout: (str): write your description
+            bias: (float): write your description
+            activation: (str): write your description
+        """
         if bias is None:
             bias = (batch_norm is None)
 
@@ -40,13 +52,31 @@ class LinearLayer(nn.Sequential):
 
     @property
     def input_dim(self):
+        """
+        Returns the dimensions of the inputs.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.in_features
 
     @property
     def output_dim(self):
+        """
+        Returns the output dimension of the feature.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.out_features
 
     def reset_parameters(self):
+        """
+        Reset all modules.
+
+        Args:
+            self: (todo): write your description
+        """
         for module in self.modules():
             if isinstance(module, nn.Linear):
                 module.reset_parameters()
@@ -54,6 +84,19 @@ class LinearLayer(nn.Sequential):
 
 class MLPLayer(nn.Module):
     def __init__(self, input_dim, output_dim, hidden_dims, batch_norm=None, dropout=None, activation='relu', flatten=True):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            input_dim: (int): write your description
+            output_dim: (int): write your description
+            hidden_dims: (int): write your description
+            batch_norm: (str): write your description
+            dropout: (str): write your description
+            activation: (str): write your description
+            flatten: (todo): write your description
+        """
         super().__init__()
 
         self.input_dim = input_dim
@@ -80,11 +123,24 @@ class MLPLayer(nn.Module):
         self.flatten = flatten
 
     def reset_parameters(self):
+        """
+        Reset all modules.
+
+        Args:
+            self: (todo): write your description
+        """
         for module in self.modules():
             if isinstance(module, nn.Linear):
                 module.reset_parameters()
 
     def forward(self, input):
+        """
+        Takes a chunk.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+        """
         if self.flatten:
             input = input.view(input.size(0), -1)
         return self.mlp(input)
@@ -97,6 +153,25 @@ class ConvNDLayerBase(nn.Sequential):
                  padding_mode='default', padding=0, border_mode='zero',
                  dilation=1, groups=1,
                  batch_norm=None, dropout=None, bias=None, activation=None):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            in_channels: (int): write your description
+            out_channels: (int): write your description
+            kernel_size: (int): write your description
+            stride: (int): write your description
+            padding_mode: (str): write your description
+            padding: (str): write your description
+            border_mode: (str): write your description
+            dilation: (todo): write your description
+            groups: (list): write your description
+            batch_norm: (str): write your description
+            dropout: (str): write your description
+            bias: (float): write your description
+            activation: (str): write your description
+        """
 
         if bias is None:
             bias = (batch_norm is None)
@@ -129,16 +204,34 @@ class ConvNDLayerBase(nn.Sequential):
         self.groups = groups
 
     def reset_parameters(self):
+        """
+        Reset all parameters.
+
+        Args:
+            self: (todo): write your description
+        """
         for module in self.modules():
             if 'Conv' in module.__class__.__name__:
                 module.reset_parameters()
 
     @property
     def input_dim(self):
+        """
+        Return the dimension.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.in_channels
 
     @property
     def output_dim(self):
+        """
+        Return the dimensions.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.out_channels
 
 
@@ -168,6 +261,29 @@ class _DeconvLayerBase(nn.Module):
                  output_size=None, scale_factor=None, resize_mode='nearest',
                  batch_norm=None, dropout=None, bias=None, activation=None,
                  algo='resizeconv'):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            in_channels: (int): write your description
+            out_channels: (int): write your description
+            kernel_size: (int): write your description
+            stride: (int): write your description
+            padding_mode: (str): write your description
+            padding: (str): write your description
+            border_mode: (str): write your description
+            dilation: (todo): write your description
+            groups: (list): write your description
+            output_size: (int): write your description
+            scale_factor: (array): write your description
+            resize_mode: (int): write your description
+            batch_norm: (str): write your description
+            dropout: (str): write your description
+            bias: (float): write your description
+            activation: (str): write your description
+            algo: (todo): write your description
+        """
 
         super().__init__()
 
@@ -221,18 +337,44 @@ class _DeconvLayerBase(nn.Module):
 
     @property
     def input_dim(self):
+        """
+        Return the dimension.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.in_channels
 
     @property
     def output_dim(self):
+        """
+        Return the dimensions.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.out_channels
 
     def reset_parameters(self):
+        """
+        Reset all parameters.
+
+        Args:
+            self: (todo): write your description
+        """
         for module in self.modules():
             if 'Conv' in module.__class__.__name__:
                 module.reset_parameters()
 
     def forward(self, input, output_size=None):
+        """
+        Perform forward computation.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+            output_size: (int): write your description
+        """
         if self.algo is DeconvAlgo.CONVTRANSPOSE:
             output_size = output_size if output_size is not None else self.output_size
             return self.post_process(self.deconv(input, output_size, scale_factor=self.scale_factor))

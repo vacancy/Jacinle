@@ -14,11 +14,23 @@ from jacinle.jit.cython import jit_cython
 
 @jit_cython(force_update=True)
 def foo(x: 'long') -> 'long':
+    """
+    Returns the x as a string x.
+
+    Args:
+        x: (todo): write your description
+    """
     return x + 1
 
 
 @jit_cython(force_update=True)
 def cython_loop(n):
+    """
+    Returns n timeseries.
+
+    Args:
+        n: (todo): write your description
+    """
     s: 'long' = 0
     i: 'long'
 
@@ -28,6 +40,12 @@ def cython_loop(n):
 
 
 def python_loop(n):
+    """
+    Return a list of n ().
+
+    Args:
+        n: (todo): write your description
+    """
     s = 0
     for i in range(n):
         s += i + 1
@@ -36,6 +54,12 @@ def python_loop(n):
 
 @jit_cython(force_update=True, boundscheck=False, wraparound=False)
 def cython_np_sum(a: 'np.ndarray[np.float32_t, ndim=1]'):
+    """
+    Return the sum of the sum of the values.
+
+    Args:
+        a: (todo): write your description
+    """
     i: int = 0
     n: int = a.shape[0]
     s: float = 0
@@ -48,6 +72,12 @@ def cython_np_sum(a: 'np.ndarray[np.float32_t, ndim=1]'):
 
 @jit_cython(force_update=True, boundscheck=False, wraparound=False)
 def cython_np_sum_2d_v1(a: 'np.ndarray[np.float32_t, ndim=2]'):
+    """
+    Compute the eigenvalues in - dimensional array.
+
+    Args:
+        a: (todo): write your description
+    """
     i: int = 0
     n: int = a.shape[0]
     m: int = a.shape[1]
@@ -61,6 +91,12 @@ def cython_np_sum_2d_v1(a: 'np.ndarray[np.float32_t, ndim=2]'):
 
 @jit_cython(force_update=True, boundscheck=False, wraparound=False)
 def cython_np_sum_2d_v1_5(a: 'np.ndarray[np.float32_t, ndim=2]'):
+    """
+    Compute the sum of the 2d gaussians.
+
+    Args:
+        a: (todo): write your description
+    """
     i: int = 0
     j: int = 0
     n: int = a.shape[0]
@@ -79,6 +115,12 @@ def cython_np_sum_2d_v1_5(a: 'np.ndarray[np.float32_t, ndim=2]'):
 
 @jit_cython(force_update=True, boundscheck=False, wraparound=False)
 def cython_np_sum_2d_v2(a: 'np.ndarray[np.float32_t, ndim=2]'):
+    """
+    Compute the sum of a 2d_np_sum.
+
+    Args:
+        a: (todo): write your description
+    """
     i: int = 0
     j: int = 0
     n: int = a.shape[0]
@@ -94,6 +136,12 @@ def cython_np_sum_2d_v2(a: 'np.ndarray[np.float32_t, ndim=2]'):
 
 
 def python_np_sum(a):
+    """
+    Return the sum of arr.
+
+    Args:
+        a: (array): write your description
+    """
     s = 0
     for i in range(a.shape[0]):
         s += a[i]
@@ -102,6 +150,11 @@ def python_np_sum(a):
 
 
 def main_timeit():
+    """
+    Main function.
+
+    Args:
+    """
     import timeit
 
     print(cython_loop)

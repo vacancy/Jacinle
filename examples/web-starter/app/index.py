@@ -12,6 +12,12 @@ from jacweb.web import route, JacRequestHandler
 @route(r'/')
 class IndexHandler(JacRequestHandler):
     def get(self):
+        """
+        Return the current request.
+
+        Args:
+            self: (todo): write your description
+        """
         nr_visited = 0
         if self.session is not None:
             nr_visited = self.session.get('nr_visited', 0)

@@ -12,6 +12,17 @@ import math
 
 
 def get_rotation_matrix(image, angle, crop, expand, center, translate):
+    """
+    Get rotation matrix.
+
+    Args:
+        image: (array): write your description
+        angle: (float): write your description
+        crop: (float): write your description
+        expand: (bool): write your description
+        center: (float): write your description
+        translate: (todo): write your description
+    """
     w, h = image.size
     if translate is None:
         translate = (0, 0)
@@ -61,12 +72,35 @@ def get_rotation_matrix(image, angle, crop, expand, center, translate):
 
 
 def apply_affine_transform(x, y, matrix):
+    """
+    Apply a transformation to a.
+
+    Args:
+        x: (todo): write your description
+        y: (todo): write your description
+        matrix: (array): write your description
+    """
     (a, b, c, d, e, f) = matrix
     return a*x + b*y + c, d*x + e*y + f
 
 
 def get_size_multiple_of(h, w, multiple, residual):
+    """
+    Return the size of the size of a list.
+
+    Args:
+        h: (str): write your description
+        w: (str): write your description
+        multiple: (bool): write your description
+        residual: (todo): write your description
+    """
     def _gen(x):
+        """
+        Generate a generator for a : class : class :. core.
+
+        Args:
+            x: (todo): write your description
+        """
         actual = x % multiple
         if actual == residual:
             pass

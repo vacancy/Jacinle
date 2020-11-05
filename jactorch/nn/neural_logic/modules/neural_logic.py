@@ -24,6 +24,16 @@ class NeuralLogicInferenceMethod(JacEnum):
 
 class NeuralLogicInferenceBase(nn.Module):
     def __init__(self, model, input_dim, output_dim, hidden_dim):
+        """
+        Initialize the model.
+
+        Args:
+            self: (todo): write your description
+            model: (todo): write your description
+            input_dim: (int): write your description
+            output_dim: (int): write your description
+            hidden_dim: (int): write your description
+        """
         super().__init__()
         self.method = NeuralLogicInferenceMethod.from_string(model)
         self.input_dim = input_dim
@@ -35,6 +45,13 @@ class NeuralLogicInferenceBase(nn.Module):
             raise NotImplementedError('Unknown logic inference method: {}.'.format(self.method))
 
     def forward(self, input):
+        """
+        R forward forward.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+        """
         if self.method is NeuralLogicInferenceMethod.SKIP:
             return input
 
@@ -47,6 +64,13 @@ class NeuralLogicInferenceBase(nn.Module):
         return f
 
     def get_output_dim(self, input_dim):
+        """
+        Returns the dimensions of a dimension.
+
+        Args:
+            self: (todo): write your description
+            input_dim: (todo): write your description
+        """
         if self.method is NeuralLogicInferenceMethod.SKIP:
             return input_dim
         return self.output_dim
@@ -54,6 +78,17 @@ class NeuralLogicInferenceBase(nn.Module):
 
 class NeuralLogicInference(NeuralLogicInferenceBase):
     def __init__(self, model, input_dim, output_dim, hidden_dim, activation='sigmoid'):
+        """
+        Initialize the model.
+
+        Args:
+            self: (todo): write your description
+            model: (todo): write your description
+            input_dim: (int): write your description
+            output_dim: (int): write your description
+            hidden_dim: (int): write your description
+            activation: (str): write your description
+        """
         super().__init__(model, input_dim, output_dim, hidden_dim)
 
         if self.method is NeuralLogicInferenceMethod.MLP:

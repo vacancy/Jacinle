@@ -28,6 +28,15 @@ __extra_magic_name__ = '__jacinle_extra_state_dict__'
 
 
 def state_dict(model, include=None, exclude=None, cpu=True):
+    """
+    Return a dictionary of dictionaries.
+
+    Args:
+        model: (todo): write your description
+        include: (list): write your description
+        exclude: (list): write your description
+        cpu: (str): write your description
+    """
     if isinstance(model, nn.DataParallel):
         model = model.module
 
@@ -53,6 +62,15 @@ def state_dict(model, include=None, exclude=None, cpu=True):
 
 
 def load_state_dict(model, state_dict, include=None, exclude=None):
+    """
+    Loads a dictionary of model parameters.
+
+    Args:
+        model: (todo): write your description
+        state_dict: (dict): write your description
+        include: (list): write your description
+        exclude: (str): write your description
+    """
     if isinstance(model, nn.DataParallel):
         model = model.module
 
@@ -114,6 +132,16 @@ def load_state_dict(model, state_dict, include=None, exclude=None):
 
 
 def load_weights(model, filename, include=None, exclude=None, return_raw=True):
+    """
+    Load a model from a file.
+
+    Args:
+        model: (todo): write your description
+        filename: (str): write your description
+        include: (list): write your description
+        exclude: (str): write your description
+        return_raw: (bool): write your description
+    """
     if osp.isfile(filename):
         try:
             raw = weights = io.load(filename)

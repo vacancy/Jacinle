@@ -36,6 +36,13 @@ __all__ = [
 
 
 def iter_txt(fd, strip=True):
+    """
+    Iterate lines from fp from file.
+
+    Args:
+        fd: (todo): write your description
+        strip: (bool): write your description
+    """
     for line in as_file_descriptor(fd):
         line_strip = line.strip()
         if line_strip == '':
@@ -44,18 +51,42 @@ def iter_txt(fd, strip=True):
 
 
 def loads_json(value):
+    """
+    Deserialize a json string.
+
+    Args:
+        value: (str): write your description
+    """
     return json.loads(value)
 
 
 def loads_xml(value, **kwargs):
+    """
+    Deserialize an xml string into python object.
+
+    Args:
+        value: (str): write your description
+    """
     return _xml2dict(et.fromstring(value), **kwargs)
 
 
 def loads_yaml(value):
+    """
+    Parse a yaml document.
+
+    Args:
+        value: (todo): write your description
+    """
     return yaml.load(value)
 
 
 def dumps_txt(value):
+    """
+    Serialize a string as a text string.
+
+    Args:
+        value: (todo): write your description
+    """
     assert isinstance(value, collections.Iterable), 'dump(s) txt supports only list as input.'
     with _io.StringIO() as buf:
         for v in value:
@@ -67,38 +98,94 @@ def dumps_txt(value):
 
 
 def dumps_json(value, compressed=True):
+    """
+    Serializes the object as a json.
+
+    Args:
+        value: (str): write your description
+        compressed: (bool): write your description
+    """
     if compressed:
         return json.dumps(value, cls=JsonObjectEncoder)
     return json.dumps(value, cls=JsonObjectEncoder, sort_keys=True, indent=4, separators=(',', ': '))
 
 
 def pretty_dumps_json(value, compressed=False):
+    """
+    Pretty print a human readable to a string.
+
+    Args:
+        value: (todo): write your description
+        compressed: (bool): write your description
+    """
     return dumps_json(value, compressed=compressed)
 
 
 def dumps_xml(value, **kwargs):
+    """
+    Serialize an xml string to a string.
+
+    Args:
+        value: (todo): write your description
+    """
     return _dict2xml(value, **kwargs)
 
 
 def dumps_yaml(value):
+    """
+    Serialize value ascii formatted string.
+
+    Args:
+        value: (todo): write your description
+    """
     return yaml.dump(value, width=80, indent=4)
 
 
 def dumps_struct(value):
+    """
+    Convert a struct to a string.
+
+    Args:
+        value: (todo): write your description
+    """
     return stformat(value)
 
 
 def dumps_kv(value):
+    """
+    Convert a kvformat to a string.
+
+    Args:
+        value: (todo): write your description
+    """
     return kvformat(value)
 
 
 def dumps_env(value):
+    """
+    Convert a value as a string.
+
+    Args:
+        value: (todo): write your description
+    """
     return '\n'.join(['{} = {}'.format(k, v) for k, v in dict_deep_kv(value)])
 
 
 def _wrap_load(loads_func):
+    """
+    Decorator for load a function.
+
+    Args:
+        loads_func: (todo): write your description
+    """
     @functools.wraps(loads_func)
     def load(file, **kwargs):
+        """
+        Deserialize file descriptor from file - like object.
+
+        Args:
+            file: (str): write your description
+        """
         with as_file_descriptor(file, 'r') as f:
             return loads_func(f.read(), **kwargs)
 
@@ -108,8 +195,21 @@ def _wrap_load(loads_func):
 
 
 def _wrap_dump(dumps_func):
+    """
+    Decorator to dump method.
+
+    Args:
+        dumps_func: (todo): write your description
+    """
     @functools.wraps(dumps_func)
     def dump(file, obj, **kwargs):
+        """
+        Serialize obj to file - like object.
+
+        Args:
+            file: (str): write your description
+            obj: (dict): write your description
+        """
         with as_file_descriptor(file, 'w') as f:
             return f.write(dumps_func(obj, **kwargs))
 
@@ -155,10 +255,23 @@ for registry in ['dump', 'pretty_dump']:
 
 
 def pretty_load(file, **kwargs):
+    """
+    Decorator to load a file from a file - like object.
+
+    Args:
+        file: (str): write your description
+    """
     return io_function_registry.dispatch('pretty_load', file, **kwargs)
 
 
 def pretty_dump(file, obj, **kwargs):
+    """
+    Dump obj as a file - like object.
+
+    Args:
+        file: (str): write your description
+        obj: (todo): write your description
+    """
     return io_function_registry.dispatch('pretty_dump', file, obj, **kwargs)
 
 
@@ -213,6 +326,14 @@ def _dict2xml(d, indent=4, *, root_node=None, root_indent=0, name_key='__name__'
 
 
 def _xml2dict(element, name_key='__name__', attribute_key='__attribute__'):
+    """
+    Convert an xml element into dict.
+
+    Args:
+        element: (todo): write your description
+        name_key: (str): write your description
+        attribute_key: (str): write your description
+    """
     output_dict = {}
 
     if name_key is not None:
@@ -243,6 +364,13 @@ class JsonObjectEncoder(json.JSONEncoder):
     """Adapted from https://stackoverflow.com/a/35483750"""
 
     def default(self, obj):
+        """
+        Default json - serialized object.
+
+        Args:
+            self: (todo): write your description
+            obj: (todo): write your description
+        """
         if hasattr(obj, '__jsonify__'):
             json_object = obj.__jsonify__()
             if isinstance(json_object, six.string_types):

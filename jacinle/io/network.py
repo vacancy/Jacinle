@@ -35,9 +35,23 @@ def download(url, dirname, cli=True, filename=None, md5=None):
     path = os.path.join(dirname, filename)
 
     def hook(t):
+        """
+        Decor for t.
+
+        Args:
+            t: (todo): write your description
+        """
         last_b = [0]
 
         def inner(b, bsize, tsize=None):
+            """
+            Update the inner value of b.
+
+            Args:
+                b: (array): write your description
+                bsize: (int): write your description
+                tsize: (int): write your description
+            """
             if tsize is not None:
                 t.total = tsize
             t.update((b - last_b[0]) * bsize)

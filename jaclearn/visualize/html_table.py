@@ -42,6 +42,14 @@ class HTMLTableVisualizer(object):
     """
 
     def __init__(self, visdir, title):
+        """
+        Initialize table.
+
+        Args:
+            self: (todo): write your description
+            visdir: (str): write your description
+            title: (str): write your description
+        """
         self.visdir = visdir
         self.title = title
 
@@ -54,19 +62,43 @@ class HTMLTableVisualizer(object):
 
     @property
     def _current_table_spec(self):
+        """
+        Return the current table spec.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._current_table_spec_stack[-1]
 
     @property
     def _current_columns(self):
+        """
+        Return the current columns.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._all_table_specs[self._current_table_spec_stack[-1]]
 
     @contextlib.contextmanager
     def html(self):
+        """
+        Generate the html.
+
+        Args:
+            self: (todo): write your description
+        """
         self.begin_html()
         yield self
         self.end_html()
 
     def begin_html(self):
+        """
+        Create the html file.
+
+        Args:
+            self: (todo): write your description
+        """
         if osp.isfile(self.visdir):
             raise FileExistsError('Visualization dir "{}" is a file.'.format(self.visdir))
         elif osp.isdir(self.visdir) and osp.isfile(self.get_index_filename()):
@@ -89,12 +121,25 @@ class HTMLTableVisualizer(object):
         self._print('<h1>{}</h1>'.format(self.title))
 
     def end_html(self):
+        """
+        Displays the index.
+
+        Args:
+            self: (todo): write your description
+        """
         self._print('</body>')
         self._print('</html>')
         self._index_file.close()
         self._index_file = None
 
     def define_table(self, columns):
+        """
+        Define the columns dictionary.
+
+        Args:
+            self: (todo): write your description
+            columns: (list): write your description
+        """
         spec_id = len(self._all_table_specs)
         self._print('<style>')
         for c in columns:
@@ -108,11 +153,27 @@ class HTMLTableVisualizer(object):
 
     @contextlib.contextmanager
     def table(self, name, columns_or_spec_id):
+        """
+        Yield a table.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+            columns_or_spec_id: (str): write your description
+        """
         self.begin_table(name, columns_or_spec_id)
         yield self
         self.end_table()
 
     def begin_table(self, name, columns_or_spec_id):
+        """
+        Begin a new table.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+            columns_or_spec_id: (str): write your description
+        """
         subtable = len(self._current_table_spec_stack) > 0
         if subtable:
             self._print('<tr><td style="padding-left:50px" colspan="{}">'.format(len(self._current_columns)))
@@ -132,6 +193,12 @@ class HTMLTableVisualizer(object):
         self._print('</tr>')
 
     def end_table(self):
+        """
+        End the current stack.
+
+        Args:
+            self: (todo): write your description
+        """
         self._print('</table>')
         self._current_table_spec_stack.pop()
         self._table_counter += 1
@@ -142,6 +209,12 @@ class HTMLTableVisualizer(object):
             self._print('</td></tr>')
 
     def row(self, *args, **kwargs):
+        """
+        Display the contents of the class
+
+        Args:
+            self: (todo): write your description
+        """
         assert len(self._current_table_spec_stack) > 0
 
         if len(args) > 0:
@@ -179,31 +252,88 @@ class HTMLTableVisualizer(object):
         self._row_counter += 1
 
     def _print(self, *args, **kwargs):
+        """
+        Print the index of the index.
+
+        Args:
+            self: (todo): write your description
+        """
         assert self._index_file is not None
         print(*args, file=self._index_file, **kwargs)
 
     def _flush(self):
+        """
+        Flush the index file.
+
+        Args:
+            self: (todo): write your description
+        """
         self._index_file.flush()
 
     def get_index_filename(self):
+        """
+        Return the index of the index file.
+
+        Args:
+            self: (todo): write your description
+        """
         return osp.join(self.visdir, 'index.html')
 
     def get_asset_filename(self, row_identifier, col_identifier, ext):
+        """
+        Generate an asset filename.
+
+        Args:
+            self: (str): write your description
+            row_identifier: (str): write your description
+            col_identifier: (str): write your description
+            ext: (str): write your description
+        """
         table_dir = osp.join(self.visdir, 'assets', 'table{}'.format(self._table_counter))
         io.mkdir(table_dir)
         return osp.join(table_dir, '{}_{}.{}'.format(row_identifier, col_identifier, ext))
 
     def save_image(self, image, row_identifier, col_identifier, ext='png'):
+        """
+        Save an image.
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+            row_identifier: (str): write your description
+            col_identifier: (str): write your description
+            ext: (str): write your description
+        """
         filename = self.get_asset_filename(row_identifier, col_identifier, ext)
         image.save(filename)
         return filename
 
     def save_figure(self, figure, row_identifier, col_identifier, ext='png'):
+        """
+        Save figure as png file.
+
+        Args:
+            self: (todo): write your description
+            figure: (todo): write your description
+            row_identifier: (str): write your description
+            col_identifier: (str): write your description
+            ext: (str): write your description
+        """
         filename = self.get_asset_filename(row_identifier, col_identifier, ext)
         figure.savefig(filename)
         return filename
 
     def canonize_link(self, filetype, obj, row_identifier=None, col_identifier=None):
+        """
+        Return link to an object.
+
+        Args:
+            self: (todo): write your description
+            filetype: (str): write your description
+            obj: (todo): write your description
+            row_identifier: (str): write your description
+            col_identifier: (str): write your description
+        """
         if filetype == 'file':
             assert isinstance(obj, six.string_types)
             return osp.relpath(obj, self.visdir), osp.basename(obj)

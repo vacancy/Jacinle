@@ -19,6 +19,14 @@ __all__ = ['peak_local_max']
 
 
 def _get_high_intensity_peaks(is_peak, nr_peaks, feature_maps):
+    """
+    Returns the peaks of the peaks.
+
+    Args:
+        is_peak: (bool): write your description
+        nr_peaks: (str): write your description
+        feature_maps: (str): write your description
+    """
     peaks = torch.nonzero(is_peak)
     if nr_peaks is not None:
         # TODO(Jiayuan Mao @ 04/07): select the top-K peaks.
@@ -27,6 +35,14 @@ def _get_high_intensity_peaks(is_peak, nr_peaks, feature_maps):
 
 
 def peak_local_max(feature_maps, radius, exclude_border=True):
+    """
+    Calculate the maximum peak of a region.
+
+    Args:
+        feature_maps: (bool): write your description
+        radius: (todo): write your description
+        exclude_border: (int): write your description
+    """
     if type(exclude_border) is bool:
         if exclude_border:
             exclude_border = radius

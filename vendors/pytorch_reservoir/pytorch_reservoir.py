@@ -16,6 +16,11 @@ from jacinle.utils.cache import cached_result
 
 @cached_result
 def _load_extension():
+    """
+    Loads the extension.
+
+    Args:
+    """
     auto_travis(__file__)
     sys.path.insert(0, osp.join(osp.dirname(__file__), 'torch_sampling'))
     import torch_sampling
@@ -25,9 +30,19 @@ def _load_extension():
 
 # TODO(Jiayuan Mao @ 04/11): add the signature.
 def choice(*args, **kwargs):
+    """
+    Decorator to load a choice
+
+    Args:
+    """
     return _load_extension().choice(*args, **kwargs)
 
 
 def reservoir_sampling(*args, **kwargs):
+    """
+    Reservoir sampling sampling sampling.
+
+    Args:
+    """
     return _load_extension().reservoir_sampling(*args, **kwargs)
 

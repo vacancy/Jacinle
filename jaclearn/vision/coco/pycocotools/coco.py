@@ -64,6 +64,12 @@ elif PYTHON_VERSION == 3:
 
 
 def _isArrayLike(obj):
+    """
+    Check if an object is an array.
+
+    Args:
+        obj: (todo): write your description
+    """
     return hasattr(obj, '__iter__') and hasattr(obj, '__len__')
 
 
@@ -88,6 +94,12 @@ class COCO:
             self.createIndex()
 
     def createIndex(self):
+        """
+        Creates an index
+
+        Args:
+            self: (todo): write your description
+        """
         # create index
         print('creating index...')
         anns, cats, imgs = {}, {}, {}

@@ -26,6 +26,14 @@ class NaiveBayesianDistribution(JacEnum):
 
 class HybridNB(object):
     def __init__(self, distributions, weights=None, **kwargs):
+        """
+        Initialize the weights.
+
+        Args:
+            self: (todo): write your description
+            distributions: (str): write your description
+            weights: (array): write your description
+        """
         self.models = []
         for dist in distributions:
             dist = NaiveBayesianDistribution.from_string(dist)
@@ -43,6 +51,15 @@ class HybridNB(object):
         self.weights = weights
 
     def fit(self, xs, y, verbose=True):
+        """
+        Fit the model
+
+        Args:
+            self: (todo): write your description
+            xs: (array): write your description
+            y: (array): write your description
+            verbose: (bool): write your description
+        """
         assert len(xs) == len(self.models)
         for x, model in zip(xs, self.models):
             if verbose:
@@ -50,6 +67,14 @@ class HybridNB(object):
             model.fit(x, y)
 
     def predict(self, xs, verbose=True):
+        """
+        Predict log - wise over - validation ).
+
+        Args:
+            self: (array): write your description
+            xs: (array): write your description
+            verbose: (bool): write your description
+        """
         if self.weights is not None:
             raise NotImplementedError('HybridNB.weights is not supported.')
 

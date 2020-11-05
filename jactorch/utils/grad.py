@@ -16,8 +16,19 @@ __all__ = ['no_grad_func']
 
 
 def no_grad_func(func):
+    """
+    Decorator for gradients.
+
+    Args:
+        func: (todo): write your description
+    """
     @functools.wraps(func)
     def new_func(*args, **kwargs):
+        """
+        Decorator for the wrapped function.
+
+        Args:
+        """
         with torch.no_grad():
             return func(*args, **kwargs)
     return new_func

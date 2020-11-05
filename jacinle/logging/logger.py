@@ -19,6 +19,13 @@ _all_loggers = []
 
 
 def set_output_file(fout, mode='a'):
+    """
+    Set the log file.
+
+    Args:
+        fout: (str): write your description
+        mode: (str): write your description
+    """
     if isinstance(fout, str):
         fout = open(fout, mode)
     JacLogFormatter.log_fout = fout
@@ -32,24 +39,73 @@ class JacLogFormatter(logging.Formatter):
     max_lines = 256
 
     def _color_dbg(self, msg):
+        """
+        Print a color message.
+
+        Args:
+            self: (todo): write your description
+            msg: (str): write your description
+        """
         return '\x1b[36m{}\x1b[0m'.format(msg)
 
     def _color_warn(self, msg):
+        """
+        Print a warning message.
+
+        Args:
+            self: (todo): write your description
+            msg: (str): write your description
+        """
         return '\x1b[1;31m{}\x1b[0m'.format(msg)
 
     def _color_err(self, msg):
+        """
+        Print an error message.
+
+        Args:
+            self: (todo): write your description
+            msg: (str): write your description
+        """
         return '\x1b[1;4;31m{}\x1b[0m'.format(msg)
 
     def _color_omitted(self, msg):
+        """
+        Prints ansi escape message.
+
+        Args:
+            self: (todo): write your description
+            msg: (str): write your description
+        """
         return '\x1b[35m{}\x1b[0m'.format(msg)
 
     def _color_normal(self, msg):
+        """
+        Returns a color normal color.
+
+        Args:
+            self: (todo): write your description
+            msg: (str): write your description
+        """
         return msg
 
     def _color_date(self, msg):
+        """
+        Returns a date string.
+
+        Args:
+            self: (todo): write your description
+            msg: (str): write your description
+        """
         return '\x1b[32m{}\x1b[0m'.format(msg)
 
     def format(self, record):
+        """
+        Format the record.
+
+        Args:
+            self: (todo): write your description
+            record: (todo): write your description
+        """
         if record.levelno == logging.DEBUG:
             mcl, mtxt = self._color_dbg, 'DBG'
         elif record.levelno == logging.WARNING:
@@ -96,9 +152,23 @@ class JacLogFormatter(logging.Formatter):
 
     if sys.version_info.major < 3:
         def __set_fmt(self, fmt):
+            """
+            Set the fmt.
+
+            Args:
+                self: (todo): write your description
+                fmt: (todo): write your description
+            """
             self._fmt = fmt
     else:
         def __set_fmt(self, fmt):
+            """
+            Set the format for the given format.
+
+            Args:
+                self: (todo): write your description
+                fmt: (todo): write your description
+            """
             self._style._fmt = fmt
 
 

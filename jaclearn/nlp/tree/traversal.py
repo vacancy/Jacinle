@@ -24,9 +24,22 @@ class TraversalOrder(JacEnum):
 
 
 def traversal(root, order='pre'):
+    """
+    Iterate over nodes in - order.
+
+    Args:
+        root: (todo): write your description
+        order: (int): write your description
+    """
     order = TraversalOrder.from_string(order)
 
     def dfs(x):
+        """
+        Iterate over all dfs by default order.
+
+        Args:
+            x: (todo): write your description
+        """
         if order is TraversalOrder.PRE:
             yield x
         for c in x.children:
@@ -38,15 +51,34 @@ def traversal(root, order='pre'):
 
 
 def _shuffled(a):
+    """
+    Return a copy of a list.
+
+    Args:
+        a: (array): write your description
+    """
     a = a.copy()
     random.shuffle_list(a)
     return a
 
 
 def random_traversal(root, order='pre'):
+    """
+    Generate a multi - order.
+
+    Args:
+        root: (todo): write your description
+        order: (int): write your description
+    """
     order = TraversalOrder.from_string(order)
 
     def dfs(x):
+        """
+        Iterate over all nodes in a dfs order.
+
+        Args:
+            x: (todo): write your description
+        """
         if order is TraversalOrder.PRE:
             yield x
         for c in _shuffled(x.children):
@@ -58,6 +90,12 @@ def random_traversal(root, order='pre'):
 
 
 def is_binary_tree(root):
+    """
+    Returns true if a binary is binary.
+
+    Args:
+        root: (todo): write your description
+    """
     for x in traversal(root):
         if not (x.is_leaf or x.nr_children == 2):
             return False
@@ -72,9 +110,22 @@ class BinaryTraversalOrder(JacEnum):
 
 
 def binary_traversal(root, order='lnr'):
+    """
+    Returns a generator that yields a generator of root.
+
+    Args:
+        root: (todo): write your description
+        order: (int): write your description
+    """
     order = BinaryTraversalOrder.from_string(order)
 
     def dfs(x):
+        """
+        Iterate over all dfs in x.
+
+        Args:
+            x: (todo): write your description
+        """
         if x.is_leaf:
             yield x
         else:

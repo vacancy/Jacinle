@@ -16,6 +16,11 @@ from jacinle.comm.cs import ClientPipe
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     client = ClientPipe('client' + uuid.uuid4().hex[:8], conn_info=sys.argv[1:3])
     print('Identity: {}.'.format(client.identity))
     with client.activate():

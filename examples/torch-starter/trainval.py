@@ -98,6 +98,11 @@ mldash = MLDashClient('dumps')
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     # directories
     if not args.debug:
         args.dump_dir = ensure_path(osp.join('dumps', args.series_name, args.desc_name, args.expr, args.run_name))
@@ -261,6 +266,15 @@ def main():
 
 
 def train_epoch(epoch, trainer, train_dataloader, meters):
+    """
+    Training function.
+
+    Args:
+        epoch: (todo): write your description
+        trainer: (todo): write your description
+        train_dataloader: (todo): write your description
+        meters: (todo): write your description
+    """
     nr_iters = args.iters_per_epoch
     if nr_iters == 0:
         nr_iters = len(train_dataloader)
@@ -306,6 +320,15 @@ def train_epoch(epoch, trainer, train_dataloader, meters):
 
 
 def validate_epoch(epoch, trainer, val_dataloader, meters):
+    """
+    Validate the epoch.
+
+    Args:
+        epoch: (int): write your description
+        trainer: (todo): write your description
+        val_dataloader: (todo): write your description
+        meters: (todo): write your description
+    """
     end = time.time()
     with tqdm_pbar(total=len(val_dataloader)) as pbar:
         for feed_dict in val_dataloader:

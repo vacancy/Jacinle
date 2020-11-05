@@ -25,6 +25,15 @@ class DeviceNameFormat(JacEnum):
 
 
 def canonlize_device_name(d, format=DeviceNameFormat.INT):
+    """
+    Convert canonical name for device name.
+
+    Args:
+        d: (str): write your description
+        format: (str): write your description
+        DeviceNameFormat: (str): write your description
+        INT: (todo): write your description
+    """
     format = DeviceNameFormat.from_string(format)
 
     d = d.strip().lower()
@@ -45,6 +54,15 @@ def canonlize_device_name(d, format=DeviceNameFormat.INT):
 
 
 def parse_devices(devs, format=DeviceNameFormat.INT):
+    """
+    Parse a list.
+
+    Args:
+        devs: (str): write your description
+        format: (str): write your description
+        DeviceNameFormat: (str): write your description
+        INT: (todo): write your description
+    """
     if type(devs) is str:
         devs = devs.split(',')
     else:
@@ -57,12 +75,28 @@ def parse_devices(devs, format=DeviceNameFormat.INT):
 
 
 def set_cuda_visible_devices(devs):
+    """
+    Sets the usb device devices.
+
+    Args:
+        devs: (todo): write your description
+    """
     devs = parse_devices(devs, DeviceNameFormat.INT)
     all_gpus = [str(d) for d in devs if d > -1]  # select only GPUs.
     os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(all_gpus)
 
 
 def parse_and_set_devices(devs, format=DeviceNameFormat.INT, set_device=True):
+    """
+    Parse a list of devices.
+
+    Args:
+        devs: (todo): write your description
+        format: (str): write your description
+        DeviceNameFormat: (str): write your description
+        INT: (todo): write your description
+        set_device: (todo): write your description
+    """
     if set_device:
         set_cuda_visible_devices(devs)
     return parse_devices(devs, format)

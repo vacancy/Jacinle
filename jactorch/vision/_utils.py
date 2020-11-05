@@ -14,8 +14,20 @@ import torch.cuda as cuda
 
 
 def auto_device(func):
+    """
+    Decorator to auto auto auto - auto - auto - auto - auto - auto - auto - auto - auto - auto - auto - auto -
+
+    Args:
+        func: (todo): write your description
+    """
     @functools.wraps(func)
     def wrapped(tensor, *args, **kwargs):
+        """
+        Decorator to wrap tensor.
+
+        Args:
+            tensor: (todo): write your description
+        """
         if tensor.device.type == 'cuda':
             with cuda.device(tensor.device):
                 return func(tensor, *args, **kwargs)

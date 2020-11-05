@@ -15,6 +15,14 @@ from .constant import EBD_UNKNOWN, EBD_ALL_ZEROS
 
 
 def make_element2idx(elements_to_embed, add_all_zeros=False, add_unknown=False):
+    """
+    Convert an element to a list of a list of an element indices.
+
+    Args:
+        elements_to_embed: (todo): write your description
+        add_all_zeros: (bool): write your description
+        add_unknown: (todo): write your description
+    """
     elements_to_embed = sorted(elements_to_embed)
     element2idx = {EBD_ALL_ZEROS: 0} if add_all_zeros else {}
     element2idx.update({el: idx for idx, el in enumerate(elements_to_embed, start=len(element2idx))})

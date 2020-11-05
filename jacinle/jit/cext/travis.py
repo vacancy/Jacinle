@@ -20,6 +20,14 @@ __all__ = ['auto_travis']
 
 
 def auto_travis(filename, required_files=None, use_glob=True):
+    """
+    Check if a list of files to be used.
+
+    Args:
+        filename: (str): write your description
+        required_files: (str): write your description
+        use_glob: (bool): write your description
+    """
     if required_files is None:
         required_files = ['**/*.so']
 

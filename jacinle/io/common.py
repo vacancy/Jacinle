@@ -19,6 +19,13 @@ unit_list = list(zip(['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'], [0, 0, 1, 2, 2, 2]
 
 
 def get_ext(fname, match_first=False):
+    """
+    Get the extension of a file
+
+    Args:
+        fname: (str): write your description
+        match_first: (todo): write your description
+    """
     if match_first:
         fname = osp.split(fname)[1]
         return fname[fname.find('.'):]
@@ -44,5 +51,11 @@ def fsize_format(num):
 
 @contextlib.contextmanager
 def auto_close(file):
+    """
+    A context manager.
+
+    Args:
+        file: (str): write your description
+    """
     yield file
     file.close()

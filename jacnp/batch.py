@@ -15,6 +15,12 @@ __all__ = ['batchify', 'unbatchify']
 
 
 def batchify(inputs):
+    """
+    Return a batch of inputs.
+
+    Args:
+        inputs: (array): write your description
+    """
     first = inputs[0]
     if isinstance(first, (tuple, list, collections.UserList)):
         return [batchify([ele[i] for ele in inputs]) for i in range(len(first))]
@@ -24,6 +30,12 @@ def batchify(inputs):
 
 
 def unbatchify(inputs):
+    """
+    Unbatch a list of inputs.
+
+    Args:
+        inputs: (dict): write your description
+    """
     if isinstance(inputs, (tuple, list, collections.UserList)):
         outputs = [unbatchify(e) for e in inputs]
         return list(map(list, zip(*outputs)))

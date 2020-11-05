@@ -20,9 +20,22 @@ import jactorch
 
 class MyDataset(Dataset):
     def __init__(self):
+        """
+        Initialize the object
+
+        Args:
+            self: (todo): write your description
+        """
         pass
 
     def __getitem__(self, index):
+        """
+        Get a random item.
+
+        Args:
+            self: (todo): write your description
+            index: (int): write your description
+        """
         length = random.randint(5, 10)
         return {
             'x': torch.rand(length),
@@ -30,15 +43,34 @@ class MyDataset(Dataset):
         }
 
     def __len__(self):
+        """
+        Returns the number of bytes in bytes.
+
+        Args:
+            self: (todo): write your description
+        """
         return 128
 
 
 class MyModel(nn.Module):
     def __init__(self):
+        """
+        Initialize the internal state.
+
+        Args:
+            self: (todo): write your description
+        """
         super().__init__()
         self.param = nn.Parameter(torch.zeros(5))  # a dummy parameter.
 
     def forward(self, feed_dict):
+        """
+        Compute statistics of a feed
+
+        Args:
+            self: (todo): write your description
+            feed_dict: (dict): write your description
+        """
         outputs = dict(
             z=feed_dict['x'] + feed_dict['y'],
             devices=(str(feed_dict['x'].device), str(feed_dict['y'].device))
@@ -62,6 +94,11 @@ if args.use_gpu:
 
 
 def main():
+    """
+    Training function.
+
+    Args:
+    """
     dataset = MyDataset()
     from jactorch.data.dataloader import JacDataLoader, JacDataLoaderMultiGPUWrapper
     from jactorch.data.collate import VarLengthCollateV3
@@ -79,6 +116,13 @@ def main():
 
     # the reduce func only changes the behavior of reduction on the loss function and the monitors.
     def custom_reduce_func(k, v):
+        """
+        Reduce a key to a new value.
+
+        Args:
+            k: (todo): write your description
+            v: (todo): write your description
+        """
         if '_max' in k:
             return v.max()
         elif '_sum' in k:

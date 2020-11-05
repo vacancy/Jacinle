@@ -34,11 +34,28 @@ class GymMarioRLEnv(GymRLEnv):
             old restart might restore to a non-start intermediate state
     """
     def __init__(self, name, dump_dir=None, force_dump=False, state_mode='DEFAULT'):
+        """
+        Initialize the state.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+            dump_dir: (str): write your description
+            force_dump: (bool): write your description
+            state_mode: (str): write your description
+        """
         super().__init__(name, dump_dir, force_dump, state_mode)
 
         self._cur_iter = -1
 
     def _make_env(self, name):
+        """
+        Creates a gymNintendo environment.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+        """
         name_split = name.split('-')
         if name_split[0] != 'meta':
             prefix, world, level = name_split[:3]
@@ -54,9 +71,23 @@ class GymMarioRLEnv(GymRLEnv):
         return GymNintendoWrapper(env)
 
     def _set_info(self, info):
+        """
+        Sets the info
+
+        Args:
+            self: (todo): write your description
+            info: (bool): write your description
+        """
         self.info = copy.copy(info)
 
     def _action(self, action):
+        """
+        Set the action.
+
+        Args:
+            self: (todo): write your description
+            action: (str): write your description
+        """
         o, r, is_over, info = self._gym.step(action)
         is_over = info.get('iteration', -1) > self._cur_iter
         if self._env_level is not None:
@@ -69,6 +100,12 @@ class GymMarioRLEnv(GymRLEnv):
         return r, is_over
 
     def _restart(self):
+        """
+        Restart the environment.
+
+        Args:
+            self: (todo): write your description
+        """
         if self._cur_iter < 0:
             self._gym.reset()  # hard mario fceux reset
             if self._env_level is not None:
@@ -88,7 +125,19 @@ class GymMarioRLEnv(GymRLEnv):
         self._set_current_state(o)
 
     def _finish(self):
+        """
+        Finishes the current request.
+
+        Args:
+            self: (todo): write your description
+        """
         pass
 
     def close(self):
+        """
+        Closes the connection.
+
+        Args:
+            self: (todo): write your description
+        """
         self._gym.close()

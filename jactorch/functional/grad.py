@@ -16,12 +16,27 @@ __all__ = ['grad_multi', 'zero_grad']
 class GradMulti(Function):
     @staticmethod
     def forward(ctx, input, grad_multi):
+        """
+        Parameters ----------
+
+        Args:
+            ctx: (todo): write your description
+            input: (todo): write your description
+            grad_multi: (bool): write your description
+        """
         ctx.grad_multi = grad_multi
         output = input.clone()
         return output
 
     @staticmethod
     def backward(ctx, grad_output):
+        """
+        Compute backward backward pass
+
+        Args:
+            ctx: (todo): write your description
+            grad_output: (bool): write your description
+        """
         return grad_output * ctx.grad_multi, None
 
 
@@ -44,11 +59,25 @@ def grad_multi(input, grad_multi):
 class ZeroGradV1(Function):
     @staticmethod
     def forward(ctx, input):
+        """
+        R forward forward
+
+        Args:
+            ctx: (todo): write your description
+            input: (todo): write your description
+        """
         output = input.clone()
         return output
 
     @staticmethod
     def backward(ctx, grad_output):
+        """
+        Backward backward backward backward backward.
+
+        Args:
+            ctx: (todo): write your description
+            grad_output: (bool): write your description
+        """
         return None
 
 

@@ -16,6 +16,11 @@ from jacinle.comm.distrib import DistribOutputPipe, control
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     q = DistribOutputPipe('jacinle.test')
     with control(pipes=[q]):
         while True:

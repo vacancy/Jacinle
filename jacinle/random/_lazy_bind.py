@@ -80,10 +80,21 @@ __all__ = [
 
 
 def _lazy_bind(instance_func):
+    """
+    Decorator for lazy decorators.
+
+    Args:
+        instance_func: (todo): write your description
+    """
     func_name = instance_func.__name__
 
     @functools.wraps(instance_func)
     def wrapped(*args, **kwargs):
+        """
+        Decorator to return a function.
+
+        Args:
+        """
         func = getattr(get_default_rng(), func_name)
         return func(*args, **kwargs)
 

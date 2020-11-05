@@ -20,22 +20,50 @@ __all__ = ['sample_bernoulli', 'sample_multinomial', 'choice']
 class SampleBernoulli(autograd.Function):
     @staticmethod
     def forward(ctx, input):
+        """
+        Generate forward computation.
+
+        Args:
+            ctx: (todo): write your description
+            input: (todo): write your description
+        """
         rand = input.new(*input.size())
         torch.rand(input.size(), out=rand)
         return (rand > input).float()
 
     @staticmethod
     def backward(ctx, grad_output):
+        """
+        Backward computation of a backward.
+
+        Args:
+            ctx: (todo): write your description
+            grad_output: (bool): write your description
+        """
         return grad_output
 
 
 def sample_bernoulli(input):
+    """
+    Sample a sample of the given sample.
+
+    Args:
+        input: (todo): write your description
+    """
     return SampleBernoulli.apply(input)
 
 
 class SampleMultinomial(autograd.Function):
     @staticmethod
     def forward(ctx, input, dim):
+        """
+        Forward computation.
+
+        Args:
+            ctx: (todo): write your description
+            input: (todo): write your description
+            dim: (int): write your description
+        """
         input = input.transpose(dim, -1)
         input_flatten = input.contiguous().view(-1, input.size(-1))
         rand = torch.multinomial(input_flatten, 1).view(input.size()[:-1])
@@ -45,10 +73,24 @@ class SampleMultinomial(autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
+        """
+        Backward backward backward pass
+
+        Args:
+            ctx: (todo): write your description
+            grad_output: (bool): write your description
+        """
         return grad_output, None
 
 
 def sample_multinomial(input, dim=-1):
+    """
+    Sample multinomial multinomial.
+
+    Args:
+        input: (array): write your description
+        dim: (int): write your description
+    """
     return SampleMultinomial.apply(input, dim)
 
 

@@ -16,6 +16,14 @@ __all__ = ['gen_voronoi']
 
 
 def gen_voronoi(centers, height, width):
+    """
+    Generate a usbonoi image.
+
+    Args:
+        centers: (todo): write your description
+        height: (int): write your description
+        width: (int): write your description
+    """
     range_y = torch.arange(height, device=centers.device)
     range_x = torch.arange(width, device=centers.device)
     y, x = jactorch.meshgrid(range_y, range_x, dim=0)

@@ -12,6 +12,13 @@ from ._utils import apply_affine_transform
 
 
 def normalize_bbox(img, bbox):
+    """
+    Normalize a bounding box.
+
+    Args:
+        img: (array): write your description
+        bbox: (array): write your description
+    """
     bbox = bbox.copy()
     bbox[:, 0] /= img.width
     bbox[:, 1] /= img.height
@@ -21,6 +28,13 @@ def normalize_bbox(img, bbox):
 
 
 def denormalize_box(img, bbox):
+    """
+    Denormalize the image
+
+    Args:
+        img: (array): write your description
+        bbox: (array): write your description
+    """
     bbox = bbox.copy()
     bbox[:, 0] *= img.width
     bbox[:, 1] *= img.height
@@ -30,6 +44,13 @@ def denormalize_box(img, bbox):
 
 
 def refresh_valid(img, bbox):
+    """
+    Refresh the bounding boxes.
+
+    Args:
+        img: (array): write your description
+        bbox: (array): write your description
+    """
     assert bbox.shape[1] in (4, 5), 'Support only (x1, y1, x2, y2, valid) or (x1, y1, x2, y2) typed coordinates'
     has_valid_bit = bbox.shape[1] == 5
 
@@ -55,6 +76,16 @@ def refresh_valid(img, bbox):
 
 
 def crop(bbox, x, y, w, h):
+    """
+    Crop a bounding box.
+
+    Args:
+        bbox: (array): write your description
+        x: (array): write your description
+        y: (array): write your description
+        w: (array): write your description
+        h: (array): write your description
+    """
     bbox = bbox.copy()
 
     bbox[:, 0] = (bbox[:, 0] - x)
@@ -63,6 +94,13 @@ def crop(bbox, x, y, w, h):
 
 
 def pad(bbox, padding):
+    """
+    Pad a bounding box.
+
+    Args:
+        bbox: (array): write your description
+        padding: (float): write your description
+    """
     if isinstance(padding, int):
         padding = (padding, padding, padding, padding)
     elif len(padding) == 2:
@@ -78,18 +116,40 @@ def pad(bbox, padding):
 
 
 def hflip(img, bbox):
+    """
+    Flip a bounding box
+
+    Args:
+        img: (array): write your description
+        bbox: (array): write your description
+    """
     bbox = bbox.copy()
     bbox[:, 0] = img.width - bbox[:, 0] - bbox[:, 2]
     return bbox
 
 
 def vflip(img, bbox):
+    """
+    Flip a bounding
+
+    Args:
+        img: (array): write your description
+        bbox: (array): write your description
+    """
     bbox = bbox.copy()
     bbox[:, 1] = img.height - bbox[:, 1] - bbox[:, 3]
     return bbox
 
 
 def resize(img, bbox, size):
+    """
+    Resize the image
+
+    Args:
+        img: (array): write your description
+        bbox: (array): write your description
+        size: (int): write your description
+    """
     h, w = size
     bbox = bbox.copy()
     bbox[:, 0] = bbox[:, 0] / img.width * w
@@ -100,6 +160,13 @@ def resize(img, bbox, size):
 
 
 def affine(bbox, matrix):
+    """
+    Return a new bounding box.
+
+    Args:
+        bbox: (array): write your description
+        matrix: (array): write your description
+    """
     bbox = bbox.copy()
     for i in range(bbox.shape[0]):
         bbox[i, :2] = apply_affine_transform(*bbox[i, :2], matrix)

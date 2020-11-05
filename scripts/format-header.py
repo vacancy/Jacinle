@@ -39,10 +39,21 @@ HEADER = r"""#! /usr/bin/env python3
 """
 
 def log(*args, **kwargs):
+    """
+    Log a message at the end of the logger.
+
+    Args:
+    """
     logger.info(*args, **kwargs)
 
 
 def process(filename):
+    """
+    Process a single file.
+
+    Args:
+        filename: (str): write your description
+    """
     with open(filename) as f:
         lines = f.readlines()
 
@@ -139,9 +150,22 @@ def process(filename):
 
 
 def myglob(root, exclude):
+    """
+    Return a list of all files in the directory.
+
+    Args:
+        root: (todo): write your description
+        exclude: (list): write your description
+    """
     output = list()
     exclude = set(exclude)
     def myglob_inner(dir):
+        """
+        Returns a list of all subdirs in dir.
+
+        Args:
+            dir: (str): write your description
+        """
         nonlocal output
 
         full_dir = osp.join(root, dir) if dir is not None else root
@@ -164,6 +188,11 @@ def myglob(root, exclude):
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     logger.critical('Working directory: {}'.format(args.dir))
     logger.critical('Project name: {}'.format(args.project))
 

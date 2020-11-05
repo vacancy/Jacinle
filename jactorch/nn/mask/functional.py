@@ -17,6 +17,16 @@ __all__ = ['masked_softmax', 'length_masked_softmax']
 
 
 def masked_softmax(logits, mask=None, dim=-1, eps=1e-20, ninf=-1e4):
+    """
+    Computes softmax.
+
+    Args:
+        logits: (todo): write your description
+        mask: (array): write your description
+        dim: (int): write your description
+        eps: (float): write your description
+        ninf: (todo): write your description
+    """
     if mask is not None:
         logits = logits * mask + ninf * (1 - mask)
 
@@ -30,6 +40,15 @@ def masked_softmax(logits, mask=None, dim=-1, eps=1e-20, ninf=-1e4):
 
 
 def length_masked_softmax(logits, lengths, dim=-1, ninf=-1e4):
+    """
+    Compute softmax softmax softmax.
+
+    Args:
+        logits: (todo): write your description
+        lengths: (int): write your description
+        dim: (int): write your description
+        ninf: (todo): write your description
+    """
     rng = torch.arange(logits.size(dim=dim), dtype=lengths.dtype, device=lengths.device)
     rng = add_dim_as_except(rng, logits, dim)
     lengths = lengths.unsqueeze(dim)

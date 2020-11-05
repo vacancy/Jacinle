@@ -218,6 +218,13 @@ def quat2euler(quat):
 
 
 def subtract_euler(e1, e2):
+    """
+    Subtract the euler of two quaternions.
+
+    Args:
+        e1: (todo): write your description
+        e2: (todo): write your description
+    """
     assert e1.shape == e2.shape
     assert e1.shape[-1] == 3
     q1 = euler2quat(e1)
@@ -253,12 +260,25 @@ def quat2mat(quat):
 
 
 def quat_conjugate(q):
+    """
+    Conjugate the quatrix.
+
+    Args:
+        q: (todo): write your description
+    """
     inv_q = -q
     inv_q[..., 0] *= -1
     return inv_q
 
 
 def quat_mul(q0, q1):
+    """
+    Return the quat quat_mulion.
+
+    Args:
+        q0: (float): write your description
+        q1: (float): write your description
+    """
     assert q0.shape == q1.shape
     assert q0.shape[-1] == 4
     assert q1.shape[-1] == 4
@@ -285,6 +305,13 @@ def quat_mul(q0, q1):
 
 
 def quat_rot_vec(q, v0):
+    """
+    Return the quat_vec by angle v0.
+
+    Args:
+        q: (todo): write your description
+        v0: (todo): write your description
+    """
     q_v0 = np.array([0, v0[0], v0[1], v0[2]])
     q_v = quat_mul(q, quat_mul(q_v0, quat_conjugate(q)))
     v = q_v[1:]
@@ -292,10 +319,22 @@ def quat_rot_vec(q, v0):
 
 
 def quat_identity():
+    """
+    Return the identity identity identity
+
+    Args:
+    """
     return np.array([1, 0, 0, 0])
 
 
 def axisangle2quat(axis, angle):
+    """
+    Convert angle about quatas
+
+    Args:
+        axis: (int): write your description
+        angle: (float): write your description
+    """
     quat = np.zeros(4, dtype='float64')
     quat[0] = np.cos(angle / 2)
     quat[1:] = np.sin(angle / 2) * axis
@@ -303,6 +342,12 @@ def axisangle2quat(axis, angle):
 
 
 def quat2axisangle(quat):
+    """
+    Convert quat2 rotation matrix to rotation angle.
+
+    Args:
+        quat: (todo): write your description
+    """
     theta = 0
     axis = np.array([0, 0, 1])
     sin_theta = np.linalg.norm(quat[1:])
@@ -316,6 +361,12 @@ def quat2axisangle(quat):
 
 
 def euler2point_euler(euler):
+    """
+    Concat euler angles to euler angles.
+
+    Args:
+        euler: (array): write your description
+    """
     _euler = euler.copy()
     if len(_euler.shape) < 2:
         _euler = np.expand_dims(_euler, 0)
@@ -326,6 +377,12 @@ def euler2point_euler(euler):
 
 
 def point_euler2euler(euler):
+    """
+    Return the euler angles to euler angles.
+
+    Args:
+        euler: (array): write your description
+    """
     _euler = euler.copy()
     if len(_euler.shape) < 2:
         _euler = np.expand_dims(_euler, 0)
@@ -336,6 +393,12 @@ def point_euler2euler(euler):
 
 
 def quat2point_quat(quat):
+    """
+    Concatenates of quat2point.
+
+    Args:
+        quat: (array): write your description
+    """
     # Should be in qw, qx, qy, qz
     _quat = quat.copy()
     if len(_quat.shape) < 2:
@@ -349,6 +412,12 @@ def quat2point_quat(quat):
 
 
 def point_quat2quat(quat):
+    """
+    Concatenate quat2quat2quatrix.
+
+    Args:
+        quat: (array): write your description
+    """
     _quat = quat.copy()
     if len(_quat.shape) < 2:
         _quat = np.expand_dims(_quat, 0)
@@ -378,6 +447,11 @@ def round_to_straight_angles(angles):
 
 
 def get_parallel_rotations():
+    """
+    Return the parallel rotation matrix.
+
+    Args:
+    """
     mult90 = [0, np.pi / 2, -np.pi / 2, np.pi]
     parallel_rotations = []
     for euler in itertools.product(mult90, repeat=3):

@@ -25,6 +25,12 @@ __all__ = [
 
 class DefaultsManager(object):
     def __init__(self):
+        """
+        Initialize the thread.
+
+        Args:
+            self: (todo): write your description
+        """
         self._is_local = dict()
 
         self._defaults_global = dict()
@@ -32,7 +38,20 @@ class DefaultsManager(object):
 
     @decorator_with_optional_args(is_method=True)
     def wrap_custom_as_default(self, *, is_local=False):
+        """
+        Creates decorator which wraps a custom method.
+
+        Args:
+            self: (todo): write your description
+            is_local: (bool): write your description
+        """
         def wrapper(meth):
+            """
+            Creates a context manager decorator.
+
+            Args:
+                meth: (str): write your description
+            """
             identifier = class_name_of_method(meth)
             meth = contextlib.contextmanager(meth)
             self._is_local[identifier] = is_local
@@ -41,6 +60,12 @@ class DefaultsManager(object):
             @contextlib.contextmanager
             @functools.wraps(meth)
             def wrapped_func(slf, *args, **kwargs):
+                """
+                Wraps a function that wraps a function call.
+
+                Args:
+                    slf: (todo): write your description
+                """
                 backup = defaults.get(identifier, None)
                 defaults[identifier] = slf
                 with meth(slf, *args, **kwargs):
@@ -51,9 +76,23 @@ class DefaultsManager(object):
         return wrapper
 
     def gen_get_default(self, cls, default_getter=None):
+        """
+        Return the default getter. getter.
+
+        Args:
+            self: (todo): write your description
+            cls: (todo): write your description
+            default_getter: (str): write your description
+        """
         identifier = class_name_of_method(cls.as_default)
 
         def get_default(default=None):
+            """
+            Return the default value for the given default.
+
+            Args:
+                default: (todo): write your description
+            """
             if default is None and default_getter is not None:
                 default = default_getter()
 
@@ -66,17 +105,45 @@ class DefaultsManager(object):
         return get_default
 
     def gen_set_default(self, cls):
+        """
+        Generate a default set of class_name.
+
+        Args:
+            self: (todo): write your description
+            cls: (todo): write your description
+        """
         identifier = class_name_of_method(cls.as_default)
 
         def set_default(default):
+            """
+            Sets the default identifier.
+
+            Args:
+                default: (dict): write your description
+            """
             self._get_defaults_registry(identifier)[identifier] = default
         return set_default
 
     def set_default(self, cls, default):
+        """
+        Set the default value of the default.
+
+        Args:
+            self: (todo): write your description
+            cls: (todo): write your description
+            default: (dict): write your description
+        """
         identifier = class_name_of_method(cls.as_default)
         self._get_defaults_registry(identifier)[identifier] = default
 
     def _get_defaults_registry(self, identifier):
+        """
+        Return the default value for the given identifier.
+
+        Args:
+            self: (todo): write your description
+            identifier: (str): write your description
+        """
         is_local = self._is_local.get(identifier, False)
         if is_local:
             if not hasattr(self._defaults_local, 'defaults'):
@@ -98,8 +165,22 @@ class _LocalObjectSimulator(object):
 
 
 def option_context(name, is_local=True, **kwargs):
+    """
+    Creates a context that will set the context.
+
+    Args:
+        name: (str): write your description
+        is_local: (bool): write your description
+    """
     class OptionContext(object):
         def __init__(self, **init_kwargs):
+            """
+            Initialize this class.
+
+            Args:
+                self: (todo): write your description
+                init_kwargs: (dict): write your description
+            """
             for k, v in kwargs.items():
                 setattr(self, k, v)
             if hasattr(self.__class__, 'current_context') and self.__class__.current_context.ctx is not None:
@@ -112,15 +193,36 @@ def option_context(name, is_local=True, **kwargs):
 
         @classmethod
         def get_option(cls, name):
+            """
+            Get the value of an option.
+
+            Args:
+                cls: (todo): write your description
+                name: (str): write your description
+            """
             getattr(cls.get_default(), name)
 
         @classmethod
         def set_default_option(cls, name, value):
+            """
+            Sets the default value of an option.
+
+            Args:
+                cls: (todo): write your description
+                name: (str): write your description
+                value: (todo): write your description
+            """
             cls._create_default_context()
             setattr(cls.default_context.ctx, name, value)
 
         @classmethod
         def get_default(cls):
+            """
+            Return the default context.
+
+            Args:
+                cls: (todo): write your description
+            """
             cls._create_current_context()
             if cls.current_context.ctx is not None:
                 return cls.current_context.ctx
@@ -130,6 +232,12 @@ def option_context(name, is_local=True, **kwargs):
 
         @contextlib.contextmanager
         def as_default(self):
+            """
+            Creates the current context.
+
+            Args:
+                self: (todo): write your description
+            """
             self.__class__._create_current_context()
             backup = self.__class__.current_context.ctx
             self.__class__.current_context.ctx = self
@@ -138,6 +246,12 @@ def option_context(name, is_local=True, **kwargs):
 
         @classmethod
         def _create_default_context(cls):
+            """
+            Create a default context.
+
+            Args:
+                cls: (callable): write your description
+            """
             if hasattr(cls, 'default_context'):
                 return
 
@@ -149,6 +263,12 @@ def option_context(name, is_local=True, **kwargs):
 
         @classmethod
         def _create_current_context(cls):
+            """
+            Create the current context.
+
+            Args:
+                cls: (callable): write your description
+            """
             if hasattr(cls, 'current_context'):
                 return
 
@@ -167,11 +287,28 @@ ARGDEF = object()
 
 
 def default_args(func):
+    """
+    Decorator that accepts a function arguments.
+
+    Args:
+        func: (callable): write your description
+    """
     def wrapper(func):
+        """
+        Decorator for functions that require a function is_default signature.
+
+        Args:
+            func: (callable): write your description
+        """
         sig = inspect.signature(func)
 
         @functools.wraps(func)
         def wrapped(*args, **kwargs):
+            """
+            Decorator toilizing a function with kwargs.
+
+            Args:
+            """
             bounded = sig.bind(*args, **kwargs)
             bounded.apply_defaults()
 

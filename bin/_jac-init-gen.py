@@ -19,6 +19,14 @@ logger = get_logger(__file__)
 
 
 def load_system_settings(root, config, bash_file):
+    """
+    Load system settings.
+
+    Args:
+        root: (str): write your description
+        config: (todo): write your description
+        bash_file: (str): write your description
+    """
     if 'system' not in config or config['system'] is None:
         return
     envs = config['system'].get('envs', {})
@@ -28,6 +36,14 @@ def load_system_settings(root, config, bash_file):
 
 
 def load_vendors(root, config, bash_file):
+    """
+    Load bash vendors
+
+    Args:
+        root: (str): write your description
+        config: (todo): write your description
+        bash_file: (str): write your description
+    """
     if 'vendors' not in config or config['vendors'] is None:
         return
 
@@ -39,6 +55,14 @@ def load_vendors(root, config, bash_file):
 
 
 def load_conda_settings(root, config, bash_file):
+    """
+    Load conda environment settings file.
+
+    Args:
+        root: (todo): write your description
+        config: (todo): write your description
+        bash_file: (str): write your description
+    """
     if 'conda' not in config or config['conda'] is None:
         return
     target_env = config['conda'].get('env', '')
@@ -53,6 +77,14 @@ fi
 
 
 def load_yml_config(root, bash_file, recursive=False):
+    """
+    Load yml config file.
+
+    Args:
+        root: (str): write your description
+        bash_file: (str): write your description
+        recursive: (str): write your description
+    """
     if recursive:
         last_root = None
         while root != last_root:
@@ -75,6 +107,11 @@ def load_yml_config(root, bash_file, recursive=False):
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     f = tempfile.NamedTemporaryFile('w', delete=False)
     load_yml_config(osp.dirname(osp.dirname(__file__)), f)
     load_yml_config(os.getcwd(), f, recursive=True)

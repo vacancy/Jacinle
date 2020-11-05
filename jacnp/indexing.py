@@ -13,6 +13,14 @@ from .nd import isndarray
 
 
 def one_hot(label, nr_classes, dtype='float32'):
+    """
+    Convert a one - hot_classes.
+
+    Args:
+        label: (str): write your description
+        nr_classes: (todo): write your description
+        dtype: (todo): write your description
+    """
     if isinstance(label, int) or (isndarray(label) and len(label.shape) == 0):
         out = np.zeros(nr_classes, dtype=dtype)
         out[int(label)] = 1
@@ -26,6 +34,14 @@ def one_hot(label, nr_classes, dtype='float32'):
 
 
 def one_hot_nd(label, nr_classes, dtype='float32'):
+    """
+    Convert one - hot_nd_classes.
+
+    Args:
+        label: (array): write your description
+        nr_classes: (todo): write your description
+        dtype: (todo): write your description
+    """
     shape = label.shape
     return one_hot(label.reshape(-1), nr_classes, dtype=dtype).reshape(shape + (nr_classes, ))
 

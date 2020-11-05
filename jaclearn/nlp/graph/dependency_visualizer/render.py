@@ -99,6 +99,14 @@ class DependencyVisualizer(object):
         return rendered
 
     def render_simple_svg(self, text, arcs):
+        """
+        Render a simple simple svg.
+
+        Args:
+            self: (todo): write your description
+            text: (str): write your description
+            arcs: (todo): write your description
+        """
         if isinstance(text, six.string_types):
             text = text.split()
         output_words = [{'text': w, 'tag': ''} for w in text]
@@ -257,6 +265,15 @@ defualt_renderer = DependencyVisualizer()
 
 
 def visualize_list(parsed, options={}, page=False, minify=False):
+    """
+    Renders a page.
+
+    Args:
+        parsed: (bool): write your description
+        options: (dict): write your description
+        page: (int): write your description
+        minify: (float): write your description
+    """
     if len(options) == 0:
         renderer = defualt_renderer
     else:
@@ -265,6 +282,14 @@ def visualize_list(parsed, options={}, page=False, minify=False):
 
 
 def visualize_simple_svg(text, arcs, options={}):
+    """
+    Visualize a simple simple graph to a simple simple text string.
+
+    Args:
+        text: (str): write your description
+        arcs: (array): write your description
+        options: (dict): write your description
+    """
     if len(options) == 0:
         renderer = defualt_renderer
     else:

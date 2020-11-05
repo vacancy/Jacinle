@@ -28,15 +28,39 @@ __all__ = [
 
 class _VarLengthCollateV3Stack(object):
     def apply(self, feed_dict, key):
+        """
+        Apply the given key to the given dictionary.
+
+        Args:
+            self: (todo): write your description
+            feed_dict: (dict): write your description
+            key: (str): write your description
+        """
         raise NotImplementedError()
 
 
 class _VarLengthCollateV3ArrayStack(_VarLengthCollateV3Stack):
     def __init__(self, array, length):
+        """
+        Initialize the array.
+
+        Args:
+            self: (todo): write your description
+            array: (array): write your description
+            length: (int): write your description
+        """
         self.array = array
         self.length = length
 
     def apply(self, feed_dict, key):
+        """
+        Applies feed_dict.
+
+        Args:
+            self: (todo): write your description
+            feed_dict: (dict): write your description
+            key: (str): write your description
+        """
         feed_dict[key] = self.array
         feed_dict[key + '_length'] = self.length
 
@@ -86,6 +110,16 @@ class VarLengthCollateV3(object):
         self, layout, mode='collate',
         gather_device=None, gather_dim=0,
     ):
+        """
+        Initialize the layout.
+
+        Args:
+            self: (todo): write your description
+            layout: (todo): write your description
+            mode: (todo): write your description
+            gather_device: (todo): write your description
+            gather_dim: (todo): write your description
+        """
 
         self.layout = layout
         if isinstance(self.layout, dict):
@@ -95,6 +129,15 @@ class VarLengthCollateV3(object):
         self.gather_dim = gather_dim
 
     def __call__(self, batch, flatten_key=None, layout_spec=None):
+        """
+        Takes a tensor.
+
+        Args:
+            self: (todo): write your description
+            batch: (todo): write your description
+            flatten_key: (str): write your description
+            layout_spec: (todo): write your description
+        """
         if flatten_key is not None and flatten_key in self.layout:
             layout_spec = self.layout[flatten_key]
 
@@ -153,6 +196,16 @@ class VarLengthCollateV3(object):
         raise TypeError((error_msg.format(type(batch[0]))))
 
     def _stack_raw(self, values, out, maybe_cuda, is_concat=False):
+        """
+        Perform raw stack of values.
+
+        Args:
+            self: (todo): write your description
+            values: (str): write your description
+            out: (array): write your description
+            maybe_cuda: (bool): write your description
+            is_concat: (bool): write your description
+        """
         if self.mode is VarLengthCollateV3Mode.GATHER and maybe_cuda:
             if values[0].dim() == 0:
                 values = [o.unsqueeze(0) for o in values]
@@ -164,6 +217,15 @@ class VarLengthCollateV3(object):
                 return torch.stack(values, 0, out=out)
 
     def _stack(self, values, spec=None, maybe_cuda=True):
+        """
+        Perform a stack.
+
+        Args:
+            self: (todo): write your description
+            values: (str): write your description
+            spec: (str): write your description
+            maybe_cuda: (bool): write your description
+        """
         mode = spec.type if spec is not None else None
 
         out = None

@@ -15,6 +15,11 @@ from jacinle.utils.env import jac_getenv, jac_is_debug, jac_getenv
 
 
 def release_syslim():
+    """
+    Release release release release
+
+    Args:
+    """
     if jac_getenv('SYSLIM', default='n', type='bool'):
         sys.setrecursionlimit(1000000)
         try:
@@ -25,10 +30,20 @@ def release_syslim():
 
 
 def tune_opencv():
+    """
+    Tune opencv environment variables.
+
+    Args:
+    """
     os.environ['OPENCV_OPENCL_RUNTIME'] = ''
 
 
 def enable_ipdb():
+    """
+    Enable ipdb.
+
+    Args:
+    """
     if jac_is_debug():
         if jac_getenv('IMPORT_ALL', 'true', 'bool'):
             from jacinle.utils.debug import hook_exception_ipdb
@@ -36,6 +51,11 @@ def enable_ipdb():
 
 
 def init_main():
+    """
+    Enable the main application.
+
+    Args:
+    """
     release_syslim()
     tune_opencv()
     enable_ipdb()

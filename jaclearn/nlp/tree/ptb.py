@@ -22,20 +22,50 @@ from .traversal import traversal
 
 class PTBNode(Node):
     def __init__(self, vtype, token=None, index=-1):
+        """
+        Initialize token
+
+        Args:
+            self: (todo): write your description
+            vtype: (todo): write your description
+            token: (str): write your description
+            index: (int): write your description
+        """
         super().__init__(vtype, None)
         self.token = token
         self.index = index
 
     @property
     def leftmost_index(self):
+        """
+        The leftmost leaf.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.index if self.is_leaf else self.children[0].leftmost_index
 
     @property
     def rightmost_index(self):
+        """
+        Returns the leaf index of the leaf.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.index if self.is_leaf else self.children[-1].rightmost_index
 
     @classmethod
     def from_string(cls, encoding, incl_vtype=True, default_vtype=None):
+        """
+        Parse a string from a string.
+
+        Args:
+            cls: (todo): write your description
+            encoding: (str): write your description
+            incl_vtype: (todo): write your description
+            default_vtype: (todo): write your description
+        """
         if isinstance(encoding, six.string_types):
             steps = encoding.split()
         else:
@@ -95,10 +125,25 @@ class PTBNode(Node):
         return stack[0]
 
     def to_string(self, to_string=True, compressed=True, vtype=True):
+        """
+        Return a string representation of this node.
+
+        Args:
+            self: (todo): write your description
+            to_string: (str): write your description
+            compressed: (bool): write your description
+            vtype: (todo): write your description
+        """
         if not to_string:
             compressed = False
 
         def dfs(node):
+            """
+            Iterate over all leaf nodes.
+
+            Args:
+                node: (todo): write your description
+            """
             if compressed:
                 if node.is_leaf:
                     if vtype:
@@ -137,7 +182,19 @@ class PTBNode(Node):
         return ' '.join(s)
 
     def to_sentence(self, to_string=True):
+        """
+        Returns a list of sentence ids.
+
+        Args:
+            self: (todo): write your description
+            to_string: (str): write your description
+        """
         def dfs():
+            """
+            Iterate over all leaf nodes.
+
+            Args:
+            """
             for node in traversal(self, 'pre'):
                 if node.is_leaf:
                     yield node.token
@@ -146,11 +203,24 @@ class PTBNode(Node):
         return ' '.join(list(dfs()))
 
     def __str_node__(self):
+        """
+        Returns a string representation of the node.
+
+        Args:
+            self: (todo): write your description
+        """
         if self.is_leaf:
             return 'VType: {} Token: {}'.format(self.vtype, self.token)
         return 'VType: {}'.format(self.vtype)
 
     def assign_index(self, start_index=0):
+        """
+        Returns the index of the leaf index.
+
+        Args:
+            self: (todo): write your description
+            start_index: (todo): write your description
+        """
         if not self.is_leaf and self.token is not None:
             raise ValueError('Cannot assign index for trees with non-leaf tokens.')
 

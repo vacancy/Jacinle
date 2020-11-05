@@ -24,6 +24,13 @@ cifar_web_address = 'http://www.cs.toronto.edu/~kriz/'
 
 
 def _read_cifar(filenames, cls):
+    """
+    Read cifar array.
+
+    Args:
+        filenames: (str): write your description
+        cls: (todo): write your description
+    """
     image = []
     label = []
     for fname in filenames:
@@ -39,6 +46,13 @@ def _read_cifar(filenames, cls):
 
 
 def load_cifar(data_dir, nr_classes=10):
+    """
+    Load cifar dataset.
+
+    Args:
+        data_dir: (str): write your description
+        nr_classes: (todo): write your description
+    """
     assert nr_classes in (10, 100)
 
     data_file = 'cifar-{}-python.tar.gz'.format(nr_classes)

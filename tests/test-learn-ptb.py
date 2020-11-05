@@ -18,12 +18,30 @@ PTB_TESTCASE = '(S (NP (NP (DT The) (NN time)) (PP (IN for) (NP (NN action)))) (
 
 class TestPTBFormat(unittest.TestCase):
     def setUp(self):
+        """
+        Sets the result of this thread.
+
+        Args:
+            self: (todo): write your description
+        """
         pass
 
     def tearDown(self):
+        """
+        Tear down the next callable.
+
+        Args:
+            self: (todo): write your description
+        """
         pass
 
     def test_ptb_load(self):
+        """
+        Parse a binary sentence.
+
+        Args:
+            self: (todo): write your description
+        """
         t = tree.PTBNode.from_string(PTB_TESTCASE)
         self.assertEqual(t.to_string(), PTB_TESTCASE)
 
@@ -34,6 +52,12 @@ class TestPTBFormat(unittest.TestCase):
         self.assertEqual(t.to_sentence(), balanced.to_sentence())
 
     def test_ptb_mask(self):
+        """
+        Test if a binary mask.
+
+        Args:
+            self: (todo): write your description
+        """
         t = tree.PTBNode.from_string(PTB_TESTCASE)
         t = constituency.binarize_tree(t)
         tokens = [tree.PTBNode('', x) for x in t.to_sentence(False)]

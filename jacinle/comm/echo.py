@@ -21,27 +21,65 @@ class StringQueue(object):
     """Adapted from: http://code.activestate.com/recipes/426060-a-queue-for-string-data-which-looks-like-a-file-ob/"""
 
     def __init__(self):
+        """
+        Initialize the buffers.
+
+        Args:
+            self: (todo): write your description
+        """
         self.l_buffer = []
         self.s_buffer = ""
         self.lock = threading.Lock()
 
     def write(self, data):
+        """
+        Writes data to the transport.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+        """
         self.l_buffer.append(data)
 
     def flush(self):
+        """
+        Flush the cache entries.
+
+        Args:
+            self: (todo): write your description
+        """
         pass
 
     def _build_str(self):
+        """
+        Build a string representation of the buffer.
+
+        Args:
+            self: (todo): write your description
+        """
         with self.lock:
             new_string = ''.join(self.l_buffer)
             self.s_buffer = ''.join((self.s_buffer, new_string))
             self.l_buffer = []
 
     def __len__(self):
+        """
+        Returns the length of the buffer
+
+        Args:
+            self: (todo): write your description
+        """
         with self.lock:
             return sum(len(i) for i in self.l_buffer) + len(self.s_buffer)
 
     def read(self, count=None):
+        """
+        Read up to count of bytes from the stream.
+
+        Args:
+            self: (todo): write your description
+            count: (int): write your description
+        """
         if count is None or count > len(self.s_buffer):
             self._build_str()
 
@@ -59,6 +97,14 @@ class StringQueue(object):
 
 class EchoMessage(object):
     def __init__(self, source, message):
+        """
+        Initialize a new source.
+
+        Args:
+            self: (todo): write your description
+            source: (str): write your description
+            message: (str): write your description
+        """
         self.source = source
         self.message = message
 
@@ -69,6 +115,14 @@ class EndEcho(object):
 
 class EchoToPipe(object):
     def __init__(self, pipe, identifier):
+        """
+        Initialize a new pipe.
+
+        Args:
+            self: (todo): write your description
+            pipe: (str): write your description
+            identifier: (todo): write your description
+        """
         self.pipe = pipe
         self.identifier = identifier
         self.echo_thread = None
@@ -81,6 +135,12 @@ class EchoToPipe(object):
         self.err_ctx = PrintToStringContext(target='STDERR', stream=self.err)
 
     def echo(self):
+        """
+        Echo a message.
+
+        Args:
+            self: (todo): write your description
+        """
         to_close = False
         while True:
             msg = self.out.read()
@@ -98,15 +158,33 @@ class EchoToPipe(object):
                 to_close = True
 
     def initialize(self):
+        """
+        Initialize the thread.
+
+        Args:
+            self: (todo): write your description
+        """
         self.echo_thread = threading.Thread(target=self.echo)
         self.echo_thread.start()
 
     def finalize(self):
+        """
+        Finalize the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         self.stop_event.set()
         self.echo_thread.join()
 
     @contextlib.contextmanager
     def activate(self):
+        """
+        A context manager which the context.
+
+        Args:
+            self: (todo): write your description
+        """
         try:
             self.initialize()
             with self.out_ctx, self.err_ctx:
@@ -116,6 +194,12 @@ class EchoToPipe(object):
 
 
 def echo_from_pipe(pipe):
+    """
+    Echo a message.
+
+    Args:
+        pipe: (todo): write your description
+    """
     count = 0
     while True:
         msg = pipe.recv()

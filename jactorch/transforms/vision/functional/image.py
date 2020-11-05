@@ -31,6 +31,15 @@ normalize = TF.normalize
 
 
 def pad(img, padding, mode='constant', fill=0):
+    """
+    Pad an image with padding padding.
+
+    Args:
+        img: (array): write your description
+        padding: (float): write your description
+        mode: (todo): write your description
+        fill: (str): write your description
+    """
     if isinstance(padding, int):
         padding = (padding, padding, padding, padding)
     elif len(padding) == 2:
@@ -50,6 +59,16 @@ def pad(img, padding, mode='constant', fill=0):
 
 
 def crop(img, x, y, w, h):
+    """
+    Crop the image
+
+    Args:
+        img: (array): write your description
+        x: (array): write your description
+        y: (array): write your description
+        w: (array): write your description
+        h: (array): write your description
+    """
     return TF.crop(img, y, x, h, w)
 
 

@@ -13,6 +13,12 @@ from jacinle.utils.debug import decorate_exception_hook
 
 @decorate_exception_hook
 def some_func(x):
+    """
+    Return the first value of x.
+
+    Args:
+        x: (todo): write your description
+    """
     return 1 / x
 
 

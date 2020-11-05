@@ -59,9 +59,24 @@ class VarLengthCollateV2(object):
 
     """
     def __init__(self, fields):
+        """
+        Initialize the fields.
+
+        Args:
+            self: (todo): write your description
+            fields: (dict): write your description
+        """
         self._fields = fields
 
     def __call__(self, batch, key=None):
+        """
+        Batch on a batch of tensors.
+
+        Args:
+            self: (todo): write your description
+            batch: (todo): write your description
+            key: (str): write your description
+        """
         error_msg = "Batch must contain tensors, numbers, dicts or lists; found {}."
         elem_type = type(batch[0])
 
@@ -110,6 +125,14 @@ class VarLengthCollateV2(object):
         raise TypeError((error_msg.format(type(batch[0]))))
 
     def _stack(self, values, key=None):
+        """
+        Perform a stack.
+
+        Args:
+            self: (todo): write your description
+            values: (str): write your description
+            key: (str): write your description
+        """
         mode, parameters = None, None
         if key is not None:
             mode_spec = self._fields[key]

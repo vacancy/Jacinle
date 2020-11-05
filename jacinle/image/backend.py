@@ -36,8 +36,19 @@ FORCE_PIL_BGR = True
 
 
 def opencv_or_pil(func):
+    """
+    Decorator for opencv.
+
+    Args:
+        func: (todo): write your description
+    """
     @functools.wraps(func)
     def new_func(*args, **kwargs):
+        """
+        Decorator for creating a function.
+
+        Args:
+        """
         if cv2 is None and Image is None:
             assert False, 'Call {} without OpenCV or PIL.'.format(func)
         return func(*args, **kwargs)
@@ -45,8 +56,19 @@ def opencv_or_pil(func):
 
 
 def opencv_only(func):
+    """
+    Decorator to make sure a function iscv.
+
+    Args:
+        func: (todo): write your description
+    """
     @functools.wraps(func)
     def new_func(*args, **kwargs):
+        """
+        Decorator for creating a new function.
+
+        Args:
+        """
         if cv2 is None:
             assert False, 'Call {} without OpenCV.'.format(func)
         return func(*args, **kwargs)
@@ -54,8 +76,19 @@ def opencv_only(func):
 
 
 def pil_only(func):
+    """
+    Decorator for functools.
+
+    Args:
+        func: (todo): write your description
+    """
     @functools.wraps(func)
     def new_func(*args, **kwargs):
+        """
+        Creates a new function.
+
+        Args:
+        """
         if Image is None:
             assert False, 'Call {} without PIL.'.format(func)
         return func(*args, **kwargs)
@@ -63,6 +96,13 @@ def pil_only(func):
 
 
 def pil_img2nd(image, require_chl3=True):
+    """
+    Convert an numpy array. nd.
+
+    Args:
+        image: (array): write your description
+        require_chl3: (bool): write your description
+    """
     nd = np.array(image)
     if FORCE_PIL_BGR:
         nd = nd[:, :, ::-1]
@@ -72,6 +112,12 @@ def pil_img2nd(image, require_chl3=True):
 
 
 def pil_nd2img(image):
+    """
+    Convert an image to an image
+
+    Args:
+        image: (array): write your description
+    """
     if FORCE_PIL_BGR:
         image = image[:, :, ::-1]
     if len(image.shape) == 3 and image.shape[2] == 1:
@@ -81,6 +127,12 @@ def pil_nd2img(image):
 
 @opencv_or_pil
 def imread(path):
+    """
+    Read an image from disk
+
+    Args:
+        path: (str): write your description
+    """
     if cv2:
         return cv2.imread(path)
     else:
@@ -90,6 +142,13 @@ def imread(path):
 
 @opencv_or_pil
 def imwrite(path, image):
+    """
+    Save an image to disk.
+
+    Args:
+        path: (str): write your description
+        image: (array): write your description
+    """
     if cv2:
         return cv2.imwrite(path, image)
     else:
@@ -99,6 +158,13 @@ def imwrite(path, image):
 
 @opencv_or_pil
 def imshow(title, image):
+    """
+    Display an image
+
+    Args:
+        title: (str): write your description
+        image: (array): write your description
+    """
     if cv2:
         cv2.imshow(title, image)
         cv2.waitKey(0)
@@ -110,6 +176,14 @@ def imshow(title, image):
 
 @opencv_or_pil
 def resize(image, dsize, interpolation='LINEAR'):
+    """
+    Resize an image.
+
+    Args:
+        image: (array): write your description
+        dsize: (int): write your description
+        interpolation: (int): write your description
+    """
     assert interpolation in ('NEAREST', 'LINEAR', 'CUBIC', 'LANCZOS4')
 
     dsize = tuple(map(int, dsize))

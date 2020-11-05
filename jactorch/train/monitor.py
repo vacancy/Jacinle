@@ -24,6 +24,15 @@ __all__ = [
 
 @no_grad_func
 def binary_classification_accuracy(pred, label, name='', saturation=True):
+    """
+    Classification accuracy.
+
+    Args:
+        pred: (todo): write your description
+        label: (str): write your description
+        name: (str): write your description
+        saturation: (float): write your description
+    """
     if name != '':
         name = '/' + name
     prefix = 'accuracy' + name
@@ -42,6 +51,14 @@ def binary_classification_accuracy(pred, label, name='', saturation=True):
 
 @no_grad_func
 def classification_accuracy(pred, label, name=''):
+    """
+    Classification accuracy.
+
+    Args:
+        pred: (todo): write your description
+        label: (str): write your description
+        name: (str): write your description
+    """
     if name != '':
         name = '/' + name
     prefix = 'accuracy' + name
@@ -53,6 +70,14 @@ def classification_accuracy(pred, label, name=''):
 
 @no_grad_func
 def regression_accuracy(pred, label, name=''):
+    """
+    Regression accuracy.
+
+    Args:
+        pred: (todo): write your description
+        label: (str): write your description
+        name: (str): write your description
+    """
     if name != '':
         name = '/' + name
     prefix = 'accuracy' + name
@@ -66,11 +91,23 @@ def regression_accuracy(pred, label, name=''):
 
 
 def _rms(p):
+    """
+    Returns the rms as a float
+
+    Args:
+        p: (int): write your description
+    """
     return as_float((p ** 2).mean() ** 0.5)
 
 
 @no_grad_func
 def monitor_param_saturation(model):
+    """
+    Monitor a dictionary of a parameter.
+
+    Args:
+        model: (todo): write your description
+    """
     monitors = {}
     for name, p in model.named_parameters():
         p = F.sigmoid(p)
@@ -81,6 +118,12 @@ def monitor_param_saturation(model):
 
 @no_grad_func
 def monitor_param_rms(model):
+    """
+    Return a dict of parameter weights.
+
+    Args:
+        model: (todo): write your description
+    """
     monitors = {}
     for name, p in model.named_parameters():
         monitors['param/rms/' + name] = _rms(p)
@@ -89,6 +132,12 @@ def monitor_param_rms(model):
 
 @no_grad_func
 def monitor_param_gradrms(model):
+    """
+    Monitor the gradients for a given model.
+
+    Args:
+        model: (todo): write your description
+    """
     monitors = {}
     for name, p in model.named_parameters():
         if p.grad is not None:
@@ -98,6 +147,12 @@ def monitor_param_gradrms(model):
 
 @no_grad_func
 def monitor_param_gradrms_ratio(model):
+    """
+    Monitor the gradients of the gradients.
+
+    Args:
+        model: (todo): write your description
+    """
     monitors = {}
     for name, p in model.named_parameters():
         if p.grad is not None:

@@ -12,6 +12,12 @@ __all__ = ['format_exc']
 
 
 def format_exc(ei):
+    """
+    Return a traceback as a traceback
+
+    Args:
+        ei: (dict): write your description
+    """
     import io
     import traceback
 

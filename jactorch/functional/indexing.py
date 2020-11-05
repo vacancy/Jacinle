@@ -200,6 +200,13 @@ def rightmost_nonzero(tensor, dim):
 
 
 def batched_index_select(tensor, batched_indices):
+    """
+    Returns a tensor of a tensor is a tensor.
+
+    Args:
+        tensor: (todo): write your description
+        batched_indices: (todo): write your description
+    """
     assert batched_indices.dim() == 2
 
     batch_i = torch.arange(batched_indices.size(0)).to(batched_indices)

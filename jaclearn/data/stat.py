@@ -12,6 +12,15 @@ __all__ = ['stat_histogram']
 
 
 def stat_histogram(name, value, markers, value_format='{}'):
+    """
+    Create a histogram for a histogram.
+
+    Args:
+        name: (str): write your description
+        value: (todo): write your description
+        markers: (str): write your description
+        value_format: (str): write your description
+    """
     histo = dict()
     for m in markers:
         histo[('{}/>=' + value_format).format(name, m)] = int(value >= m)

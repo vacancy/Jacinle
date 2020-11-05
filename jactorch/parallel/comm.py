@@ -24,6 +24,13 @@ class SlavePipe(_SlavePipeBase):
     """Pipe for master-slave communication."""
 
     def run_slave(self, msg):
+        """
+        Runs a query.
+
+        Args:
+            self: (todo): write your description
+            msg: (str): write your description
+        """
         self.queue.put((self.identifier, msg))
         ret = self.result.get()
         self.queue.put(True)
@@ -108,4 +115,10 @@ class SyncMaster(object):
 
     @property
     def nr_slaves(self):
+        """
+        : return : number of slaves.
+
+        Args:
+            self: (todo): write your description
+        """
         return len(self._registry)

@@ -16,6 +16,12 @@ __all__ = ['str2bool', 'yn2bool', 'yes_or_no', 'maybe_mkdir']
 
 
 def str2bool(s):
+    """
+    Convert a string to a boolean.
+
+    Args:
+        s: (str): write your description
+    """
     if s.lower() in ('yes', 'true', 't', 'y', '1'):
         return True
     elif s.lower() in ('no', 'false', 'f', 'n', '0'):
@@ -25,6 +31,12 @@ def str2bool(s):
 
 
 def yn2bool(s):
+    """
+    Convert a string to bool.
+
+    Args:
+        s: (str): write your description
+    """
     if s.lower() in ('yes', 'y'):
         return True
     elif s.lower() in ('no', 'n'):
@@ -78,6 +90,12 @@ def yes_or_no(question, default="yes"):
 
 
 def maybe_mkdir(dirname):
+    """
+    Create a directory if it doesn t exist.
+
+    Args:
+        dirname: (str): write your description
+    """
     if osp.isdir(dirname):
         return
     if osp.isfile(dirname):

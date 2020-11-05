@@ -17,6 +17,15 @@ __all__ = ['jac_getenv', 'jac_is_verbose', 'jac_is_debug']
 
 
 def jac_getenv(name, default=None, type=None, prefix=None):
+    """
+    Get environment variable.
+
+    Args:
+        name: (str): write your description
+        default: (todo): write your description
+        type: (todo): write your description
+        prefix: (str): write your description
+    """
     if prefix is None:
         prefix = 'JAC_'
 
@@ -35,6 +44,11 @@ def jac_getenv(name, default=None, type=None, prefix=None):
 
 @cached_result
 def jac_get_dashdebug_arg():
+    """
+    Returns the value of the dashboard argv.
+
+    Args:
+    """
     # Return True if there is a '-debug' or '--debug' arg in the argv.
     for value in sys.argv:
         if value in ('-debug', '--debug'):
@@ -44,10 +58,24 @@ def jac_get_dashdebug_arg():
 
 @cached_result
 def jac_is_verbose(default='n', prefix=None):
+    """
+    Returns true if the environment variable is in the environment.
+
+    Args:
+        default: (todo): write your description
+        prefix: (str): write your description
+    """
     return jac_getenv('verbose', default, type='bool', prefix=prefix)
 
 
 @cached_result
 def jac_is_debug(default='n', prefix=None):
+    """
+    Returns true if the current environment variable is enabled.
+
+    Args:
+        default: (todo): write your description
+        prefix: (str): write your description
+    """
     return jac_get_dashdebug_arg() or jac_getenv('debug', default, type='bool', prefix=prefix)
 

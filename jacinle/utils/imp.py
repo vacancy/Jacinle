@@ -21,11 +21,23 @@ __all__ = [
 
 
 def load_module(module_name):
+    """
+    Load a module from a module name.
+
+    Args:
+        module_name: (str): write your description
+    """
     module = importlib.import_module(module_name)
     return module
 
 
 def load_module_filename(module_filename):
+    """
+    Loads the module name of a module.
+
+    Args:
+        module_filename: (str): write your description
+    """
     assert module_filename.endswith('.py')
     realpath = os.path.realpath(module_filename)
     pos = realpath.rfind('/')
@@ -37,6 +49,13 @@ def load_module_filename(module_filename):
 
 
 def load_source(filename, name=None):
+    """
+    Load a source file.
+
+    Args:
+        filename: (str): write your description
+        name: (str): write your description
+    """
     import imp
 
     if name is None:
@@ -49,6 +68,12 @@ def load_source(filename, name=None):
 
 
 def tuple_to_classname(t):
+    """
+    Convert a classname to a classname.
+
+    Args:
+        t: (todo): write your description
+    """
     assert len(t) == 2, ('Only tuple with length 2 (module name, class name) can be converted to classname, '
             'got {}, {}.'.format(t, len(t)))
 
@@ -56,6 +81,12 @@ def tuple_to_classname(t):
 
 
 def classname_to_tuple(classname):
+    """
+    Convert a classname to a classname.
+
+    Args:
+        classname: (str): write your description
+    """
     pos = classname.rfind('.')
     if pos == -1:
         return '', classname
@@ -64,6 +95,13 @@ def classname_to_tuple(classname):
 
 
 def load_class(classname, exit_on_error=True):
+    """
+    Load a class from the given class.
+
+    Args:
+        classname: (str): write your description
+        exit_on_error: (bool): write your description
+    """
     if isinstance(classname, str):
         classname = classname_to_tuple(classname)
     elif isinstance(classname, tuple):
@@ -81,6 +119,12 @@ def load_class(classname, exit_on_error=True):
 
 
 def module_vars_as_dict(module):
+    """
+    Convert a dict into a module
+
+    Args:
+        module: (todo): write your description
+    """
     res = {}
     for k in dir(module):
         if not k.startswith('__'):

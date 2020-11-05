@@ -28,6 +28,13 @@ svhn_web_address = {
 
 
 def load_svhn(data_dir, extra=False):
+    """
+    Load svhn svhn dataset.
+
+    Args:
+        data_dir: (str): write your description
+        extra: (str): write your description
+    """
     from scipy.io import loadmat
 
     all_set_keys = list(svhn_web_address.keys())

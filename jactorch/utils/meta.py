@@ -23,6 +23,12 @@ __all__ = ['mark_volatile', 'as_tensor', 'as_variable', 'as_numpy', 'as_float', 
 
 
 def _mark_volatile(o):
+    """
+    Mark tensor as a tensor.
+
+    Args:
+        o: (int): write your description
+    """
     from torch.autograd import Variable
     if torch.is_tensor(o):
         o = Variable(o)
@@ -38,6 +44,12 @@ def mark_volatile(obj):
 
 
 def _as_tensor(o):
+    """
+    Convert o to a tensor.
+
+    Args:
+        o: (todo): write your description
+    """
     from torch.autograd import Variable
     if isinstance(o, SKIP_TYPES):
         return o
@@ -49,10 +61,22 @@ def _as_tensor(o):
 
 
 def as_tensor(obj):
+    """
+    Convert obj into a tensor.
+
+    Args:
+        obj: (todo): write your description
+    """
     return stmap(_as_tensor, obj)
 
 
 def _as_variable(o):
+    """
+    Convert an object as variable.
+
+    Args:
+        o: (array): write your description
+    """
     from torch.autograd import Variable
     if isinstance(o, SKIP_TYPES):
         return o
@@ -70,6 +94,12 @@ def as_variable(obj):
 
 
 def _as_numpy(o):
+    """
+    Convert an object to a numpy.
+
+    Args:
+        o: (array): write your description
+    """
     from torch.autograd import Variable
     if isinstance(o, SKIP_TYPES):
         return o
@@ -81,10 +111,22 @@ def _as_numpy(o):
 
 
 def as_numpy(obj):
+    """
+    Convert obj as_numpy. numpy.
+
+    Args:
+        obj: (todo): write your description
+    """
     return stmap(_as_numpy, obj)
 
 
 def _as_float(o):
+    """
+    Convert an object as a float.
+
+    Args:
+        o: (dict): write your description
+    """
     if isinstance(o, SKIP_TYPES):
         return o
     if torch.is_tensor(o):
@@ -95,10 +137,22 @@ def _as_float(o):
 
 
 def as_float(obj):
+    """
+    Convert obj to float. float.
+
+    Args:
+        obj: (todo): write your description
+    """
     return stmap(_as_float, obj)
 
 
 def _as_cpu(o):
+    """
+    Return the cpu astorch variable.
+
+    Args:
+        o: (todo): write your description
+    """
     from torch.autograd import Variable
     if isinstance(o, Variable) or torch.is_tensor(o):
         return o.cpu()
@@ -106,10 +160,22 @@ def _as_cpu(o):
 
 
 def as_cpu(obj):
+    """
+    Convert obj as_cpu.
+
+    Args:
+        obj: (todo): write your description
+    """
     return stmap(_as_cpu, obj)
 
 
 def _as_cuda(o):
+    """
+    Convert an object as cuda object.
+
+    Args:
+        o: (todo): write your description
+    """
     from torch.autograd import Variable
     if isinstance(o, Variable) or torch.is_tensor(o):
         return o.cuda()
@@ -117,10 +183,23 @@ def _as_cuda(o):
 
 
 def as_cuda(obj):
+    """
+    Convert obj as_as_as_cuda.
+
+    Args:
+        obj: (todo): write your description
+    """
     return stmap(_as_cuda, obj)
 
 
 def _as_detached(o, clone=False):
+    """
+    Convert o as a tensor.
+
+    Args:
+        o: (todo): write your description
+        clone: (str): write your description
+    """
     from torch.autograd import Variable
     if isinstance(o, Variable) or torch.is_tensor(o):
         if clone:
@@ -130,5 +209,12 @@ def _as_detached(o, clone=False):
 
 
 def as_detached(obj, clone=False):
+    """
+    Convert obj async object asynchronously.
+
+    Args:
+        obj: (todo): write your description
+        clone: (todo): write your description
+    """
     return stmap(functools.partial(_as_detached, clone=clone), obj)
 

@@ -13,11 +13,24 @@ from jacinle.comm.cs import ServerPipe
 
 
 def answer(pipe, identifier, inp):
+    """
+    Send an answer
+
+    Args:
+        pipe: (todo): write your description
+        identifier: (todo): write your description
+        inp: (todo): write your description
+    """
     out = inp['a'] + inp['b']
     pipe.send(identifier, dict(out=out))
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     server = ServerPipe('server')
     server.dispatcher.register('calc', answer)
     with server.activate():

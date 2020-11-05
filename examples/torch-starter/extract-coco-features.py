@@ -65,11 +65,27 @@ if args.use_gpu:
 
 class COCOImageDataset(Dataset):
     def __init__(self, images, image_root, image_transform):
+        """
+        Initialize a new image.
+
+        Args:
+            self: (todo): write your description
+            images: (dict): write your description
+            image_root: (todo): write your description
+            image_transform: (todo): write your description
+        """
         self.images = images
         self.image_root = image_root
         self.image_transform = image_transform
 
     def __getitem__(self, index):
+        """
+        Retrieve the item
+
+        Args:
+            self: (todo): write your description
+            index: (int): write your description
+        """
         info = self.images[index]
 
         feed_dict = GView()
@@ -81,9 +97,25 @@ class COCOImageDataset(Dataset):
         return feed_dict.raw()
 
     def __len__(self):
+        """
+        Returns the length of the image.
+
+        Args:
+            self: (todo): write your description
+        """
         return len(self.images)
 
     def make_dataloader(self, batch_size, shuffle, drop_last, nr_workers):
+        """
+        Create dataler.
+
+        Args:
+            self: (todo): write your description
+            batch_size: (int): write your description
+            shuffle: (bool): write your description
+            drop_last: (todo): write your description
+            nr_workers: (todo): write your description
+        """
         from jactorch.data.dataloader import JacDataLoader
         from jactorch.data.collate import VarLengthCollateV2
 
@@ -100,12 +132,25 @@ class COCOImageDataset(Dataset):
 
 class FeatureExtractor(nn.Module):
     def __init__(self):
+        """
+        Initialize the network classes.
+
+        Args:
+            self: (todo): write your description
+        """
         super().__init__()
 
         import jactorch.models.vision.resnet as resnet
         self.resnet = resnet.resnet152(pretrained=True, incl_gap=False, num_classes=None)
 
     def forward(self, feed_dict):
+        """
+        Parse feed
+
+        Args:
+            self: (todo): write your description
+            feed_dict: (dict): write your description
+        """
         feed_dict = GView(feed_dict)
         f = self.resnet(feed_dict.image)
         output_dict = {'features': f}
@@ -114,6 +159,14 @@ class FeatureExtractor(nn.Module):
 
 class AsyncWriter(object):
     def __init__(self, output_file, total_size):
+        """
+        Initialize the queue.
+
+        Args:
+            self: (todo): write your description
+            output_file: (str): write your description
+            total_size: (int): write your description
+        """
         self.output_file = output_file
         self.total_size = total_size
 
@@ -124,13 +177,32 @@ class AsyncWriter(object):
         self.thread.start()
 
     def feed(self, payload):
+        """
+        Feed the queue to the queue.
+
+        Args:
+            self: (todo): write your description
+            payload: (todo): write your description
+        """
         self.queue.put(payload)
 
     def join(self):
+        """
+        Joins the queue.
+
+        Args:
+            self: (todo): write your description
+        """
         self.queue.put(None)
         self.thread.join()
 
     def target(self):
+        """
+        Generate the target.
+
+        Args:
+            self: (todo): write your description
+        """
         cur_idx = 0
 
         while True:
@@ -156,6 +228,11 @@ class AsyncWriter(object):
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     logger.critical('Loading the dataset.')
     data = io.load(args.caption)
     # Step 1: filter out images.

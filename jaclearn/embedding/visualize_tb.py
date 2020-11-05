@@ -19,6 +19,13 @@ __all__ = ['visualize_word_embedding_tb']
 
 
 def visualize_word_embedding_tb(emb, log_dir):
+    """
+    Parameters ---------- pretrained embedding.
+
+    Args:
+        emb: (todo): write your description
+        log_dir: (str): write your description
+    """
     # https://stackoverflow.com/questions/41258391/tensorboard-embedding-example#answer-42676076
 
     if isinstance(emb, tuple):  # embedding, word2idx

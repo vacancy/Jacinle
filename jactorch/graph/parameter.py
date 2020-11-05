@@ -19,10 +19,26 @@ __all__ = ['find_parameters', 'filter_parameters', 'exclude_parameters', 'compos
 
 
 def find_parameters(module, pattern, return_names=False):
+    """
+    Find all the named module.
+
+    Args:
+        module: (todo): write your description
+        pattern: (str): write your description
+        return_names: (str): write your description
+    """
     return filter_parameters(module.named_parameters(), pattern, return_names=return_names)
 
 
 def filter_parameters(params, pattern, return_names=False):
+    """
+    Returns a list of all the strings.
+
+    Args:
+        params: (dict): write your description
+        pattern: (str): write your description
+        return_names: (str): write your description
+    """
     if isinstance(pattern, six.string_types):
         pattern = [pattern]
     matcher = NameMatcher({p: True for p in pattern})
@@ -34,6 +50,13 @@ def filter_parameters(params, pattern, return_names=False):
 
 
 def exclude_parameters(params, exclude):
+    """
+    Exclude a list of parameters.
+
+    Args:
+        params: (dict): write your description
+        exclude: (todo): write your description
+    """
     return [p for p in params if p not in exclude]
 
 

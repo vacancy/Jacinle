@@ -29,6 +29,17 @@ __all__ = [
 
 class VGG(nn.Module):
     def __init__(self, cfg, batch_norm=False, incl_p5=True, incl_fcs=True, num_classes=1000):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            cfg: (todo): write your description
+            batch_norm: (str): write your description
+            incl_p5: (todo): write your description
+            incl_fcs: (todo): write your description
+            num_classes: (int): write your description
+        """
         super(VGG, self).__init__()
 
         self.incl_p5 = incl_p5
@@ -55,9 +66,22 @@ class VGG(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
+        """
+        Reset all parameters.
+
+        Args:
+            self: (todo): write your description
+        """
         reset_vgg_parameters(self)
 
     def forward(self, x):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         x = self.features(x)
 
         if self.incl_fcs:
@@ -71,6 +95,13 @@ class VGG(nn.Module):
 
     @staticmethod
     def make_layers(cfg, batch_norm=False):
+        """
+        Make layers for layers.
+
+        Args:
+            cfg: (todo): write your description
+            batch_norm: (todo): write your description
+        """
         layers = []
         in_channels = 3
         for v in cfg:
@@ -115,6 +146,17 @@ fc_mapping = {
 
 
 def make_vgg(cfg_id, batch_norm, pretrained, url_id, incl_fcs=True, num_classes=1000):
+    """
+    Construct a vgg model from a cfg.
+
+    Args:
+        cfg_id: (str): write your description
+        batch_norm: (todo): write your description
+        pretrained: (bool): write your description
+        url_id: (str): write your description
+        incl_fcs: (todo): write your description
+        num_classes: (int): write your description
+    """
     model = VGG(cfgs[cfg_id], batch_norm=batch_norm, incl_fcs=incl_fcs, num_classes=num_classes)
     if pretrained:
         pretrained_model = model_zoo.load_url(model_urls[url_id])
@@ -132,6 +174,14 @@ def make_vgg(cfg_id, batch_norm, pretrained, url_id, incl_fcs=True, num_classes=
 
 
 def make_vgg_contructor(cfg_id, url_id, batch_norm=False):
+    """
+    Make a vgg. contructor.
+
+    Args:
+        cfg_id: (str): write your description
+        url_id: (str): write your description
+        batch_norm: (todo): write your description
+    """
     func = functools.partial(make_vgg, cfg_id=cfg_id, url_id=url_id, batch_norm=batch_norm)
     func.__name__ = url_id
     func.__doc__ = url_id.replace('vgg', 'VGG ').replace('_bn', ' (with batch normalization)')
@@ -150,6 +200,14 @@ vgg19_bn = make_vgg_contructor('E', 'vgg19_bn', batch_norm=True)
 
 
 def reset_vgg_parameters(m, fc_std=0.01, bfc_std=0.001):
+    """
+    Reset the kernel.
+
+    Args:
+        m: (todo): write your description
+        fc_std: (todo): write your description
+        bfc_std: (todo): write your description
+    """
     if isinstance(m, nn.Conv2d):
         n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
         m.weight.data.normal_(0, math.sqrt(2. / n))

@@ -51,6 +51,14 @@ class _PackingFunctionRegistryGroup(RegistryGroup):
     __base_class__ = CallbackRegistry
 
     def dispatch(self, registry_name, entry, *args, **kwargs):
+        """
+        Dispatches a function registered to the given registry.
+
+        Args:
+            self: (todo): write your description
+            registry_name: (str): write your description
+            entry: (todo): write your description
+        """
         return self[registry_name].dispatch(entry, *args, **kwargs)
 
 
@@ -58,14 +66,29 @@ _packing_function_registry = _PackingFunctionRegistryGroup()
 
 
 def check_pickle():
+    """
+    Check if a picklelele is valid pickle file.
+
+    Args:
+    """
     return True
 
 
 def check_msgpack():
+    """
+    Check if the messagepack is a byte string.
+
+    Args:
+    """
     return dumpb_msgpack is not None
 
 
 def check_pyarrow():
+    """
+    Check if pyarrow is pyarrow.
+
+    Args:
+    """
     return dumpb_pyarrow is not None
 
 
@@ -93,15 +116,31 @@ _default_packing_backend = _PackingBackend.PICKLE
 
 
 def get_default_backend():
+    """
+    Returns the default backend backend
+
+    Args:
+    """
     return _default_packing_backend.name
 
 
 def get_available_backends():
+    """
+    Return available backends.
+
+    Args:
+    """
     return [obj.name for obj in _PackingBackend.choice_objs()
             if _packing_function_registry.dispatch('check', obj)]
 
 
 def set_default_backend(backend):
+    """
+    Set the default backend backend.
+
+    Args:
+        backend: (todo): write your description
+    """
     global _default_packing_backend
     _default_packing_backend = _PackingBackend.from_string(backend)
     assert _default_packing_backend.name in get_available_backends(), (
@@ -109,16 +148,35 @@ def set_default_backend(backend):
 
 
 def loadb(bstr, *args, backend=None, **kwargs):
+    """
+    Loads a bstr from a bstr
+
+    Args:
+        bstr: (todo): write your description
+        backend: (str): write your description
+    """
     backend = backend or _default_packing_backend
     return _packing_function_registry.dispatch('loadb', backend, bstr, *args, **kwargs)
 
 
 def dumpb(obj, *args, backend=None, **kwargs):
+    """
+    Serialize obj to a pickle file.
+
+    Args:
+        obj: (dict): write your description
+        backend: (str): write your description
+    """
     backend = backend or _default_packing_backend
     return _packing_function_registry.dispatch('dumpb', backend, obj, *args, **kwargs)
 
 
 def _initialize_backend():
+    """
+    Initialize the backend.
+
+    Args:
+    """
     set_default_backend(os.getenv('JAC_PACKING_BACKEND', _PackingBackend.PICKLE))
 
 

@@ -99,6 +99,12 @@ class Timeout(TimeoutError):
         return None
 
     def __str__(self):
+        """
+        Returns the temp file.
+
+        Args:
+            self: (todo): write your description
+        """
         temp = "The file lock '{}' could not be acquired."\
                .format(self.lock_file)
         return temp
@@ -285,13 +291,35 @@ class BaseFileLock(object):
         # automatically.
         class ReturnProxy(object):
             def __init__(self, lock):
+                """
+                Initialize the lock.
+
+                Args:
+                    self: (todo): write your description
+                    lock: (todo): write your description
+                """
                 self.lock = lock
                 return None
 
             def __enter__(self):
+                """
+                Return the lock.
+
+                Args:
+                    self: (todo): write your description
+                """
                 return self.lock
 
             def __exit__(self, exc_type, exc_value, traceback):
+                """
+                Return the given exception.
+
+                Args:
+                    self: (todo): write your description
+                    exc_type: (todo): write your description
+                    exc_value: (todo): write your description
+                    traceback: (todo): write your description
+                """
                 self.lock.release()
                 return None
 
@@ -332,14 +360,35 @@ class BaseFileLock(object):
         return None
 
     def __enter__(self):
+        """
+        Enter a new thread.
+
+        Args:
+            self: (todo): write your description
+        """
         self.acquire()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
+        """
+        Exit the given exception and return the result.
+
+        Args:
+            self: (todo): write your description
+            exc_type: (todo): write your description
+            exc_value: (todo): write your description
+            traceback: (todo): write your description
+        """
         self.release()
         return None
 
     def __del__(self):
+        """
+        Clears the lock.
+
+        Args:
+            self: (todo): write your description
+        """
         self.release(force=True)
         return None
 
@@ -355,6 +404,12 @@ class WindowsFileLock(BaseFileLock):
     """
 
     def _acquire(self):
+        """
+        Acquire the lock.
+
+        Args:
+            self: (todo): write your description
+        """
         open_mode = os.O_RDWR | os.O_CREAT | os.O_TRUNC
 
         try:
@@ -371,6 +426,12 @@ class WindowsFileLock(BaseFileLock):
         return None
 
     def _release(self):
+        """
+        Release the lock.
+
+        Args:
+            self: (todo): write your description
+        """
         fd = self._lock_file_fd
         self._lock_file_fd = None
         msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)
@@ -395,6 +456,12 @@ class UnixFileLock(BaseFileLock):
     """
 
     def _acquire(self):
+        """
+        Acquire the lock.
+
+        Args:
+            self: (todo): write your description
+        """
         open_mode = os.O_RDWR | os.O_CREAT | os.O_TRUNC
         fd = os.open(self._lock_file, open_mode)
 
@@ -407,6 +474,12 @@ class UnixFileLock(BaseFileLock):
         return None
 
     def _release(self):
+        """
+        Release the lock.
+
+        Args:
+            self: (todo): write your description
+        """
         fd = self._lock_file_fd
         self._lock_file_fd = None
         fcntl.flock(fd, fcntl.LOCK_UN)
@@ -424,6 +497,12 @@ class SoftFileLock(BaseFileLock):
     """
 
     def _acquire(self):
+        """
+        Acquire the lock.
+
+        Args:
+            self: (todo): write your description
+        """
         open_mode = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_TRUNC
         try:
             fd = os.open(self._lock_file, open_mode)
@@ -434,6 +513,12 @@ class SoftFileLock(BaseFileLock):
         return None
 
     def _release(self):
+        """
+        Release the lock file.
+
+        Args:
+            self: (todo): write your description
+        """
         os.close(self._lock_file_fd)
         self._lock_file_fd = None
 

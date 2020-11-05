@@ -25,6 +25,15 @@ BROADCAST_HWM = 2
 
 class BroadcastOutputPipe(object):
     def __init__(self, name, send_qsize=10, mode='tcp'):
+        """
+        Init a connection to the queue name.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+            send_qsize: (int): write your description
+            mode: (todo): write your description
+        """
         self._name = name
         self._send_qsize = send_qsize
         self._mode = mode
@@ -38,9 +47,21 @@ class BroadcastOutputPipe(object):
 
     @notnone_property
     def conn_info(self):
+        """
+        Return the connection info.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._conn_info
 
     def initialize(self):
+        """
+        Initialize the connection.
+
+        Args:
+            self: (todo): write your description
+        """
         if self._conn_info is not None:
             return
 
@@ -55,11 +76,23 @@ class BroadcastOutputPipe(object):
         self._send_thread.start()
 
     def finalize(self):
+        """
+        Finalize the socket.
+
+        Args:
+            self: (todo): write your description
+        """
         graceful_close(self._sock)
         self._context.term()
 
     @contextlib.contextmanager
     def activate(self):
+        """
+        A context manager which this context manager.
+
+        Args:
+            self: (todo): write your description
+        """
         self.initialize()
         try:
             yield
@@ -67,6 +100,12 @@ class BroadcastOutputPipe(object):
             self.finalize()
 
     def mainloop_send(self):
+        """
+        The main loop.
+
+        Args:
+            self: (todo): write your description
+        """
         try:
             while True:
                 job = self._send_queue.get()
@@ -75,18 +114,38 @@ class BroadcastOutputPipe(object):
             pass
 
     def send(self, payload):
+        """
+        Send a message to the queue.
+
+        Args:
+            self: (todo): write your description
+            payload: (dict): write your description
+        """
         self._send_queue.put(payload)
         return self
 
 
 class BroadcastInputPipe(object):
     def __init__(self, conn_info):
+        """
+        Initialize the connection.
+
+        Args:
+            self: (todo): write your description
+            conn_info: (todo): write your description
+        """
         self._conn_info = conn_info
 
         self._context = None
         self._sock = None
 
     def initialize(self):
+        """
+        Initialize the socket.
+
+        Args:
+            self: (todo): write your description
+        """
         self._context = zmq.Context()
         self._sock = self._context.socket(zmq.SUB)
         self._sock.set_hwm(BROADCAST_HWM)
@@ -94,11 +153,23 @@ class BroadcastInputPipe(object):
         self._sock.setsockopt(zmq.SUBSCRIBE, b'')
 
     def finalize(self):
+        """
+        Finalize the socket.
+
+        Args:
+            self: (todo): write your description
+        """
         graceful_close(self._sock)
         self._context.term()
 
     @contextlib.contextmanager
     def activate(self):
+        """
+        A context manager which this context manager.
+
+        Args:
+            self: (todo): write your description
+        """
         self.initialize()
         try:
             yield
@@ -106,6 +177,12 @@ class BroadcastInputPipe(object):
             self.finalize()
 
     def recv(self):
+        """
+        Receive a message from the socket.
+
+        Args:
+            self: (todo): write your description
+        """
         try:
             return loadb(self._sock.recv(copy=False).bytes)
         except zmq.ContextTerminated:
@@ -113,6 +190,15 @@ class BroadcastInputPipe(object):
 
 
 def make_broadcast_pair(name, nr_workers=None, mode='tcp', send_qsize=10):
+    """
+    Create a new broadcast
+
+    Args:
+        name: (str): write your description
+        nr_workers: (todo): write your description
+        mode: (todo): write your description
+        send_qsize: (int): write your description
+    """
     push = BroadcastOutputPipe(name, send_qsize=send_qsize, mode=mode)
     push.initialize()
     nr_pulls = nr_workers or 1

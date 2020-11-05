@@ -12,6 +12,15 @@ import torch.cuda.comm as comm
 
 
 def replicate(network, devices, copy_parameters=False, copy_buffers=False):
+    """
+    Make a replicas.
+
+    Args:
+        network: (todo): write your description
+        devices: (todo): write your description
+        copy_parameters: (todo): write your description
+        copy_buffers: (bool): write your description
+    """
     devices = tuple(devices)
     num_replicas = len(devices)
 
@@ -84,6 +93,13 @@ def replicate(network, devices, copy_parameters=False, copy_buffers=False):
 
 
 def _copy_parameters(params, devices):
+    """
+    Copy a list of parameters.
+
+    Args:
+        params: (dict): write your description
+        devices: (todo): write your description
+    """
     results = []
     for i, d in devices:
         if i == 0:

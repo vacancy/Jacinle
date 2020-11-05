@@ -18,10 +18,22 @@ import jactorch.vision as jv
 
 
 def imread(path):
+    """
+    Reads an image from a tensorboard.
+
+    Args:
+        path: (str): write your description
+    """
     return TF.to_tensor(Image.open(path).convert('L'))
 
 
 def normabs(tensor):
+    """
+    Return the norm of a tensor.
+
+    Args:
+        tensor: (todo): write your description
+    """
     tensor = tensor.abs()
     tensor -= tensor.min()
     tensor /= tensor.max()
@@ -29,10 +41,22 @@ def normabs(tensor):
 
 
 def imwrite(path, tensor):
+    """
+    Writes an image to disk.
+
+    Args:
+        path: (str): write your description
+        tensor: (todo): write your description
+    """
     TF.to_pil_image(tensor).save(path)
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     image = 1 - imread('./i_image.png')
 
     # image = torch.zeros((1, 10, 10), dtype=torch.float32)

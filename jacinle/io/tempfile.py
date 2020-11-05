@@ -17,6 +17,14 @@ __all__ = ['tempfile']
 
 @contextlib.contextmanager
 def tempfile(mode='w+b', suffix='', prefix='tmp'):
+    """
+    Create a temporary file.
+
+    Args:
+        mode: (str): write your description
+        suffix: (str): write your description
+        prefix: (str): write your description
+    """
     f = tempfile_lib.NamedTemporaryFile(mode, suffix=suffix, prefix=prefix, delete=False)
     yield f
     os.unlink(f.name)

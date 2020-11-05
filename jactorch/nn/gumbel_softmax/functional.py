@@ -42,6 +42,14 @@ def _gumbel_softmax_sample(logits, dim=-1, tau=1, eps=1e-10, mask=None):
 
 
 def greedy_softmax(logits, dim=-1, mask=None):
+    """
+    Greedy softmax.
+
+    Args:
+        logits: (todo): write your description
+        dim: (int): write your description
+        mask: (array): write your description
+    """
     # TODO(Jiayuan Mao @ 07/29): add support for dim != -1.
     assert dim == -1, 'Greedy softmax support only dim=-1'
     if mask is not None:
@@ -100,6 +108,17 @@ class SoftmaxImplmentation(JacEnum):
 
 
 def general_softmax(logits, dim=-1, tau=1, impl='standard', mask=None, training=False):
+    """
+    R computes softmax.
+
+    Args:
+        logits: (int): write your description
+        dim: (int): write your description
+        tau: (todo): write your description
+        impl: (int): write your description
+        mask: (array): write your description
+        training: (todo): write your description
+    """
     impl = SoftmaxImplmentation.from_string(impl)
     if impl is SoftmaxImplmentation.STANDARD:
         return masked_softmax(logits / tau, dim=dim)

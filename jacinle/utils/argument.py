@@ -42,6 +42,15 @@ def get_2dshape(x, default=None, type=int):
 
 
 def get_3dshape(x, default=None, type=int):
+    """
+    Return the shape of x.
+
+    Args:
+        x: (str): write your description
+        default: (todo): write your description
+        type: (todo): write your description
+        int: (str): write your description
+    """
     if x is None:
         return default
     if isinstance(x, collections.Sequence):
@@ -57,6 +66,15 @@ def get_3dshape(x, default=None, type=int):
 
 
 def get_4dshape(x, default=None, type=int):
+    """
+    Return the shape of x.
+
+    Args:
+        x: (str): write your description
+        default: (todo): write your description
+        type: (todo): write your description
+        int: (str): write your description
+    """
     if x is None:
         return default
     if isinstance(x, collections.Sequence):
@@ -90,6 +108,12 @@ def astuple(arr_like):
 
 
 def asshape(arr_like):
+    """
+    Asshape arr_like to np. array.
+
+    Args:
+        arr_like: (todo): write your description
+    """
     if type(arr_like) is tuple:
         return arr_like
     elif type(arr_like) is int:
@@ -130,13 +154,34 @@ def canonize_args_list(args, *, allow_empty=False, cvt=None):
 
 class UniqueValueGetter(object):
     def __init__(self, msg='unique value check failed', default=None):
+        """
+        Initialize the message.
+
+        Args:
+            self: (todo): write your description
+            msg: (str): write your description
+            default: (str): write your description
+        """
         self._msg = msg
         self._val = None
         self._default = default
 
     def set(self, v):
+        """
+        Set the value of the variable.
+
+        Args:
+            self: (todo): write your description
+            v: (dict): write your description
+        """
         assert self._val is None or self._val == v, self._msg + ': expect={} got={}'.format(self._val, v)
         self._val = v
 
     def get(self):
+        """
+        Return the value of the field.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._val or self._default

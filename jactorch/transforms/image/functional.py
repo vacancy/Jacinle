@@ -15,6 +15,15 @@ from torchvision.transforms import functional as TF
 
 
 def pad(img, padding, mode='constant', fill=0):
+    """
+    Pad an image with padding padding.
+
+    Args:
+        img: (array): write your description
+        padding: (float): write your description
+        mode: (todo): write your description
+        fill: (str): write your description
+    """
     if isinstance(padding, int):
         padding = (padding, padding, padding, padding)
     elif len(padding) == 2:
@@ -34,6 +43,15 @@ def pad(img, padding, mode='constant', fill=0):
 
 
 def pad_multiple_of(img, multiple, mode='constant', fill=0):
+    """
+    Pad image with pad mode.
+
+    Args:
+        img: (array): write your description
+        multiple: (bool): write your description
+        mode: (todo): write your description
+        fill: (str): write your description
+    """
     h, w = img.height, img.width
     hh = h - h % multiple + multiple * int(h % multiple != 0)
     ww = w - w % multiple + multiple * int(w % multiple != 0)

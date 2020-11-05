@@ -47,6 +47,13 @@ def image_grid(all_images, grid_desc):
             axes_info[i] = (auto_infer_dim, info[1])
 
     def stack(i, sequence):
+        """
+        Stack a stack of the stack i - th element. e.
+
+        Args:
+            i: (str): write your description
+            sequence: (todo): write your description
+        """
         axis = axes_info[i][1]
         if len(sequence) == 1:
             return sequence[0]
@@ -57,6 +64,13 @@ def image_grid(all_images, grid_desc):
     n = len(axes_info)
 
     def recursive_concat(i, sequence):
+        """
+        Concatenate the concatenation of a sequence.
+
+        Args:
+            i: (array): write your description
+            sequence: (todo): write your description
+        """
         if i == n - 1:
             return stack(i, sequence)
 

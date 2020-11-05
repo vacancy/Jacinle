@@ -18,17 +18,36 @@ from jactorch.quickstart.inference import ModelInferencer, AsyncModelInferencer,
 
 class SimpleModel(nn.Module):
     def forward(self, feed_dict):
+        """
+        Takes a dictionary of keys for a dictionary
+
+        Args:
+            self: (todo): write your description
+            feed_dict: (dict): write your description
+        """
         return feed_dict['input'] + 1
 
 
 class TestTorchInferencer(unittest.TestCase):
     def test_basic_inference(self):
+        """
+        Test the test test.
+
+        Args:
+            self: (todo): write your description
+        """
         inferencer = ModelInferencer(SimpleModel())
         with inferencer.activate():
             result = inferencer.inference(dict(input=np.zeros(1, dtype='float32')))
         self.assertEqual(float(result), 1)
 
     def test_async_inference(self):
+        """
+        Run inference.
+
+        Args:
+            self: (todo): write your description
+        """
         inferencer = AsyncModelInferencer(SimpleModel())
         results = []
         with inferencer.activate():
@@ -38,6 +57,12 @@ class TestTorchInferencer(unittest.TestCase):
             self.assertEqual(float(r.get_result()), 1 + i)
 
     def test_batched_async_inference(self):
+        """
+        Test ifference inference.
+
+        Args:
+            self: (todo): write your description
+        """
         inferencer = BatchedAsyncModelInferencer(SimpleModel())
         results = []
         with inferencer.activate():

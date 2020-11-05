@@ -17,6 +17,13 @@ __all__ = ['mask_meshgrid', 'masked_average', 'length2mask', 'length_masked_reve
 
 
 def mask_meshgrid(mask, target_dims=2):
+    """
+    Mask a maskgrid of the given mask.
+
+    Args:
+        mask: (array): write your description
+        target_dims: (todo): write your description
+    """
     for i in range(target_dims - 1):
         f = mask.unsqueeze(-1)
         g = mask.unsqueeze(-2)
@@ -45,6 +52,13 @@ def masked_average(tensor, mask, eps=1e-8):
 
 
 def length2mask(lengths, max_length):
+    """
+    Convert a 2dtype to mask
+
+    Args:
+        lengths: (int): write your description
+        max_length: (int): write your description
+    """
     rng = torch.arange(max_length, dtype=lengths.dtype, device=lengths.device)
     lengths = lengths.unsqueeze(-1)
     rng = add_dim_as_except(rng, lengths, -1)

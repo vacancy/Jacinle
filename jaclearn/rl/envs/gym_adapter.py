@@ -67,6 +67,14 @@ class DiscreteToMultiDiscrete(Discrete):
     > }
     """
     def __init__(self, multi_discrete, options=None):
+        """
+        Initialize multiple options.
+
+        Args:
+            self: (todo): write your description
+            multi_discrete: (str): write your description
+            options: (dict): write your description
+        """
         super().__init__(0)
 
         assert isinstance(multi_discrete, MultiDiscrete)
@@ -106,4 +114,11 @@ class DiscreteToMultiDiscrete(Discrete):
             raise Error('DiscreteToMultiDiscrete - Invalid parameter provided.')
 
     def __call__(self, discrete_action):
+        """
+        Return the given action.
+
+        Args:
+            self: (todo): write your description
+            discrete_action: (bool): write your description
+        """
         return self.mapping[discrete_action]

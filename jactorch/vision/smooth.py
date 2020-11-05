@@ -18,21 +18,52 @@ __all__ = ['NormalizedBoxSmooth', 'normalized_box_smooth', 'GaussianSmooth', 'Ga
 
 class NormalizedBoxSmooth(CustomKernel):
     def __init__(self, kernel_size, border_mode='reflect'):
+        """
+        Initialize kernel.
+
+        Args:
+            self: (todo): write your description
+            kernel_size: (int): write your description
+            border_mode: (str): write your description
+        """
         self.kernel_size = get_2dshape(kernel_size)
         super().__init__(self._gen_kernel(), border_mode=border_mode)
 
     def _gen_kernel(self):
+        """
+        Generate kernel
+
+        Args:
+            self: (todo): write your description
+        """
         kernel = torch.ones(self.kernel_size, dtype=torch.float32)
         kernel /= kernel.sum()
         return kernel
 
 
 def normalized_box_smooth(image, kernel_size, border_mode='reflect'):
+    """
+    Normalize an image.
+
+    Args:
+        image: (array): write your description
+        kernel_size: (int): write your description
+        border_mode: (str): write your description
+    """
     return NormalizedBoxSmooth(kernel_size, border_mode=border_mode).to(image.device)(image)
 
 
 class GaussianSmooth(CustomKernel):
     def __init__(self, kernel_size, sigma, border_mode='reflect'):
+        """
+        Initialize kernel.
+
+        Args:
+            self: (todo): write your description
+            kernel_size: (int): write your description
+            sigma: (float): write your description
+            border_mode: (str): write your description
+        """
         assert type(kernel_size) is int, 'GaussianSmooth supports only square kernel.'
         self.kernel_size = kernel_size
         self.sigma = float(sigma)
@@ -40,6 +71,12 @@ class GaussianSmooth(CustomKernel):
         super().__init__(self._gen_kernel(), border_mode=border_mode)
 
     def _gen_kernel(self):
+        """
+        Generate kernel
+
+        Args:
+            self: (todo): write your description
+        """
         # Create a x, y coordinate grid of shape (kernel_size, kernel_size, 2)
         x_cord = torch.arange(self.kernel_size).float()
         x_grid = x_cord.repeat(self.kernel_size).view(self.kernel_size, self.kernel_size)
@@ -65,6 +102,15 @@ class GaussianSmooth(CustomKernel):
 
 class GaussianSmoothTruncated(GaussianSmooth):
     def __init__(self, sigma, truncate=4, border_mode='reflect'):
+        """
+        Initialize a kernel.
+
+        Args:
+            self: (todo): write your description
+            sigma: (float): write your description
+            truncate: (todo): write your description
+            border_mode: (str): write your description
+        """
         sigma = float(sigma)
         kernel_size = int(sigma * truncate + 0.5)
         kernel_size = 2 * kernel_size + 1
@@ -72,19 +118,53 @@ class GaussianSmoothTruncated(GaussianSmooth):
 
 
 def gaussian_smooth(image, kernel_size, sigma, border_mode='reflect'):
+    """
+    Smooth a gaussian kernel.
+
+    Args:
+        image: (array): write your description
+        kernel_size: (int): write your description
+        sigma: (float): write your description
+        border_mode: (todo): write your description
+    """
     return GaussianSmooth(kernel_size, sigma, border_mode=border_mode).to(image.device)(image)
 
 
 def gaussian_smooth_truncated(image, sigma, truncate=4, border_mode='reflect'):
+    """
+    Smooth a gaussian with gaussian.
+
+    Args:
+        image: (array): write your description
+        sigma: (float): write your description
+        truncate: (str): write your description
+        border_mode: (todo): write your description
+    """
     return GaussianSmoothTruncated(sigma, truncate=truncate, border_mode=border_mode).to(image.device)(image)
 
 
 class MaximumSmooth(CustomKernel):
     def __init__(self, kernel_size, border_mode='reflect'):
+        """
+        Initialize kernel.
+
+        Args:
+            self: (todo): write your description
+            kernel_size: (int): write your description
+            border_mode: (str): write your description
+        """
         self.kernel_size = kernel_size
         super().__init__(MaxPoolingKernelDef(self.kernel_size), border_mode=border_mode)
 
 
 def maximum_smooth(image, kernel_size, border_mode='reflect'):
+    """
+    SmSm kernel with a kernel kernel.
+
+    Args:
+        image: (array): write your description
+        kernel_size: (int): write your description
+        border_mode: (str): write your description
+    """
     return MaximumSmooth(kernel_size, border_mode=border_mode).to(image.device)(image)
 

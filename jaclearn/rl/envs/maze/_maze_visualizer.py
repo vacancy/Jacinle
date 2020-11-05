@@ -29,6 +29,12 @@ class MazeVisualizer(object):
     _maze_assets = None
 
     def _load_settings(self):
+        """
+        Loads settings.
+
+        Args:
+            self: (todo): write your description
+        """
         if self._maze_assets is not None:
             return
 
@@ -38,6 +44,13 @@ class MazeVisualizer(object):
                 for p in _maze_assets]
 
     def translate(self, p):
+        """
+        Translate colormap. colors
+
+        Args:
+            self: (todo): write your description
+            p: (array): write your description
+        """
         self._load_settings()
 
         p = tuple(map(int, p))
@@ -48,6 +61,13 @@ class MazeVisualizer(object):
         raise ValueError('Unknown primitive color')
 
     def render(self, m):
+        """
+        Render the image.
+
+        Args:
+            self: (todo): write your description
+            m: (todo): write your description
+        """
         h, w = m.shape[:2]
         ps = _maze_psize
         viz = np.zeros((h * ps, w * ps, 3), dtype='uint8')
@@ -61,6 +81,13 @@ class MazeVisualizer(object):
 
     @staticmethod
     def _overlap_color(main, bg):
+        """
+        Finds iflap of the background color
+
+        Args:
+            main: (str): write your description
+            bg: (todo): write your description
+        """
         mask = (main != (255, 255, 255)).astype('float32')
         return main * mask + (1 - mask) * bg
 

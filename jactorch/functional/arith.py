@@ -45,5 +45,11 @@ def logit(x, eps=1e-8):
 
 
 def log_sigmoid(x):
+    """
+    Log_sigmoid ( x )
+
+    Args:
+        x: (todo): write your description
+    """
     return -F.softplus(-x)
 

@@ -22,6 +22,18 @@ class MemcachedSessionIdentifier(collections.namedtuple('_MemcachedSessionIdenti
 
 class MemcachedSessionManager(SessionManagerBase):
     def __init__(self, secret, memcache_host, memcache_port, timeout, cookie_prefix='jac_ses_', memcached_prefix='jac_sess_'):
+        """
+        Initialize the memcache session.
+
+        Args:
+            self: (todo): write your description
+            secret: (str): write your description
+            memcache_host: (str): write your description
+            memcache_port: (str): write your description
+            timeout: (int): write your description
+            cookie_prefix: (str): write your description
+            memcached_prefix: (str): write your description
+        """
         super().__init__(secret)
 
         self.memcache = MemcachedKVStore(memcache_host, memcache_port)
@@ -32,6 +44,13 @@ class MemcachedSessionManager(SessionManagerBase):
         assert self.memcache.available
 
     def get(self, request_handler):
+        """
+        Generate a cookie.
+
+        Args:
+            self: (todo): write your description
+            request_handler: (todo): write your description
+        """
         session_id = hmac_key = None
         if request_handler is not None:
             session_id = request_handler.get_secure_cookie(self.cookie_prefix + 'session_id').decode('utf8')
@@ -50,6 +69,15 @@ class MemcachedSessionManager(SessionManagerBase):
         return MemcachedSessionIdentifier(session_id, hmac_key), data
 
     def set(self, request_handler, identifier, data):
+        """
+        Add a cookie.
+
+        Args:
+            self: (todo): write your description
+            request_handler: (todo): write your description
+            identifier: (todo): write your description
+            data: (array): write your description
+        """
         request_handler.set_secure_cookie(self.cookie_prefix + 'session_id', identifier.session_id.encode('utf8'))
         request_handler.set_secure_cookie(self.cookie_prefix + 'verification', identifier.hmac_key.encode('utf8'))
         self.memcache.put(self.memcached_prefix + identifier.session_id, data, replace=True, timeout=self.session_timeout)

@@ -25,6 +25,13 @@ __all__ = [
 
 
 def _rand_2dshape(upper_bound, lower_bound=None):
+    """
+    Return a 2d 2d shape.
+
+    Args:
+        upper_bound: (todo): write your description
+        lower_bound: (int): write your description
+    """
     lower_bound = lower_bound or (0, ) * len(upper_bound)
     return tuple(itertools.starmap(random.randint, zip(lower_bound, upper_bound)))
 
@@ -37,6 +44,14 @@ def random_crop(img, target_shape):
 
 
 def random_crop_random_shape(img, max_shape, min_shape=0):
+    """
+    Return a crop shape.
+
+    Args:
+        img: (array): write your description
+        max_shape: (int): write your description
+        min_shape: (int): write your description
+    """
     max_shape = get_2dshape(max_shape)
     min_shape = get_2dshape(min_shape)
     assert min_shape[0] < img.shape[0] < max_shape[0] and min_shape[1] < img.shape[1] < max_shape[1]
@@ -46,6 +61,15 @@ def random_crop_random_shape(img, max_shape, min_shape=0):
 
 
 def random_crop_and_resize(img, max_shape, target_shape, min_shape=0):
+    """
+    Randomly crop an image.
+
+    Args:
+        img: (array): write your description
+        max_shape: (int): write your description
+        target_shape: (float): write your description
+        min_shape: (int): write your description
+    """
     target_shape = get_2dshape(target_shape)
     cropped = random_crop_random_shape(img, max_shape, min_shape=min_shape)
     return imgproc.resize(cropped, target_shape)
@@ -85,6 +109,13 @@ def random_size_crop(img, target_shape, area_range, aspect_ratio=None, contiguou
 
 
 def horizontal_flip_augment(img, prob):
+    """
+    Flipy. ndarray.
+
+    Args:
+        img: (array): write your description
+        prob: (todo): write your description
+    """
     if random.rand() < prob:
         return img[:, ::-1]
     return img

@@ -15,6 +15,14 @@ __all__ = ['SequentialN', 'AutoResetParametersMixin']
 
 class SequentialN(nn.Sequential):
     def forward(self, *inputs, return_all=False):
+        """
+        Returns a forward computation.
+
+        Args:
+            self: (todo): write your description
+            inputs: (todo): write your description
+            return_all: (bool): write your description
+        """
         all_values = [inputs]
         for module in self._modules.values():
             inputs = module(*inputs)
@@ -26,6 +34,12 @@ class SequentialN(nn.Sequential):
 
 class AutoResetParametersMixin(object):
     def reset_parameters(self):
+        """
+        Reset all parameters.
+
+        Args:
+            self: (todo): write your description
+        """
         for module in self.modules():
             if id(module) != id(self) and hasattr(module, 'reset_parameters'):
                 module.reset_parameters()

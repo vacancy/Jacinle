@@ -44,6 +44,13 @@ truncate = islice
 
 # implement cycle self, without any cache
 def cycle(iterable, times=None):
+    """
+    Iterate over a given iterable times.
+
+    Args:
+        iterable: (todo): write your description
+        times: (list): write your description
+    """
     if times is None:
         while True:
             for v in iterable:
@@ -57,25 +64,61 @@ cycle_n = cycle
 
 
 def ssmap(function, iterable):
+    """
+    Yields the given iterable.
+
+    Args:
+        function: (todo): write your description
+        iterable: (todo): write your description
+    """
     for args in iterable:
         yield function(**args)
 
 
 class MapDataFlow(ProxyDataFlowBase):
     def __init__(self, other, map_func=None):
+        """
+        Initialize the map.
+
+        Args:
+            self: (todo): write your description
+            other: (todo): write your description
+            map_func: (todo): write your description
+        """
         super().__init__(other)
         self.__map_func = map_func
 
     def _map(self, data):
+        """
+        Apply a function to the map.
+
+        Args:
+            self: (todo): write your description
+            data: (array): write your description
+        """
         return self.__map_func(data)
 
     def _gen(self):
+        """
+        Yield a generator that yields the results of this method.
+
+        Args:
+            self: (todo): write your description
+        """
         for data in self.unwrapped:
             yield self._map(data)
 
 
 class DataFlowMixer(SimpleDataFlowBase):
     def __init__(self, dataflows, buflen=None):
+        """
+        Initialize the queue.
+
+        Args:
+            self: (todo): write your description
+            dataflows: (todo): write your description
+            buflen: (int): write your description
+        """
         if buflen is None:
             buflen = len(dataflows)
         self._dataflows = dataflows
@@ -84,12 +127,24 @@ class DataFlowMixer(SimpleDataFlowBase):
         self._comsumers = []
 
     def _initialize(self):
+        """
+        Initialize the consumer.
+
+        Args:
+            self: (todo): write your description
+        """
         self._consumers = [
             threading.Thread(target=self._consumer, args=(ind, df), daemon=True)
             for ind, df in enumerate(self._dataflows)]
         map_exec(threading.Thread.start, self._consumers)
 
     def _finalize(self):
+        """
+        Finalize the queue.
+
+        Args:
+            self: (todo): write your description
+        """
         self._stop_signal.set()
         while True:
             try:
@@ -99,14 +154,36 @@ class DataFlowMixer(SimpleDataFlowBase):
         map_exec(threading.Thread.join, self._consumers)
 
     def _consumer(self, ind, df):
+        """
+        Stop consumer.
+
+        Args:
+            self: (todo): write your description
+            ind: (todo): write your description
+            df: (todo): write your description
+        """
         for data in df:
             self._queue.put(self._wrapper(data, ind))
             if self._stop_signal.is_set():
                 break
 
     def _gen(self):
+        """
+        Generator that yields the queue.
+
+        Args:
+            self: (todo): write your description
+        """
         while True:
             yield self._queue.get()
 
     def _wrapper(self, data, ind):
+        """
+        Decorator for function
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+            ind: (todo): write your description
+        """
         return data, ind

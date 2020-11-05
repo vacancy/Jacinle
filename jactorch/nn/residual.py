@@ -28,6 +28,16 @@ class ResidualConvBlock(nn.Module, AutoResetParametersMixin):
     expansion = 1
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
+        """
+        Initialize batch
+
+        Args:
+            self: (todo): write your description
+            inplanes: (todo): write your description
+            planes: (todo): write your description
+            stride: (int): write your description
+            downsample: (todo): write your description
+        """
         super().__init__()
         self.conv1 = _conv3x3(inplanes, planes, stride)
         self.bn1 = nn.BatchNorm2d(planes)
@@ -38,6 +48,13 @@ class ResidualConvBlock(nn.Module, AutoResetParametersMixin):
         self.stride = stride
 
     def forward(self, x):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         residual = x
 
         out = self.conv1(x)
@@ -60,6 +77,16 @@ class ResidualConvBottleneck(nn.Module, AutoResetParametersMixin):
     expansion = 4
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
+        """
+        Initialize the convolutional layer.
+
+        Args:
+            self: (todo): write your description
+            inplanes: (todo): write your description
+            planes: (todo): write your description
+            stride: (int): write your description
+            downsample: (todo): write your description
+        """
         super().__init__()
         self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
@@ -73,6 +100,13 @@ class ResidualConvBottleneck(nn.Module, AutoResetParametersMixin):
         self.stride = stride
 
     def forward(self, x):
+        """
+        Perform forward computation.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         residual = x
 
         out = self.conv1(x)
@@ -97,6 +131,15 @@ class ResidualConvBottleneck(nn.Module, AutoResetParametersMixin):
 
 class ResidualLinear(nn.Module, AutoResetParametersMixin):
     def __init__(self, hidden_dim, norm1=None, norm2=None):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            hidden_dim: (int): write your description
+            norm1: (todo): write your description
+            norm2: (todo): write your description
+        """
         super().__init__()
         self.linear1 = nn.Linear(hidden_dim, hidden_dim)
         self.norm1 = norm1
@@ -105,6 +148,13 @@ class ResidualLinear(nn.Module, AutoResetParametersMixin):
         self.relu = nn.ReLU(inplace=True)
 
     def forward(self, input):
+        """
+        R forward forward computation.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+        """
         f = self.linear1(input)
         if self.norm1 is not None:
             f = self.norm1(f)
@@ -120,6 +170,19 @@ class ResidualLinear(nn.Module, AutoResetParametersMixin):
 class ResidualGRU(nn.Module, AutoResetParametersMixin):
     def __init__(self, hidden_dim, num_layers, bias=True, batch_first=False, dropout=0, bidirectional=False,
                  layer_norm=False):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            hidden_dim: (int): write your description
+            num_layers: (int): write your description
+            bias: (float): write your description
+            batch_first: (str): write your description
+            dropout: (str): write your description
+            bidirectional: (str): write your description
+            layer_norm: (todo): write your description
+        """
         super().__init__()
         self.hidden_dim = hidden_dim
         self.real_hidden_dim = hidden_dim // 2 if bidirectional else hidden_dim
@@ -141,6 +204,15 @@ class ResidualGRU(nn.Module, AutoResetParametersMixin):
             ])
 
     def forward(self, input, input_lengths, initial_states=None):
+        """
+        Batch forward computation.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+            input_lengths: (todo): write your description
+            initial_states: (todo): write your description
+        """
         if self.batch_first:
             input = input.transpose(0, 1)
 

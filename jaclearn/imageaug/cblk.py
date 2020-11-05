@@ -17,6 +17,16 @@ __all__ = ['fbaug']
 
 
 def fbaug(img, target_shape=(224, 224), is_training=True, area_range=0.08, aspect_ratio=(3/4, 4/3)):
+    """
+    Return an image.
+
+    Args:
+        img: (array): write your description
+        target_shape: (int): write your description
+        is_training: (bool): write your description
+        area_range: (todo): write your description
+        aspect_ratio: (todo): write your description
+    """
     if is_training:
         img = shape_augment.random_size_crop(img, target_shape, area_range=area_range, aspect_ratio=aspect_ratio)
         img = photography_augment.color_augment_pack(img, brightness=0.4, contrast=0.4, saturation=0.4)

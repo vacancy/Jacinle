@@ -189,11 +189,28 @@ from sphinx import addnodes
 
 
 def patched_make_field(self, types, domain, items, **kw):
+    """
+    Create a <https : // www.
+
+    Args:
+        self: (todo): write your description
+        types: (todo): write your description
+        domain: (str): write your description
+        items: (todo): write your description
+        kw: (todo): write your description
+    """
     # `kw` catches `env=None` needed for newer sphinx while maintaining
     #  backwards compatibility when passed along further down!
 
     # type: (List, unicode, Tuple) -> nodes.field
     def handle_item(fieldarg, content):
+        """
+        Create a section.
+
+        Args:
+            fieldarg: (todo): write your description
+            content: (str): write your description
+        """
         par = nodes.paragraph()
         par += addnodes.literal_strong('', fieldarg)  # Patch: this line added
         # par.extend(self.make_xrefs(self.rolename, domain, fieldarg,

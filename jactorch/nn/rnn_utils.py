@@ -16,6 +16,17 @@ __all__ = ['rnn_with_length']
 
 
 def rnn_with_length(rnn, seq_tensor, seq_lengths, initial_states, batch_first=True, sorted=False):
+    """
+    Samples length of length.
+
+    Args:
+        rnn: (int): write your description
+        seq_tensor: (todo): write your description
+        seq_lengths: (int): write your description
+        initial_states: (array): write your description
+        batch_first: (bool): write your description
+        sorted: (bool): write your description
+    """
     perm_idx = None
     if not sorted:
         seq_lengths, perm_idx = seq_lengths.sort(0, descending=True)

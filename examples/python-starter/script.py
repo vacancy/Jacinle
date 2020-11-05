@@ -24,6 +24,11 @@ args = parser.parse_args()
 
 
 def main():
+    """
+    Main entry point.
+
+    Args:
+    """
     from IPython import embed; embed()
 
 

@@ -27,12 +27,26 @@ __all__ = ['NameServer', 'run_name_server']
 
 class NameServerControllerStorage(object):
     def __init__(self):
+        """
+        Initialize all inputs.
+
+        Args:
+            self: (todo): write your description
+        """
         self._all_peers = {}
         self._all_peers_req = {}
         self._outputs = collections.defaultdict(list)
         self._inputs = collections.defaultdict(list)
 
     def register(self, info, req_sock):
+        """
+        Register a peers.
+
+        Args:
+            self: (todo): write your description
+            info: (dict): write your description
+            req_sock: (todo): write your description
+        """
         identifier = info['uid']
         assert identifier not in self._all_peers
         self._all_peers[identifier] = {
@@ -48,6 +62,13 @@ class NameServerControllerStorage(object):
         self._all_peers_req[identifier] = req_sock
 
     def register_outputs(self, info):
+        """
+        Register a list of the pool.
+
+        Args:
+            self: (todo): write your description
+            info: (todo): write your description
+        """
         controller = info['uid']
         assert controller in self._all_peers
         record = self._all_peers[controller]
@@ -58,6 +79,13 @@ class NameServerControllerStorage(object):
             self._inputs[i].append(controller)
 
     def register_inputs(self, info):
+        """
+        Register a list of the given controller.
+
+        Args:
+            self: (todo): write your description
+            info: (todo): write your description
+        """
         controller = info['uid']
         assert controller in self._all_peers
         record = self._all_peers[controller]
@@ -68,6 +96,13 @@ class NameServerControllerStorage(object):
             self._outputs[i].append(controller)
 
     def unregister(self, identifier):
+        """
+        Unregister a previously registered peers.
+
+        Args:
+            self: (todo): write your description
+            identifier: (todo): write your description
+        """
         if identifier in self._all_peers:
             info = self._all_peers.pop(identifier)
             for i in info['inputs']:
@@ -78,26 +113,76 @@ class NameServerControllerStorage(object):
         return None
 
     def get(self, identifier):
+        """
+        Get a specific peers by identifier.
+
+        Args:
+            self: (todo): write your description
+            identifier: (str): write your description
+        """
         return self._all_peers.get(identifier, None)
 
     def items(self):
+        """
+        : return : class : rdf.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._all_peers.items()
 
     def contains(self, identifier):
+        """
+        Returns true if the specified identifier is present.
+
+        Args:
+            self: (todo): write your description
+            identifier: (todo): write your description
+        """
         return identifier in self._all_peers
 
     def get_req_sock(self, identifier):
+        """
+        Return a list of all peers.
+
+        Args:
+            self: (todo): write your description
+            identifier: (str): write your description
+        """
         return self._all_peers_req.get(identifier, None)
 
     def get_inputs(self, name):
+        """
+        Get a list of inputs.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+        """
         return self._outputs[name]
 
     def get_outputs(self, name):
+        """
+        Get a list of inputs.
+
+        Args:
+            self: (todo): write your description
+            name: (str): write your description
+        """
         return self._inputs[name]
 
 
 class NameServer(object):
     def __init__(self, host, port, protocal):
+        """
+        Initialize zmq server.
+
+        Args:
+            self: (todo): write your description
+            host: (str): write your description
+            port: (int): write your description
+            protocal: (todo): write your description
+        """
         self.storage = NameServerControllerStorage()
         self._addr = '{}://{}:{}'.format(protocal, host, port)
         self._context_lock = threading.Lock()
@@ -110,6 +195,12 @@ class NameServer(object):
         self._control_send_queue = queue.Queue()
 
     def mainloop(self):
+        """
+        The main loop.
+
+        Args:
+            self: (todo): write your description
+        """
         self.initialize()
         try:
             self._all_threads.append(threading.Thread(target=self.main, name='name-server-main'))
@@ -120,6 +211,12 @@ class NameServer(object):
             self.finalize()
 
     def initialize(self):
+        """
+        Initialize the router.
+
+        Args:
+            self: (todo): write your description
+        """
         self._router.bind(self._addr)
         self._poller.register(self._router, zmq.POLLIN)
 
@@ -133,6 +230,12 @@ class NameServer(object):
         self._dispatcher.register(_configs.Actions.NS_NOTIFY_CLOSE_REP, lambda msg: None)
 
     def finalize(self):
+        """
+        Finalize the socket.
+
+        Args:
+            self: (todo): write your description
+        """
         for i in self._all_threads:
             i.join()
 
@@ -143,6 +246,12 @@ class NameServer(object):
             self._context.destroy(0)
 
     def main_cleanup(self):
+        """
+        Main function.
+
+        Args:
+            self: (todo): write your description
+        """
         while True:
             with self._context_lock:
                 now = time.time()
@@ -174,6 +283,12 @@ class NameServer(object):
             time.sleep(_configs.NS_CLEANUP_WAIT)
 
     def main(self):
+        """
+        The main loop.
+
+        Args:
+            self: (todo): write your description
+        """
         while True:
             with self._context_lock:
                 socks = dict(self._poller.poll(50))
@@ -181,6 +296,12 @@ class NameServer(object):
                 self._main_do_recv(socks)
 
     def _main_do_send(self):
+        """
+        The main loop.
+
+        Args:
+            self: (todo): write your description
+        """
         nr_send = self._control_send_queue.qsize()
         for i in range(nr_send):
             job = self._control_send_queue.get()
@@ -193,6 +314,13 @@ class NameServer(object):
                     logger.warning('Drop job: {}.'.format(str(job)))
 
     def _main_do_recv(self, socks):
+        """
+        The main loop.
+
+        Args:
+            self: (todo): write your description
+            socks: (todo): write your description
+        """
         if self._router in socks and socks[self._router] == zmq.POLLIN:
             for identifier, msg in utils.iter_recv(utils.router_recv_json, self._router):
                 self._dispatcher.dispatch(msg['action'], identifier, msg)
@@ -202,6 +330,14 @@ class NameServer(object):
                     self._dispatcher.dispatch(msg['action'], msg)
 
     def _on_ns_register_controller_req(self, identifier, msg):
+        """
+        Register a mock_ns_req **
+
+        Args:
+            self: (todo): write your description
+            identifier: (todo): write your description
+            msg: (str): write your description
+        """
         req_sock = self._context.socket(zmq.REQ)
         req_sock.connect('{}://{}:{}'.format(msg['ctl_protocal'], msg['ctl_addr'], msg['ctl_port']))
         self.storage.register(msg, req_sock)
@@ -211,6 +347,14 @@ class NameServer(object):
         logger.info('Controller registered: {}.'.format(msg['uid']))
 
     def _on_ns_register_outputs_req(self, identifier, msg):
+        """
+        Sets the given registration.
+
+        Args:
+            self: (todo): write your description
+            identifier: (todo): write your description
+            msg: (str): write your description
+        """
         self.storage.register_outputs(msg)
 
         all_peers_to_inform = set()
@@ -232,6 +376,14 @@ class NameServer(object):
         logger.info('Controller pipes registered: out={} (uid="{}").'.format(msg['outputs'], msg['uid']))
 
     def _on_ns_register_inputs_req(self, identifier, msg):
+        """
+        Register a new registration registration.
+
+        Args:
+            self: (todo): write your description
+            identifier: (todo): write your description
+            msg: (str): write your description
+        """
         self.storage.register_inputs(msg)
 
         res = {}
@@ -246,6 +398,14 @@ class NameServer(object):
         })
 
     def _on_ns_heartbeat_req(self, identifier, msg):
+        """
+        Respond to the client request.
+
+        Args:
+            self: (todo): write your description
+            identifier: (todo): write your description
+            msg: (str): write your description
+        """
         if self.storage.contains(msg['uid']):
             self.storage.get(msg['uid'])['last_heartbeat'] = time.time()
             logger.debug('Heartbeat {}: time={}.'.format(msg['uid'], time.time()))
@@ -255,6 +415,14 @@ class NameServer(object):
 
 
 def run_name_server(host=None, port=None, protocal=None):
+    """
+    Run a web server.
+
+    Args:
+        host: (str): write your description
+        port: (int): write your description
+        protocal: (str): write your description
+    """
     host = host or _configs.NS_CTL_HOST
     port = port or _configs.NS_CTL_PORT
     protocal = protocal or _configs.NS_CTL_PROTOCAL

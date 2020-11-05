@@ -22,11 +22,30 @@ TEMP_NODE = '<TEMP>'
 
 
 def _new_temp_node(token=None):
+    """
+    Creates a new token.
+
+    Args:
+        token: (str): write your description
+    """
     return PTBNode(TEMP_NODE, token)
 
 
 def binarize_tree(tree):
+    """
+    Binarize a binary tree.
+
+    Args:
+        tree: (todo): write your description
+    """
     def dc(root, children):
+        """
+        Attach a list of children.
+
+        Args:
+            root: (todo): write your description
+            children: (str): write your description
+        """
         n = len(children)
         if n == 1:
             return children[0]
@@ -42,6 +61,12 @@ def binarize_tree(tree):
                 dc(imm, part)
 
     def dfs(node):
+        """
+        Recursively iterable dfs
+
+        Args:
+            node: (todo): write your description
+        """
         for x in node.children:
             dfs(x)
 
@@ -70,6 +95,12 @@ def binarize_tree(tree):
 
 
 def make_balanced_binary_tree(sequence):
+    """
+    Create a binary tree from a binary tree.
+
+    Args:
+        sequence: (todo): write your description
+    """
     root = _new_temp_node()
     for x in sequence:
         _new_temp_node(x).attach(root)
@@ -83,6 +114,13 @@ class StepMaskSelectionMode(JacEnum):
 
 
 def compose_bianry_tree_step_masks(tree, selection='first'):
+    """
+    Perform a single step step.
+
+    Args:
+        tree: (todo): write your description
+        selection: (str): write your description
+    """
     selection = StepMaskSelectionMode.from_string(selection)
     nodes = list(traversal(tree, 'pre'))
     clean_nodes = {x for x in nodes if x.is_leaf}

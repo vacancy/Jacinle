@@ -129,6 +129,12 @@ class MazeEnv(SimpleRLEnvBase):
 
     @notnone_property
     def obstacles(self):
+        """
+        Return an iterable of observations.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._obstacles
 
     @notnone_property
@@ -178,11 +184,23 @@ class MazeEnv(SimpleRLEnvBase):
 
     @property
     def inv_distance_mat(self):
+        """
+        The distance matrix
+
+        Args:
+            self: (todo): write your description
+        """
         self._gen_inv_distance_info()
         return self._inv_distance_mat
 
     @property
     def inv_distance_prev(self):
+        """
+        The distance between the previous distance.
+
+        Args:
+            self: (todo): write your description
+        """
         self._gen_inv_distance_info()
         return self._inv_distance_prev
 
@@ -218,15 +236,38 @@ class MazeEnv(SimpleRLEnvBase):
         return self._rewards
 
     def _color2label(self, cc):
+        """
+        Return the label of the given cie.
+
+        Args:
+            self: (todo): write your description
+            cc: (int): write your description
+        """
         for i, c in enumerate(self._colors):
             if np.all(c == cc):
                 return i
         raise ValueError()
 
     def _get_canvas_color(self, yy, xx):
+        """
+        Return the color of the canvas
+
+        Args:
+            self: (todo): write your description
+            yy: (str): write your description
+            xx: (str): write your description
+        """
         return self._canvas[yy+1, xx+1]
 
     def _get_canvas_label(self, yy, xx):
+        """
+        Returns the label of the image
+
+        Args:
+            self: (todo): write your description
+            yy: (str): write your description
+            xx: (str): write your description
+        """
         return self._color2label(self._canvas[yy+1, xx+1])
 
     def _gen_rpt(self):
@@ -234,9 +275,29 @@ class MazeEnv(SimpleRLEnvBase):
         return [self._rng.randint(d) for d in self._map_size]
 
     def _fill_canvas(self, c, y, x, v, delta=1):
+        """
+        Fill a rectangle.
+
+        Args:
+            self: (todo): write your description
+            c: (todo): write your description
+            y: (todo): write your description
+            x: (todo): write your description
+            v: (todo): write your description
+            delta: (float): write your description
+        """
         c[y + delta, x + delta, :] = self._colors[v]
 
     def _gen_shortest_path(self, c, start_point, final_point):
+        """
+        Generate a set of paths that ising point.
+
+        Args:
+            self: (todo): write your description
+            c: (todo): write your description
+            start_point: (todo): write your description
+            final_point: (str): write your description
+        """
         sy, sx = start_point
         fy, fx = final_point
 
@@ -277,6 +338,15 @@ class MazeEnv(SimpleRLEnvBase):
         return list(reversed(path)), d, p
 
     def _gen_map(self, obstacles=None, start_point=None, final_point=None):
+        """
+        Generate a map of the canvas.
+
+        Args:
+            self: (todo): write your description
+            obstacles: (list): write your description
+            start_point: (int): write your description
+            final_point: (str): write your description
+        """
         canvas = np.empty((self._map_size[0] + 2, self._map_size[1] + 2, 3), dtype='uint8')
         canvas[:, :, :] = self._colors[0]
 
@@ -329,12 +399,24 @@ class MazeEnv(SimpleRLEnvBase):
         self._origin_canvas = canvas.copy()
 
     def _clear_distance_info(self):
+        """
+        Clears the distance matrix.
+
+        Args:
+            self: (todo): write your description
+        """
         self._distance_mat = None
         self._distance_prev = None
         self._inv_distance_mat = None
         self._inv_distance_prev = None
 
     def _gen_distance_info(self):
+        """
+        Generate distance and distance.
+
+        Args:
+            self: (todo): write your description
+        """
         if self._distance_mat is not None:
             return
 
@@ -345,6 +427,12 @@ class MazeEnv(SimpleRLEnvBase):
         self._distance_prev = p
 
     def _gen_inv_distance_info(self):
+        """
+        Generate distance and distance
+
+        Args:
+            self: (todo): write your description
+        """
         if self._inv_distance_mat is not None:
             return
 
@@ -353,6 +441,12 @@ class MazeEnv(SimpleRLEnvBase):
         self._inv_distance_prev = p
 
     def _refresh_view(self):
+        """
+        Refresh the view
+
+        Args:
+            self: (todo): write your description
+        """
         if self._visible_size is None:
             self._set_current_state(self._canvas.copy())
             return
@@ -379,9 +473,22 @@ class MazeEnv(SimpleRLEnvBase):
         self._set_current_state(view)
 
     def _get_action_space(self):
+        """
+        Get the action space.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._action_space
 
     def _set_current_state(self, o):
+        """
+        Set the state of the led.
+
+        Args:
+            self: (todo): write your description
+            o: (todo): write your description
+        """
         if self._state_mode == 'DEFAULT':
             pass
         elif self._state_mode == 'RENDER':
@@ -389,6 +496,13 @@ class MazeEnv(SimpleRLEnvBase):
         super()._set_current_state(o)
 
     def _action(self, action):
+        """
+        Execute action.
+
+        Args:
+            self: (todo): write your description
+            action: (str): write your description
+        """
         if self._enable_noaction and action == 0:
             return self._rewards[1], False
 
@@ -422,6 +536,15 @@ class MazeEnv(SimpleRLEnvBase):
         return reward, is_over
 
     def restart(self, obstacles=None, start_point=None, final_point=None):
+        """
+        Restart the buffers.
+
+        Args:
+            self: (todo): write your description
+            obstacles: (str): write your description
+            start_point: (str): write your description
+            final_point: (bool): write your description
+        """
         super().restart()
         if start_point is not None and final_point is not None:
             assert start_point[0] != final_point[0] or start_point[1] != final_point[1], 'Invalid start and final point: {} {}'.format(
@@ -431,9 +554,21 @@ class MazeEnv(SimpleRLEnvBase):
         self._clear_distance_info()
 
     def _restart(self):
+        """
+        Restart the daemon.
+
+        Args:
+            self: (todo): write your description
+        """
         pass
 
     def _finish(self):
+        """
+        Finish the current statement.
+
+        Args:
+            self: (todo): write your description
+        """
         if self._current_point == self._final_point:
             self.append_stat('success', 1)
         else:
@@ -446,6 +581,14 @@ class CustomLavaWorldEnv(MazeEnv):
     _empty_canvas = None
 
     def __init__(self, map_size=15, mode=None, **kwargs):
+        """
+        Initialize the underlying network.
+
+        Args:
+            self: (todo): write your description
+            map_size: (int): write your description
+            mode: (todo): write your description
+        """
         kwargs.setdefault('enable_path_checking', False)
         super().__init__(map_size, **kwargs)
 
@@ -471,17 +614,44 @@ class CustomLavaWorldEnv(MazeEnv):
 
     @property
     def lv_obstacles(self):
+        """
+        Returns the logical volume group.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._lv_obstacles
 
     @property
     def lv_starts(self):
+        """
+        Returns a logical volume volume group.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._lv_starts
 
     @property
     def lv_finals(self):
+        """
+        Returns an iterable of this volume.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._lv_finals
 
     def restart(self, obstacles=None, start_point=None, final_point=None):
+        """
+        Restart the canvas.
+
+        Args:
+            self: (todo): write your description
+            obstacles: (str): write your description
+            start_point: (str): write your description
+            final_point: (bool): write your description
+        """
         assert obstacles is None, 'Can not provide obstacles to CustomLavaWorldEnv'
         # CAUTION: this method ignores the obstacles parameter
         super().restart()

@@ -40,6 +40,14 @@ class VarLengthCollateV1(object):
         self._mode = VarLengthCollateMode.from_string(mode)
 
     def __call__(self, batch, process=False):
+        """
+        Calls a tf.
+
+        Args:
+            self: (todo): write your description
+            batch: (todo): write your description
+            process: (todo): write your description
+        """
         error_msg = "batch must contain tensors, numbers, dicts or lists; found {}"
         elem_type = type(batch[0])
 
@@ -85,6 +93,14 @@ class VarLengthCollateV1(object):
         raise TypeError((error_msg.format(type(batch[0]))))
 
     def _stack(self, values, process):
+        """
+        Perform a stack.
+
+        Args:
+            self: (todo): write your description
+            values: (str): write your description
+            process: (todo): write your description
+        """
         uvg = UniqueValueGetter('Tensor sizes should match except the first dim.')
         for v in values:
             uvg.set(v.size()[1:])

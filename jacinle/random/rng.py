@@ -34,12 +34,26 @@ class JacRandomState(npr.RandomState):
             return self.choice(list_, size=size, replace=replace, p=p)
 
     def shuffle_list(self, list_):
+        """
+        Randomly sample list.
+
+        Args:
+            self: (todo): write your description
+            list_: (list): write your description
+        """
         if type(list_) is list:
             sys_random.shuffle(list_, random=self.random_sample)
         else:
             self.shuffle(list_)
 
     def shuffle_multi(self, *arrs):
+        """
+        Shuffle a copy of arrs.
+
+        Args:
+            self: (todo): write your description
+            arrs: (array): write your description
+        """
         length = len(arrs[0])
         for a in arrs:
             assert len(a) == length, 'non-compatible length when shuffling multiple arrays'
@@ -50,6 +64,12 @@ class JacRandomState(npr.RandomState):
 
     @defaults_manager.wrap_custom_as_default(is_local=True)
     def as_default(self):
+        """
+        Return the default value for the default.
+
+        Args:
+            self: (todo): write your description
+        """
         yield self
 
 
@@ -60,10 +80,21 @@ get_default_rng = defaults_manager.gen_get_default(JacRandomState, default_gette
 
 
 def gen_seed():
+    """
+    Generate a random seed.
+
+    Args:
+    """
     return get_default_rng().randint(4294967296)
 
 
 def gen_rng(seed=None):
+    """
+    Generate a random rng.
+
+    Args:
+        seed: (int): write your description
+    """
     return JacRandomState(seed)
 
 
@@ -74,6 +105,13 @@ global_rng_registry.register('sys', lambda: sys_random.seed)
 
 
 def reset_global_seed(seed=None, verbose=False):
+    """
+    Reset the global seed.
+
+    Args:
+        seed: (int): write your description
+        verbose: (bool): write your description
+    """
     if seed is None:
         seed = gen_seed()
     for k, seed_getter in global_rng_registry.items():
@@ -85,6 +123,11 @@ def reset_global_seed(seed=None, verbose=False):
 
 
 def _initialize_global_seed():
+    """
+    Reset the global seed.
+
+    Args:
+    """
     seed = os.getenv('JAC_RANDOM_SEED', None)
     if seed is not None:
         reset_global_seed(seed)

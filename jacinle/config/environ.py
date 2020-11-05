@@ -22,11 +22,26 @@ class Environ(object):
     __env_ext__ = '.env.pkl'
 
     def __init__(self, envs=None):
+        """
+        Initialize the environment
+
+        Args:
+            self: (todo): write your description
+            envs: (todo): write your description
+        """
         self.envs = dict()
         if envs is not None:
             self.load(envs)
 
     def load(self, env_spec, incremental=False):
+        """
+        Load environment variables from env_spec.
+
+        Args:
+            self: (todo): write your description
+            env_spec: (dict): write your description
+            incremental: (str): write your description
+        """
         new_envs = self.__get_envs_from_spec(env_spec)
         if incremental:
             dict_deep_update(self.envs, new_envs)
@@ -35,23 +50,63 @@ class Environ(object):
         return self
 
     def update(self, env_spec):
+        """
+        Update env_spec.
+
+        Args:
+            self: (todo): write your description
+            env_spec: (todo): write your description
+        """
         return self.load(env_spec, incremental=True)
 
     def dump(self, path, prefix=None):
+        """
+        Dump the contents of the specified path.
+
+        Args:
+            self: (todo): write your description
+            path: (str): write your description
+            prefix: (str): write your description
+        """
         raise NotImplementedError('Not supported yet: "Environ.dump".')
 
     def as_dict(self):
+        """
+        Return a copy of this dict.
+
+        Args:
+            self: (todo): write your description
+        """
         return deepcopy(self.envs)
 
     def as_dict_ref(self):
+        """
+        Return a dictionary as a dict.
+
+        Args:
+            self: (todo): write your description
+        """
         return self.envs
 
     def clone(self):
+        """
+        Return a copy of the environment.
+
+        Args:
+            self: (todo): write your description
+        """
         new_env = Environ()
         new_env.envs = deepcopy(self.envs)
         return new_env
 
     def keys(self, is_flattened=True):
+        """
+        Return a list of all the keys in this dict.
+
+        Args:
+            self: (todo): write your description
+            is_flattened: (bool): write your description
+        """
         if is_flattened:
             return dict_deep_keys(self.envs)
         return list(self.envs.keys())
@@ -131,16 +186,45 @@ class Environ(object):
         return self
 
     def __contains__(self, item):
+        """
+        Returns true if item is contained in this set.
+
+        Args:
+            self: (todo): write your description
+            item: (str): write your description
+        """
         return self.has(item)
 
     def __getitem__(self, item):
+        """
+        Return the value from the cache.
+
+        Args:
+            self: (dict): write your description
+            item: (str): write your description
+        """
         return self.get(item, None)
 
     def __setitem__(self, key, value):
+        """
+        Sets the value of a key.
+
+        Args:
+            self: (todo): write your description
+            key: (str): write your description
+            value: (str): write your description
+        """
         self.set(key, value)
         return value
 
     def __get_envs_from_spec(self, env_spec):
+        """
+        Get environment variables from environment variables.
+
+        Args:
+            self: (todo): write your description
+            env_spec: (str): write your description
+        """
         if isinstance(env_spec, str) and env_spec.endswith(self.__env_ext__):
             raise NotImplementedError('Not implemented loading method.')
         elif isinstance(env_spec, dict):
@@ -162,6 +246,13 @@ set_env = env.set
 
 @contextlib.contextmanager
 def with_env(env_spec, incremental=True):
+    """
+    A context manager to env_env.
+
+    Args:
+        env_spec: (todo): write your description
+        incremental: (str): write your description
+    """
     if not incremental:
         backup = env.as_dict_ref()
     else:

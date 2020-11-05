@@ -16,6 +16,12 @@ __all__ = ['Identity', 'TorchApplyRecorderMixin']
 
 class Identity(nn.Module):
     def forward(self, *args):
+        """
+        Returns the forward. forward of args.
+
+        Args:
+            self: (todo): write your description
+        """
         if len(args) == 1:
             return args[0]
         return args
@@ -23,6 +29,12 @@ class Identity(nn.Module):
 
 class TorchApplyRecorderMixin(nn.Module):
     def __init__(self):
+        """
+        Initialize the device.
+
+        Args:
+            self: (todo): write your description
+        """
         super().__init__()
         self._apply_recorder_indicator = nn.Parameter(
             torch.tensor(0, dtype=torch.float32, device=torch.device('cpu'))
@@ -31,8 +43,20 @@ class TorchApplyRecorderMixin(nn.Module):
 
     @property
     def dtype(self):
+        """
+        The dtype of this space.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._apply_recorder_indicator.dtype
 
     @property
     def device(self):
+        """
+        The device. device. device. device. device.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._apply_recorder_indicator.device

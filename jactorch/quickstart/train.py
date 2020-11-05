@@ -24,11 +24,30 @@ __all__ = ['ModelTrainer']
 
 class ModelTrainer(object):
     def __init__(self, model, optimizer, lr=0.01, weight_decay=0, **opt_kwargs):
+        """
+        Initialize the optimizer.
+
+        Args:
+            self: (todo): write your description
+            model: (todo): write your description
+            optimizer: (todo): write your description
+            lr: (float): write your description
+            weight_decay: (float): write your description
+            opt_kwargs: (dict): write your description
+        """
         optimizer = get_optimizer(optimizer, model, lr=lr, weight_decay=weight_decay, **opt_kwargs)
         self._model = model
         self._optimizer = optimizer
 
     def train_step(self, feed_dict, meters=None):
+        """
+        Perform an optimization.
+
+        Args:
+            self: (todo): write your description
+            feed_dict: (dict): write your description
+            meters: (todo): write your description
+        """
         assert self._model.training
         feed_dict = as_tensor(feed_dict)
 
@@ -45,6 +64,14 @@ class ModelTrainer(object):
         return as_float(loss)
 
     def train_epoch(self, data_loader, meters=None):
+        """
+        Train the epoch.
+
+        Args:
+            self: (todo): write your description
+            data_loader: (todo): write your description
+            meters: (todo): write your description
+        """
         if meters is None:
             meters = GroupMeters()
 
@@ -58,6 +85,18 @@ class ModelTrainer(object):
         return meters
 
     def train(self, data_loader, nr_epochs, verbose=True, meters=None, early_stop=None, print_interval=1):
+        """
+        Training function.
+
+        Args:
+            self: (todo): write your description
+            data_loader: (todo): write your description
+            nr_epochs: (array): write your description
+            verbose: (bool): write your description
+            meters: (todo): write your description
+            early_stop: (str): write your description
+            print_interval: (int): write your description
+        """
         if meters is None:
             meters = GroupMeters()
 
@@ -73,6 +112,15 @@ class ModelTrainer(object):
                     break
 
     def validate_step(self, feed_dict, metric, meters=None):
+        """
+        Validate the model.
+
+        Args:
+            self: (todo): write your description
+            feed_dict: (dict): write your description
+            metric: (str): write your description
+            meters: (todo): write your description
+        """
         feed_dict_np = as_numpy(feed_dict)
         feed_dict = as_tensor(feed_dict)
         with torch.no_grad():
@@ -84,6 +132,15 @@ class ModelTrainer(object):
         return result
 
     def validate(self, data_loader, metric, meters=None):
+        """
+        Validate the metric.
+
+        Args:
+            self: (todo): write your description
+            data_loader: (todo): write your description
+            metric: (str): write your description
+            meters: (todo): write your description
+        """
         if meters is None:
             meters = GroupMeters()
 

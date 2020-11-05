@@ -15,6 +15,12 @@ __all__ = ['safe_sum', 'mean', 'std', 'rms', 'prod', 'divup']
 
 
 def safe_sum(*values):
+    """
+    Safely convert of values to the sum into a list.
+
+    Args:
+        values: (str): write your description
+    """
     if len(values) == 0:
         return 0
     if len(values) == 1:
@@ -27,12 +33,26 @@ def safe_sum(*values):
 
 
 def mean(values, default=0):
+    """
+    Return the mean of values.
+
+    Args:
+        values: (str): write your description
+        default: (todo): write your description
+    """
     if len(values) == 0:
         return default
     return sum(values) / len(values)
 
 
 def std(values, default=0):
+    """
+    Returns the standard deviation.
+
+    Args:
+        values: (str): write your description
+        default: (todo): write your description
+    """
     if len(values) == 0:
         return default
     l = len(values)
@@ -40,6 +60,13 @@ def std(values, default=0):
 
 
 def rms(values, default=0):
+    """
+    Calculates the rms of values.
+
+    Args:
+        values: (str): write your description
+        default: (todo): write your description
+    """
     if len(values) == 0:
         return default
     l = len(values)
@@ -47,10 +74,24 @@ def rms(values, default=0):
 
 
 def prod(values, default=1):
+    """
+    Return the first value of a value. k. a.
+
+    Args:
+        values: (str): write your description
+        default: (todo): write your description
+    """
     if len(values) == 0:
         return default
     return reduce(lambda x, y: x * y, values)
 
 
 def divup(n, d):
+    """
+    Divup n times.
+
+    Args:
+        n: (int): write your description
+        d: (int): write your description
+    """
     return n // d + int((n % d) != 0)

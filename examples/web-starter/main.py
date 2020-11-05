@@ -17,6 +17,11 @@ logger = get_logger(__file__)
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     app = make_app([
         'app.index'
     ], {

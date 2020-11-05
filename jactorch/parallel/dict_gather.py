@@ -28,16 +28,39 @@ __all__ = [
 
 
 def data_parallel_dict_gather(data_parallel, outputs, output_device, layout=None):
+    """
+    Gather data from parallel for parallel parallel.
+
+    Args:
+        data_parallel: (bool): write your description
+        outputs: (todo): write your description
+        output_device: (str): write your description
+        layout: (str): write your description
+    """
     return dict_gather_v2(outputs, output_device, dim=data_parallel.dim, layout=layout)
 
 
 class DictGatherDataParallel(DataParallel):
     """Add support for modules that return dicts."""
     def gather(self, outputs, output_device):
+        """
+        Gather data from the device outputs.
+
+        Args:
+            self: (todo): write your description
+            outputs: (todo): write your description
+            output_device: (todo): write your description
+        """
         return data_parallel_dict_gather(self, outputs, output_device)
 
 
 def patch_dict_gathering(data_parallel):
+    """
+    Patch a dictionary of data_params.
+
+    Args:
+        data_parallel: (todo): write your description
+    """
     assert isinstance(data_parallel, DataParallel)
     data_parallel.gather = functools.partial(data_parallel_dict_gather, data_parallel=data_parallel)
 
@@ -48,6 +71,12 @@ def dict_gather_v1(outputs, target_device, dim=0):
       (-1 means the CPU), with dictionary support.
     """
     def gather_map(outputs):
+        """
+        Gather a list of the output map.
+
+        Args:
+            outputs: (todo): write your description
+        """
         out = outputs[0]
         if isinstance(out, Variable) or torch.is_tensor(out):
             if out.dim() == 0:
@@ -66,6 +95,15 @@ def dict_gather_v1(outputs, target_device, dim=0):
 
 
 def dict_gather_v2(outputs, target_device, layout=None, dim=0):
+    """
+    Gathers a 2d array to numpy.
+
+    Args:
+        outputs: (todo): write your description
+        target_device: (todo): write your description
+        layout: (str): write your description
+        dim: (int): write your description
+    """
     if layout is None:
         return dict_gather_v1(outputs, target_device, dim=dim)
     return VarLengthCollateV3(layout, mode='gather', gather_device=target_device, gather_dim=dim)(outputs)

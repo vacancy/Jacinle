@@ -32,12 +32,28 @@ class ConvBorderMode(JacEnum):
 
 
 def _format_tuple(val, arity):
+    """
+    Format a tuple.
+
+    Args:
+        val: (float): write your description
+        arity: (todo): write your description
+    """
     if isinstance(val, collections.Iterable):
         return tuple(val)
     return tuple(repeat(val, arity))
 
 
 def compute_padding_shape(input_size, kernel_size, padding, mode):
+    """
+    Compute the padding shape for a layer.
+
+    Args:
+        input_size: (int): write your description
+        kernel_size: (int): write your description
+        padding: (int): write your description
+        mode: (todo): write your description
+    """
     mode = ConvPaddingMode.from_string(mode)
 
     if mode is ConvPaddingMode.DEFAULT:
@@ -53,6 +69,17 @@ def compute_padding_shape(input_size, kernel_size, padding, mode):
 
 
 def padding_nd(input, kernel_size, padding, padding_mode, border_mode, use_pytorch_padding_mode=False):
+    """
+    Computes a padding.
+
+    Args:
+        input: (todo): write your description
+        kernel_size: (int): write your description
+        padding: (float): write your description
+        padding_mode: (todo): write your description
+        border_mode: (todo): write your description
+        use_pytorch_padding_mode: (bool): write your description
+    """
     padding_mode = ConvPaddingMode.from_string(padding_mode)
     border_mode = ConvBorderMode.from_string(border_mode)
 

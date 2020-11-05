@@ -78,6 +78,12 @@ merge       = _mask.merge
 frPyObjects = _mask.frPyObjects
 
 def encode(bimask):
+    """
+    Encode a mask.
+
+    Args:
+        bimask: (array): write your description
+    """
     if len(bimask.shape) == 3:
         return _mask.encode(bimask)
     elif len(bimask.shape) == 2:
@@ -85,18 +91,36 @@ def encode(bimask):
         return _mask.encode(bimask.reshape((h, w, 1), order='F'))[0]
 
 def decode(rleObjs):
+    """
+    Decode a byte string.
+
+    Args:
+        rleObjs: (str): write your description
+    """
     if type(rleObjs) == list:
         return _mask.decode(rleObjs)
     else:
         return _mask.decode([rleObjs])[:,:,0]
 
 def area(rleObjs):
+    """
+    Return the area of the area.
+
+    Args:
+        rleObjs: (todo): write your description
+    """
     if type(rleObjs) == list:
         return _mask.area(rleObjs)
     else:
         return _mask.area([rleObjs])[0]
 
 def toBbox(rleObjs):
+    """
+    Convert a bbox to a bbox.
+
+    Args:
+        rleObjs: (str): write your description
+    """
     if type(rleObjs) == list:
         return _mask.toBbox(rleObjs)
     else:

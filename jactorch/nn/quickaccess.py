@@ -17,6 +17,14 @@ __all__ = ['get_batcnnorm', 'get_dropout', 'get_activation']
 
 
 def get_batcnnorm(bn, nr_features=None, nr_dims=1):
+    """
+    Get the cnnormormap.
+
+    Args:
+        bn: (str): write your description
+        nr_features: (str): write your description
+        nr_dims: (str): write your description
+    """
     if isinstance(bn, nn.Module):
         return bn
 
@@ -33,6 +41,13 @@ def get_batcnnorm(bn, nr_features=None, nr_dims=1):
 
 
 def get_dropout(dropout, nr_dims=1):
+    """
+    Return the dropout from dropout.
+
+    Args:
+        dropout: (todo): write your description
+        nr_dims: (int): write your description
+    """
     if isinstance(dropout, nn.Module):
         return dropout
 
@@ -46,6 +61,12 @@ def get_dropout(dropout, nr_dims=1):
 
 
 def get_activation(act):
+    """
+    Return activation activation.
+
+    Args:
+        act: (str): write your description
+    """
     if isinstance(act, nn.Module):
         return act
 
