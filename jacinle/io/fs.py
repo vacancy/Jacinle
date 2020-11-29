@@ -162,7 +162,7 @@ io_function_registry.register('dump', '.pkl',   dump_pkl)
 io_function_registry.register('dump', '.pklgz', dump_pklgz)
 io_function_registry.register('dump', '.npy',   dump_npy)
 io_function_registry.register('dump', '.npz',   dump_npz)
-io_function_registry.register('dump', '.npz',   dump_mat)
+io_function_registry.register('dump', '.mat',   dump_mat)
 io_function_registry.register('dump', '.pth',   dump_pth)
 
 
