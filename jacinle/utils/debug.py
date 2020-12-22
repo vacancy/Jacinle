@@ -58,7 +58,6 @@ def decorate_exception_hook(func):
     return wrapped
 
 
-
 def _TimeoutEnterIpdbThread(locals_, cv, timeout):
     with cv:
         if not cv.wait(timeout):

@@ -19,12 +19,17 @@ logger = get_logger(__file__)
 
 
 def load_system_settings(root, config, bash_file):
-    if 'system' not in config or config['system'] is None:
-        return
-    envs = config['system'].get('envs', {})
-    for k, v in envs.items():
-        logger.info('Export system environment variable {} = {}.'.format(k, v))
-        print('export {}={}'.format(k, v), file=bash_file)
+    if 'system' in config and config['system'] is not None:
+        envs = config['system'].get('envs', {})
+        for k, v in envs.items():
+            logger.info('Export system environment variable {} = {}.'.format(k, v))
+            print('export {}={}'.format(k, v), file=bash_file)
+    if 'project_root' in config and config['project_root'] is not None:
+        is_project_root = config['project_root']
+        if is_project_root:
+            logger.info('Setting project root to {}.'.format(root))
+            print('export PYTHONPATH={}:$PYTHONPATH'.format(root), file=bash_file)
+            print('export JAC_PROJ_ROOT={}'.format(root), file=bash_file)
 
 
 def load_vendors(root, config, bash_file):

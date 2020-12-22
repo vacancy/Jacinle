@@ -18,9 +18,10 @@ from jacinle.io.network import download
 __all__ = ['load_mnist']
 
 
-def load_mnist(data_dir,
-               data_file='mnist.pkl.gz',
-               origin='http://www.iro.umontreal.ca/~lisa/deep/data/mnist/mnist.pkl.gz'):
+def load_mnist(
+    data_dir,
+    data_file='mnist.pkl.gz',
+    origin='http://www.iro.umontreal.ca/~lisa/deep/data/mnist/mnist.pkl.gz'):
 
     dataset = osp.join(data_dir, data_file)
 
