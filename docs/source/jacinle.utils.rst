@@ -193,6 +193,14 @@ jacinle.utils.tqdm module
     :undoc-members:
     :show-inheritance:
 
+jacinle.utils.uid module
+------------------------
+
+.. automodule:: jacinle.utils.uid
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jacinle.utils.value_scheduler module
 ------------------------------------
 

@@ -12,6 +12,7 @@ Subpackages
 .. toctree::
 
     jaclearn.rl.algo
+    jaclearn.rl.engines
     jaclearn.rl.envs
     jaclearn.rl.simulator
 

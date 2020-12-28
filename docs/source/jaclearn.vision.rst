@@ -24,6 +24,14 @@ jaclearn.vision.graph_cut module
     :undoc-members:
     :show-inheritance:
 
+jaclearn.vision.graph_cut_inpaint module
+----------------------------------------
+
+.. automodule:: jaclearn.vision.graph_cut_inpaint
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 jaclearn.vision.patch_match module
 ----------------------------------
 

@@ -16,6 +16,8 @@ Subpackages
     jaclearn.datasets
     jaclearn.embedding
     jaclearn.imageaug
+    jaclearn.logic
+    jaclearn.math
     jaclearn.mldash
     jaclearn.models
     jaclearn.nlp
