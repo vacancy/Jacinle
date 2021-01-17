@@ -110,8 +110,15 @@ class _KV(object):
                 keys = k.split('.')
                 current = configs
                 for k in keys[:-1]:
-                    current = current.setdefault(k, G())
-                current[keys[-1]] = v
+                    try:
+                        current = getattr(current, k)
+                    except AttributeError:
+                        current = current.setdefault(k, G())
+
+                try:
+                    setattr(current, keys[-1], v)
+                except AttributeError:
+                    current[keys[-1]] = v
 
     def __jsonify__(self):
         return json.dumps(self.kvs)

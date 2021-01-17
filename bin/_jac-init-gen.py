@@ -21,9 +21,10 @@ logger = get_logger(__file__)
 def load_system_settings(root, config, bash_file):
     if 'system' in config and config['system'] is not None:
         envs = config['system'].get('envs', {})
-        for k, v in envs.items():
-            logger.info('Export system environment variable {} = {}.'.format(k, v))
-            print('export {}={}'.format(k, v), file=bash_file)
+        if envs is not None:
+            for k, v in envs.items():
+                logger.info('Export system environment variable {} = {}.'.format(k, v))
+                print('export {}={}'.format(k, v), file=bash_file)
     if 'project_root' in config and config['project_root'] is not None:
         is_project_root = config['project_root']
         if is_project_root:
