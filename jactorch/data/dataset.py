@@ -151,6 +151,7 @@ class FilterableDatasetView(FilterableDatasetUnwrapped):
                 indices.append(i)
         if len(indices) == 0:
             raise ValueError('Filter results in an empty dataset.')
+        logger.critical('Filter dataset {}: #before={}, #after={}.'.format(filter_name, len(self), len(indices)))
         return type(self)(self, indices, filter_name, filter_func)
 
     def random_trim_length(self, length):
@@ -199,6 +200,7 @@ class FilterableDatasetView(FilterableDatasetUnwrapped):
 
     def repeat(self, nr_repeats):
         indices = list(itertools.chain(*[range(len(self)) for _ in range(nr_repeats)]))
+        logger.critical('Repeat the dataset: #before={}, #after={}.'.format(len(self), len(indices)))
         return type(self)(self, indices=indices, filter_name='repeat[{}]'.format(nr_repeats))
 
     def __getitem__(self, index):
