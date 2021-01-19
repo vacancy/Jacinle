@@ -2,6 +2,7 @@
 
 JACROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/../ && pwd )"
 export PYTHONPATH=$JACROOT:./:$PYTHONPATH
+export JAC_INIT_VERBOSE=0
 fname=`JAC_IMPORT_ALL=FALSE python3 $JACROOT/bin/_jac-init-gen.py`
 
 echo export PYTHONPATH=$JACROOT:./:\$PYTHONPATH
