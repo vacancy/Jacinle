@@ -17,6 +17,10 @@ from jacinle.logging import get_logger
 
 logger = get_logger(__file__)
 
+if os.environ.get('JAC_INIT_VERBOSE', '1') == '0':
+    import logging
+    logger.setLevel(logging.WARNING)
+
 
 def load_system_settings(root, config, bash_file):
     if 'system' in config and config['system'] is not None:
@@ -71,7 +75,7 @@ def load_yml_config(root, bash_file, recursive=False):
         yml_filename = osp.join(root, 'jacinle.yml')
 
     if osp.isfile(yml_filename):
-        logger.critical('Loading jacinle config: {}.'.format(osp.abspath(yml_filename)))
+        logger.info('Loading jacinle config: {}.'.format(osp.abspath(yml_filename)))
         with open(yml_filename) as f:
             config = yaml.safe_load(f.read())
         if config is not None:

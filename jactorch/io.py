@@ -21,7 +21,7 @@ from jactorch.utils.meta import as_cpu
 
 logger = get_logger(__file__)
 
-__all__ = ['load_state_dict', 'load_weights']
+__all__ = ['state_dict', 'load_state_dict', 'load_weights']
 
 
 __extra_magic_name__ = '__jacinle_extra_state_dict__'
