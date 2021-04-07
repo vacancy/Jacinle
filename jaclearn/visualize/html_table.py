@@ -10,6 +10,7 @@
 
 import six
 import shutil
+import html
 import collections
 import os.path as osp
 import contextlib
@@ -167,7 +168,7 @@ class HTMLTableVisualizer(object):
                 self._print('    <img class="{}" src="{}" alt="{}" />'.format(classname, link, alt))
             elif c.type == 'text' or c.type == 'code':
                 tag = 'pre' if c.type == 'code' else 'div'
-                self._print('    <{} class="{}">{}</{}>'.format(tag, classname, obj, tag))
+                self._print('    <{} class="{}">{}</{}>'.format(tag, classname, html.escape(str(obj)), tag))
             elif c.type == 'raw':
                 self._print('    {}'.format(obj))
             else:

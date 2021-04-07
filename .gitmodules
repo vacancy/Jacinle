@@ -25,3 +25,6 @@
 [submodule "vendors/PyGCO/pygco_inpaint"]
 	path = vendors/PyGCO/pygco_inpaint
 	url = https://github.com/vacancy/gco_python
+[submodule "vendors/pytorch_scatter"]
+	path = vendors/pytorch_scatter
+	url = https://github.com/rusty1s/pytorch_scatter
