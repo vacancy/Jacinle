@@ -13,7 +13,8 @@ import numpy as np
 import jacinle.random as random
 
 __all__ = [
-    'ActionSpaceBase', 'DiscreteActionSpace', 'ContinuousActionSpace'
+    'ActionSpaceBase', 'DiscreteActionSpace', 'ContinuousActionSpace',
+    'CompositionalActionSpace', 'ConcatenatedActionSpace'
 ]
 
 
@@ -100,3 +101,26 @@ class ContinuousActionSpace(ActionSpaceBase):
             mu, std = theta
             return self.rng.randn(*self.shape) * std + mu
         return self.rng.uniform(self._low, self._high)
+
+
+class CompositionalActionSpace(ActionSpaceBase):
+    """ The agent can act along each subspace at once. """
+    def __init__(self, *spaces):
+        super().__init__()
+        self.spaces = spaces
+
+    def _sample(self, theta=None):
+        assert theta is None
+        return tuple(s.sample() for s in self.spaces)
+
+
+class ConcatenatedActionSpace(ActionSpaceBase):
+    """ The agent can choose to perform one of the action at once. """
+    def __init__(self, *spaces):
+        super().__init__()
+        self.spaces = spaces
+
+    def _sample(self, theta=None):
+        idx = self.rng.choice_list(len(self.spaces))
+        return (idx, self.spaces[idx].sample())
+
