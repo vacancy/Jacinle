@@ -170,7 +170,7 @@ def main():
     files = list()
 
     if args.include:
-        for f in args.files:
+        for f in args.include:
             if osp.isdir(f):
                 files.extend(glob.glob('{}/**/*.py'.format(f), recursive=True))
             else:

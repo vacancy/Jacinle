@@ -128,6 +128,8 @@ class TrainerEnv(object):
         if cast_tensor:
             feed_dict = as_tensor(feed_dict)
 
+        self._optimizer.zero_grad()
+
         if measure_time:
             end_time = cuda_time()
 
@@ -149,7 +151,6 @@ class TrainerEnv(object):
             extra['time/loss'] = cuda_time() - end_time
             end_time = cuda_time(False)
 
-        self._optimizer.zero_grad()
         self.trigger_event('backward:before', self, feed_dict, loss, monitors, output_dict)
         if loss.requires_grad:
             loss.backward()
@@ -183,3 +184,4 @@ class TrainerEnv(object):
         end = time.time()
 
         return output_dict, dict(gpu_time=end - begin)
+

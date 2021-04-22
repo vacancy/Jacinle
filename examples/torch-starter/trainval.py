@@ -83,8 +83,10 @@ else:
     from jacinle.config.environ_v2 import configs
 
 if args.config is not None:
-    for c in args.config:
-        c.apply(configs)
+    from jacinle.config.environ_v2 import set_configs
+    with set_configs():
+        for c in args.config:
+            c.apply(configs)
 
 if args.use_gpu:
     nr_devs = cuda.device_count()
