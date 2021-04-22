@@ -48,12 +48,12 @@ class RLEnvBase(object):
     def finish(self, *args, **kwargs):
         return self._finish(*args, **kwargs)
 
-    def play_one_episode(self, func, ret_states=False, ret_actions=False, restart_kwargs=None, finish_kwargs=None):
+    def play_one_episode(self, func, ret_states=False, ret_actions=False, restart_kwargs=None, finish_kwargs=None, max_steps=10000):
         states = []
         actions = []
 
         self.restart(**(restart_kwargs or {}))
-        while True:
+        for step in range(max_steps):
             state = self.current_state
             action = func(state)
             r, is_over = self.action(action)
