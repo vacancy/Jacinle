@@ -8,11 +8,12 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import math
 import torch
 
 from .shape import concat_shape, move_dim
 
-__all__ = ['logaddexp', 'logsumexp', 'logmatmulexp', 'batch_logmatmulexp', 'logits_and', 'logits_or']
+__all__ = ['logaddexp', 'logsumexp', 'logmatmulexp', 'batch_logmatmulexp', 'logits_and', 'logits_or', 'log1mexp']
 
 
 def logaddexp(x, y):
@@ -99,4 +100,14 @@ def _safe_log(x):
     # mask = (x < 1e-8).float()
     # return x.clamp(min=1e-8).log() * (1 - mask) + -1e5 * mask
     return x.log()
+
+
+_log05 = math.log(0.5)
+
+
+def log1mexp(x):
+    mask = (x < _log05).to(x.dtype)
+    impl1 = torch.log1p(-torch.exp(x))
+    impl2 = torch.log(-torch.expm1(x))
+    return impl1 * mask + impl2 * (1 - mask)
 
