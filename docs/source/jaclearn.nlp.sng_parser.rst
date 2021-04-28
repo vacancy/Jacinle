@@ -1,8 +1,7 @@
-jaclearn.nlp.sng_parser package
-===============================
+jaclearn.nlp.sng\_parser package
+================================
 
 .. automodule:: jaclearn.nlp.sng_parser
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   :members:
+   :undoc-members:
+   :show-inheritance:

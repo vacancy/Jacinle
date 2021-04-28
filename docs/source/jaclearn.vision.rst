@@ -2,42 +2,41 @@ jaclearn.vision package
 =======================
 
 .. automodule:: jaclearn.vision
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 2
 
-    jaclearn.vision.coco
+   jaclearn.vision.coco
 
 Submodules
 ----------
 
-jaclearn.vision.graph_cut module
---------------------------------
+jaclearn.vision.graph\_cut module
+---------------------------------
 
 .. automodule:: jaclearn.vision.graph_cut
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-jaclearn.vision.graph_cut_inpaint module
-----------------------------------------
+jaclearn.vision.graph\_cut\_inpaint module
+------------------------------------------
 
 .. automodule:: jaclearn.vision.graph_cut_inpaint
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-jaclearn.vision.patch_match module
-----------------------------------
+jaclearn.vision.patch\_match module
+-----------------------------------
 
 .. automodule:: jaclearn.vision.patch_match
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -2,34 +2,33 @@ jaclearn.vision.coco package
 ============================
 
 .. automodule:: jaclearn.vision.coco
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 2
 
-    jaclearn.vision.coco.pycocotools
+   jaclearn.vision.coco.pycocotools
 
 Submodules
 ----------
 
-jaclearn.vision.coco.mask_utils module
---------------------------------------
+jaclearn.vision.coco.mask\_utils module
+---------------------------------------
 
 .. automodule:: jaclearn.vision.coco.mask_utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 jaclearn.vision.coco.setup module
 ---------------------------------
 
 .. automodule:: jaclearn.vision.coco.setup
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
+   :members:
+   :undoc-members:
+   :show-inheritance:

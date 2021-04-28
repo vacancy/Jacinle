@@ -1,8 +1,7 @@
-jactorch.nn.sync_batchnorm package
-==================================
+jactorch.nn.sync\_batchnorm package
+===================================
 
 .. automodule:: jactorch.nn.sync_batchnorm
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   :members:
+   :undoc-members:
+   :show-inheritance:
