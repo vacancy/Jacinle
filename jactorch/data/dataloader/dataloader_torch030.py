@@ -17,6 +17,9 @@ try:
 except ImportError:
     DataLoader = object
     DataLoaderIter = object
+    _worker_loop = object
+    _pin_memory_loop = object
+    default_collate = object
 
 from jacinle.random import reset_global_seed, gen_rng
 
