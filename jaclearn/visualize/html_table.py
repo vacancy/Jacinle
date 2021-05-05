@@ -13,7 +13,9 @@ import shutil
 import html
 import collections
 import os.path as osp
+import json
 import contextlib
+from copy import deepcopy
 
 import jacinle.io as io
 from jacinle.cli.keyboard import yes_or_no
@@ -88,6 +90,7 @@ class HTMLTableVisualizer(object):
         self._print('</head>')
         self._print('<body>')
         self._print('<h1>{}</h1>'.format(self.title))
+        self._print(self.FRAMES_JS)
 
     def end_html(self):
         self._print('</body>')
@@ -166,6 +169,8 @@ class HTMLTableVisualizer(object):
             elif c.type == 'image' or c.type == 'figure':
                 link, alt = self.canonize_link(c.type, obj, row_identifier, c.identifier)
                 self._print('    <img class="{}" src="{}" alt="{}" />'.format(classname, link, alt))
+            elif c.type == 'frames':
+                self._print_frames(row_identifier, c, obj, classname)
             elif c.type == 'text' or c.type == 'code':
                 tag = 'pre' if c.type == 'code' else 'div'
                 self._print('    <{} class="{}">{}</{}>'.format(tag, classname, html.escape(str(obj)), tag))
@@ -182,6 +187,36 @@ class HTMLTableVisualizer(object):
     def _print(self, *args, **kwargs):
         assert self._index_file is not None
         print(*args, file=self._index_file, **kwargs)
+
+    def _print_frames(self, row_identifier, column, objs, classname):
+        self._print('<div class="{}" style="text-align:center;">'.format(classname))
+        objs = deepcopy(objs)
+        type = 'text'
+        has_info = False
+        for i, obj in enumerate(objs):
+            if 'image' in obj:
+                obj['image'] = self.canonize_link('image', obj['image'], row_identifier, column.identifier + '_' + str(i))
+                type = 'image'
+            else:
+                assert 'text' in obj
+
+            if 'info' in obj:
+                has_info = True
+        if type == 'text':
+            self._print('    <pre class="text">{}</pre>'.format(objs[0]['text']))
+        else:
+            self._print('    <img class="image" src="{}" alt="{}" />'.format(*objs[0]['image']))
+
+        if has_info:
+            self._print('    <pre class="info">{}</pre>'.format('Frame #0 :: ' + objs[0]['info']))
+        else:
+            self._print('    <pre class="info">{}</pre>'.format('Frame #0'))
+
+        self._print('    <button class="button prev" onclick="frameMove(this, -1)">Prev</button>')
+        self._print('    <button class="button next" onclick="frameMove(this, +1)">Next</button>')
+        self._print('    <input class="index" type="hidden" value="0" />')
+        self._print('    <pre class="data" style="display:none">{}</pre>'.format(json.dumps(objs)))
+        self._print('</div>')
 
     def _flush(self):
         self._index_file.flush()
@@ -219,3 +254,35 @@ class HTMLTableVisualizer(object):
         else:
             raise ValueError('Unknown file type: {}.'.format(filetype))
 
+    FRAMES_JS = """
+<script
+    src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+    integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
+    crossorigin="anonymous"
+></script>
+<script>
+function frameMove(elem, offset) {
+    elem = $(elem);
+    window.elem = elem;
+    data = JSON.parse(elem.parent().find(".data").html());
+    index = parseInt(elem.parent().find(".index").val());
+
+    nextIndex = index + offset;
+    if (nextIndex < 0) nextIndex = 0;
+    if (nextIndex >= data.length) nextIndex = data.length - 1;
+
+    elem.parent().find(".index").val(nextIndex);
+    if ("image" in data[nextIndex]) {
+        elem.parent().find(".image").attr("src", data[nextIndex]["image"][0]).attr("alt", data[nextIndex]["image"][1]);
+    } else {
+        elem.parent().find(".text").html(data[nextIndex]["text"]);
+    }
+
+    if ("info" in data[nextIndex]) {
+        elem.parent().find(".info").html("Frame #" + nextIndex.toString() + " :: " + data[nextIndex]["info"]);
+    } else {
+        elem.parent().find(".info").html("Frame #" + nextIndex.toString());
+    }
+}
+</script>
+    """
