@@ -19,6 +19,8 @@ class JacEnum(enum.Enum):
 
     @classmethod
     def from_string(cls, value):
+        if isinstance(value, JacEnum):
+            return value
         value = _canonize_enum_value(value, True)
         if isinstance(value, six.string_types) and hasattr(cls, value):
             return getattr(cls, value)

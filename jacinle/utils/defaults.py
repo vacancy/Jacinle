@@ -18,7 +18,7 @@ from .naming import class_name_of_method
 
 __all__ = [
     'defaults_manager', 'wrap_custom_as_default', 'gen_get_default', 'gen_set_default',
-    'option_context',
+    'option_context', 'FileOptions',
     'ARGDEF', 'default_args'
 ]
 
@@ -161,6 +161,18 @@ def option_context(name, is_local=True, **kwargs):
     OptionContext.__name__ = name
 
     return OptionContext
+
+
+class FileOptions(object):
+    def __init__(self, __file__, **init_kwargs):
+        self.__file__ = __file__
+        for k, v in init_kwargs.items():
+            setattr(self, k, v)
+
+    def set(self, **kwargs):
+        for k, v in kwargs.items():
+            assert hasattr(self, k), '{} is not an option for file "{}".'.format(k, self.__file__)
+            setattr(self, k, v)
 
 
 ARGDEF = object()

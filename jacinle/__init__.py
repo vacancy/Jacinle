@@ -28,6 +28,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.utils.debug import hook_exception_ipdb, exception_hook, timeout_ipdb
     from jacinle.utils.defaults import (
             defaults_manager, wrap_custom_as_default, gen_get_default, gen_set_default,
+            option_context, FileOptions,
             default_args, ARGDEF
     )
     from jacinle.utils.deprecated import deprecated
