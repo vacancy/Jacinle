@@ -76,7 +76,7 @@ def _as_numpy(o):
     if isinstance(o, Variable):
         o = o
     if torch.is_tensor(o):
-        return o.cpu().numpy()
+        return o.detach().cpu().numpy()
     return np.array(o)
 
 
