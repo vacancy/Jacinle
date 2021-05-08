@@ -87,6 +87,10 @@ class ListDataset(Dataset):
         return len(self.list)
 
 
+class JacDataset(Dataset, IterableDatasetMixin):
+    pass
+
+
 class FilterableDatasetUnwrapped(Dataset, IterableDatasetMixin):
     """
     A filterable dataset. User can call various `filter_*` operations to obtain a subset of the dataset.

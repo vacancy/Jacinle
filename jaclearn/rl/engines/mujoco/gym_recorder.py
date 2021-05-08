@@ -31,6 +31,7 @@ class MujocoGymRecorder(object):
 
         self.object_names = dict()
         self.object_poses = list()
+        self.logs = dict()
 
         self.reset()
 
@@ -43,7 +44,14 @@ class MujocoGymRecorder(object):
         self._init_object_names()
         self.gym_states = list()
         self.object_poses = list()
+        self.logs = dict()
         self.step()
+
+    def log(self, key, message):
+        log_index = len(self.gym_states) - 1
+        if log_index not in self.logs:
+            self.logs[log_index] = dict()
+        self.logs[log_index][key] = message
 
     def step(self):
         self.gym_states.append(self.sim.get_state())
@@ -66,6 +74,7 @@ class MujocoGymRecorder(object):
             names=self.object_names,
             poses=self.object_poses
         ))
+        io.dump(osp.join(save_dir, 'logs.json'), self.logs)
 
     def hook(self):
         old_reset = self.gym_environ.reset
