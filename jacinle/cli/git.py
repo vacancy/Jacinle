@@ -12,9 +12,12 @@ import subprocess
 
 
 def get_git_revision_hash(short=False):
-    if short:
-        return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
-    return subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('utf-8').strip()
+    try:
+        if short:
+            return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
+        return subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('utf-8').strip()
+    except subprocess.CalledProcessError:
+        return None
 
 
 def get_git_uncommitted_files():

@@ -207,6 +207,17 @@ class FilterableDatasetView(FilterableDatasetUnwrapped):
         logger.critical('Repeat the dataset: #before={}, #after={}.'.format(len(self), len(indices)))
         return type(self)(self, indices=indices, filter_name='repeat[{}]'.format(nr_repeats))
 
+    def sort(self, key, key_name=None):
+        if key_name is None:
+            key_name = str(key)
+        indices = sorted(range(len(self)), key=lambda x: key(self.get_metainfo(x)))
+        return type(self)(self, indices=indices, filter_name='sort[{}]'.format(key_name))
+
+    def random_shuffle(self):
+        indices = list(range(len(self)))
+        random.shuffle(indices)
+        return type(self)(self, indices=indices, filter_name='random_shuffle')
+
     def __getitem__(self, index):
         if self.indices is None:
             return self.owner_dataset[index]
