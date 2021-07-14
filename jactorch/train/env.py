@@ -18,6 +18,7 @@ from jacinle.event.registry import SimpleEventRegistry
 from jacinle.logging import get_logger
 from jactorch.io import load_weights, state_dict, load_state_dict
 from jactorch.utils.meta import as_tensor, as_float, as_cpu
+from .utils import set_learning_rate, decay_learning_rate
 
 logger = get_logger(__file__)
 
@@ -109,12 +110,10 @@ class TrainerEnv(object):
         return load_weights(self._model, filename, **kwargs)
 
     def set_learning_rate(self, lr):
-        for param_group in self._optimizer.param_groups:
-            param_group['lr'] = lr
+        set_learning_rate(self._optimizer, lr)
 
     def decay_learning_rate(self, decay):
-        for param_group in self._optimizer.param_groups:
-            param_group['lr'] *= decay
+        decay_learning_rate(self._optimizer, decay)
 
     def step(self, feed_dict, grad_clip=0., reduce_func=default_reduce_func, cast_tensor=False, measure_time=False):
         if hasattr(self.model, 'train_step'):
