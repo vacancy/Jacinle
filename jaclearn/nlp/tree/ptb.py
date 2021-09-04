@@ -12,7 +12,7 @@
 PTB-formed constituency trees.
 """
 
-__all__ = ['PTBNode']
+__all__ = ['PTBNode', 'parse_ptb']
 
 import six
 
@@ -161,4 +161,8 @@ class PTBNode(Node):
         for c in self.children:
             start_index = c.assign_index(start_index)
         return start_index
+
+
+def parse_ptb(sentence):
+    return PTBNode.from_string(sentence)
 

@@ -11,7 +11,12 @@
 import collections
 import torch
 
-__all__ = ['flatten', 'flatten2', 'concat_shape', 'broadcast', 'add_dim', 'add_dim_as_except', 'repeat', 'repeat_times', 'force_view']
+__all__ = [
+    'flatten', 'flatten2',
+    'concat_shape',
+    'broadcast', 'add_dim', 'add_dim_as_except', 'move_dim',
+    'repeat', 'repeat_times', 'force_view'
+]
 
 
 def flatten(tensor):
@@ -70,6 +75,9 @@ def move_dim(tensor, dim, dest):
     """
     Move a specific dimension to a designated dimension.
     """
+    if dest < 0:
+        # CAUTION:: cannot rely on list.insert, because insert(['a', 'b', 'c'], -1, 'd') => 'abdc'
+        dest += tensor.dim()
     dims = list(range(tensor.dim()))
     dims.pop(dim)
     dims.insert(dest, dim)
