@@ -3,7 +3,7 @@
 	url = https://github.com/LeviViana/torch_sampling
 [submodule "vendors/AdvancedIndexing-PyTorch"]
 	path = vendors/AdvancedIndexing-PyTorch
-	url = https://github.com/vacancy/AdvancedIndexing-PyTorch
+	url = https://github.com/K-A-R-T/AdvancedIndexing-PyTorch.git
 [submodule "vendors/SceneGraphParser"]
 	path = vendors/SceneGraphParser
 	url = https://github.com/vacancy/SceneGraphParser
@@ -15,7 +15,7 @@
 	url = https://github.com/vacancy/PreciseRoIPooling
 [submodule "vendors/JacMLDash"]
 	path = vendors/JacMLDash
-	url = https://github.com/vacancy/JacMLDash
+	url = https://github.com/K-A-R-T/JacMLDash.git
 [submodule "vendors/pygco/pygco"]
 	path = vendors/PyGCO/pygco
 	url = https://github.com/vacancy/pygco
