@@ -11,7 +11,7 @@
 import torch
 import torch.nn.functional as F
 
-__all__ = ['atanh', 'logit', 'log_sigmoid']
+__all__ = ['atanh', 'logit', 'log_sigmoid', 'tstat']
 
 
 def atanh(x, eps=1e-8):
@@ -46,4 +46,8 @@ def logit(x, eps=1e-8):
 
 def log_sigmoid(x):
     return -F.softplus(-x)
+
+
+def tstat(x):
+    return {'shape': x.shape, 'min': x.min().item(), 'max': x.max().item(), 'mean': x.mean().item(), 'std': x.std().item()}
 
