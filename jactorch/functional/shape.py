@@ -81,16 +81,18 @@ def broadcast_as_except(tensor, target, *excepts):
     Note that the list excepts must be in ascending order.
     """
     assert len(excepts) == tensor.dim()
+    tensor_shape = tensor.size()
+    target_shape = target.size()
     tensor = tensor.clone()
     excepts = [e + target.dim() if e < 0 else e for e in excepts]
-    target_dim = list()
+    target_size = list()
     for i in range(target.dim()):
         if i not in excepts:
-            target_size.append(target[i])
+            target_size.append(target_shape[i])
             tensor.unsqueeze_(i)
         else:
-            target_size.append(tensor.size(excepts.index(i)))
-    return tensor
+            target_size.append(tensor_shape[excepts.index(i)])
+    return tensor.expand(target_size)
 
 
 def move_dim(tensor, dim, dest):
