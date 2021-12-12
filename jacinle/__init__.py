@@ -21,10 +21,10 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.cli.keyboard import yes_or_no, maybe_mkdir
     from jacinle.concurrency.pool import TQDMPool
     from jacinle.config.environ import load_env, has_env, get_env, set_env, with_env
-    from jacinle.logging import get_logger
+    from jacinle.logging import get_logger, set_output_file as set_logger_output_file
     from jacinle.utils.cache import cached_property, cached_result, fs_cached_result
     from jacinle.utils.container import G, g, GView, SlotAttrObject, OrderedSet
-    from jacinle.utils.context import EmptyContext
+    from jacinle.utils.context import EmptyContext, KeyboardInterruptContext
     from jacinle.utils.debug import hook_exception_ipdb, exception_hook, timeout_ipdb
     from jacinle.utils.defaults import (
             defaults_manager, wrap_custom_as_default, gen_get_default, gen_set_default,

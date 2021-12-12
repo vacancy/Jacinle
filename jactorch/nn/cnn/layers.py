@@ -53,12 +53,17 @@ class LinearLayer(nn.Sequential):
 
 
 class MLPLayer(nn.Module):
-    def __init__(self, input_dim, output_dim, hidden_dims, batch_norm=None, dropout=None, activation='relu', flatten=True):
+    def __init__(self, input_dim, output_dim, hidden_dims, batch_norm=None, dropout=None, activation='relu', flatten=True, last_activation=False):
         super().__init__()
 
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.hidden_dims = hidden_dims
+        self.batch_norm = batch_norm
+        self.dropout = dropout
+        self.activation = activation
+        self.flatten = flatten
+        self.last_activation = last_activation
 
         if hidden_dims is None:
             hidden_dims = []
@@ -72,12 +77,14 @@ class MLPLayer(nn.Module):
 
         nr_hiddens = len(hidden_dims)
         for i in range(nr_hiddens):
-            layer = LinearLayer(dims[i], dims[i+1], batch_norm=batch_norm, dropout=dropout, activation=activation)
+            layer = LinearLayer(dims[i], dims[i+1], batch_norm=self.batch_norm, dropout=self.dropout, activation=self.activation)
             modules.append(layer)
-        layer = nn.Linear(dims[-2], dims[-1], bias=True)
+        if self.last_activation:
+            layer = LinearLayer(dims[-2], dims[-1], batch_norm=self.batch_norm, dropout=self.dropout, activation=self.activation)
+        else:
+            layer = nn.Linear(dims[-2], dims[-1], bias=True)
         modules.append(layer)
         self.mlp = nn.Sequential(*modules)
-        self.flatten = flatten
 
     def reset_parameters(self):
         for module in self.modules():

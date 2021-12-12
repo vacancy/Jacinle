@@ -8,7 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-__all__ = ['EmptyContext']
+__all__ = ['EmptyContext', 'KeyboardInterruptContext']
 
 
 class EmptyContext(object):
@@ -17,3 +17,12 @@ class EmptyContext(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         return
+
+
+class KeyboardInterruptContext(object):
+    def __enter__(self):
+        return
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if isinstance(exc_val, KeyboardInterrupt):
+            return True
