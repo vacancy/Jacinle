@@ -27,8 +27,16 @@ class ConvPaddingMode(JacEnum):
 
 class ConvBorderMode(JacEnum):
     ZERO = 'zero'
+    CONSTANT = 'constant'
     REFLECT = 'reflect'
     REPLICATE = 'replicate'
+
+    @classmethod
+    def from_string(cls, string):
+        x = super(ConvBorderMode, cls).from_string(string)
+        if x is cls.ZERO:
+            x = cls.CONSTANT
+        return x
 
 
 def _format_tuple(val, arity):
@@ -61,7 +69,7 @@ def padding_nd(input, kernel_size, padding, padding_mode, border_mode, use_pytor
     if use_pytorch_padding_mode:
         return input, padding, border_mode.value
 
-    if border_mode is ConvBorderMode.ZERO:
+    if border_mode is ConvBorderMode.CONSTANT:
         return input, padding
 
     if input.dim() == 3:
