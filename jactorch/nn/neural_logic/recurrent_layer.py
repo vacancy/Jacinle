@@ -62,7 +62,7 @@ class RecurrentNeuralLogicMachine(nn.Module):
             input_dims = self.model.output_dims
             output_dims = self.output_dims
             kwargs = dict(logic_model=logic_model, logic_hidden_dim=logic_hidden_dim, exclude_self=exclude_self, connections=connections)
-            self.model_post = NeuralLogicMachine(depth3, breadth, current_dims, self.output_dims, residual=False, **kwargs)
+            self.model_post = NeuralLogicMachine(depth3, breadth, input_dims, output_dims, residual=False, **kwargs)
         else:
             self.add_module('model_post', None)
 

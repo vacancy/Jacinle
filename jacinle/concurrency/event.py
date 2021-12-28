@@ -8,6 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import queue
 import threading
 import multiprocessing
 import functools

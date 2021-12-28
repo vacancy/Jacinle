@@ -207,11 +207,11 @@ def safe_dump(fname, data, use_lock=True, use_temp=True, lock_timeout=10):
 
     def safe_dump_inner():
         if use_temp:
-            io.dump(temp_fname, data)
+            dump(temp_fname, data)
             os.replace(temp_fname, fname)
             return True
         else:
-            return io.dump(temp_fname, data)
+            return dump(temp_fname, data)
 
     if use_lock:
         with FileLock(lock_fname, lock_timeout) as flock:

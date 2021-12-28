@@ -11,6 +11,7 @@
 import math
 import torch
 
+from jacinle.utils.argument import get_2dshape
 from .conv import CustomKernel, MaxPoolingKernelDef
 
 __all__ = ['NormalizedBoxSmooth', 'normalized_box_smooth', 'GaussianSmooth', 'GaussianSmoothTruncated', 'gaussian_smooth', 'gaussian_smooth_truncated', 'MaximumSmooth', 'maximum_smooth']

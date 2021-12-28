@@ -70,7 +70,7 @@ def length_masked_reversed(tensor, lengths, dim=1):
 
     if tensor.size(0) != len(lengths):
         raise ValueError('tensor incompatible with lengths.')
-    reversed_indices = np.repeat(np.arange(tensor.size(1))[np.newaxis], inputs.size(0), 0)
+    reversed_indices = np.repeat(np.arange(tensor.size(1))[np.newaxis], tensor.size(0), 0)
     for i, length in enumerate(lengths.cpu().numpy().tolist()):
         if length > 0:
             reversed_indices[i, :length] = reversed_indices[i, length-1::-1]

@@ -10,8 +10,8 @@
 
 import argparse
 
-from jacinle.comm.name_server import _configs as configs
-from jacinle.comm.name_server import run_name_server
+from jacinle.comm.distrib.name_server import _configs as configs
+from jacinle.comm.distrib.name_server import run_name_server
 from jacinle.logging import get_logger
 
 logger = get_logger(__file__)

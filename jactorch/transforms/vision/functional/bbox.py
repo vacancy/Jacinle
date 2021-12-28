@@ -8,6 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+import numpy as np
 from ._utils import apply_affine_transform
 
 

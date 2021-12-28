@@ -15,7 +15,7 @@ Code inspection tools.
 import inspect
 from . import _inspect_mate
 
-__all__ = ['class_name', 'func_name', 'method_name', 'class_name_of_method', 'bind_args']
+__all__ = ['class_name', 'func_name', 'method_name', 'class_name_of_method', 'bind_args', 'get_subclasses']
 
 
 def class_name(instance_or_class):
@@ -44,3 +44,8 @@ def bind_args(sig, *args, **kwargs):
 
     return bounded
 
+
+def get_subclasses(cls):
+    for subclass in cls.__subclasses__():
+        yield from get_subclasses(subclass)
+        yield subclass

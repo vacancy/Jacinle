@@ -92,7 +92,7 @@ class NeuralLogicLayer(nn.Module):
         inputs_length_mask = None
         if inputs_length_or_mask is not None:
             if inputs_length_or_mask.dim() == 1:
-                inputs_length_mask = length2mask(inputs_length, inputs.size(1))
+                inputs_length_mask = length2mask(inputs_length_or_mask, inputs.size(1))
             else:
                 inputs_length_mask = inputs_length_or_mask
 
@@ -200,8 +200,10 @@ class NeuralLogicMachine(nn.Module):
         for i in range(depth):
             if i > 0 and io_residual:
                 add_(current_dims, input_dims)
-            layer = NeuralLogicLayer(breadth, current_dims, output_dims, logic_model, logic_hidden_dim, exclude_self, residual,
-                                     activation=activation, min_val=min_val, max_val=max_val, use_exists=use_exists)
+            layer = NeuralLogicLayer(
+                breadth, current_dims, output_dims, logic_model, logic_hidden_dim, exclude_self, residual,
+                activation=activation, min_val=min_val, max_val=max_val, use_exists=use_exists
+            )
             current_dims = layer.output_dims
             current_dims = self._mask(current_dims, i, 0)
             if io_residual:
