@@ -14,7 +14,7 @@ import torch
 __all__ = [
     'flatten', 'flatten2',
     'concat_shape',
-    'broadcast', 'add_dim', 'add_dim_as_except', 'move_dim',
+    'broadcast', 'add_dim', 'add_dim_as_except', 'broadcast_as_except', 'move_dim',
     'repeat', 'repeat_times', 'force_view'
 ]
 
@@ -69,6 +69,30 @@ def add_dim_as_except(tensor, target, *excepts):
         if i not in excepts:
             tensor.unsqueeze_(i)
     return tensor
+
+
+def broadcast_as_except(tensor, target, *excepts):
+    """
+    Add AND expand dimension for the input tensor so that
+
+        - It has the same number of dimensions as target.
+        - The original axes of the tensor are ordered in `excepts`.
+
+    Note that the list excepts must be in ascending order.
+    """
+    assert len(excepts) == tensor.dim()
+    tensor_shape = tensor.size()
+    target_shape = target.size()
+    tensor = tensor.clone()
+    excepts = [e + target.dim() if e < 0 else e for e in excepts]
+    target_size = list()
+    for i in range(target.dim()):
+        if i not in excepts:
+            target_size.append(target_shape[i])
+            tensor.unsqueeze_(i)
+        else:
+            target_size.append(tensor_shape[excepts.index(i)])
+    return tensor.expand(target_size)
 
 
 def move_dim(tensor, dim, dest):

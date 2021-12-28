@@ -135,7 +135,7 @@ class CallbackRegistry(Registry):
     def dispatch(self, name, *args, **kwargs):
         if self._super_callback is not None:
             return self._super_callback(self, name, *args, **kwargs)
-        return self.dispatch_direct(name, *args)
+        return self.dispatch_direct(name, *args, **kwargs)
 
     def dispatch_direct(self, name, *args, **kwargs):
         """Dispatch by name, ignoring the super callback."""
