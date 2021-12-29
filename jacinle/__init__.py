@@ -38,7 +38,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.utils.meta import (
             gofor,
             run_once, try_run,
-            map_exec, filter_exec, first_n, stmap,
+            map_exec, filter_exec, first, first_n, stmap,
             method2func, map_exec_method,
             decorator_with_optional_args,
             cond_with, cond_with_group,
