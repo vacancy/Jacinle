@@ -25,7 +25,7 @@ class MaxPoolingKernelDef(object):
         self.kernel_size = get_2dshape(kernel_size)
 
 
-def custom_kernel(image, k, border_mode='zero'):
+def custom_kernel(image, k, border_mode='zeros'):
     border_mode = ConvBorderMode.from_string(border_mode)
 
     if not isinstance(k, MaxPoolingKernelDef):

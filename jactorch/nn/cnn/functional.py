@@ -26,7 +26,7 @@ class ConvPaddingMode(JacEnum):
 
 
 class ConvBorderMode(JacEnum):
-    ZERO = 'zero'
+    ZEROS = 'zeros'
     CONSTANT = 'constant'
     REFLECT = 'reflect'
     REPLICATE = 'replicate'
@@ -34,8 +34,6 @@ class ConvBorderMode(JacEnum):
     @classmethod
     def from_string(cls, string):
         x = super(ConvBorderMode, cls).from_string(string)
-        if x is cls.ZERO:
-            x = cls.CONSTANT
         return x
 
 
