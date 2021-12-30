@@ -101,7 +101,7 @@ class ConvNDLayerBase(nn.Sequential):
     __nr_dims__ = 1
 
     def __init__(self, in_channels, out_channels, kernel_size, stride=1,
-                 padding_mode='default', padding=0, border_mode='zero',
+                 padding_mode='default', padding=0, border_mode='zeros',
                  dilation=1, groups=1,
                  batch_norm=None, dropout=None, bias=None, activation=None):
 

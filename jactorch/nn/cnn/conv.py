@@ -25,8 +25,8 @@ class ConvNDBase(nn.Module):
     __transposed__ = False
 
     def __init__(self, in_channels, out_channels, kernel_size, stride=1,
-                 padding_mode='default', padding=0, border_mode='constant',
-                 output_padding=0, output_border_mode='constant',
+                 padding_mode='default', padding=0, border_mode='zeros',
+                 output_padding=0, output_border_mode='zeros',
                  dilation=1, groups=1, bias=True):
 
         super().__init__()
@@ -61,8 +61,8 @@ class ConvNDBase(nn.Module):
         self.output_border_mode = ConvBorderMode.from_string(output_border_mode)
 
         if type(self).__transposed__:
-            assert self.border_mode is ConvBorderMode.CONSTANT, 'Only zero input padding is supported.'
-            assert self.output_border_mode is ConvBorderMode.CONSTANT, 'Only zero output padding is supported.'
+            assert self.border_mode is ConvBorderMode.ZEROS , 'Only zero input padding is supported.'
+            assert self.output_border_mode is ConvBorderMode.ZEROS, 'Only zero output padding is supported.'
         else:
             assert self.output_padding == 0, 'Output padding is only available for transposed convolution.'
 
