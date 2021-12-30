@@ -17,6 +17,8 @@ from jacinle.comm.service import Service
 
 logger = get_logger(__file__)
 
+__all__ = ['TorchService']
+
 
 class TorchService(Service):
     def load_model(self, desc, load, use_gpu, gpu_parallel=False, gpu_ids=None, cudnn_benchmark=False, args=None, **kwargs):

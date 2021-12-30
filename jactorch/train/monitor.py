@@ -16,6 +16,7 @@ __all__ = [
     'binary_classification_accuracy',
     'classification_accuracy',
     'regression_accuracy',
+    'monitor_rms',
     'monitor_param_saturation',
     'monitor_param_rms',
     'monitor_param_gradrms', 'monitor_param_gradrms_ratio'
@@ -67,6 +68,15 @@ def regression_accuracy(pred, label, name=''):
 
 def _rms(p):
     return as_float((p ** 2).mean() ** 0.5)
+
+
+@no_grad_func
+def monitor_rms(_dict=None, **values):
+    values.update(_dict)
+    monitors = {}
+    for name, p in values.items():
+        monitors['rms/' + name] = _rms(p)
+    return monitors
 
 
 @no_grad_func

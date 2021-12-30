@@ -9,7 +9,7 @@
 # Distributed under terms of the MIT license.
 
 import numpy as np
-import scipy.misc
+from PIL import Image
 try:
     from StringIO import StringIO as BytesIO  # Python 2.7
 except ImportError:
@@ -43,15 +43,18 @@ class TBLogger(object):
         for i, img in enumerate(images):
             # Write the image to a string
             s = BytesIO()
-            scipy.misc.toimage(img).save(s, format="png")
+            Image.fromarray(img).save(s, format="png")
 
             # Create an Image object
-            img_sum = tf.Summary.Image(encoded_image_string=s.getvalue(),
-                                       height=img.shape[0],
-                                       width=img.shape[1])
+            img_sum = tf.Summary.Image(
+                encoded_image_string=s.getvalue(),
+                height=img.shape[0],
+                width=img.shape[1]
+            )
             # Create a Summary value
             img_summaries.append(
-                tf.Summary.Value(tag='%s/%d' % (tag, i), image=img_sum))
+                tf.Summary.Value(tag='%s/%d' % (tag, i), image=img_sum)
+            )
 
         # Create and write Summary
         summary = tf.Summary(value=img_summaries)
@@ -109,3 +112,4 @@ class TBGroupMeters(GroupMeters):
 
     def flush(self):
         self._tb_logger.flush()
+
