@@ -133,7 +133,6 @@ class BaseFileLock(object):
         # mechanism. Whenever the lock is acquired, the counter is increased and
         # the lock is only released, when this value is 0 again.
         self._lock_counter = 0
-        return None
 
     @property
     def lock_file(self):
@@ -286,7 +285,6 @@ class BaseFileLock(object):
         class ReturnProxy(object):
             def __init__(self, lock):
                 self.lock = lock
-                return None
 
             def __enter__(self):
                 return self.lock

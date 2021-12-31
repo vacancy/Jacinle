@@ -11,7 +11,6 @@
 import functools
 
 from jacinle.logging import get_logger
-from .naming import func_name
 
 logger = get_logger(__file__)
 

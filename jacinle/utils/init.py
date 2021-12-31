@@ -11,7 +11,7 @@
 import os
 import sys
 import resource
-from jacinle.utils.env import jac_getenv, jac_is_debug, jac_getenv
+from jacinle.utils.env import jac_is_debug, jac_getenv
 
 
 def release_syslim():

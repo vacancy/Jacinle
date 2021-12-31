@@ -14,8 +14,9 @@ import time
 import torch
 import torch.nn as nn
 
-from jacinle.event.registry import SimpleEventRegistry
 from jacinle.logging import get_logger
+from jacinle.utils.registry import SimpleEventRegistry
+
 from jactorch.io import load_weights, state_dict, load_state_dict
 from jactorch.utils.meta import as_tensor, as_float, as_cpu
 from .utils import set_learning_rate, decay_learning_rate

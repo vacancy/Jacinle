@@ -12,9 +12,6 @@
 Code inspection tools.
 """
 
-import inspect
-from . import _inspect_mate
-
 __all__ = ['class_name', 'func_name', 'method_name', 'class_name_of_method', 'bind_args', 'get_subclasses']
 
 
