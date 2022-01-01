@@ -19,7 +19,8 @@ __all__ = [
     'monitor_rms',
     'monitor_param_saturation',
     'monitor_param_rms',
-    'monitor_param_gradrms', 'monitor_param_gradrms_ratio'
+    'monitor_param_gradrms',
+    'monitor_param_gradrms_ratio'
 ]
 
 

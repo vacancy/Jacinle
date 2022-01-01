@@ -8,5 +8,6 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+from .context import *
 from .parameter import *
 from .variable import *
