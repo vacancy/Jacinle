@@ -181,6 +181,7 @@ def subclass_registry_point(wrapped):
     wrapped.register_subclass = classmethod(register_subclass)
     wrapped.available_subclasses = classmethod(available_subclasses)
     wrapped.instantiate = classmethod(instantiate)
+    return wrapped
 
 
 class SimpleEventRegistry(object):

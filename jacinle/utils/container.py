@@ -76,6 +76,15 @@ class GView(object):
     def update(self, other):
         self.raw().update(other)
 
+    def keys(self):
+        return self.raw().keys()
+
+    def values(self):
+        return self.raw().values()
+
+    def items(self):
+        return self.raw().items()
+
     def copy(self):
         return GView(self.raw().copy())
 
