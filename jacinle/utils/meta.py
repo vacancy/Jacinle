@@ -68,8 +68,11 @@ def filter_exec(func, iterable):
     return list(filter(func, iterable))
 
 
-def first(iterable):
-    return next(iter(iterable))
+def first(iterable, default=None):
+    try:
+        return next(iter(iterable))
+    except StopIteration:
+        return default
 
 
 def first_n(iterable, n=10):
