@@ -8,19 +8,24 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+from jacinle.utils.deprecated import deprecated
+from jactorch.graph.parameter import mark_freezed as gmark_freezed, mark_unfreezed as gmark_unfreezed
+
 __all__ = ['mark_freezed', 'mark_unfreezed', 'set_learning_rate', 'decay_learning_rate']
 
 
+@deprecated
 def mark_freezed(model):
-    model.eval()  # Turn off all BatchNorm / Dropout
-    for p in model.parameters():
-        p.requires_grad = False
+    """DEPRECATED(Jiayuan Mao): jactorch.train.utils.mark_freezed has been deprecated and will be removed by 07/16/2022;
+    please use jactorch.graph.parameter.mark_freezed instead."""
+    return gmark_freezed(model)
 
 
+@deprecated
 def mark_unfreezed(model):
-    model.train()  # Turn on all BatchNorm / Dropout
-    for p in model.parameters():
-        p.requires_grad = True
+    """DEPRECATED(Jiayuan Mao): jactorch.train.utils.mark_unfreezed has been deprecated and will be removed by 07/16/2022;
+    please use jactorch.graph.parameter.mark_unfreezed instead."""
+    return gmark_unfreezed(model)
 
 
 def set_learning_rate(optimizer, lr):
@@ -31,3 +36,4 @@ def set_learning_rate(optimizer, lr):
 def decay_learning_rate(optimizer, decay):
     for param_group in optimizer.param_groups:
         param_group['lr'] *= decay
+

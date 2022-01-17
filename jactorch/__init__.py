@@ -15,6 +15,12 @@ try:
     from .graph import *
     from .utils import *
     from .io import *
+    from . import data
+    from . import nn
+    from . import models
+    from . import optim
+    from . import parallel
+    from . import train
 except ImportError:
     from jacinle.logging import get_logger
     logger = get_logger(__file__)

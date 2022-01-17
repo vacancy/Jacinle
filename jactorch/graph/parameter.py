@@ -9,13 +9,18 @@
 # Distributed under terms of the MIT license.
 
 import six
+import contextlib
 
+import torch.nn as nn
 from jacinle.logging import get_logger
 from jacinle.utils.matching import NameMatcher
 
 logger = get_logger(__file__)
 
-__all__ = ['find_parameters', 'filter_parameters', 'exclude_parameters', 'compose_param_groups', 'param_group']
+__all__ = [
+    'find_parameters', 'filter_parameters', 'exclude_parameters', 'compose_param_groups', 'param_group',
+    'mark_freezed', 'mark_unfreezed', 'detach_modules'
+]
 
 
 def find_parameters(module, pattern, return_names=False):
@@ -88,3 +93,28 @@ def compose_param_groups(model, *groups, filter_grad=True, verbose=True):
 def param_group(pattern, **kwargs):
     """A helper function used for human-friendly declaration of param groups."""
     return (pattern, kwargs)
+
+
+def mark_freezed(model):
+    model.eval()  # Turn off all BatchNorm / Dropout
+    for p in model.parameters():
+        p.requires_grad = False
+
+
+def mark_unfreezed(model):
+    model.train()  # Turn on all BatchNorm / Dropout
+    for p in model.parameters():
+        p.requires_grad = True
+
+
+@contextlib.contextmanager
+def detach_modules(*modules):
+    all_modules = nn.ModuleList(modules)
+    current_values = dict()
+    for name, p in all_modules.named_parameters():
+        current_values[name] = p.requires_grad
+        p.requires_grad = False
+    yield
+    for name, p in all_modules.named_parameters():
+        p.requires_grad = current_values[name]
+
