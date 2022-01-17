@@ -109,6 +109,21 @@ def mark_unfreezed(model):
 
 @contextlib.contextmanager
 def detach_modules(*modules):
+    """
+    A context manager that temporarily detach all parameters in the input list of modules.
+
+    Usage:
+        >>> output1 = m2(m1(input1))
+        >>> with jactorch.detach_modules(m1, m2):  # or jactorch.detach_modules([m1, m2])
+        >>>     output2 = m2(m1(input2))
+        >>> loss(output1, output2).backward()
+
+        The loss from branch `output2` will not back-propagate to m1 and m2.
+    """
+
+    if len(modules) == 1 and type(modules[0]) is list:
+        modules = modules[0]
+
     all_modules = nn.ModuleList(modules)
     current_values = dict()
     for name, p in all_modules.named_parameters():
