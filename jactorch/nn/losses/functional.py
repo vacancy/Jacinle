@@ -93,3 +93,4 @@ def cosine_loss(output, target):
     input2 = normalize(target, eps=1e-6)
     loss = 1 - (input1 * input2).sum(dim=-1)
     return loss
+

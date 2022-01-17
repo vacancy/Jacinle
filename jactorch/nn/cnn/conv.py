@@ -19,6 +19,10 @@ __all__ = [
     'SequenceConvWrapper'
 ]
 
+"""
+Extended functionality of the built-in nn.Conv* layers in pytorch.
+"""
+
 
 class ConvNDBase(nn.Module):
     __nr_dims__ = 1

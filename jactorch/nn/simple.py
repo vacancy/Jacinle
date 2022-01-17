@@ -11,7 +11,7 @@
 import torch
 import torch.nn as nn
 
-__all__ = ['Identity', 'TorchApplyRecorderMixin']
+__all__ = ['Identity', 'TorchApplyRecorderMixin', 'AutoResetParametersMixin']
 
 
 class Identity(nn.Module):
@@ -36,3 +36,11 @@ class TorchApplyRecorderMixin(nn.Module):
     @property
     def device(self):
         return self._apply_recorder_indicator.device
+
+
+class AutoResetParametersMixin(object):
+    def reset_parameters(self):
+        for module in self.modules():
+            if id(module) != id(self) and hasattr(module, 'reset_parameters'):
+                module.reset_parameters()
+

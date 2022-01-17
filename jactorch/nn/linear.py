@@ -28,3 +28,4 @@ class AnyDimLinear(nn.Linear):
         output = output.view(concat_shape(other_dims, -1))
         output = output.transpose(self.hidden_dim, -1)
         return output
+

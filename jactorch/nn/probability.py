@@ -18,6 +18,14 @@ from jactorch.functional.probability import normalize_prob
 
 __all__ = ['ProbabilityLinear', 'ProbabilityBilinear', 'ProbabilityNLinear']
 
+"""
+ProbabilityLinear layers are "self-normalized" linear transformations of probability distributions.
+More specifically:
+    - When the input is normalized along the last dimension (i.e., values sum up to 1), the output is also normalized.
+    - Thus, the transformation can be interpreted as a probability mass transformation.
+    - The linear transformation has only the weight matrix. The weights are parameterized as a log-softmax distribution.
+"""
+
 
 class ProbabilityLinear(nn.Linear):
     def __init__(self, in_features, out_features, bias=False, norm=True):

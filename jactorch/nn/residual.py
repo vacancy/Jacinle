@@ -11,7 +11,7 @@
 import torch
 import torch.nn as nn
 
-from .container import AutoResetParametersMixin
+from .simple import AutoResetParametersMixin
 from .rnn_utils import rnn_with_length
 from .normalization import LayerNorm
 

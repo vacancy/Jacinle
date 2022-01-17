@@ -10,7 +10,7 @@
 
 import torch.nn as nn
 
-__all__ = ['SequentialN', 'AutoResetParametersMixin']
+__all__ = ['SequentialN']
 
 
 class SequentialN(nn.Sequential):
@@ -22,11 +22,4 @@ class SequentialN(nn.Sequential):
         if return_all:
             return inputs, all_values
         return inputs
-
-
-class AutoResetParametersMixin(object):
-    def reset_parameters(self):
-        for module in self.modules():
-            if id(module) != id(self) and hasattr(module, 'reset_parameters'):
-                module.reset_parameters()
 

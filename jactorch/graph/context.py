@@ -30,6 +30,13 @@ class ForwardContext(object):
         self.loss = loss
         self.monitors = GView(monitors)
         self.output_dict = GView(output_dict)
+        self.hyperparameters = dict()
+
+    def set_hyperparameter(self, key, value):
+        self.hyperparameters[key] = value
+
+    def get_hyperparameter(self, key, default=None):
+        return self.hyperparameters.get(key, default=default)
 
     def add_loss(self, loss, key=None):
         self.loss = self.loss + loss

@@ -11,7 +11,7 @@
 import torch
 import torch.nn.functional as F
 
-__all__ = ['atanh', 'logit', 'log_sigmoid', 'tstat']
+__all__ = ['atanh', 'logit', 'log_sigmoid', 'tstat', 'soft_amax', 'soft_amin']
 
 
 def atanh(x, eps=1e-8):
@@ -49,5 +49,16 @@ def log_sigmoid(x):
 
 
 def tstat(x):
+    """Tensor stats: produces a summary of the tensor."""
     return {'shape': x.shape, 'min': x.min().item(), 'max': x.max().item(), 'mean': x.mean().item(), 'std': x.std().item()}
 
+
+def soft_amax(x, dim, tau=1.0, keepdim=False):
+    """Return a soft version of x.max(dim=dim)."""
+    index = F.softmax(x / tau, dim=dim)
+    return (x * index).sum(dim=dim, keepdim=keepdim)
+
+
+def soft_amin(x, dim, tau=1.0, keepdim=False):
+    """See `soft_amax`."""
+    return -soft_amax(-x, dim=dim, tau=tau, keepdim=keepdim)

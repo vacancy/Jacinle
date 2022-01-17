@@ -9,11 +9,15 @@
 # Distributed under terms of the MIT license.
 
 import torch
+import torch.nn.functional as F
 import numpy as np
 
-from .shape import add_dim_as_except
+from .shape import add_dim_as_except, add_dim_as_except
 
-__all__ = ['mask_meshgrid', 'masked_average', 'length2mask', 'length_masked_reversed']
+__all__ = [
+    'mask_meshgrid', 'masked_average', 'length2mask', 'length_masked_reversed',
+    'masked_softmax', 'length_masked_softmax'
+]
 
 
 def mask_meshgrid(mask, target_dims=2):
@@ -77,4 +81,25 @@ def length_masked_reversed(tensor, lengths, dim=1):
     reversed_indices = torch.tensor(reversed_indices, dtype=torch.long, device=tensor.device)
     reversed_inputs = torch.gather(tensor, dim, reversed_indices)
     return reversed_inputs
+
+
+def masked_softmax(logits, mask=None, dim=-1, eps=1e-20, ninf=-1e4):
+    if mask is not None:
+        logits = logits * mask + ninf * (1 - mask)
+
+    probs = F.softmax(logits, dim=dim)
+    if mask is not None:
+        mask = mask.float()
+        probs = probs * mask + eps
+        probs = probs / probs.sum(dim, keepdim=True)
+
+    return probs
+
+
+def length_masked_softmax(logits, lengths, dim=-1, ninf=-1e4):
+    rng = torch.arange(logits.size(dim=dim), dtype=lengths.dtype, device=lengths.device)
+    rng = add_dim_as_except(rng, logits, dim)
+    lengths = lengths.unsqueeze(dim)
+    mask = rng < lengths
+    return masked_softmax(logits, mask, dim=dim, ninf=ninf)
 

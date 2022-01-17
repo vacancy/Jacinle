@@ -20,10 +20,10 @@ import torch
 import torch.nn as nn
 import jactorch
 
-__all__ = ['CoordConv']
+__all__ = ['CoordConv2D', 'CoordConv']
 
 
-class CoordConv(nn.Module):
+class CoordConv2D(nn.Module):
     def __init__(self, in_channels, out_channels, *args, use_radius=False, **kwargs):
         super().__init__()
 
@@ -35,6 +35,10 @@ class CoordConv(nn.Module):
         f = self.addcoords(x)
         f = self.conv(f)
         return f
+
+
+# NB(Jiayuan Mao @ 01/16): legacy reasons. Currently we only support 2D coord conv.
+CoordConv = CoordConv2D
 
 
 class _AddCoords(nn.Module):
