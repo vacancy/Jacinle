@@ -42,7 +42,10 @@ HEADER = r"""#! /usr/bin/env python3
 """
 
 def get_creation_time(path):
-    return os.stat(path).st_birthtime
+    stat = os.stat(path)
+    if hasattr(stat, 'st_birthtime'):
+        return stat.st_birthtime
+    return stat.st_ctime
 
 
 def log(*argv, **kwargs):
