@@ -17,6 +17,7 @@ import yaml
 import six
 import inspect
 
+from typing import Sequence
 from jacinle.utils.meta import dict_deep_kv
 from jacinle.utils.printing import stformat, kvformat
 
@@ -25,7 +26,8 @@ from .fs import as_file_descriptor, io_function_registry
 __all__ = [
     'iter_txt',
     'pretty_dump', 'pretty_load',
-    'dumps_json', 'dump_json', 'loads_json', 'load_json',
+    'dumps_json', 'dump_json', 'loads_json', 'load_json', 'pretty_dumps_json', 'pretty_dump_json',
+    'dumps_jsonc', 'dump_jsonc', 'loads_jsonc', 'load_jsonc',
     'dumps_xml', 'dump_xml', 'loads_xml', 'load_xml',
     'dumps_yaml', 'dump_yaml', 'loads_yaml', 'load_yaml',
     'dumps_txt', 'dump_txt',
@@ -45,6 +47,18 @@ def iter_txt(fd, strip=True):
 
 def loads_json(value):
     return json.loads(value)
+
+
+def loads_jsonc(value):
+    strings = value.split('\n}\n{')
+    ret = []
+    for i, s in enumerate(strings):
+        if i > 0:
+            s = '{' + s
+        if i < len(strings) - 1:
+            s += '}'
+        ret.append(json.loads(s))
+    return ret
 
 
 def loads_xml(value, **kwargs):
@@ -74,6 +88,14 @@ def dumps_json(value, compressed=True):
 
 def pretty_dumps_json(value, compressed=False):
     return dumps_json(value, compressed=compressed)
+
+
+def dumps_jsonc(value):
+    assert isinstance(value, Sequence)
+    ret = ''
+    for v in value:
+        ret += pretty_dumps_json(v) + '\n'
+    return ret
 
 
 def dumps_xml(value, **kwargs):
@@ -119,11 +141,13 @@ def _wrap_dump(dumps_func):
 
 
 load_json = _wrap_load(loads_json)
+load_jsonc = _wrap_load(loads_jsonc)
 load_xml = _wrap_load(loads_xml)
 load_yaml = _wrap_load(loads_yaml)
 
 dump_txt = _wrap_dump(dumps_txt)
 dump_json = _wrap_dump(dumps_json)
+dump_jsonc = _wrap_dump(dumps_jsonc)
 dump_xml = _wrap_dump(dumps_xml)
 dump_yaml = _wrap_dump(dumps_yaml)
 dump_struct = _wrap_dump(dumps_struct)
@@ -135,6 +159,7 @@ pretty_dump_json = _wrap_dump(pretty_dumps_json)
 
 for registry in ['load', 'pretty_load']:
     io_function_registry.register(registry, '.json', load_json)
+    io_function_registry.register(registry, '.jsonc', load_jsonc)
     io_function_registry.register(registry, '.xml',  load_xml)
     io_function_registry.register(registry, '.yaml', load_yaml)
     io_function_registry.register(registry, '.yml',  load_yaml)
@@ -146,6 +171,7 @@ for registry in ['dump', 'pretty_dump']:
         io_function_registry.register(registry, '.json',   pretty_dump_json)
     else:
         io_function_registry.register(registry, '.json',   dump_json)
+    io_function_registry.register(registry, '.jsonc',   dump_jsonc)
     io_function_registry.register(registry, '.xml',    dump_xml)
     io_function_registry.register(registry, '.yaml',   dump_yaml)
     io_function_registry.register(registry, '.yml',    dump_yaml)
