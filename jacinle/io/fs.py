@@ -247,7 +247,10 @@ class LSDirectoryReturnType(JacEnum):
     REAL = 'real'
 
 
-def lsdir(dirname, pattern=None, return_type='full'):
+def lsdir(dirname, pattern=None, return_type='full', sort=True):
+    if sort:
+        return sorted(lsdir(dirname, pattern, return_type=return_type, sort=False))
+
     assert '*' in dirname or '?' in dirname or osp.isdir(dirname)
 
     return_type = LSDirectoryReturnType.from_string(return_type)
