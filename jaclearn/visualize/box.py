@@ -42,13 +42,14 @@ def add_bbox_patches(ax, boxes: np.ndarray, class_name: Union[str, List[str]], a
 
 
 def vis_bboxes(image: Image.Image, boxes: np.ndarray, class_name: Union[str, List[str]], add_text=True, legends: Optional[Union[str, List[str]]] = None, title: Optional[str] = None):
-    title = title or "{} detection results".format(class_name)
-
     fig, ax = plt.subplots(figsize=(12, int(12 / image.width * image.height)))
     fig.tight_layout()
     ax.imshow(image, aspect='equal')
+
+    if title is not None:
+        ax.set_title(title, fontsize=14)
+
     add_bbox_patches(ax, boxes, class_name, add_text=add_text, legends=legends)
-    ax.set_title(title, fontsize=14)
     ax.axis('off')
 
     return fig, ax

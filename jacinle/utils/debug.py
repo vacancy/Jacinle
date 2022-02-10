@@ -13,7 +13,10 @@ import functools
 import threading
 import contextlib
 
-__all__ = ['hook_exception_ipdb', 'unhook_exception_ipdb', 'exception_hook']
+from .naming import func_name
+from .printing import indent_text
+
+__all__ = ['hook_exception_ipdb', 'unhook_exception_ipdb', 'exception_hook', 'decorate_exception_hook', 'timeout_ipdb', 'log_function']
 
 
 def _custom_exception_hook(type, value, tb):
@@ -73,3 +76,26 @@ def timeout_ipdb(locals_, timeout=3):
     with cv:
         cv.notify_all()
 
+
+def log_function(function):
+    def wrapped(*args, **kwargs):
+        print(indent_text(f'Entering: {func_name(function)}', log_function.indent_level))
+        arguments = ', '.join([str(arg) for arg in args])
+        print(indent_text(f'Args: {arguments}', log_function.indent_level))
+        print(indent_text(f'kwargs: {kwargs}', log_function.indent_level))
+        log_function.indent_level += 1
+        rv = function(*args, **kwargs)
+        log_function.indent_level -= 1
+        print(indent_text(f'Returns: {rv}', log_function.indent_level))
+        return rv
+    return wrapped
+
+
+log_function.indent_level = 0
+
+
+def _inside_log(string):
+    print(indent_text(str(string), log_function.indent_level))
+
+
+log_function.log = _inside_log

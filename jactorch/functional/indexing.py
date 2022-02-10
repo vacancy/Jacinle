@@ -234,4 +234,3 @@ else:
     batched_index_slice = requires_vendors('torch_index')(make_dummy_func())
     batched_index_vector_dim = requires_vendors('torch_index')(make_dummy_func())
     batched_index_vectors = requires_vendors('torch_index')(make_dummy_func())
-

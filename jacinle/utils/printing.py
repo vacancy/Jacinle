@@ -70,6 +70,7 @@ def stprint(data, key=None, indent=0, file=None, indent_format='  ', end_format=
         key: for recursion calls. Do not use it if you don't know how it works.
         indent: indent level.
     """
+    from .container import GView
 
     if file is None:
         file = sys.stdout
@@ -78,7 +79,7 @@ def stprint(data, key=None, indent=0, file=None, indent_format='  ', end_format=
         print(indent_format * indent, end='', file=file)
         if prefix is not None:
             print(prefix, end='', file=file)
-        print(msg, end=end_format, file=file)
+        print(indent_text(msg, indent, indent_format=indent_format).lstrip(), end=end_format, file=file)
 
     def _inner(data, indent, key, max_depth):
         t = type(data)
@@ -98,11 +99,11 @@ def stprint(data, key=None, indent=0, file=None, indent_format='  ', end_format=
             for v in data:
                 _inner(v, indent=indent + 1, key=None, max_depth=max_depth - 1)
             _indent_print(']', indent)
-        elif t in (dict, collections.OrderedDict):
+        elif t in (dict, collections.OrderedDict, collections.defaultdict, GView):
             if max_depth == 0:
                 _indent_print('(dict of length {}) ...'.format(len(data)), indent, prefix=key)
                 return
-            typename = 'dict' if t is dict else 'ordered_dict'
+            typename = t.__name__
             keys = sorted(data.keys()) if t is dict else data.keys()
             _indent_print(typename + '{', indent, prefix=key)
             for k in keys:

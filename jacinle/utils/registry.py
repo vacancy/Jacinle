@@ -189,6 +189,10 @@ class SimpleEventRegistry(object):
         self._allowed_events = allowed_events
         self._events = collections.defaultdict(list)
 
+    @property
+    def allowed_events(self):
+        return self._allowed_events
+
     def register(self, event, callback):
         if self._allowed_events is not None:
             assert event in self._allowed_events

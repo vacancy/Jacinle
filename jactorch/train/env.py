@@ -52,6 +52,8 @@ class TrainerEnv(object):
             'backward:before', 'backward:after',
         })
 
+        self._init_event_triggers()
+
     @property
     def model(self):
         return self._model
@@ -66,6 +68,14 @@ class TrainerEnv(object):
     @property
     def optimizer(self):
         return self._optimizer
+
+    def _init_event_triggers(self):
+        for key in self._event_manager.allowed_events:
+            name, be = key.split(':')
+            callback_name = f'on_{name}_{be}'
+            if hasattr(self.model_unwrapped, callback_name):
+                callback = getattr(self.model_unwrapped, callback_name)
+                self.register_event(key, callback)
 
     def register_event(self, name, callback):
         logger.info('Register trainer event: name={}, callback={}.'.format(name, callback.__module__ + '.' + callback.__name__))
@@ -118,7 +128,13 @@ class TrainerEnv(object):
 
     def step(self, feed_dict, grad_clip=0., reduce_func=default_reduce_func, cast_tensor=False, measure_time=False):
         if hasattr(self.model, 'train_step'):
-            return self.model.train_step(self.optimizer, feed_dict)
+            try:
+                return self.model.train_step(
+                    self.optimizer, feed_dict,
+                    grad_clip=grad_clip, reduce_func=reduce_func, cast_tensor=False
+                )
+            except NotImplementedError:
+                pass
 
         assert self._model.training, 'Step a evaluation-mode model.'
         extra = dict()
