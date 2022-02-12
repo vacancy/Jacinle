@@ -19,7 +19,23 @@ from jacinle.logging import get_logger
 
 logger = get_logger(__file__)
 
-__all__ = ['ModelTrainer']
+__all__ = ['simple_fit', 'ModelTrainer']
+
+
+def simple_fit(model, loss_function, dataset, optimizer, epochs, lr=0.01, weight_decay=0, print_interval=1, **opt_kwargs):
+    optimizer = get_optimizer(optimizer, model, lr=lr, weight_decay=weight_decay, **opt_kwargs)
+
+    iterations = 1
+    model.train()
+    for epoch_index in range(epochs):
+        for data_index, data in enumerate(dataset):
+            optimizer.zero_grad()
+            loss, monitors = loss_function(model, data)
+            loss.backward()
+            optimizer.step()
+            if iterations % print_interval == 0:
+                logger.info(f'Epoch {epoch_index} Index {data_index} (Iteration {iterations}): loss = {loss.item():.4f}, monitors={monitors}.')
+            iterations += 1
 
 
 class ModelTrainer(object):
