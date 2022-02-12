@@ -10,10 +10,11 @@
 
 
 try:
-    from .cuda import *
+    from .cuda.copy import async_copy_to
     from .functional import *
     from .graph import *
     from .utils import *
+    from .train import TrainerEnv
     from .io import *
     from . import data
     from . import nn

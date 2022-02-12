@@ -8,4 +8,5 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-from .logger import get_logger, set_default_level, set_output_file
+from .logger import *
+

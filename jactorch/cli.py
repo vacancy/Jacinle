@@ -15,6 +15,8 @@ import sys
 import jacinle.io as io
 from jacinle.cli.git import get_git_revision_hash
 
+__alL__ = ['escape_desc_name', 'ensure_path', 'dump_metainfo']
+
 
 def escape_desc_name(filename):
     basename = osp.basename(filename)

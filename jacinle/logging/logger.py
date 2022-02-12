@@ -12,7 +12,7 @@
 import logging
 import sys
 
-__all__ = ['set_output_file', 'set_default_level', 'get_logger']
+__all__ = ['set_output_file', 'set_logger_output_file', 'set_default_level', 'get_logger']
 
 _default_level = logging.INFO
 _all_loggers = []
@@ -22,6 +22,10 @@ def set_output_file(fout, mode='a'):
     if isinstance(fout, str):
         fout = open(fout, mode)
     JacLogFormatter.log_fout = fout
+
+
+def set_logger_output_file(fout, mode='a'):
+    set_output_file(fout, mode=mode)
 
 
 class JacLogFormatter(logging.Formatter):
