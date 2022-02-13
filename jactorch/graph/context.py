@@ -5,7 +5,7 @@
 # Email  : maojiayuan@gmail.com
 # Date   : 12/31/2021
 #
-# This file is part of HACL-PyTorch.
+# This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
 import functools

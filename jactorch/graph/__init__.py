@@ -9,5 +9,7 @@
 # Distributed under terms of the MIT license.
 
 from .context import *
+from .nn_env import *
 from .parameter import *
 from .variable import *
+

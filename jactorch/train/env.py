@@ -17,7 +17,8 @@ import torch.nn as nn
 from jacinle.logging import get_logger
 from jacinle.utils.registry import SimpleEventRegistry
 
-from jactorch.io import load_weights, state_dict, load_state_dict
+from jactorch.graph.nn_env import NNEnv
+from jactorch.io import state_dict, load_state_dict
 from jactorch.utils.meta import as_tensor, as_float, as_cpu
 from .utils import set_learning_rate, decay_learning_rate
 
@@ -38,9 +39,9 @@ def default_reduce_func(k, v):
     return v
 
 
-class TrainerEnv(object):
-    def __init__(self, model, optimizer):
-        self._model = model
+class TrainerEnv(NNEnv):
+    def __init__(self, model: nn.Module, optimizer):
+        super().__init__(model)
         self._optimizer = optimizer
 
         self._train_loader = None
@@ -53,17 +54,7 @@ class TrainerEnv(object):
         })
 
         self._init_event_triggers()
-
-    @property
-    def model(self):
-        return self._model
-
-    @property
-    def model_unwrapped(self):
-        model = self.model
-        if isinstance(model, nn.DataParallel):
-            model = model.module
-        return model
+        self.__prepared = False
 
     @property
     def optimizer(self):
@@ -117,45 +108,26 @@ class TrainerEnv(object):
             logger.warning('No checkpoint found at specified position: "{}".'.format(filename))
         return None
 
-    def load_weights(self, filename, **kwargs):
-        return load_weights(self._model, filename, **kwargs)
-
     def set_learning_rate(self, lr):
         set_learning_rate(self._optimizer, lr)
 
     def decay_learning_rate(self, decay):
         decay_learning_rate(self._optimizer, decay)
 
-    def step(self, feed_dict, grad_clip=0., reduce_func=default_reduce_func, cast_tensor=False, measure_time=False):
-        if hasattr(self.model, 'train_step'):
-            try:
-                return self.model.train_step(
-                    self.optimizer, feed_dict,
-                    grad_clip=grad_clip, reduce_func=reduce_func, cast_tensor=False
-                )
-            except NotImplementedError:
-                pass
+    def prepare(self):
+        assert not self.__prepared, 'Two consecutive call of TrainerEnv.prepare()'
+        self.__prepared = True
 
         assert self._model.training, 'Step a evaluation-mode model.'
-        extra = dict()
-
         self.trigger_event('step:before', self)
-
-        if cast_tensor:
-            feed_dict = as_tensor(feed_dict)
-
         self._optimizer.zero_grad()
 
-        if measure_time:
-            end_time = cuda_time()
+    def update(self, feed_dict, loss, monitors, output_dict, grad_clip=0., reduce_func=default_reduce_func, measure_time=False, extra=None):
+        assert self.__prepared, 'Two consecutive call of TrainerEnv.update()'
+        self.__prepared = False
 
-        self.trigger_event('forward:before', self, feed_dict)
-        loss, monitors, output_dict = self._model(feed_dict)
-        self.trigger_event('forward:after', self, feed_dict, loss, monitors, output_dict)
-
-        if measure_time:
-            extra['time/forward'] = cuda_time() - end_time
-            end_time = cuda_time(False)
+        if extra is None:
+            extra = dict()
 
         loss = reduce_func('loss', loss)
         monitors = {k: reduce_func(k, v) for k, v in monitors.items()}
@@ -187,8 +159,37 @@ class TrainerEnv(object):
             end_time = cuda_time(False)
 
         self.trigger_event('step:after', self)
-
         return loss_f, monitors_f, output_dict, extra
+
+    def step(self, feed_dict, grad_clip=0., reduce_func=default_reduce_func, cast_tensor=False, measure_time=False):
+        if hasattr(self.model, 'train_step'):
+            try:
+                return self.model.train_step(
+                    self.optimizer, feed_dict,
+                    grad_clip=grad_clip, reduce_func=reduce_func, cast_tensor=False
+                )
+            except NotImplementedError:
+                pass
+
+        extra = dict()
+
+        self.prepare()
+
+        if measure_time:
+            end_time = cuda_time()
+
+        if cast_tensor:
+            feed_dict = as_tensor(feed_dict)
+
+        self.trigger_event('forward:before', self, feed_dict)
+        loss, monitors, output_dict = self._model(feed_dict)
+        self.trigger_event('forward:after', self, feed_dict, loss, monitors, output_dict)
+
+        if measure_time:
+            extra['time/forward'] = cuda_time() - end_time
+            end_time = cuda_time(False)
+
+        return self.update(feed_dict, loss, monitors, output_dict, grad_clip=grad_clip, reduce_func=reduce_func, measure_time=measure_time, extra=extra)
 
     def evaluate(self, feed_dict, cast_tensor=False):
         assert not self._model.training, 'Evaluating a training-mode model.'
