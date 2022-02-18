@@ -27,7 +27,7 @@ def simple_fit(model, loss_function, dataset, optimizer, epochs, lr=0.01, weight
 
     iterations = 1
     model.train()
-    for epoch_index in range(epochs):
+    for epoch_index in range(1, 1 + epochs):
         for data_index, data in enumerate(dataset):
             optimizer.zero_grad()
             loss, monitors = loss_function(model, data)

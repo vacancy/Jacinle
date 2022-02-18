@@ -18,7 +18,7 @@ from jacinle.utils.printing import print_to
 from jacinle.utils.container import G
 
 from .device import DeviceNameFormat, parse_and_set_devices
-from .keyboard import str2bool, yn2bool
+from .keyboard import str2bool, str2bool_long
 
 __all__ = ['JacArgumentParser']
 
@@ -80,7 +80,7 @@ class _KV(object):
             k, v = kv.split('=')
 
             try:
-                bool_value = yn2bool(v)
+                bool_value = str2bool_long(v)
                 v = bool_value
                 kvs[i] = (k, v)
                 continue

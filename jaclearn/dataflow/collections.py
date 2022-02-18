@@ -15,6 +15,7 @@ from jacinle.utils.argument import UniqueValueGetter
 from .dataflow import SimpleDataFlowBase, ProxyDataFlowBase, RandomizedDataFlowBase
 
 __all__ = [
+    'RandomIndexDataFlow',
     'DictDataFlowProxy', 'EmptyDictDataFlow',
     'QueueDataFlow', 'PoolDataFlow',
     'ListOfArrayDataFlow', 'DictOfArrayDataFlow',
@@ -22,6 +23,31 @@ __all__ = [
     'KVStoreDataFlow', 'KVStoreRandomSampleDataFlow',
     'PoolRandomSampleDataFlow', 'LOARandomSampleDataFlow', 'DOARandomSampleDataFlow'
 ]
+
+
+class RandomIndexDataFlow(RandomizedDataFlowBase):
+    def __init__(self, source, nr_repeat=1, seed=None):
+        super().__init__(seed=seed)
+        self._source = source
+        self._nr_repeat = nr_repeat
+
+    def _len(self):
+        return len(self._source)
+
+    def _gen(self):
+        if self._nr_repeat is None:
+            while True:
+                yield from self._gen_once()
+        else:
+            for i in range(self._nr_repeat):
+                yield from self._gen_once()
+
+    def _gen_once(self):
+        length = len(self._source)
+        indices = np.arange(length)
+        self._rng.shuffle(indices)
+        for i in range(length):
+            yield self._source[indices[i]]
 
 
 class DictDataFlowProxy(ProxyDataFlowBase):

@@ -82,7 +82,7 @@ class StrictG(dict):
             self[k] = v
             self.validate(k)
 
-    def def_(self, name, type=None, choices=None, default=None, help=help):
+    def def_(self, name, type=None, choices=None, default=None, help=None):
         if name in self.__defined_info__ or (name in self and isinstance(self[name], StrictG)):
             raise AttributeError('Key "{}" has already been implicitly or explicitly defined.'.format(name))
 
@@ -92,8 +92,8 @@ class StrictG(dict):
             'help': help
         }
         if default is not None:
-            self.setdefault(default)
-
+            self.__defined_kvs__[name] = default
+            self.setdefault(name, default)
         if name in self:
             self.validate(name)
 

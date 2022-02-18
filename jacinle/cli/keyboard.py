@@ -12,7 +12,7 @@ import os
 import sys
 import os.path as osp
 
-__all__ = ['str2bool', 'yn2bool', 'yes_or_no', 'maybe_mkdir']
+__all__ = ['str2bool', 'yn2bool', 'str2bool_long', 'yes_or_no', 'maybe_mkdir']
 
 
 def str2bool(s):
@@ -31,6 +31,15 @@ def yn2bool(s):
         return False
     else:
         raise ValueError('yn2bool is undefined for: "{}".'.format(s))
+
+
+def str2bool_long(s):
+    if s.lower() in ('yes', 'true'):
+        return True
+    elif s.lower() in ('no', 'false'):
+        return False
+    else:
+        raise ValueError('str2bool_long is undefined for: "{}".'.format(s))
 
 
 def yes_or_no(question, default="yes"):

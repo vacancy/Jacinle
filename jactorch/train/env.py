@@ -115,7 +115,6 @@ class TrainerEnv(NNEnv):
         decay_learning_rate(self._optimizer, decay)
 
     def prepare(self):
-        assert not self.__prepared, 'Two consecutive call of TrainerEnv.prepare()'
         self.__prepared = True
 
         assert self._model.training, 'Step a evaluation-mode model.'
