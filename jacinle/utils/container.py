@@ -104,6 +104,9 @@ class SlotAttrObject(object):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
+    def clone(self):
+        return copy.deepcopy(self)
+
     def __setattr__(self, k, v):
         assert not k.startswith('_')
         if k not in type(self).__dict__:
@@ -116,9 +119,6 @@ class SlotAttrObject(object):
             v = cvt(v)
         super().__setattr__(k, v)
 
-    def clone(self):
-        return copy.deepcopy(self)
-
 
 class OrderedSet(object):
     def __init__(self, initial_list=None):
@@ -126,6 +126,9 @@ class OrderedSet(object):
             self._dict = collections.OrderedDict([(v, True) for v in initial_list])
         else:
             self._dict = collections.OrderedDict()
+
+    def as_list(self):
+        return list(self._dict.keys())
 
     def append(self, value):
         self._dict[value] = True
@@ -138,7 +141,4 @@ class OrderedSet(object):
 
     def __iter__(self):
         return self._dict.keys()
-
-    def as_list(self):
-        return list(self._dict.keys())
 
