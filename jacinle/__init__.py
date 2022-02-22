@@ -19,6 +19,7 @@ from jacinle.utils.env import jac_getenv, jac_is_verbose, jac_is_debug
 if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.cli.argument import JacArgumentParser
     from jacinle.cli.keyboard import yes_or_no, maybe_mkdir
+    from jacinle.cli.git import git_guard
     from jacinle.concurrency.pool import TQDMPool
     from jacinle.config.environ import load_env, has_env, get_env, set_env, with_env
     from jacinle.logging.logger import get_logger, set_logger_output_file

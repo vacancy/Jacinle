@@ -13,7 +13,7 @@ import os.path as osp
 import sys
 
 import jacinle.io as io
-from jacinle.cli.git import get_git_revision_hash
+from jacinle.cli.git import git_revision_hash
 
 __alL__ = ['escape_desc_name', 'ensure_path', 'dump_metainfo']
 
@@ -38,6 +38,6 @@ def dump_metainfo(metainfo=None, **kwargs):
         metainfo = {}
     metainfo.update(kwargs)
     metainfo.setdefault('_cmd', ' '.join(sys.argv))
-    metainfo.setdefault('_git', get_git_revision_hash())
+    metainfo.setdefault('_git', git_revision_hash())
     return io.dumps_json(metainfo, compressed=False)
 
