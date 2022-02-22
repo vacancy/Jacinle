@@ -13,6 +13,32 @@ import os.path as osp
 import subprocess
 
 
+def git_current_tracking_remote():
+    try:
+        string = subprocess.check_output(['git', 'rev-parse', '--symbolic-full-name', '--abbrev-ref', '@{u}']).decode('utf-8').strip()
+        return string.split('/')[0]
+    except subprocess.CalledProcessError:
+        return None
+
+
+def git_remote_url(remote_identifier=None):
+    if remote_identifier is None:
+        remote_identifier = git_current_tracking_remote()
+    try:
+        string = subprocess.check_output(['git', 'remote', 'get-url', remote_identifier]).decode('utf-8').strip()
+        return string
+    except subprocess.CalledProcessError:
+        return None
+
+
+def git_recent_logs(revision_hash, n=5):
+    try:
+        string = subprocess.check_output(['git', '--no-pager', 'log', revision_hash, '-n', str(n)]).decode('utf-8').strip()
+        return string
+    except subprocess.CalledProcessError:
+        return None
+
+
 def git_revision_hash(short=False):
     try:
         if short:
