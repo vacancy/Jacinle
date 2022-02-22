@@ -23,7 +23,9 @@ def git_revision_hash(short=False):
 
 
 def git_uncommitted_files():
-    return subprocess.check_output(['git', 'status', '--porcelain']).decode('utf-8').strip().split('\n')
+    files = subprocess.check_output(['git', 'status', '--porcelain']).decode('utf-8').strip().split('\n')
+    files = [f.strip() for f in files if len(f.strip()) > 0]
+    return files
 
 
 def git_root():
