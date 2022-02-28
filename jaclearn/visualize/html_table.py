@@ -15,6 +15,8 @@ import collections
 import os.path as osp
 import json
 import contextlib
+import numpy as np
+from PIL import Image
 from copy import deepcopy
 
 import jacinle.io as io
@@ -230,6 +232,8 @@ class HTMLTableVisualizer(object):
         return osp.join(table_dir, '{}_{}.{}'.format(row_identifier, col_identifier, ext))
 
     def save_image(self, image, row_identifier, col_identifier, ext='png'):
+        if isinstance(image, np.ndarray):
+            image = Image.fromarray(image)
         filename = self.get_asset_filename(row_identifier, col_identifier, ext)
         image.save(filename)
         return filename
