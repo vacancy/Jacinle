@@ -39,20 +39,26 @@ def indent_text(text, level=1, indent_format=None, tabsize=None):
     return indent_format + text.replace('\n', '\n' + indent_format)
 
 
-def format_printable_data(data, float_format=_DEFAULT_FLOAT_FORMAT):
+def format_printable_data(data, float_format=_DEFAULT_FLOAT_FORMAT, indent=1, indent_format='  '):
     t = type(data)
     if t is np.ndarray:
-        return 'ndarray{}, dtype={}'.format(data.shape, data.dtype)
+        fmt = 'np.ndarray(shape={}, dtype={})'.format(data.shape, data.dtype)
+        if data.size < 100:
+            fmt += '{' + indent_text(str(data), level=indent, indent_format=indent_format).strip() + '}'
+        return fmt
     # Handle torch.tensor
     if 'Tensor' in str(t):
-        return 'tensor{}, dtype={}'.format(tuple(data.shape), data.dtype)
+        fmt = 'torch.Tensor(shape={}, dtype={})'.format(tuple(data.shape), data.dtype)
+        if data.numel() < 100:
+            fmt += '{' + indent_text(str(data), level=indent, indent_format=indent_format).strip() + '}'
+        return fmt
     elif t is float:
         return float_format.format(data)
     else:
         return str(data)
 
 
-def stprint(data, key=None, indent=0, file=None, indent_format='  ', end_format='\n', float_format=_DEFAULT_FLOAT_FORMAT, need_lock=True, max_depth=100):
+def stprint(data, key=None, indent=0, file=None, indent_format='  ', end_format='\n', float_format=_DEFAULT_FLOAT_FORMAT, need_lock=True, sort_key=True, max_depth=100):
     """
     Structure print.
 
@@ -104,19 +110,20 @@ def stprint(data, key=None, indent=0, file=None, indent_format='  ', end_format=
                 _indent_print('(dict of length {}) ...'.format(len(data)), indent, prefix=key)
                 return
             typename = t.__name__
-            keys = sorted(data.keys()) if t is dict else data.keys()
+            keys = sorted(data.keys()) if t is dict and sort_key else data.keys()
             _indent_print(typename + '{', indent, prefix=key)
             for k in keys:
                 v = data[k]
                 _inner(v, indent=indent + 1, key='{}: '.format(k), max_depth=max_depth - 1)
             _indent_print('}', indent)
         else:
-            _indent_print(format_printable_data(data, float_format=float_format), indent, prefix=key)
+            _indent_print(format_printable_data(data, float_format=float_format, indent=indent + 1, indent_format=indent_format), indent, prefix=key)
 
-    with stprint.locks.synchronized(file, need_lock):
-        _inner(data, indent=indent, key=key, max_depth=max_depth)
-
-    del _inner
+    try:
+        with stprint.locks.synchronized(file, need_lock):
+            _inner(data, indent=indent, key=key, max_depth=max_depth)
+    finally:
+        del _inner
 
 
 stprint.locks = LockRegistry()
