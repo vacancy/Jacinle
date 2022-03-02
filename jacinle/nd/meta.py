@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : nd.py
+# File   : meta.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 01/30/2017

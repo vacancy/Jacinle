@@ -9,7 +9,7 @@
 # Distributed under terms of the MIT license.
 
 import numpy as np
-from .nd import isndarray
+from .meta import isndarray
 
 
 def one_hot(label, nr_classes, dtype='float32'):

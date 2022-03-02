@@ -7,7 +7,7 @@
 #
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
-from jacweb.web import route, JacRequestHandler
+from jacinle.web.app import route, JacRequestHandler
 
 @route(r'/')
 class IndexHandler(JacRequestHandler):

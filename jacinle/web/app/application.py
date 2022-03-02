@@ -9,7 +9,6 @@
 # Distributed under terms of the MIT license.
 
 from tornado.web import Application, RequestHandler
-from copy import deepcopy
 
 from jacinle.logging import get_logger
 from jacinle.utils.imp import load_module
@@ -140,7 +139,7 @@ class JacApplication(Application):
             self.session_enabled = False
             self.session_manager = None
         elif self.settings['session_engine'] == 'memcached':
-            from jacweb.session.memcached import MemcachedSessionManager
+            from jacinle.web.session.memcached import MemcachedSessionManager
             self.session_enabled = True
             self.session_manager = MemcachedSessionManager(
                 secret=self.settings['session_secret'],

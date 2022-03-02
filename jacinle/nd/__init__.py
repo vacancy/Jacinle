@@ -10,5 +10,5 @@
 
 from .batch import *
 from .indexing import *
-from .nd import *
+from .meta import *
 from .shape import *

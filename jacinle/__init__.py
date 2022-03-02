@@ -57,6 +57,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.utils.uid import gen_time_string, gen_uuid4
 
     from jacinle import io
+    from jacinle import nd
     from jacinle import random
 
     try:

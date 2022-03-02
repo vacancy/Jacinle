@@ -9,7 +9,7 @@
 # Distributed under terms of the MIT license.
 
 from jacinle.logging import get_logger
-from jacweb.web import make_app
+from jacinle.web.app import make_app
 
 import tornado.ioloop
 

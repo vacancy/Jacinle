@@ -18,7 +18,7 @@ import torch
 from jacinle.concurrency.future import FutureResult
 from jacinle.utils.meta import map_exec_method
 from jactorch.utils.meta import as_numpy, as_tensor
-from jacnp.batch import batchify, unbatchify
+from jacinle.nd import batchify, unbatchify
 
 __all__ = ['ModelInferencer', 'AsyncInferenceTask', 'AsyncModelInferencer', 'BatchedAsyncModelInferencer']
 
