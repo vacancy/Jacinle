@@ -85,7 +85,7 @@ def _git_diff_no_index(fname):
         return subprocess.run(['git', '--no-pager', 'diff', '--no-index', '/dev/null', fname], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8').strip() + '\n'
 
 
-def git_guard():
+def git_guard(force=False):
     uncommitted_files = git_uncommitted_files()
     if len(uncommitted_files) > 0:
         from jacinle.logging import get_logger
@@ -93,7 +93,8 @@ def git_guard():
         logger = get_logger(__file__)
 
         logger.warning('Uncommited changes at the current repo:\n  ' + '\n  '.join(uncommitted_files))
-        if not yes_or_no('Are you sure you want to continue?', default='no'):
-            exit(1)
+        if force:
+            if not yes_or_no('Are you sure you want to continue?', default='no'):
+                exit(1)
         logger.info(git_status_full())
 
