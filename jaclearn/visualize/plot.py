@@ -10,7 +10,6 @@
 
 import io as _io
 import numpy as np
-from PIL import Image
 
 from jacinle.image.backend import cv2, Image, opencv_only, pil_only
 from jacinle.utils.enum import JacEnum

@@ -12,11 +12,13 @@ import sys
 import functools
 import threading
 import contextlib
+import cProfile
+import pstats
 
 from .naming import func_name
 from .printing import indent_text
 
-__all__ = ['hook_exception_ipdb', 'unhook_exception_ipdb', 'exception_hook', 'decorate_exception_hook', 'timeout_ipdb', 'log_function']
+__all__ = ['hook_exception_ipdb', 'unhook_exception_ipdb', 'exception_hook', 'decorate_exception_hook', 'timeout_ipdb', 'log_function', 'profile']
 
 
 def _custom_exception_hook(type, value, tb):
@@ -78,15 +80,23 @@ def timeout_ipdb(locals_, timeout=3):
 
 
 def log_function(function):
+    print_self = False
+    if '.' in function.__qualname__:
+        print_self = True
+
     def wrapped(*args, **kwargs):
-        print(indent_text(f'Entering: {func_name(function)}', log_function.indent_level))
+        self_info = ''
+        if print_self:
+            self_info = '(self={})'.format(args[0])
+        print(indent_text(f'Entering: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
         arguments = ', '.join([str(arg) for arg in args])
-        print(indent_text(f'Args: {arguments}', log_function.indent_level))
-        print(indent_text(f'kwargs: {kwargs}', log_function.indent_level))
+        print(indent_text(f'Args: {arguments}', log_function.indent_level, indent_format='| '))
+        print(indent_text(f'kwargs: {kwargs}', log_function.indent_level, indent_format='| '))
         log_function.indent_level += 1
         rv = function(*args, **kwargs)
         log_function.indent_level -= 1
-        print(indent_text(f'Returns: {rv}', log_function.indent_level))
+        print(indent_text(f'Exiting: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
+        print(indent_text(f'Returns: {rv}', log_function.indent_level, indent_format='| '))
         return rv
     return wrapped
 
@@ -95,7 +105,19 @@ log_function.indent_level = 0
 
 
 def _inside_log(string):
-    print(indent_text(str(string), log_function.indent_level))
+    print(indent_text(str(string), log_function.indent_level, indent_format='| '))
 
 
 log_function.log = _inside_log
+
+
+@contextlib.contextmanager
+def profile(field='tottime', top_k=10):
+    FIELDS = ['tottime', 'cumtime', None]
+    assert field in FIELDS
+    profiler = cProfile.Profile()
+    profiler.enable()
+    yield
+    profiler.disable()
+    stats = pstats.Stats(profiler).sort_stats(field)
+    stats.print_stats(top_k)

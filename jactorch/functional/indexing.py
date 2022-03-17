@@ -21,8 +21,9 @@ __all__ = [
     'inverse_permutation',
     'index_one_hot', 'set_index_one_hot_', 'index_one_hot_ellipsis',
     'leftmost_nonzero', 'rightmost_nonzero',
-    'batch', 'patch_torch_index',
+    'index_nonzero',
     'batched_index_select',
+    'batch', 'patch_torch_index',
     'batched_index_int', 'batched_index_slice', 'batched_index_vector_dim', 'batched_index_vectors',
     'tindex', 'findex', 'vindex', 'oindex',
     'btindex', 'bfindex', 'bvindex', 'boindex'
@@ -197,6 +198,18 @@ def rightmost_nonzero(tensor, dim):
         tensor, dim
     )
     return (tensor.to(torch.int64) * tensor.size(dim) + indices).argmax(dim=dim)
+
+
+def index_nonzero(tensor, mask):
+    assert tensor.shape[:mask.dim()] == mask.shape
+    if mask.dim() == 0:
+        if mask.item() != 0:
+            if tensor.dim() == 0:
+                yield tensor
+            else:
+                yield tensor[0]
+    else:
+        yield from tensor[torch.not_equal(mask, 0)]
 
 
 def batched_index_select(tensor, batched_indices):
