@@ -18,7 +18,7 @@ from typing import List, Union, Optional
 __all__ = ['add_bbox_patches', 'vis_bboxes']
 
 
-def add_bbox_patches(ax, boxes: np.ndarray, class_name: Union[str, List[str]], add_text=True, legends: Optional[Union[str, List[str]]] = None):
+def add_bbox_patches(ax, boxes: np.ndarray, class_name: Union[str, List[str]], add_text=True, legends: Optional[Union[str, List[str]]] = None, fontsize: Optional[int] = 14):
     if legends is not None:
         assert len(legends) == len(boxes)
     else:
@@ -36,20 +36,20 @@ def add_bbox_patches(ax, boxes: np.ndarray, class_name: Union[str, List[str]], a
             ax.text(
                 box[0], box[1] - 2,
                 '{:s}{}'.format(cls, str(leg)),
-                bbox=dict(facecolor='blue', alpha=0.5), fontsize=14, color='white'
+                bbox=dict(facecolor='blue', alpha=0.5), fontsize=fontsize, color='white'
             )
     return ax
 
 
-def vis_bboxes(image: Image.Image, boxes: np.ndarray, class_name: Union[str, List[str]], add_text=True, legends: Optional[Union[str, List[str]]] = None, title: Optional[str] = None):
+def vis_bboxes(image: Image.Image, boxes: np.ndarray, class_name: Union[str, List[str]], add_text=True, legends: Optional[Union[str, List[str]]] = None, title: Optional[str] = None, fontsize: Optional[int] = 14):
     fig, ax = plt.subplots(figsize=(12, int(12 / image.width * image.height)))
     fig.tight_layout()
     ax.imshow(image, aspect='equal')
 
     if title is not None:
-        ax.set_title(title, fontsize=14)
+        ax.set_title(title, fontsize=fontsize)
 
-    add_bbox_patches(ax, boxes, class_name, add_text=add_text, legends=legends)
+    add_bbox_patches(ax, boxes, class_name, add_text=add_text, legends=legends, fontsize=fontsize)
     ax.axis('off')
 
     return fig, ax
