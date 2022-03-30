@@ -28,6 +28,7 @@ _DEFAULT_FLOAT_FORMAT = '{:.6f}'
 
 
 def indent_text(text, level=1, indent_format=None, tabsize=None):
+    text = str(text)
     if indent_format is not None:
         assert tabsize is None, 'Cannot provide both indent format and tabsize.'
     if tabsize is not None:
