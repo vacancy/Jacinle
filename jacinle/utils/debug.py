@@ -88,16 +88,24 @@ def log_function(function):
         self_info = ''
         if print_self:
             self_info = '(self={})'.format(args[0])
+        # print(indent_text(f'Entering: {func_name(function)}', log_function.indent_level, indent_format='| '))
         print(indent_text(f'Entering: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
         arguments = ', '.join([str(arg) for arg in args])
         print(indent_text(f'Args: {arguments}', log_function.indent_level, indent_format='| '))
         print(indent_text(f'kwargs: {kwargs}', log_function.indent_level, indent_format='| '))
         log_function.indent_level += 1
-        rv = function(*args, **kwargs)
-        log_function.indent_level -= 1
-        print(indent_text(f'Exiting: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
-        print(indent_text(f'Returns: {rv}', log_function.indent_level, indent_format='| '))
-        return rv
+        rv = 'exception'
+        try:
+            rv = function(*args, **kwargs)
+            return rv
+        except Exception as e:
+            rv = str(e)
+            raise
+        finally:
+            log_function.indent_level -= 1
+            # print(indent_text(f'Exiting: {func_name(function)}', log_function.indent_level, indent_format='| '))
+            print(indent_text(f'Exiting: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
+            print(indent_text(f'Returns: {rv}', log_function.indent_level, indent_format='| '))
     return wrapped
 
 
@@ -108,7 +116,13 @@ def _inside_log(string):
     print(indent_text(str(string), log_function.indent_level, indent_format='| '))
 
 
+def _inside_print(*args, sep=' ', end='\n'):
+    string = sep.join([str(arg) for arg in args])
+    print(indent_text(str(string), log_function.indent_level, indent_format='| ').rstrip() + end, end='')
+
+
 log_function.log = _inside_log
+log_function.print= _inside_print
 
 
 @contextlib.contextmanager

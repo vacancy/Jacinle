@@ -27,7 +27,8 @@ __all__ = [
     'assert_instance', 'assert_none', 'assert_notnone',
     'notnone_property',
     'synchronized',
-    'make_dummy_func'
+    'make_dummy_func',
+    'repr_from_str'
 ]
 
 
@@ -250,3 +251,7 @@ def make_dummy_func(message=None):
         raise NotImplementedError(message)
     return func
 
+
+
+def repr_from_str(self):
+    return '{}<{}>'.format(self.__class__.__name__, self.__str__())

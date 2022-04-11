@@ -46,7 +46,8 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
             merge_iterable,
             dict_deep_update, dict_deep_kv, dict_deep_keys,
             assert_instance, assert_none, assert_notnone,
-            notnone_property, synchronized, make_dummy_func
+            notnone_property, synchronized, make_dummy_func,
+            repr_from_str
     )
     from jacinle.utils.meter import GroupMeters
     from jacinle.utils.naming import class_name, func_name, method_name, class_name_of_method
@@ -57,8 +58,10 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.utils.uid import gen_time_string, gen_uuid4
 
     from jacinle import io
+    from jacinle.io import load, dump
     from jacinle import nd
     from jacinle import random
+    from jacinle.random import reset_global_seed
 
     try:
         from IPython import embed
