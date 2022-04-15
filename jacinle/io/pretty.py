@@ -50,7 +50,7 @@ def loads_json(value):
 
 
 def loads_jsonc(value):
-    strings = value.split('\n}\n{')
+    strings = value.split('}\n{')
     ret = []
     for i, s in enumerate(strings):
         if i > 0:

@@ -85,11 +85,11 @@ class GroupMeters(object):
 
     def format(self, caption, values, kv_format, glue):
         meters_kv = self._canonize_values(values)
-        log_str = [caption]
+        log_str = [caption] if caption is not None else list()
         log_str.extend(itertools.starmap(kv_format.format, sorted(meters_kv.items())))
         return glue.join(log_str)
 
-    def format_simple(self, caption, values='avg', compressed=True):
+    def format_simple(self, caption=None, values='avg', compressed=True):
         if compressed:
             return self.format(caption, values, '{}={:4f}', ' ')
         else:
