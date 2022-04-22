@@ -39,8 +39,8 @@ class ForwardContext(object):
         return self.hyperparameters.get(key, default=default)
 
     def add_loss(self, loss, key=None, accumulate=True):
-        if accumulate:
-            self.loss = self.loss + loss
+        if float(accumulate) > 0:
+            self.loss = self.loss + loss * float(accumulate)
 
         if key is not None:
             if f'loss/{key}' in self.monitors:

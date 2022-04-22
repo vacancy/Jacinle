@@ -18,7 +18,7 @@ import pstats
 from .naming import func_name
 from .printing import indent_text
 
-__all__ = ['hook_exception_ipdb', 'unhook_exception_ipdb', 'exception_hook', 'decorate_exception_hook', 'timeout_ipdb', 'log_function', 'profile']
+__all__ = ['hook_exception_ipdb', 'unhook_exception_ipdb', 'exception_hook', 'decorate_exception_hook', 'timeout_ipdb', 'log_function', 'profile', 'time']
 
 
 def _custom_exception_hook(type, value, tb):
@@ -135,3 +135,14 @@ def profile(field='tottime', top_k=10):
     profiler.disable()
     stats = pstats.Stats(profiler).sort_stats(field)
     stats.print_stats(top_k)
+
+
+@contextlib.contextmanager
+def time(name=None):
+    from time import time as time_func
+    if name is None:
+        name = 'DEFAULT'
+    print(f'[Timer::{name}] Start...')
+    start = time_func()
+    yield
+    print(f'[Timer::{name}] End. Time elapsed = {time_func() - start}')
