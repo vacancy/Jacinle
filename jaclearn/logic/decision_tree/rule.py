@@ -9,7 +9,7 @@
 # Distributed under terms of the MIT license.
 
 from jacinle.utils.enum import JacEnum
-from typing import Sequence, List, Any, Optional, Union
+from typing import Sequence, List, Mapping, Any, Optional, Union
 from sklearn.tree import _tree, DecisionTreeClassifier
 
 __all__ = ['DecisionRuleFormat', 'AtomicDecisionRule', 'DecisionRule', 'extract_rule']
@@ -21,7 +21,7 @@ class DecisionRuleFormat(JacEnum):
 
 
 class AtomicDecisionRule(object):
-    def __init__(self, variable: str, threshold: Optional[float], right_branch: Optional[bool] = False):
+    def __init__(self, variable: Any, threshold: Optional[float], right_branch: Optional[bool] = False):
         """
         Instantiate an atomic decision rule. That is, by comparing a variable with a threshold.
 
@@ -65,6 +65,11 @@ class AtomicDecisionRule(object):
                 return f'(not ({self.variable}))' if not self.right_branch else f'({self.variable})'
             else:
                 raise ValueError('Unknown format: {}.'.format(format))
+
+    def __str__(self):
+        return self.format(DecisionRuleFormat.PYTHON)
+
+    __repr__ = __str__
 
 
 class DecisionRule(object):
@@ -126,13 +131,18 @@ class DecisionRule(object):
         else:
             raise ValueError('Unknown format: {}.'.format(format))
 
+    def __str__(self):
+        return self.format_clause(DecisionRuleFormat.PYTHON)
+
+    __repr__ = __str__
+
 
 def extract_rule(
     decision_tree: DecisionTreeClassifier,
-    feature_names: Sequence[str],
+    feature_names: Sequence[Any],
     boolean_input: Optional[bool] = True,
     boolean_output: Optional[bool] = False
-):
+) -> Mapping[Any, DecisionRule]:
     """
     Extract logic rules (DNF) from a trained DecisionTreeClassifier.
 

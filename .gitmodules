@@ -28,3 +28,6 @@
 [submodule "vendors/pytorch_scatter"]
 	path = vendors/pytorch_scatter
 	url = https://github.com/rusty1s/pytorch_scatter
+[submodule "vendors/pytorch_kmeans/kmeans_pytorch"]
+	path = vendors/pytorch_kmeans/kmeans_pytorch
+	url = https://github.com/subhadarship/kmeans_pytorch

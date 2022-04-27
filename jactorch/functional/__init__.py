@@ -9,6 +9,7 @@
 # Distributed under terms of the MIT license.
 
 from .arith import *
+from .cluster import *
 from .grad import *
 from .indexing import *
 from .kernel import *
