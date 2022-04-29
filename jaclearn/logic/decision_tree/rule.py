@@ -141,7 +141,8 @@ def extract_rule(
     decision_tree: DecisionTreeClassifier,
     feature_names: Sequence[Any],
     boolean_input: Optional[bool] = True,
-    boolean_output: Optional[bool] = False
+    boolean_output: Optional[bool] = False,
+    multi_output: bool = False,
 ) -> Mapping[Any, DecisionRule]:
     """
     Extract logic rules (DNF) from a trained DecisionTreeClassifier.
@@ -151,6 +152,8 @@ def extract_rule(
         feature_names (Sequence[str]): a list of strings for the features.
         boolean_input (Optional[bool]): whether the input features are boolean or not.
         boolean_output (Optional[bool]): whether the output features are boolean or not.
+        multi_output (bool): whether the output features are multi-valued or not. In this case, all possible values
+            at a leaf node will be registered.
 
     Returns:
         rule_dict (Mapping[Any, DecisionRule]): A mapping from label (strings, integers...) to the corresponding rule.
@@ -181,13 +184,24 @@ def extract_rule(
             dfs(inner.children_right[node], rule_pos)
         else:
             if boolean_output:
-                if inner.value[node][0, tindex] > 0:
-                    val = inner.value[node][0, tindex] / inner.value[node].sum()
-                    rule_dict[True].append(rule)
-                    true_probabilities.append(val)
+                if multi_output:
+                    for index in inner.value[node][0].nonzero()[0]:
+                        val = bool(decision_tree.classes_[index])
+                        rule_dict.setdefault(val, list()).append(rule)
+                else:
+                    if inner.value[node][0, tindex] > 0:
+                        val = inner.value[node][0, tindex] / inner.value[node].sum()
+                        rule_dict[True].append(rule)
+                        true_probabilities.append(val)
             else:
-                val = decision_tree.classes_[inner.value[node].argmax()]
-                rule_dict.setdefault(val, list()).append(rule)
+                if multi_output:
+                    for index in inner.value[node][0].nonzero()[0]:
+                        val = int(decision_tree.classes_[index])
+                        rule_dict.setdefault(val, list()).append(rule)
+                else:
+                    val = decision_tree.classes_[inner.value[node].argmax()]
+                    rule_dict.setdefault(val, list()).append(rule)
+
 
     try:
         dfs(0, [])
