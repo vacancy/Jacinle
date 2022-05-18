@@ -60,11 +60,11 @@ class Pool(object):
         self._result_queue = self.Queue(maxsize=self._nr_workers * 8)
         self._worker_pool = [self.Process(target=self._worker, args=(i, ), daemon=True) for i in range(
             self._nr_workers)]
+        map_exec_method('start', self._worker_pool)
+
         self._task_dispatcher_thread = threading.Thread(target=self._task_dispatcher, daemon=True)
         self._task_dispatcher_queue = queue.Queue(maxsize=1)
         self._task_dispatcher_result = queue.Queue(maxsize=1)
-
-        map_exec_method('start', self._worker_pool)
         self._task_dispatcher_thread.start()
 
         self.__started = True

@@ -34,6 +34,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     )
     from jacinle.utils.deprecated import deprecated
     from jacinle.utils.enum import JacEnum
+    from jacinle.utils.env import jac_getenv, jac_is_debug, jac_is_verbose
     from jacinle.utils.exception import format_exc
     from jacinle.utils.imp import load_module, load_module_filename, load_source
     from jacinle.utils.meta import (

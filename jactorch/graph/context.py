@@ -44,13 +44,13 @@ class ForwardContext(object):
 
         if key is not None:
             if f'loss/{key}' in self.monitors:
-                self.monitors[f'loss/{key}'] += loss
+                self.monitors[f'loss/{key}'] += float(loss)
             else:
-                self.monitors[f'loss/{key}'] = loss
+                self.monitors[f'loss/{key}'] = float(loss)
         return self
 
     def add_accuracy(self, accuracy, key):
-        self.monitors[f'accuracy/{key}'] = accuracy
+        self.monitors[f'accuracy/{key}'] = float(accuracy)
         return self
 
     def add_output(self, output, key):
