@@ -56,6 +56,8 @@ class VarLengthCollateV2(object):
     4. pad2d: similar to the pad mode, it takes 2d inputs (h, w) and pads them.
     5. padimage: similar to the pad2d, except that it takes 3d inputs (d, h, w), where the d dimension will not be
     padded.
+    6. stack: this is the default mode. It assumes the data is a list of tensors. The data will be stacked into a
+    tensor of shape (batch_size, ...).
 
     """
     def __init__(self, fields):
@@ -96,6 +98,8 @@ class VarLengthCollateV2(object):
                 if key in self._fields:
                     if isinstance(self._fields[key], string_types) and VarLengthCollateMode.from_string(self._fields[key]) is VarLengthCollateMode.SKIP:
                         result[key] = values
+                    elif isinstance(self._fields[key], string_types) and VarLengthCollateMode.from_string(self._fields[key]) is VarLengthCollateMode.STACK:
+                        result[key] = self(values)
                     else:
                         values, lengths = self(values, key=key)
                         result[key] = values

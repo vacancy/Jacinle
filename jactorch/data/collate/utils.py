@@ -48,4 +48,5 @@ class VarLengthCollateMode(JacEnum):
     PAD = 'pad'
     PAD2D = 'pad2d'
     PADIMAGE = 'padimage'
+    STACK = 'stack'
 
