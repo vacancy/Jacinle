@@ -79,34 +79,42 @@ def timeout_ipdb(locals_, timeout=3):
         cv.notify_all()
 
 
-def log_function(function):
-    print_self = False
-    if '.' in function.__qualname__:
-        print_self = True
+def log_function(init_function=None, *, verbose=True):
+    def wrapper(function):
+        print_self = False
+        if '.' in function.__qualname__:
+            print_self = True
 
-    def wrapped(*args, **kwargs):
-        self_info = ''
-        if print_self:
-            self_info = '(self={})'.format(args[0])
-        # print(indent_text(f'Entering: {func_name(function)}', log_function.indent_level, indent_format='| '))
-        print(indent_text(f'Entering: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
-        arguments = ', '.join([str(arg) for arg in args])
-        print(indent_text(f'Args: {arguments}', log_function.indent_level, indent_format='| '))
-        print(indent_text(f'kwargs: {kwargs}', log_function.indent_level, indent_format='| '))
-        log_function.indent_level += 1
-        rv = 'exception'
-        try:
-            rv = function(*args, **kwargs)
-            return rv
-        except Exception as e:
-            rv = str(e)
-            raise
-        finally:
-            log_function.indent_level -= 1
-            # print(indent_text(f'Exiting: {func_name(function)}', log_function.indent_level, indent_format='| '))
-            print(indent_text(f'Exiting: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
-            print(indent_text(f'Returns: {rv}', log_function.indent_level, indent_format='| '))
-    return wrapped
+        @functools.wraps(function)
+        def wrapped(*args, **kwargs):
+            self_info = ''
+            if print_self and verbose:
+                self_info = '(self={})'.format(args[0])
+            # print(indent_text(f'Entering: {func_name(function)}', log_function.indent_level, indent_format='| '))
+            print(indent_text(f'Entering: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
+            if verbose:
+                arguments = ', '.join([str(arg) for arg in args])
+                print(indent_text(f'Args: {arguments}', log_function.indent_level, indent_format='| '))
+                print(indent_text(f'kwargs: {kwargs}', log_function.indent_level, indent_format='| '))
+            log_function.indent_level += 1
+            rv = 'exception'
+            try:
+                rv = function(*args, **kwargs)
+                return rv
+            except Exception as e:
+                rv = str(e)
+                raise
+            finally:
+                log_function.indent_level -= 1
+                # print(indent_text(f'Exiting: {func_name(function)}', log_function.indent_level, indent_format='| '))
+                if verbose:
+                    print(indent_text(f'Exiting: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
+                    print(indent_text(f'Returns: {rv}', log_function.indent_level, indent_format='| '))
+        return wrapped
+
+    if init_function is None:
+        return wrapper
+    return wrapper(init_function)
 
 
 log_function.indent_level = 0
