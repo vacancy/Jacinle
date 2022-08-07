@@ -90,7 +90,7 @@ class TrainerEnv(NNEnv):
         except Exception:
             logger.exception('Error occurred when dump checkpoint "{}".'.format(filename))
 
-    def load_checkpoint(self, filename):
+    def load_checkpoint(self, filename, **kwargs):
         if osp.isfile(filename):
             model = self._model
             if isinstance(model, nn.DataParallel):
@@ -98,7 +98,7 @@ class TrainerEnv(NNEnv):
 
             try:
                 checkpoint = torch.load(filename)
-                load_state_dict(model, checkpoint['model'])
+                load_state_dict(model, checkpoint['model'], **kwargs)
                 self._optimizer.load_state_dict(checkpoint['optimizer'])
                 logger.critical('Checkpoint loaded: {}.'.format(filename))
                 return checkpoint['extra']
