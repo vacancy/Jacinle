@@ -11,6 +11,7 @@
 import functools
 import operator
 import six
+import time
 import collections
 import threading
 import contextlib
@@ -27,6 +28,7 @@ __all__ = [
     'assert_instance', 'assert_none', 'assert_notnone',
     'notnone_property',
     'synchronized',
+    'timeout', 'Clock',
     'make_dummy_func',
     'repr_from_str'
 ]
@@ -244,6 +246,43 @@ def synchronized(mutex=None):
         return wrapped_func
 
     return wrapper
+
+
+def timeout(timeout):
+    """A helper function to create a while-loop with timeout.
+
+    Args:
+        timeout (float): timeout in seconds.
+
+    Usage:
+        >>> import time
+        >>> from jacinle.utils.meta import timeout
+        >>> for _ in timeout(5.1):
+        ...     print('hello')
+        ...     time.sleep(1)
+    """
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        yield
+
+
+class Clock(object):
+    def __init__(self, timeout=None):
+        self.last_time = time.time()
+        self.timeout = timeout
+
+    def tick(self, timeout=None):
+        if timeout is None:
+            timeout = self.timeout
+            if timeout is None:
+                raise ValueError('timeout is None')
+        t = time.time()
+        if t - self.last_time >= timeout:
+            self.last_time = t
+            return False
+        time.sleep(timeout - (t - self.last_time))
+        self.last_time = time.time()
+        return True
 
 
 def make_dummy_func(message=None):

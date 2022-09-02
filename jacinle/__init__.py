@@ -47,7 +47,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
             merge_iterable,
             dict_deep_update, dict_deep_kv, dict_deep_keys,
             assert_instance, assert_none, assert_notnone,
-            notnone_property, synchronized, make_dummy_func,
+            notnone_property, synchronized, timeout, Clock, make_dummy_func,
             repr_from_str
     )
     from jacinle.utils.meter import GroupMeters
