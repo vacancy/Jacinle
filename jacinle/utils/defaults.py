@@ -24,6 +24,48 @@ __all__ = [
 
 
 class DefaultsManager(object):
+    """Defaults manager can be used to create program or thread-level registries.
+    One of the typical use case is that you can create an instance of a specific class, and then set it as the default,
+    and then get this instance from elsewhere.
+
+    For example:
+
+    >>> class Storage(object):
+    ...     def __init__(self, value):
+    ...         self.value = value
+
+    >>> storage = Storage(1)
+    >>> set_defualt_storage(storage)
+    >>> get_default_storage()  # now you can call this elsewhere.
+
+    Another important feature supported by this default manager is that it allows you to have "nested" default registries.
+
+    For example:
+    >>> get_default_storage().value  # -> 1
+    >>> with Stoage(2).as_default():
+    ...     get_default_storage().value  # -> 2
+    ...     with Storage(3).as_default():
+    ...         get_default_storage().value  # -> 3
+    ...     get_default_storage().value  # -> 2
+
+    Similar features have been used commonly in TensorFlow, e.g., tf.Session, tf.Graph.
+
+    To create a class with a default registry, use the following:
+
+    ```python
+
+    class Storage(object):
+        def __init__(self, value):
+            self.value = value
+
+        @defaults_manager.wrap_custom_as_default(is_local=True)
+        def as_default(self):  # this is a contextmanager
+            yield
+
+    get_default_storage = defaults_manager.gen_get_default(Storage)
+    set_default_storage = defaults_manager.gen_set_default(Storage)
+    ```
+    """
     def __init__(self):
         self._is_local = dict()
 
