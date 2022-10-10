@@ -31,3 +31,6 @@
 [submodule "vendors/pytorch_kmeans/kmeans_pytorch"]
 	path = vendors/pytorch_kmeans/kmeans_pytorch
 	url = https://github.com/subhadarship/kmeans_pytorch
+[submodule "vendors/pytorch_einshape/einshape"]
+	path = vendors/pytorch_einshape/einshape
+	url = https://github.com/vacancy/einshape

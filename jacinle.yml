@@ -17,4 +17,6 @@ vendors:
         root: vendors/PyPatchMatch
     KMeans-PyTorch:
         root: vendors/pytorch_kmeans/kmeans_pytorch
+    Einshape:
+        root: vendors/pytorch_einshape/einshape
 

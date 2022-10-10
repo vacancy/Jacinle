@@ -17,6 +17,7 @@ __all__ = ['DataLayoutType', 'DataLayoutSpec', 'DataLayout', 'skip', 'concat', '
 
 class DataLayoutType(JacEnum):
     SKIP = 'skip'
+    STACK = 'stack'
     CONCAT = 'concat'
     PAD = 'pad'
     PAD2D = 'pad2d'
@@ -31,6 +32,10 @@ class DataLayoutSpec(object):
 
 def skip():
     return DataLayoutSpec('skip')
+
+
+def stack():
+    return DataLayoutSpec('stack')
 
 
 def concat():
@@ -51,6 +56,7 @@ def padimage(fill=0):
 
 _type_to_constructor = {
     'skip': skip,
+    'stack': stack,
     'concat': concat,
     'pad': pad,
     'pad2d': pad2d,

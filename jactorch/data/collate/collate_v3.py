@@ -100,6 +100,8 @@ class VarLengthCollateV3(object):
 
         if layout_spec is not None and layout_spec.type is DataLayoutType.SKIP:
             return batch
+        if layout_spec is DataLayoutType.STACK:
+            layout_spec = None  # stack is just the default behavior.
 
         error_msg = "Batch must contain tensors, numbers, dicts or lists; found {}."
         elem_type = type(batch[0])
@@ -193,7 +195,7 @@ class VarLengthCollateV3(object):
                 storage = values[0].storage()._new_shared(numel)
                 out = values[0].new(storage)
 
-        if mode is None:
+        if mode is None or mode is DataLayoutType.STACK:
             return self._stack_raw(values, out=out, maybe_cuda=maybe_cuda)
 
         if mode is DataLayoutType.CONCAT:
