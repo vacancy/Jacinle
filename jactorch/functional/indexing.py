@@ -239,7 +239,7 @@ def index_nonzero(tensor, mask):
         yield from tensor[torch.not_equal(mask, 0)]
 
 
-def batched_index_select(tensor: torch.Tensor, batched_indices: troch.Tensor) -> torch.Tensor:
+def batched_index_select(tensor: torch.Tensor, batched_indices: torch.Tensor) -> torch.Tensor:
     """Select elements from `tensor` according to `batched_indices`. The first dimension is assumed to be the batch dimension.
     This operation is equivalent to numpy: `tensor[np.arange(len(batched_indices)), batched_indices]`.
 
