@@ -25,7 +25,7 @@ def git_remote_url(remote_identifier=None):
     if remote_identifier is None:
         remote_identifier = git_current_tracking_remote()
     try:
-        string = subprocess.check_output(['git', 'remote', 'get-url', remote_identifier]).decode('utf-8').strip()
+        string = subprocess.check_output(['git', 'remote', 'get-url', str(remote_identifier)]).decode('utf-8').strip()
         return string
     except subprocess.CalledProcessError:
         return None
@@ -33,7 +33,7 @@ def git_remote_url(remote_identifier=None):
 
 def git_recent_logs(revision_hash, n=5):
     try:
-        string = subprocess.check_output(['git', '--no-pager', 'log', revision_hash, '-n', str(n)]).decode('utf-8').strip()
+        string = subprocess.check_output(['git', '--no-pager', 'log', str(revision_hash), '-n', str(n)]).decode('utf-8').strip()
         return string
     except subprocess.CalledProcessError:
         return None
@@ -49,21 +49,31 @@ def git_revision_hash(short=False):
 
 
 def git_uncommitted_files():
-    files = subprocess.check_output(['git', 'status', '--porcelain']).decode('utf-8').strip().split('\n')
-    files = [f.strip() for f in files if len(f.strip()) > 0]
-    return files
+    try:
+        files = subprocess.check_output(['git', 'status', '--porcelain']).decode('utf-8').strip().split('\n')
+        files = [f.strip() for f in files if len(f.strip()) > 0]
+        return files
+    except subprocess.CalledProcessError:
+        return []
 
 
 def git_root():
-    return subprocess.check_output(['git', 'rev-parse', '--show-cdup']).decode('utf-8').strip()
+    try:
+        return subprocess.check_output(['git', 'rev-parse', '--show-cdup']).decode('utf-8').strip()
+    except subprocess.CalledProcessError:
+        return None
 
 
 LARGE_FILE_THRESH = 128 * 1024  # 128 kb
 
+
 def git_status_full():
-    fmt = subprocess.check_output(['git', 'status', '-vv']).decode('utf-8').strip() + '\n'
-    fmt += '--------------------------------------------------\n'
-    fmt += 'Changes not tracked:\n'
+    try:
+        fmt = subprocess.check_output(['git', 'status', '-vv']).decode('utf-8').strip() + '\n'
+        fmt += '--------------------------------------------------\n'
+        fmt += 'Changes not tracked:\n'
+    except subprocess.CalledProcessError:
+        return 'git status failed.'
 
     for filename in git_uncommitted_files():
         if filename.startswith('?? '):
