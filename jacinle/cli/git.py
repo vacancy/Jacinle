@@ -27,7 +27,8 @@ def git_remote_url(remote_identifier=None):
     try:
         string = subprocess.check_output(['git', 'remote', 'get-url', str(remote_identifier)]).decode('utf-8').strip()
         return string
-    except subprocess.CalledProcessError:
+    except (subprocess.CalledProcessError, TypeError):
+        # when the returned value is None there will be a type error.
         return None
 
 
