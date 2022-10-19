@@ -18,7 +18,7 @@ def batchify(inputs):
     first = inputs[0]
     if isinstance(first, (tuple, list, collections.UserList)):
         return [batchify([ele[i] for ele in inputs]) for i in range(len(first))]
-    elif isinstance(first, (collections.Mapping, collections.UserDict)):
+    elif isinstance(first, (collections.abc.Mapping, collections.UserDict)):
         return {k: batchify([ele[k] for ele in inputs]) for k in first}
     return np.stack(inputs)
 
@@ -27,7 +27,7 @@ def unbatchify(inputs):
     if isinstance(inputs, (tuple, list, collections.UserList)):
         outputs = [unbatchify(e) for e in inputs]
         return list(map(list, zip(*outputs)))
-    elif isinstance(inputs, (collections.Mapping, collections.UserDict)):
+    elif isinstance(inputs, (collections.abc.Mapping, collections.UserDict)):
         outputs = {k: unbatchify(v) for k, v in inputs.items()}
         first = outputs[0]
         return [{k: outputs[k][i] for k in inputs} for i in range(len(first))]

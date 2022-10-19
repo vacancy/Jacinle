@@ -55,11 +55,11 @@ def dict_gather_v1(outputs, target_device, dim=0):
             return Gather.apply(target_device, dim, *outputs)
         elif out is None:
             return None
-        elif isinstance(out, collections.Mapping):
+        elif isinstance(out, collections.abc.Mapping):
             return {k: gather_map([o[k] for o in outputs]) for k in out}
         elif isinstance(out, six.string_types):
             return outputs
-        elif isinstance(out, collections.Sequence):
+        elif isinstance(out, collections.abc.Sequence):
             return type(out)(map(gather_map, zip(*outputs)))
         return outputs
     return gather_map(outputs)

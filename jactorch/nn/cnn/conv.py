@@ -114,7 +114,7 @@ class ConvTransposeNDBase(ConvNDBase):
     def forward(self, input, output_size=None, scale_factor=None):
         if output_size is None:
             if scale_factor is not None:
-                if isinstance(scale_factor, collections.Sequence):
+                if isinstance(scale_factor, collections.abc.Sequence):
                     output_size = input.size()[:2] + tuple([s * f for s, f in zip(input.size()[2:], scale_factor)])
                 else:
                     output_size = input.size()[:2] + tuple([s * scale_factor for s in input.size()[2:]])

@@ -48,7 +48,7 @@ def parse_devices(devs, format=DeviceNameFormat.INT):
     if type(devs) is str:
         devs = devs.split(',')
     else:
-        assert isinstance(devs, collections.Sequence)
+        assert isinstance(devs, collections.abc.Sequence)
         if len(devs) == 0:
             devs = devs[0].split(',')
 

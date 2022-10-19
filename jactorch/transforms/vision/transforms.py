@@ -103,7 +103,7 @@ class TransformBase(object):
         return ret
 
     def __call__(self, feed_dict=None, **kwargs):
-        if feed_dict is not None and not isinstance(feed_dict, collections.Mapping):
+        if feed_dict is not None and not isinstance(feed_dict, collections.abc.Mapping):
             return self.ezcall(feed_dict, **kwargs)
 
         feed_dict = feed_dict or {}
@@ -149,7 +149,7 @@ class TransformFunctionBaseImageOnly(TransformFunctionBase):
 
 class Compose(torch_transforms.Compose):
     def __call__(self, feed_dict=None, **kwargs):
-        if feed_dict is not None and not isinstance(feed_dict, collections.Mapping):
+        if feed_dict is not None and not isinstance(feed_dict, collections.abc.Mapping):
             return self.ezcall(feed_dict, **kwargs)
 
         feed_dict = feed_dict or {}
@@ -162,7 +162,7 @@ class Compose(torch_transforms.Compose):
 
 class RandomApply(torch_transforms.RandomApply):
     def __call__(self, feed_dict=None, **kwargs):
-        if feed_dict is not None and not isinstance(feed_dict, collections.Mapping):
+        if feed_dict is not None and not isinstance(feed_dict, collections.abc.Mapping):
             return self.ezcall(feed_dict, **kwargs)
 
         feed_dict = feed_dict or {}
@@ -175,7 +175,7 @@ class RandomApply(torch_transforms.RandomApply):
 
 class RandomOrder(torch_transforms.RandomOrder):
     def __call__(self, feed_dict=None, **kwargs):
-        if feed_dict is not None and not isinstance(feed_dict, collections.Mapping):
+        if feed_dict is not None and not isinstance(feed_dict, collections.abc.Mapping):
             return self.ezcall(feed_dict, **kwargs)
 
         feed_dict = feed_dict or {}
@@ -188,7 +188,7 @@ class RandomOrder(torch_transforms.RandomOrder):
 
 class RandomChoice(torch_transforms.RandomChoice):
     def __call__(self, feed_dict=None, **kwargs):
-        if feed_dict is not None and not isinstance(feed_dict, collections.Mapping):
+        if feed_dict is not None and not isinstance(feed_dict, collections.abc.Mapping):
             return self.ezcall(feed_dict, **kwargs)
 
         feed_dict = feed_dict or {}
@@ -199,7 +199,7 @@ class RandomChoice(torch_transforms.RandomChoice):
 
 class Lambda(torch_transforms.Lambda):
     def __call__(self, feed_dict=None, **kwargs):
-        if feed_dict is not None and not isinstance(feed_dict, collections.Mapping):
+        if feed_dict is not None and not isinstance(feed_dict, collections.abc.Mapping):
             return self.ezcall(feed_dict, **kwargs)
 
         feed_dict = feed_dict or {}
@@ -342,7 +342,7 @@ class Pad(TransformFunctionBase):
         assert isinstance(padding, (numbers.Number, tuple))
         assert isinstance(fill, (numbers.Number, str, tuple))
         assert mode in ['constant', 'edge', 'reflect', 'symmetric']
-        if isinstance(padding, collections.Sequence) and len(padding) not in [2, 4]:
+        if isinstance(padding, collections.abc.Sequence) and len(padding) not in [2, 4]:
             raise ValueError("Padding must be an int or a 2, or 4 element tuple, not a " +
                              "{} element tuple".format(len(padding)))
 

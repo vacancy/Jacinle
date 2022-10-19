@@ -29,7 +29,7 @@ def get_2dshape(x, default=None, type=int):
     """
     if x is None:
         return default
-    if isinstance(x, collections.Sequence):
+    if isinstance(x, collections.abc.Sequence):
         x = tuple(x)
         if len(x) == 1:
             return x[0], x[0]
@@ -44,7 +44,7 @@ def get_2dshape(x, default=None, type=int):
 def get_3dshape(x, default=None, type=int):
     if x is None:
         return default
-    if isinstance(x, collections.Sequence):
+    if isinstance(x, collections.abc.Sequence):
         x = tuple(x)
         if len(x) == 1:
             return x[0], x[0], x[0]
@@ -59,7 +59,7 @@ def get_3dshape(x, default=None, type=int):
 def get_4dshape(x, default=None, type=int):
     if x is None:
         return default
-    if isinstance(x, collections.Sequence):
+    if isinstance(x, collections.abc.Sequence):
         x = tuple(x)
         if len(x) == 1:
             return 1, x[0], x[0], 1
@@ -83,7 +83,7 @@ def astuple(arr_like):
     """
     if type(arr_like) is tuple:
         return arr_like
-    elif isinstance(arr_like, collections.Sequence) and not isinstance(arr_like, (str, bytes)):
+    elif isinstance(arr_like, collections.abc.Sequence) and not isinstance(arr_like, (str, bytes)):
         return tuple(arr_like)
     else:
         return tuple((arr_like,))
