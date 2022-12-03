@@ -18,6 +18,11 @@ import contextlib
 import threading
 from .registry import LockRegistry
 
+try:
+    import torch
+except ImportError:
+    torch = None
+
 __all__ = [
     'indent_text',
     'stprint', 'stformat', 'kvprint', 'kvformat',
@@ -49,8 +54,8 @@ def format_printable_data(data, float_format=_DEFAULT_FLOAT_FORMAT, indent=1, in
         if data.size < 100:
             fmt += '{' + indent_text(str(data), level=indent, indent_format=indent_format).strip() + '}'
         return fmt
-    # Handle torch.tensor
-    if 'Tensor' in str(t):
+
+    if torch is not None and torch.is_tensor(data):
         fmt = 'torch.Tensor(shape={}, dtype={})'.format(tuple(data.shape), data.dtype)
         if data.numel() < 100:
             fmt += '{' + indent_text(str(data), level=indent, indent_format=indent_format).strip() + '}'
