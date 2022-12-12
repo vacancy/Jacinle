@@ -230,7 +230,7 @@ class NeuralLogicMachine(nn.Module):
 
         if depth is None:
             depth = self.depth
-            assert depth <= self.depth
+        assert depth <= self.depth
 
         def merge(x, y):
             if x is None:

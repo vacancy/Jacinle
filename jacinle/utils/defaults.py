@@ -154,15 +154,18 @@ def option_context(name, is_local=True, **kwargs):
 
         @classmethod
         def get_option(cls, name):
+            """Get the option value of the current context."""
             getattr(cls.get_default(), name)
 
         @classmethod
         def set_default_option(cls, name, value):
+            """Set the option value for the current context."""
             cls._create_default_context()
             setattr(cls.default_context.ctx, name, value)
 
         @classmethod
         def get_default(cls):
+            """Get the current option context."""
             cls._create_current_context()
             if cls.current_context.ctx is not None:
                 return cls.current_context.ctx
@@ -172,6 +175,7 @@ def option_context(name, is_local=True, **kwargs):
 
         @contextlib.contextmanager
         def as_default(self):
+            """Make this option context the current context. It will overwrite the current option values."""
             self.__class__._create_current_context()
             backup = self.__class__.current_context.ctx
             self.__class__.current_context.ctx = self
