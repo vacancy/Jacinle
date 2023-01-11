@@ -132,7 +132,7 @@ class VarLengthCollateV3(object):
         elif isinstance(batch[0], string_types):
             return batch
 
-        elif isinstance(batch[0], collections.Mapping):
+        elif isinstance(batch[0], collections.abc.Mapping):
             result = dict()
             for key in batch[0]:
                 values = [d[key] for d in batch]
@@ -143,7 +143,7 @@ class VarLengthCollateV3(object):
                 else:
                     result[key] = values
             return result
-        elif isinstance(batch[0], collections.Sequence):
+        elif isinstance(batch[0], collections.abc.Sequence):
             transposed = zip(*batch)
             # Add .{index} only if it's inside a dict already.
             return [

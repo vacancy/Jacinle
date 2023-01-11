@@ -67,7 +67,7 @@ class VarLengthCollateV1(object):
             return torch.DoubleTensor(batch)
         elif isinstance(batch[0], string_types):
             return batch
-        elif isinstance(batch[0], collections.Mapping):
+        elif isinstance(batch[0], collections.abc.Mapping):
             result = {}
             for key in batch[0]:
                 values = [d[key] for d in batch]
@@ -78,7 +78,7 @@ class VarLengthCollateV1(object):
                 else:
                     result[key] = self(values)
             return result
-        elif isinstance(batch[0], collections.Sequence):
+        elif isinstance(batch[0], collections.abc.Sequence):
             transposed = zip(*batch)
             return [self(samples) for samples in transposed]
 
