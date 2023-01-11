@@ -16,6 +16,8 @@ import collections
 import threading
 import contextlib
 
+from typing import Optional
+
 __all__ = [
     'gofor',
     'run_once', 'try_run',
@@ -248,11 +250,12 @@ def synchronized(mutex=None):
     return wrapper
 
 
-def timeout(timeout):
+def timeout(timeout, fps: Optional[float] = None):
     """A helper function to create a while-loop with timeout.
 
     Args:
         timeout (float): timeout in seconds.
+        fps (float): an optional fps to control the maximum number of iterations.
 
     Usage:
         >>> import time
@@ -262,7 +265,13 @@ def timeout(timeout):
         ...     time.sleep(1)
     """
     t0 = time.time()
+    if fps is not None:
+        max_iterations = int(timeout * fps)
+    iterations = 0
     while time.time() - t0 < timeout:
+        iterations += 1
+        if fps is not None and iterations > max_iterations:
+            break
         yield
 
 

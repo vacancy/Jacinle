@@ -233,7 +233,11 @@ def print2format(print_func):
 
 @contextlib.contextmanager
 def suppress_stdout():
-    fd = sys.stdout.fileno()
+    try:
+        fd = sys.stdout.fileno()
+    except io.UnsupportedOperation:
+        yield
+        return
 
     def _redirect_stdout(to):
         sys.stdout.close()  # + implicit flush()

@@ -35,6 +35,17 @@ def load_system_settings(root, config, bash_file):
             logger.info('Setting project root to {}.'.format(root))
             print('export PYTHONPATH={}:$PYTHONPATH'.format(root), file=bash_file)
             print('export JAC_PROJ_ROOT={}'.format(root), file=bash_file)
+    if 'path' in config and config['path'] is not None:
+        python_paths = config['path'].get('python', {})
+        if python_paths is not None:
+            for p in python_paths:
+                logger.info('Adding path {} to PYTHONPATH'.format(p))
+                print('export PYTHONPATH={}:$PYTHONPATH'.format(p), file=bash_file)
+        bin_paths = config['path'].get('bin', {})
+        if bin_paths is not None:
+            for p in bin_paths:
+                logger.info('Adding path {} to PATH'.format(p))
+                print('export PATH={}:$PATH'.format(p), file=bash_file)
 
 
 def load_vendors(root, config, bash_file):
