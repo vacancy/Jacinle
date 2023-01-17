@@ -140,5 +140,5 @@ class OrderedSet(object):
         return value in self._dict
 
     def __iter__(self):
-        return self._dict.keys()
+        yield from self._dict.keys()
 

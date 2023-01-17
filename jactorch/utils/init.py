@@ -10,12 +10,15 @@
 
 
 def register_rng():
-    from jacinle.random.rng import global_rng_registry
+    from jacinle.random.rng import global_rng_registry, global_rng_state_registry
 
     try:
         import torch
         # This will also automatically initialize cuda seeds.
         global_rng_registry.register('torch', lambda: torch.manual_seed)
+        # TODO(Jiayuan Mao @ 2023/01/17): get and set cuda random seeds (when available).
+        global_rng_state_registry.register('torch', lambda: (torch.get_rng_state, torch.set_rng_state))
+
     except ImportError:
         pass
 

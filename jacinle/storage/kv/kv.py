@@ -44,7 +44,7 @@ class KVStoreBase(object):
         return self.get(key)
 
     def __setitem__(self, key, value):
-        return self.set(key, value)
+        return self.put(key, value)
 
     def __delitem__(self, key):
         return self.erase(key)
@@ -52,8 +52,8 @@ class KVStoreBase(object):
     def transaction(self, *args, **kwargs):
         return self._transaction(*args, **kwargs)
 
-    def keys(self):
-        return self._keys()
+    def keys(self, **kwargs):
+        return self._keys(**kwargs)
 
     def _has(self, key):
         raise NotImplementedError('KVStore {} does not support has.'.format(self.__class__.__name__))
@@ -67,9 +67,10 @@ class KVStoreBase(object):
     def _erase(self, key):
         raise NotImplementedError('KVStore {} does not support erase.'.format(self.__class__.__name__))
 
+    def _keys(self, **kwargs):
+        raise NotImplementedError('KVStore {} does not support keys access.'.format(self.__class__.__name__))
+
     def _transaction(self, *args, **kwargs):
         return EmptyContext()
 
-    def _keys(self):
-        raise NotImplementedError('KVStore {} does not support keys access.'.format(self.__class__.__name__))
 
