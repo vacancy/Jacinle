@@ -94,6 +94,7 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+autodoc_mock_imports = ['pyrealsense2', 'tensorflow', 'patch_match', 'pygco', 'pygco_inpaint', 'ppaquette_gym_super_mario', 'mujoco_py']
 
 # -- Options for HTML output ----------------------------------------------
 
