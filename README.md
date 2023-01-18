@@ -35,21 +35,21 @@ Optionally, you may need to install third-party packages specified in `requireme
     a configuration file named `jacinle.yml` in the current working directory and its parent directories. This file
     specifies additional environmental variables to add, for example.
 
-    ```
-project_root: true  # tell the script that the folder containing this file is the root of a project. The directory will be added to PYTHONPATH.
-system:
-    envs:
-        CUDA_HOME: /usr/local/cuda-10.0  # set needed environment variables here.
-path:
-    bin:  # will be prepended to $PATH
-        /usr/local/bin
-    python:  # will be prepended to $PYTHONPATH
-        /Users/jiayuanm/opt/my_python_lib
-vendors:  # load additional Python packages (root paths will be added to PYTHONPATH)
-    pybullet_tools:
-        root: /Users/jiayuanm/opt/pybullet/utils
-    alfred:
-        root: /Users/jiayuanm/opt/alfred
+    ```yaml
+    project_root: true  # tell the script that the folder containing this file is the root of a project. The directory will be added to PYTHONPATH.
+    system:
+        envs:
+            CUDA_HOME: /usr/local/cuda-10.0  # set needed environment variables here.
+    path:
+        bin:  # will be prepended to $PATH
+            /usr/local/bin
+        python:  # will be prepended to $PYTHONPATH
+            /Users/jiayuanm/opt/my_python_lib
+    vendors:  # load additional Python packages (root paths will be added to PYTHONPATH)
+        pybullet_tools:
+            root: /Users/jiayuanm/opt/pybullet/utils
+        alfred:
+            root: /Users/jiayuanm/opt/alfred
     ```
 
 2. `jac-crun <gpu_ids> xxx.py`
