@@ -16,9 +16,10 @@ __all__ = ['NNEnv']
 
 
 class NNEnv(object):
-    """A basic environment (a.k.a. wrapper) that wraps around a nn.Module.
+    """A basic environment that wraps around a nn.Module.
     This Env supports basic utility functions such as loading a checkpoint.
     """
+
     def __init__(self, model: nn.Module):
         self._model = model
 

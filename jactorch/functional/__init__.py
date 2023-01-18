@@ -9,15 +9,16 @@
 # Distributed under terms of the MIT license.
 
 from .arith import *
-from .cluster import *
+from .clustering import *
 from .grad import *
 from .indexing import *
 from .kernel import *
 from .linalg import *
 from .loglinear import *
-from .mask import *
-from .meshgrid import *
+from .masking import *
 from .probability import *
 from .quantization import *
-from .sample import *
+from .range import *
+from .sampling import *
 from .shape import *
+

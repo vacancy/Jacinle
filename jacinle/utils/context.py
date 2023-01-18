@@ -31,9 +31,9 @@ class KeyboardInterruptContext(object):
 class SaverContext(object):
     """
     Save some information before entering the context. Restore the information after.
-    Inspired by:
-        https://github.com/caelan/pybullet-planning/blob/master/pybullet_tools/utils.py
+    Inspired by: https://github.com/caelan/pybullet-planning/blob/master/pybullet_tools/utils.py
     """
+
     def __enter__(self):
         self.save()
         return self
@@ -46,3 +46,4 @@ class SaverContext(object):
 
     def restore(self):
         raise NotImplementedError()
+

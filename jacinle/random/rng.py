@@ -108,7 +108,7 @@ def seed(seed):
 
 
 @contextlib.contextmanager
-def with_seed(seed: Optional[int] = None):
+def with_seed(seed: Optional[int] = None, verbose: bool = False):
     """A context manager that sets the global seed to the given value, and restores it after the context.
     Note that when the given seed is None, this function will not do anything.
 
@@ -136,9 +136,10 @@ def with_seed(seed: Optional[int] = None):
             setter_functions[k] = state_setter
             seed_func(seed)
 
-            from jacinle.logging import get_logger
-            logger = get_logger(__file__)
-            logger.critical('Reset random seed for: {} (pid={}, seed={}).'.format(k, os.getpid(), seed))
+            if verbose:
+                from jacinle.logging import get_logger
+                logger = get_logger(__file__)
+                logger.critical('Reset random seed for: {} (pid={}, seed={}).'.format(k, os.getpid(), seed))
 
     yield
 

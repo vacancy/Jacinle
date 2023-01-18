@@ -16,7 +16,7 @@ except ImportError:
     from io import BytesIO  # Python 3.x
 
 import tensorflow
-if tensorflow.__version__ >= '1.14.0':
+if str(tensorflow.__version__) >= '1.14.0':
     import tensorflow.compat.v1 as tf
 
     if hasattr(tf, 'disable_eager_execution'):

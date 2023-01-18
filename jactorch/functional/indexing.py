@@ -216,6 +216,7 @@ def index_nonzero(tensor, mask):
     this function is equivalent to:
 
     .. code-block:: python
+
         for i in range(mask.size(0)):
             if mask[i]:
                 yield tensor[i]
