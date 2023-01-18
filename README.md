@@ -5,7 +5,7 @@ It contains a range of utility functions for python development,
 including project configuration, file IO, image processing, inter-process communication, etc.
 
 [[Website]](http://jacinle.jiayuanm.com/)
-[[Examples]] (https://github.com/vacancy/Jacinle/tree/master/examples)
+[[Examples]](https://github.com/vacancy/Jacinle/tree/master/examples)
 [[Jacinle References]](http://jacinle.jiayuanm.com/reference/jacinle.html)
 [[JacLearn References]](http://jacinle.jiayuanm.com/reference/jaclearn.html)
 [[JacTorch References]](http://jacinle.jiayuanm.com/reference/jactorch.html)
