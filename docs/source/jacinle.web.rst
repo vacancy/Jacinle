@@ -1,7 +1,7 @@
-jacweb package
-==============
+jacinle.web package
+===================
 
-.. automodule:: jacweb
+.. automodule:: jacinle.web
    :members:
    :undoc-members:
    :show-inheritance:
@@ -12,5 +12,5 @@ Subpackages
 .. toctree::
    :maxdepth: 2
 
-   jacweb.session
-   jacweb.web
+   jacinle.web.app
+   jacinle.web.session

@@ -1,7 +1,7 @@
-jactorch.nn.mask package
-========================
+jacinle.web.app package
+=======================
 
-.. automodule:: jactorch.nn.mask
+.. automodule:: jacinle.web.app
    :members:
    :undoc-members:
    :show-inheritance:
@@ -9,10 +9,10 @@ jactorch.nn.mask package
 Submodules
 ----------
 
-jactorch.nn.mask.functional module
+jacinle.web.app.application module
 ----------------------------------
 
-.. automodule:: jactorch.nn.mask.functional
+.. automodule:: jacinle.web.app.application
    :members:
    :undoc-members:
    :show-inheritance:

@@ -9,6 +9,22 @@ jactorch.graph package
 Submodules
 ----------
 
+jactorch.graph.context module
+-----------------------------
+
+.. automodule:: jactorch.graph.context
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+jactorch.graph.nn\_env module
+-----------------------------
+
+.. automodule:: jactorch.graph.nn_env
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 jactorch.graph.parameter module
 -------------------------------
 

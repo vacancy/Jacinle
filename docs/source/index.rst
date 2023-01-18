@@ -7,7 +7,7 @@
 Jacinle
 ============
 
-Jacinle is a personal python toolbox developed by Jiayuan Mao (github: @vacancy). It contains a range of utility functions for python development, including project configuration, file IO, image processing, inter-process communication, etc.
+Jacinle is a personal python toolbox. It contains a range of utility functions for python development, including project configuration, file IO, image processing, inter-process communication, etc.
 
 Note
 ===============
@@ -21,10 +21,8 @@ Package Reference
 
    jacinle
    jaclearn
-   jacnp
    jactf
    jactorch
-   jacweb
 
 
 Indices and tables

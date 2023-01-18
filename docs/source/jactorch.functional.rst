@@ -17,6 +17,14 @@ jactorch.functional.arith module
    :undoc-members:
    :show-inheritance:
 
+jactorch.functional.clustering module
+-------------------------------------
+
+.. automodule:: jactorch.functional.clustering
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 jactorch.functional.grad module
 -------------------------------
 
@@ -57,18 +65,10 @@ jactorch.functional.loglinear module
    :undoc-members:
    :show-inheritance:
 
-jactorch.functional.mask module
--------------------------------
+jactorch.functional.masking module
+----------------------------------
 
-.. automodule:: jactorch.functional.mask
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-jactorch.functional.meshgrid module
------------------------------------
-
-.. automodule:: jactorch.functional.meshgrid
+.. automodule:: jactorch.functional.masking
    :members:
    :undoc-members:
    :show-inheritance:
@@ -89,10 +89,18 @@ jactorch.functional.quantization module
    :undoc-members:
    :show-inheritance:
 
-jactorch.functional.sample module
----------------------------------
+jactorch.functional.range module
+--------------------------------
 
-.. automodule:: jactorch.functional.sample
+.. automodule:: jactorch.functional.range
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+jactorch.functional.sampling module
+-----------------------------------
+
+.. automodule:: jactorch.functional.sampling
    :members:
    :undoc-members:
    :show-inheritance:

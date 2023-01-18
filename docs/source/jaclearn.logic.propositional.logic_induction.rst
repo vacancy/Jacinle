@@ -17,14 +17,6 @@ jaclearn.logic.propositional.logic\_induction.logic\_induction module
    :undoc-members:
    :show-inheritance:
 
-jaclearn.logic.propositional.logic\_induction.logic\_induction module
----------------------------------------------------------------------
-
-.. automodule:: jaclearn.logic.propositional.logic_induction.logic_induction
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 jaclearn.logic.propositional.logic\_induction.setup module
 ----------------------------------------------------------
 

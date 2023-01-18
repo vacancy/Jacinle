@@ -7,7 +7,6 @@ Jacinle
    
    jacinle
    jaclearn
-   jacnp
    jactf
    jactorch
-   jacweb
+   setup
