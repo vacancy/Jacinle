@@ -10,13 +10,15 @@
 
 """A simple global dict-like objects.
 
-Example::
+Example:
 
-    from jacinle.config.g import g
+    .. code-block:: python
 
-    g.configfile = 'config.yaml'
-    g.project_name = 'Jacinle'
-    g.project_version = 1
+        from jacinle.config.g import g
+
+        g.configfile = 'config.yaml'
+        g.project_name = 'Jacinle'
+        g.project_version = 1
 
 .. rubric:: Variables
 

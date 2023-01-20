@@ -36,6 +36,7 @@ class G(dict):
 
 
 g = G()
+"""A simple global dict-like object."""
 
 
 class GView(object):
