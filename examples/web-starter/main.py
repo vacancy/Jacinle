@@ -34,10 +34,9 @@ def main():
         "cookie_prefix": 'jac_',
 
         # 'session_engine': 'off',
-        'session_engine': 'memcached',
-        "session_cookie_prefix": 'jac_sess_',
-        "session_memcached_prefix": 'jac_sess_',
-        "session_timeout": 60*30,
+        'session_engine': 'in-memory',
+        # 'session_engine': 'memcached',
+        "session_timeout": 60 * 30,
 
         "memcached_host": "127.0.0.1",
         "memcached_port": "11211",

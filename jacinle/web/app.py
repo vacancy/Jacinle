@@ -139,17 +139,26 @@ class JacApplication(Application):
             self.session_enabled = False
             self.session_manager = None
         elif self.settings['session_engine'] == 'memcached':
-            from jacinle.web.session.memcached import MemcachedSessionManager
+            from jacinle.web.session.kv_session import MemcachedSessionManager
             self.session_enabled = True
             self.session_manager = MemcachedSessionManager(
                 secret=self.settings['session_secret'],
                 memcache_host=self.settings['memcached_host'],
                 memcache_port=self.settings['memcached_port'],
                 timeout=self.settings['session_timeout'],
-                cookie_prefix=self.settings['session_cookie_prefix'],
-                memcached_prefix=self.settings['session_memcached_prefix']
+                cookie_prefix=self.settings.get('session_cookie_prefix', 'jac_session_'),
+                kv_prefix=self.settings.get('session_kv_prefix', 'jac_session_')
             )
             logger.critical('Initializing the session manager using memcached: {}.'.format(self.session_manager.memcache.full_addr))
+        elif self.settings['session_engine'] == 'in-memory':
+            from jacinle.web.session.kv_session import InMemorySessionManager
+            self.session_enabled = True
+            self.session_manager = InMemorySessionManager(
+                secret=self.settings['session_secret'],
+                timeout=self.settings['session_timeout'],
+                cookie_prefix=self.settings.get('session_cookie_prefix', 'jac_session_'),
+                kv_prefix=self.settings.get('session_kv_prefix', 'jac_session_')
+            )
         else:
             raise ValueError('Unknown session engine: {}.'.format(self.settings['session_engine']))
 

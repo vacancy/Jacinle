@@ -9,8 +9,8 @@
 # Distributed under terms of the MIT license.
 
 import contextlib
-
 from copy import deepcopy
+from typing import Any
 
 from jacinle.utils.meta import dict_deep_keys, dict_deep_update
 
@@ -19,6 +19,8 @@ __all__ = ['env', 'load_env', 'has_env', 'get_env', 'set_env', 'with_env']
 
 
 class Environ(object):
+    """A global environment object."""
+
     __env_ext__ = '.env.pkl'
 
     def __init__(self, envs=None):
@@ -56,21 +58,26 @@ class Environ(object):
             return dict_deep_keys(self.envs)
         return list(self.envs.keys())
 
-    def has(self, key):
-        """
-        Check whether a key is in current env object.
-        :param key: the key.
-        :return: True if the provided key is in current env object.
+    def has(self, key: str) -> bool:
+        """Check whether a key is in current env object.
+
+        Args:
+            key: the key.
+
+        Returns:
+            True if the key is in current env object, otherwise False.
         """
         return self.get(key, None) is not None
 
     def get(self, key, default=None):
-        """
-        Get a value of a environment provided a key. You can provide a default value, but this value will not affect
-        the env object.
-        :param key: the key, note that dict of dict can (should) be imploded by ``.''.
-        :param default: if the given key is not found in current env object, the default value will be returned.
-        :return: the value if the env contains the given key, otherwise the default value provided.
+        """Get a value of a environment provided a key. You can provide a default value, but this value will not affect the env object.
+
+        Args:
+            key: the key. Dict of dict can (should) be imploded by ``.``.
+            default: the default value.
+
+        Returns:
+            The value if the env contains the given key, otherwise the default value provided.
         """
         subkeys = key.split('.')
         current = self.envs
@@ -86,15 +93,18 @@ class Environ(object):
             current[subkeys[-1]] = default
             return default
 
-    def set(self, key, value=None, do_inc=False, do_replace=True, inc_default=0):
-        """
-        Set an environment value by key-value pair.
-        :param key: the key, note that dict of dict can (should) be imploded by ``.''.
-        :param value: the value.
-        :param do_inc: if True, will perform += instead of =
-        :param do_replace: if True, will set the value regardless of its original value
-        :param inc_default: the default value for the do_inc operation
-        :return: self
+    def set(self, key: str, value: Any = None, do_inc: bool = False, do_replace: bool = True, inc_default: Any = 0):
+        """Set an environment value by key-value pair.
+
+        Args:
+            key: the key, note that dict of dict can (should) be imploded by ``.''.
+            value: the value.
+            do_inc: whether to increase the value.
+            do_replace: whether to replace the value if the key already exists.
+            inc_default: the default value of the accumulator.
+
+        Returns:
+            self
         """
         subkeys = key.split('.')
         current = self.envs
@@ -110,22 +120,32 @@ class Environ(object):
             current[subkeys[-1]] = value
         return self
 
-    def set_default(self, key, default=None):
-        """
-        Set an environment value by key-value pair. If the key already exists, it will not be overwritten.
+    def set_default(self, key: str, default: Any = None):
+        """Set an environment value by key-value pair. If the key already exists, it will not be overwritten.
+
+        Args:
+            key: the key, note that dict of dict can (should) be imploded by ``.''.
+            default: the default value.
+
+        Returns:
+            self
+
         :param key: the key, note that dict of dict can (should) be imploded by ``.''.
         :param default: the ``default'' value.
         :return: self
         """
         self.set(key, default, do_replace=False)
 
-    def inc(self, key, inc=1, default=0):
-        """
-        Increase the environment value provided a key.
-        :param key: the key, note that dict of dict can (should) be imploded by ``.''.
-        :param inc: the number to be increased,
-        :param default: the default value of the accumulator.
-        :return:
+    def inc(self, key: str, inc: Any = 1, default: Any = 0):
+        """Increase the environment value provided a key.
+
+        Args:
+            key: the key.
+            inc: the increment.
+            default: the default value.
+
+        Returns:
+            self
         """
         self.set(key, inc, do_inc=True, inc_default=default)
         return self
@@ -171,3 +191,4 @@ def with_env(env_spec, incremental=True):
     yield
 
     env.envs = backup
+

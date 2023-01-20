@@ -221,8 +221,10 @@ try:
 except ImportError:
     from jacinle.logging import get_logger
     logger = get_logger(__file__)
-    logger.exception('Import error is raised during initializing the jactorch package. Please make sure that the torch '
-                     'package is correctly installed')
+    logger.exception(
+        'Import error is raised during initializing the jactorch package. Please make sure that the torch '
+        'package is correctly installed'
+    )
 
 from jactorch.utils.init import init_main
 

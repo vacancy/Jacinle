@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""A customized argument parser."""
+
 import os.path as osp
 import argparse
 import json
@@ -26,6 +28,18 @@ logger = get_logger(__file__)
 
 
 class JacArgumentParser(argparse.ArgumentParser):
+    """A customized argument parser. The main difference is that :class:`JacArgumentParser` supports
+    additional types, including:
+
+    - ``type='bool'``: a boolean value, internally converted to ``True`` (true, t, yes, y, 1) or ``False`` (no, n, false, f, 0).
+    - ``type='checked_file'``: a file path, checked to be an existing file.
+    - ``type='checked_dir'``: a directory path, checked to be an existing directory.
+    - ``type='ensured_dir'``: a directory path, checked to be an existing directory, and created if not.
+    - ``type='kv'``: a key-value pair, separated by ``=`` and ``;``. For example, ``--configs "data.int_or_float=int_value; data.string='string_value'"``.
+    - ``action='set_device'``: set CUDA visible devices.
+    - ``action='as_enum'``: convert the argument to an enum value.
+    """
+
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('fromfile_prefix_chars', '@')
         kwargs.setdefault('formatter_class', argparse.ArgumentDefaultsHelpFormatter)
@@ -134,23 +148,29 @@ def _type_kv(string):
 
 
 class SetDeviceAction(argparse.Action):
-    def __init__(self, option_strings, dest, format='int', set_device=True, nargs=None, const=None, default=None,
-                 type=None, choices=None, required=False, help=None, metavar=None):
+    def __init__(
+        self, option_strings, dest, format='int', set_device=True, nargs=None, const=None, default=None,
+        type=None, choices=None, required=False, help=None, metavar=None
+    ):
 
         DeviceNameFormat.assert_valid(format)
         self.format = format
         self.set_device = set_device
 
-        super().__init__(option_strings=option_strings, dest=dest, nargs=nargs, const=const, default=default,
-                         type=type, choices=choices, required=required, help=help, metavar=metavar)
+        super().__init__(
+            option_strings=option_strings, dest=dest, nargs=nargs, const=const, default=default,
+            type=type, choices=choices, required=required, help=help, metavar=metavar
+        )
 
     def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, parse_and_set_devices(values, self.format, self.set_device))
 
 
 class AsEnumAction(argparse.Action):
-    def __init__(self, option_strings, dest, type, nargs=None, const=None, default=None, choices=None,
-                 required=False, help=None, metavar=None):
+    def __init__(
+        self, option_strings, dest, type, nargs=None, const=None, default=None, choices=None,
+        required=False, help=None, metavar=None
+    ):
 
         assert issubclass(type, JacEnum)
 
@@ -160,8 +180,10 @@ class AsEnumAction(argparse.Action):
         if default is not None:
             default = self.enum_type.from_string(default)
 
-        super().__init__(option_strings=option_strings, dest=dest, nargs=nargs, const=const, default=default,
-                         type=None, choices=choices, required=required, help=help, metavar=metavar)
+        super().__init__(
+            option_strings=option_strings, dest=dest, nargs=nargs, const=const, default=default,
+            type=None, choices=choices, required=required, help=help, metavar=metavar
+        )
 
     def __call__(self, parser, namespace, values, option_string=None):
         if isinstance(values, (tuple, list)):
