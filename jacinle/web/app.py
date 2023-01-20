@@ -139,7 +139,7 @@ class JacApplication(Application):
             self.session_enabled = False
             self.session_manager = None
         elif self.settings['session_engine'] == 'memcached':
-            from jacinle.web.session.kv_session import MemcachedSessionManager
+            from jacinle.web.session import MemcachedSessionManager
             self.session_enabled = True
             self.session_manager = MemcachedSessionManager(
                 secret=self.settings['session_secret'],
@@ -151,7 +151,7 @@ class JacApplication(Application):
             )
             logger.critical('Initializing the session manager using memcached: {}.'.format(self.session_manager.memcache.full_addr))
         elif self.settings['session_engine'] == 'in-memory':
-            from jacinle.web.session.kv_session import InMemorySessionManager
+            from jacinle.web.session import InMemorySessionManager
             self.session_enabled = True
             self.session_manager = InMemorySessionManager(
                 secret=self.settings['session_secret'],
