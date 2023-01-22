@@ -14,7 +14,7 @@ import contextlib
 import functools
 
 from .meta import decorator_with_optional_args
-from .naming import class_name_of_method
+from .inspect import class_name_of_method
 
 __all__ = [
     'defaults_manager', 'wrap_custom_as_default', 'gen_get_default', 'gen_set_default',
@@ -28,26 +28,26 @@ class DefaultsManager(object):
     One of the typical use case is that you can create an instance of a specific class, and then set it as the default,
     and then get this instance from elsewhere.
 
-    For example:
+    For example::
 
-    >>> class Storage(object):
-    ...     def __init__(self, value):
-    ...         self.value = value
+        >>> class Storage(object):
+        ...     def __init__(self, value):
+        ...         self.value = value
 
-    >>> storage = Storage(1)
-    >>> set_defualt_storage(storage)
-    >>> get_default_storage()  # now you can call this elsewhere.
+        >>> storage = Storage(1)
+        >>> set_defualt_storage(storage)
+        >>> get_default_storage()  # now you can call this elsewhere.
 
     Another important feature supported by this default manager is that it allows you to have "nested" default registries.
 
-    For example:
+    For example::
 
-    >>> get_default_storage().value  # -> 1
-    >>> with Stoage(2).as_default():
-    ...     get_default_storage().value  # -> 2
-    ...     with Storage(3).as_default():
-    ...         get_default_storage().value  # -> 3
-    ...     get_default_storage().value  # -> 2
+        >>> get_default_storage().value  # -> 1
+        >>> with Stoage(2).as_default():
+        ...     get_default_storage().value  # -> 2
+        ...     with Storage(3).as_default():
+        ...         get_default_storage().value  # -> 3
+        ...     get_default_storage().value  # -> 2
 
     Similar features have been used commonly in TensorFlow, e.g., tf.Session, tf.Graph.
 
@@ -65,7 +65,6 @@ class DefaultsManager(object):
 
         get_default_storage = defaults_manager.gen_get_default(Storage)
         set_default_storage = defaults_manager.gen_set_default(Storage)
-
     """
 
     def __init__(self):

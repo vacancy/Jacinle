@@ -18,6 +18,7 @@ __all__ = ['deprecated']
 
 
 def deprecated(func):
+    """A helper decorator to mark a function as deprecated. It will result in a warning being emitted when the function is used (each function is only warned once)."""
     @functools.wraps(func)
     def new_func(*args, **kwargs):
         if func not in deprecated.logged:
@@ -25,6 +26,7 @@ def deprecated(func):
             logger.warning(func.__doc__)
         return func(*args, **kwargs)
     return new_func
+
 
 deprecated.logged = set()
 

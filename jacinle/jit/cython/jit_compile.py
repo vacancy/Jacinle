@@ -20,7 +20,7 @@ import importlib
 import subprocess
 
 import jacinle.io as io
-from jacinle.utils.naming import func_name
+from jacinle.utils.inspect import func_name
 
 __all__ = ['CythonCompiledFunction', 'CythonJITCompiler', 'jit_cython']
 
@@ -241,5 +241,25 @@ _compiler = CythonJITCompiler()
 
 
 def jit_cython(f=None, *, name=None, force_update=False, boundscheck=True, wraparound=True):
+    """JIT compile a simple Python function with Cython. Currently, only support functions with built-in Python functions and numpy operations (and arrays).
+    This function uses Python annotations to determine the types of the arguments and return values.
+    Therefore, to maximize performance, you should try to annotate all arguments and variables used.
+    See `examples/cython/jit_example.py` for more details.
+
+    Example:
+        .. code-block:: python
+
+            @jit_cython(boundscheck=False, wraparound=False)
+            def f(x: int):
+                return x + 1
+
+            @jit_cython
+            def sum(x: np.ndarray, n: int):
+                i: int
+                s: float = 0.0
+                for i in range(n):
+                    s += x[i]
+                return s
+    """
     return _compiler.compile(f, name=name, force_update=force_update, boundscheck=boundscheck, wraparound=wraparound)
 

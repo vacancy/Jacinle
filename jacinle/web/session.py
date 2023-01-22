@@ -13,7 +13,7 @@ import uuid
 import hashlib
 import collections
 
-from jacinle.storage.kv.kv import KVStoreBase
+from jacinle.storage.kv.base import KVStoreBase
 from jacinle.storage.kv.mem import MemKVStore
 from jacinle.storage.kv.memcached import MemcachedKVStore
 

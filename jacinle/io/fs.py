@@ -8,13 +8,14 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-
 import os
 import os.path as osp
 import glob
 import shutil
-import six
+import io
 import contextlib
+import tempfile as tempfile_lib
+from typing import Optional, Union, List
 
 import pickle
 import gzip
@@ -36,34 +37,47 @@ __all__ = [
     'load', 'load_txt', 'load_h5', 'load_pkl', 'load_pklgz', 'load_npy', 'load_npz', 'load_mat', 'load_pth',
     'dump', 'dump_pkl', 'dump_pklgz', 'dump_npy', 'dump_npz', 'dump_mat', 'dump_pth',
     'safe_dump',
-    'link', 'mkdir', 'lsdir', 'remove', 'locate_newest_file',
+    'link', 'mkdir', 'lsdir', 'remove', 'locate_newest_file', 'tempfile',
     'io_function_registry'
 ]
 
 sys_open = open
 
 
-def as_file_descriptor(fd_or_fname, mode='r'):
+def as_file_descriptor(fd_or_fname: Union[str, io.IOBase], mode: str = 'r') -> io.IOBase:
+    """Convert a file descriptor or a file name to a file descriptor.
+
+    Args:
+        fd_or_fname: a file descriptor or a file name.
+        mode: the mode to open the file if `fd_or_fname` is a file name.
+
+    Returns:
+        a file descriptor.
+    """
     if type(fd_or_fname) is str:
         return sys_open(fd_or_fname, mode)
     return fd_or_fname
 
 
-def open_h5(file, mode, **kwargs):
+def open_h5(filename: str, mode: str, **kwargs):
+    """Open a HDF5 file."""
     import h5py
-    return h5py.File(file, mode, **kwargs)
+    return h5py.File(filename, mode, **kwargs)
 
 
-def open_txt(file, mode, **kwargs):
-    return sys_open(file, mode, **kwargs)
+def open_txt(filename, mode, **kwargs):
+    """Open a text file."""
+    return sys_open(filename, mode, **kwargs)
 
 
-def open_gz(file, mode):
-    return gzip.open(file, mode)
+def open_gz(filename, mode):
+    """Open a gzip file."""
+    return gzip.open(filename, mode)
 
 
-def load_pkl(file, **kwargs):
-    with as_file_descriptor(file, 'rb') as f:
+def load_pkl(fd_or_filename: Union[str, io.IOBase], **kwargs):
+    """Load a pickle file."""
+    with as_file_descriptor(fd_or_filename, 'rb') as f:
         try:
             return pickle.load(f, **kwargs)
         except UnicodeDecodeError:
@@ -72,62 +86,75 @@ def load_pkl(file, **kwargs):
             return pickle.load(f, encoding='latin1', **kwargs)
 
 
-def load_pklgz(file, **kwargs):
-    with open_gz(file, 'rb') as f:
+def load_pklgz(filename: str, **kwargs):
+    """Load a gziped pickle file."""
+    with open_gz(filename, 'rb') as f:
         return load_pkl(f)
 
 
-def load_h5(file, **kwargs):
-    return open_h5(file, 'r', **kwargs)
+def load_h5(filename: str, **kwargs):
+    """Load a HDF5 file."""
+    return open_h5(filename, 'r', **kwargs)
 
 
-def load_txt(file, **kwargs):
-    with sys_open(file, 'r', **kwargs) as f:
+def load_txt(filename, **kwargs):
+    """Load a text file."""
+    with sys_open(filename, 'r', **kwargs) as f:
         return f.readlines()
 
 
-def load_npy(file, **kwargs):
-    return np.load(file, **kwargs)
+def load_npy(fd_or_filename: Union[str, io.IOBase], **kwargs):
+    """Load a npy numpy file."""
+    return np.load(fd_or_filename, **kwargs)
 
 
-def load_npz(file, **kwargs):
-    return np.load(file, **kwargs)
+def load_npz(fd_or_filename: Union[str, io.IOBase], **kwargs):
+    """Load a npz numpy file."""
+    return np.load(fd_or_filename, **kwargs)
 
 
-def load_mat(file, **kwargs):
-    return sio.loadmat(file, **kwargs)
+def load_mat(filename: str, **kwargs):
+    """Load a matlab file."""
+    return sio.loadmat(filename, **kwargs)
 
 
-def load_pth(file, **kwargs):
+def load_pth(filename, **kwargs):
+    """Load a PyTorch file."""
     import torch
-    return torch.load(file, **kwargs)
+    return torch.load(filename, **kwargs)
 
 
-def dump_pkl(file, obj, **kwargs):
-    with as_file_descriptor(file, 'wb') as f:
+def dump_pkl(fd_or_filename: Union[str, io.IOBase], obj, **kwargs):
+    """Dump a pickle file."""
+    with as_file_descriptor(fd_or_filename, 'wb') as f:
         return pickle.dump(obj, f, **kwargs)
 
 
-def dump_pklgz(file, obj, **kwargs):
-    with open_gz(file, 'wb') as f:
+def dump_pklgz(filename: str, obj, **kwargs):
+    """Dump a gziped pickle file."""
+    with open_gz(filename, 'wb') as f:
         return pickle.dump(obj, f)
 
 
-def dump_npy(file, obj, **kwargs):
-    return np.save(file, obj)
+def dump_npy(filename: str, obj, **kwargs):
+    """Dump a npy numpy file."""
+    return np.save(filename, obj)
 
 
-def dump_npz(file, obj, **kwargs):
-    return np.savez(file, obj)
+def dump_npz(filename: str, obj, **kwargs):
+    """Dump a npz numpy file."""
+    return np.savez(filename, obj)
 
 
-def dump_mat(file, obj, **kwargs):
-    return sio.savemat(file, obj, **kwargs)
+def dump_mat(filename, obj, **kwargs):
+    """Dump a matlab file."""
+    return sio.savemat(filename, obj, **kwargs)
 
 
-def dump_pth(file, obj, **kwargs):
+def dump_pth(filename, obj, **kwargs):
+    """Dump a PyTorch file."""
     import torch
-    return torch.save(obj, file)
+    return torch.save(obj, filename)
 
 
 class _IOFunctionRegistryGroup(RegistryGroup):
@@ -171,6 +198,7 @@ _fs_verbose = False
 
 @contextlib.contextmanager
 def fs_verbose(mode=True):
+    """A context manager to enable/disable verbose mode in file system operations."""
     global _fs_verbose
 
     _fs_verbose, mode = mode, _fs_verbose
@@ -178,37 +206,57 @@ def fs_verbose(mode=True):
     _fs_verbose = mode
 
 
-def set_fs_verbose(mode=True):
+def set_fs_verbose(mode: bool = True):
+    """Enable/disable verbose mode in file system operations."""
     global _fs_verbose
     _fs_verbose = mode
 
 
-def open(file, mode, **kwargs):
-    if _fs_verbose and isinstance(file, six.string_types):
-        logger.info('Opening file: "{}", mode={}.'.format(file, mode))
-    return io_function_registry.dispatch('open', file, mode, **kwargs)
+def open(filename: str, mode: str, **kwargs):
+    """Open a file."""
+    if _fs_verbose and isinstance(filename, str):
+        logger.info('Opening file: "{}", mode={}.'.format(filename, mode))
+    return io_function_registry.dispatch('open', filename, mode, **kwargs)
 
 
-def load(file, **kwargs):
-    if _fs_verbose and isinstance(file, six.string_types):
-        logger.info('Loading data from file: "{}".'.format(file))
-    return io_function_registry.dispatch('load', file, **kwargs)
+def load(filename: str, **kwargs):
+    """Load a file with automatic file type detection."""
+    if _fs_verbose and isinstance(filename, str):
+        logger.info('Loading data from file: "{}".'.format(filename))
+    return io_function_registry.dispatch('load', filename, **kwargs)
 
 
-def dump(file, obj, **kwargs):
-    if _fs_verbose and isinstance(file, six.string_types):
-        logger.info('Dumping data to file: "{}".'.format(file))
-    return io_function_registry.dispatch('dump', file, obj, **kwargs)
+def dump(filename, obj, **kwargs):
+    """Dump a file with automatic file type detection."""
+    if _fs_verbose and isinstance(filename, str):
+        logger.info('Dumping data to file: "{}".'.format(filename))
+    return io_function_registry.dispatch('dump', filename, obj, **kwargs)
 
 
-def safe_dump(fname, data, use_lock=True, use_temp=True, lock_timeout=10):
-    temp_fname = 'temp.' + fname
-    lock_fname = 'lock.' + fname
+def safe_dump(filename: str, data, use_lock=True, use_temp=True, lock_timeout=10) -> bool:
+    """Dump data to a file in a safe way. Basically, it will dump the data to a temporary file and
+    then move it to the target file. This is to avoid the case that the target file is corrupted
+    when the program is interrupted during the dumping process. It also supports file locking to
+    avoid the case that multiple processes are dumping data to the same file at the same time.
+
+    Args:
+        filename: the target file name.
+        data: the data to be dumped.
+        use_lock: whether to use file locking.
+        use_temp: whether to use a temporary file.
+        lock_timeout: the timeout for file locking.
+
+    Returns:
+        If uses temp file, return True if the data is dumped to the temp file successfully, otherwise False.
+        If not use temp file, return the result of the dump operation.
+    """
+    temp_fname = 'temp.' + filename
+    lock_fname = 'lock.' + filename
 
     def safe_dump_inner():
         if use_temp:
             dump(temp_fname, data)
-            os.replace(temp_fname, fname)
+            os.replace(temp_fname, filename)
             return True
         else:
             return dump(temp_fname, data)
@@ -218,13 +266,20 @@ def safe_dump(fname, data, use_lock=True, use_temp=True, lock_timeout=10):
             if flock.is_locked:
                 return safe_dump_inner()
             else:
-                logger.warning('Cannot lock the file: {}.'.format(fname))
+                logger.warning('Cannot lock the file: {}.'.format(filename))
                 return False
     else:
         return safe_dump_inner()
 
 
-def link(path_origin, *paths, use_relative_path=True):
+def link(path_origin: str, *paths: str, use_relative_path=True):
+    """Create a symbolic link to a file or directory.
+
+    Args:
+        path_origin: the original file or directory.
+        paths: the symbolic links to be created.
+        use_relative_path: whether to use relative path.
+    """
     for item in paths:
         if os.path.exists(item):
             os.remove(item)
@@ -236,6 +291,7 @@ def link(path_origin, *paths, use_relative_path=True):
 
 
 def mkdir(path):
+    """Create a directory if it does not exist without raising errors when the directory already exists."""
     return os.makedirs(path, exist_ok=True)
 
 
@@ -247,7 +303,23 @@ class LSDirectoryReturnType(JacEnum):
     REAL = 'real'
 
 
-def lsdir(dirname, pattern=None, return_type='full', sort=True):
+def lsdir(dirname: str, pattern: Optional[str] = None, return_type: Union[str, LSDirectoryReturnType] = 'full', sort: bool = True) -> List[str]:
+    """List all files in a directory.
+
+    Args:
+        dirname: the directory name.
+        pattern: the file name pattern in glob format.
+        return_type: the return type. Can be one of the following:
+            'base': return the base name of the file.
+            'name': return the file name.
+            'rel': return the relative path of the file.
+            'full': return the full path of the file.
+            'real': return the real path of the file.
+        sort: whether to sort the file names.
+
+    Returns:
+        a list of file names.
+    """
     if sort:
         return sorted(lsdir(dirname, pattern, return_type=return_type, sort=False))
 
@@ -276,17 +348,35 @@ def lsdir(dirname, pattern=None, return_type='full', sort=True):
         raise ValueError('Unknown lsdir return type: {}.'.format(return_type))
 
 
-def remove(file):
-    if osp.exists(file):
-        if osp.isdir(file):
-            shutil.rmtree(file, ignore_errors=True)
-        if osp.isfile(file):
-            os.remove(file)
+def remove(file_or_dirname: str):
+    """Remove a file or directory."""
+    if osp.exists(file_or_dirname):
+        if osp.isdir(file_or_dirname):
+            shutil.rmtree(file_or_dirname, ignore_errors=True)
+        if osp.isfile(file_or_dirname):
+            os.remove(file_or_dirname)
 
 
-def locate_newest_file(dirname, pattern):
+def locate_newest_file(dirname: str, pattern: str) -> Optional[str]:
+    """Locate the newest file in a directory. If there is no file matching the pattern, return None.
+
+    Args:
+        dirname: the directory name.
+        pattern: the file name pattern in glob format.
+
+    Returns:
+        the full path of the newest file.
+    """
     fs = lsdir(dirname, pattern, return_type='full')
     if len(fs) == 0:
         return None
     return max(fs, key=osp.getmtime)
+
+
+@contextlib.contextmanager
+def tempfile(mode: str = 'w+b', suffix: str = '', prefix: str = 'tmp'):
+    """A context manager that creates a temporary file and deletes it after use."""
+    f = tempfile_lib.NamedTemporaryFile(mode, suffix=suffix, prefix=prefix, delete=False)
+    yield f
+    os.unlink(f.name)
 

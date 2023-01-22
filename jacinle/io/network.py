@@ -19,11 +19,20 @@ from jacinle.utils.tqdm import tqdm_pbar
 __all__ = ['download', 'check_integrity']
 
 
-def download(url, dirname, cli=True, filename=None, md5=None):
+def download(url: str, dirname: str, cli: bool = True, filename: str = None, md5: str = None):
     """
     Download URL to a directory. Will figure out the filename automatically from URL.
-    Will figure out the filename automatically from URL, if not given."""
-    # From: https://github.com/ppwwyyxx/tensorpack/blob/master/tensorpack/utils/fs.py
+    Will figure out the filename automatically from URL, if not given.
+
+    Args:
+        url: URL to download.
+        dirname: directory to download to.
+        cli: whether to use CLI progress bar.
+        filename: filename to save to.
+        md5: md5 hash to check.
+
+    Source: https://github.com/ppwwyyxx/tensorpack/blob/master/tensorpack/utils/fs.py
+    """
 
     if cli:
         from jacinle.cli.keyboard import maybe_mkdir
@@ -60,14 +69,17 @@ def download(url, dirname, cli=True, filename=None, md5=None):
     return path
 
 
-def check_integrity(fpath, md5):
-    """Check data integrity using md5 hashing"""
-    # From: https://github.com/pytorch/vision/blob/master/torchvision/datasets/opr.py
+def check_integrity(filename: str, md5: str) -> bool:
+    """Check data integrity using md5 hashing.
 
-    if not os.path.isfile(fpath):
+    Args:
+        filename: path to the file.
+        md5: md5 hash to check.
+    """
+    if not os.path.isfile(filename):
         return False
     md5o = hashlib.md5()
-    with open(fpath, 'rb') as f:
+    with open(filename, 'rb') as f:
         # read in 1MB chunks
         for chunk in iter(lambda: f.read(1024 * 1024 * 1024), b''):
             md5o.update(chunk)

@@ -12,7 +12,6 @@
 This file is adapted from the spaCy project: https://github.com/explosion/spaCy/blob/master/spacy/displacy/render.py.
 The spaCy project is under MIT lisence:
 
-
 The MIT License (MIT)
 
 Copyright (C) 2016-2019 ExplosionAI GmbH, 2016 spaCy GmbH, 2015 Matthew Honnibal
@@ -72,10 +71,14 @@ class DependencyVisualizer(object):
 
     def render(self, parsed, page=False, minify=False):
         """Render complete markup.
-        parsed (list): Dependency parses to render.
-        page (bool): Render parses wrapped as full HTML page.
-        minify (bool): Minify HTML markup.
-        RETURNS (unicode): Rendered SVG or HTML markup.
+
+        Args:
+            parsed (list): Dependency parses to render.
+            page (bool): Render parses wrapped as full HTML page.
+            minify (bool): Minify HTML markup.
+
+        Returns:
+            (unicode): Rendered SVG or HTML markup.
         """
         # Create a random ID prefix to make sure parses don't receive the
         # same ID, even if they're identical
@@ -119,10 +122,14 @@ class DependencyVisualizer(object):
 
     def render_svg(self, render_id, words, arcs):
         """Render SVG.
-        render_id (int): Unique ID, typically index of document.
-        words (list): Individual words and their tags.
-        arcs (list): Individual arcs and their start, end, direction and label.
-        RETURNS (unicode): Rendered SVG markup.
+
+        Args:
+            render_id (int): Unique ID, typically index of document.
+            words (list): Individual words and their tags.
+            arcs (list): Individual arcs and their start, end, direction and label.
+
+        Returns:
+            (unicode): Rendered SVG markup.
         """
         self.levels = self.get_levels(arcs)
         self.highest_level = len(self.levels)
@@ -150,10 +157,14 @@ class DependencyVisualizer(object):
 
     def render_word(self, text, tag, i):
         """Render individual word.
-        text (unicode): Word text.
-        tag (unicode): Part-of-speech tag.
-        i (int): Unique ID, typically word index.
-        RETURNS (unicode): Rendered SVG markup.
+
+        Args:
+            text (unicode): Word text.
+            tag (unicode): Part-of-speech tag.
+            i (int): Unique ID, typically word index.
+
+        Returns:
+            (unicode): Rendered SVG markup.
         """
         y = self.offset_y + self.word_spacing
         x = self.offset_x + i * self.distance
@@ -164,12 +175,16 @@ class DependencyVisualizer(object):
 
     def render_arrow(self, label, start, end, direction, i):
         """Render individual arrow.
-        label (unicode): Dependency label.
-        start (int): Index of start word.
-        end (int): Index of end word.
-        direction (unicode): Arrow direction, 'left' or 'right'.
-        i (int): Unique ID, typically arrow index.
-        RETURNS (unicode): Rendered SVG markup.
+
+        Args:
+            label (unicode): Dependency label.
+            start (int): Index of start word.
+            end (int): Index of end word.
+            direction (unicode): Arrow direction, 'left' or 'right'.
+            i (int): Unique ID, typically arrow index.
+
+        Returns:
+            (unicode): Rendered SVG markup.
         """
         if start < 0 or end < 0:
             raise ValueError(f'Invalid arrow: start={start}, end={end}, label={label}.')
@@ -206,11 +221,15 @@ class DependencyVisualizer(object):
 
     def get_arc(self, x_start, y, y_curve, x_end):
         """Render individual arc.
-        x_start (int): X-coordinate of arrow start point.
-        y (int): Y-coordinate of arrow start and end point.
-        y_curve (int): Y-corrdinate of Cubic Bézier y_curve point.
-        x_end (int): X-coordinate of arrow end point.
-        RETURNS (unicode): Definition of the arc path ('d' attribute).
+
+        Args:
+            x_start (int): X-coordinate of arrow start point.
+            y (int): Y-coordinate of arrow start and end point.
+            y_curve (int): Y-corrdinate of Cubic Bézier y_curve point.
+            x_end (int): X-coordinate of arrow end point.
+
+        Returns:
+            (unicode): Definition of the arc path ('d' attribute).
         """
         template = "M{x},{y} C{x},{c} {e},{c} {e},{y}"
         if self.compact:
@@ -219,11 +238,15 @@ class DependencyVisualizer(object):
 
     def get_arrowhead(self, direction, x, y, end):
         """Render individual arrow head.
-        direction (unicode): Arrow direction, 'left' or 'right'.
-        x (int): X-coordinate of arrow start point.
-        y (int): Y-coordinate of arrow start and end point.
-        end (int): X-coordinate of arrow end point.
-        RETURNS (unicode): Definition of the arrow head path ('d' attribute).
+
+        Args:
+            direction (unicode): Arrow direction, 'left' or 'right'.
+            x (int): X-coordinate of arrow start point.
+            y (int): Y-coordinate of arrow start and end point.
+            end (int): X-coordinate of arrow end point.
+
+        Returns:
+            (unicode): Definition of the arrow head path ('d' attribute).
         """
         if direction == "left":
             pos1, pos2, pos3 = (x, x - self.arrow_width + 2, x + self.arrow_width - 2)
@@ -244,10 +267,13 @@ class DependencyVisualizer(object):
         return "M{},{} L{},{} {},{}".format(*arrowhead)
 
     def get_levels(self, arcs):
-        """Calculate available arc height "levels".
-        Used to calculate arrow heights dynamically and without wasting space.
-        args (list): Individual arcs and their start, end, direction and label.
-        RETURNS (list): Arc levels sorted from lowest to highest.
+        """Calculate available arc height "levels". Used to calculate arrow heights dynamically and without wasting space.
+
+        Args:
+            arcs(list): Individual arcs and their start, end, direction and label.
+
+        Returns:
+            (list): Arc levels sorted from lowest to highest.
         """
         levels = set(map(lambda arc: arc["end"] - arc["start"], arcs))
         return sorted(list(levels))

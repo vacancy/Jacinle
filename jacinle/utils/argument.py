@@ -9,6 +9,7 @@
 # Distributed under terms of the MIT license.
 
 import collections
+from typing import Any, Optional, Union, Sequence, Tuple, Callable
 
 __all__ = [
     'get_2dshape', 'get_3dshape', 'get_4dshape',
@@ -18,14 +19,16 @@ __all__ = [
 ]
 
 
-def get_2dshape(x, default=None, type=int):
+def get_2dshape(x: Optional[Union[int, Sequence[int]]], default: Tuple[int, int] = None, type: type = int) -> Tuple[int, int]:
     """Convert a value or a tuple to a tuple of length 2.
+
     Args:
-        x: a value of type `type`, or a tuple of length 2.
+        x: a value of type `type`, or a tuple of length 2. If the input is a single value, it will be duplicated to a tuple of length 2.
         default: default value.
         type: expected type of the element.
 
-    Returns: a tuple of length 2.
+    Returns:
+        a tuple of length 2.
     """
     if x is None:
         return default
@@ -41,7 +44,18 @@ def get_2dshape(x, default=None, type=int):
         return x, x
 
 
-def get_3dshape(x, default=None, type=int):
+def get_3dshape(x: Optional[Union[int, Sequence[int]]], default: Tuple[int, int, int] = None, type: type = int) -> Tuple[int, int, int]:
+    """Convert a value or a tuple to a tuple of length 3.
+
+    Args:
+        x: a value of type `type`, or a tuple of length 3. If the input is a single value, it will be duplicated to a tuple of length 3.
+        default: default value.
+        type: expected type of the element.
+
+    Returns:
+        a tuple of length 3.
+    """
+
     if x is None:
         return default
     if isinstance(x, collections.Sequence):
@@ -56,7 +70,18 @@ def get_3dshape(x, default=None, type=int):
         return x, x, x
 
 
-def get_4dshape(x, default=None, type=int):
+def get_4dshape(x: Optional[Union[int, Sequence[int]]], default: Tuple[int, int, int, int] = None, type: type = int) -> Tuple[int, int, int, int]:
+    """Convert a value or a tuple to a tuple of length 4.
+
+    Args:
+        x: a value of type `type`, or a tuple of length 4. If there is only one value, it will return (1, x, x, 1).
+            If there are two values, it will return (1, x[0], x[1], 1).
+        default: default value.
+        type: expected type of the element.
+
+    Returns:
+        a tuple of length 4.
+    """
     if x is None:
         return default
     if isinstance(x, collections.Sequence):
@@ -73,13 +98,15 @@ def get_4dshape(x, default=None, type=int):
         return 1, x, x, 1
 
 
-def astuple(arr_like):
+def astuple(arr_like: Any) -> Tuple:
     """Convert a sequence or a single value to a tuple. This method differ from the system method `tuple` in that
     a single value (incl. int, string, bytes) will be converted to a tuple of length 1.
+
     Args:
         arr_like: a sequence or a single value.
 
-    Returns: a tuple.
+    Returns:
+        a tuple.
     """
     if type(arr_like) is tuple:
         return arr_like
@@ -89,7 +116,15 @@ def astuple(arr_like):
         return tuple((arr_like,))
 
 
-def asshape(arr_like):
+def asshape(arr_like: Optional[Union[int, Sequence[int]]]) -> Optional[Tuple[int, ...]]:
+    """Convert a sequence or a single value to a tuple of integers. It will return None if the input is None.
+
+    Args:
+        arr_like: a sequence or a single value.
+
+    Returns:
+        a tuple of integers.
+    """
     if type(arr_like) is tuple:
         return arr_like
     elif type(arr_like) is int:
@@ -103,21 +138,27 @@ def asshape(arr_like):
         return tuple(arr_like)
 
 
-def canonize_args_list(args, *, allow_empty=False, cvt=None):
-    """Convert the argument list to a tuple of values. This is useful to make unified interface for shape-related
-    operations. E.g.,
+def canonize_args_list(args: Tuple[Any], *, allow_empty: bool = False, cvt: Optional[Callable[[Any], Any]] = None) -> Tuple[Any]:
+    """Convert the argument list to a tuple of values. This is useful to make unified interface for shape-related operations.
 
-    >>> np.zeros(6).reshape(2, 3)
-    >>> np.zeros(6).reshape((2, 3))
+    Example:
+        .. code-block:: python
+
+            def foo(*args):
+                args = canonize_args_list(args, allow_empty=True)
+                print(args)
+
+            foo(1, 2, 3)  # (1, 2, 3)
+            foo((1, 2, 3))  # (1, 2, 3)
+            foo(1)  # (1,)
+            foo()  # ()
 
     Args:
-        args:
-        allow_empty:
-        cvt:
-
-    Returns:
-
+        args: the argument list.
+        allow_empty: whether to allow empty argument list.
+        cvt: a function to be applied to each element.
     """
+
     if not allow_empty and not args:
         raise TypeError('at least one argument must be provided')
 
@@ -129,7 +170,26 @@ def canonize_args_list(args, *, allow_empty=False, cvt=None):
 
 
 class UniqueValueGetter(object):
-    def __init__(self, msg='unique value check failed', default=None):
+    """A helper class to ensure that a value is unique.
+
+    Example:
+        .. code-block:: python
+
+            uvg = UniqueValueGetter()
+            uvg.set(1)
+            uvg.set(2)  # will raise ValueError
+            uvg.set(1)
+
+            print(uvg.get())  # 1
+    """
+
+    def __init__(self, msg: str = 'Unique value checking failed', default: Any = None):
+        """Initialize the UniqueValueGetter.
+
+        Args:
+            msg: the error message.
+            default: the default value.
+        """
         self._msg = msg
         self._val = None
         self._default = default
@@ -140,3 +200,4 @@ class UniqueValueGetter(object):
 
     def get(self):
         return self._val or self._default
+

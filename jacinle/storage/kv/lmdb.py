@@ -11,8 +11,9 @@
 import os
 import lmdb
 import pickle
+from typing import Any, Optional, Iterable
 
-from .kv import KVStoreBase
+from .base import KVStoreBase
 from jacinle.logging import get_logger
 from jacinle.utils.cache import cached_property
 from jacinle.utils.container import OrderedSet
@@ -25,11 +26,40 @@ _dumps = pickle.dumps
 
 
 class LMDBKVStore(KVStoreBase):
+    """A LMDB-based key-value store. This class also supports sub-databases.
+
+    See ``examples/kv-lmdb`` for more usage.
+
+    Basic usage with a single database:
+        .. code-block:: python
+
+            kv = LMDBKVStore('/tmp/test_1.lmdb', readonly=False)
+
+            with kv.transaction():
+                kv['a'] = 1
+                kv['b'] = 2
+
+            assert 'a' in kv and kv['a'] == 1
+            assert 'b' in kv and kv['b'] == 2
+            assert 'c' not in kv
+
+            for k in kv.keys():
+                print(k, kv[k])
+    """
+
     _key_charset = 'utf8'
     _magic_key = b'__keys__'
     _magic_main_databse = b'__main_database__'
 
-    def __init__(self, lmdb_path, readonly=True, max_dbs=0, keys=None):
+    def __init__(self, lmdb_path: str, readonly: bool = True, max_dbs: int = 0, keys: Optional[Iterable[Any]] = None):
+        """Initialize the LMDBKVStore.
+
+        Args:
+            lmdb_path: the path to the LMDB file. By default, this path is a directory.
+            readonly: whether to open the LMDB in readonly mode.
+            max_dbs: the maximum number of sub-databases. 0 means the single-database mode.
+            keys: the keys in the main database. For new databases, use None.
+        """
         super().__init__(readonly=readonly)
         self._max_dbs = max_dbs
         self._open(lmdb_path, readonly=readonly, keys=keys, max_dbs=max_dbs)
@@ -37,7 +67,7 @@ class LMDBKVStore(KVStoreBase):
     def _open(self, lmdb_path, readonly, keys, max_dbs):
         self._lmdb = lmdb.open(
             lmdb_path,
-            subdir=os.path.isdir(lmdb_path),
+            subdir=os.path.isdir(lmdb_path) or not os.path.exists(lmdb_path),
             readonly=readonly,
             lock=False,
             readahead=False,
@@ -57,13 +87,16 @@ class LMDBKVStore(KVStoreBase):
 
     @cached_property
     def txn(self):
+        """The current LMDB transaction."""
         return self._lmdb.begin(write=not self.readonly)
 
     @property
     def lmdb(self):
+        """The LMDB environment."""
         return self._lmdb
 
     def get_subdb(self, name=None):
+        """Get a sub-database by name."""
         if name is None:
             return None
         if name not in self._subdbs:
@@ -71,6 +104,7 @@ class LMDBKVStore(KVStoreBase):
         return self._subdbs[name]
 
     def set_dirty(self, db=None):
+        """Set the dirty flag for the given sub-database."""
         self._is_dirty[db] = True
 
     def _has(self, key, db=None):

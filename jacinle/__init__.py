@@ -14,15 +14,6 @@ This main library contains a set of useful utility functions and classes for gen
 
 There are a few automatically imported submodules that can be accessed by ``jacinle.<submodule>``.
 
-.. rubric:: Core Submodules
-
-.. autosummary::
-
-    jacinle.git
-    jacinle.io
-    jacinle.nd
-    jacinle.random
-
 .. rubric:: Command Line Tools
 
 .. autosummary::
@@ -236,7 +227,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
         repr_from_str
     )
     from jacinle.utils.meter import AverageMeter, GroupMeters
-    from jacinle.utils.naming import class_name, func_name, method_name, class_name_of_method
+    from jacinle.utils.inspect import class_name, func_name, method_name, class_name_of_method
     from jacinle.utils.network import get_local_addr
     from jacinle.utils.numeric import safe_sum, mean, std, rms, prod, divup
     from jacinle.utils.printing import indent_text, stprint, stformat, kvprint, kvformat, print_to_string, print_to, suppress_stdout

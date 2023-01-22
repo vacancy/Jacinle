@@ -12,9 +12,10 @@ import functools
 import collections
 import os.path as osp
 import threading
+from typing import Callable
 
 from jacinle.logging import get_logger
-from .meta import synchronized
+from jacinle.utils.meta import synchronized
 
 logger = get_logger(__file__)
 
@@ -22,6 +23,8 @@ __all__ = ['cached_property', 'cached_result', 'fs_cached_result']
 
 
 class cached_property:
+    """A decorator that converts a function into a cached property. Similar to ``@property``, but the function result is cached."""
+
     def __init__(self, fget):
         self.fget = fget
         self.__module__ = fget.__module__
@@ -45,6 +48,8 @@ class cached_property:
 
 
 def cached_result(func):
+    """A decorator that caches the result of a function. Note that this decorator does not support any arguments to the function."""
+
     def impl():
         nonlocal impl
         ret = func()
@@ -59,7 +64,18 @@ def cached_result(func):
     return f
 
 
-def fs_cached_result(filename, force_update=False, verbose=False):
+def fs_cached_result(filename: str, force_update: bool = False, verbose: bool = False) -> Callable[[Callable], Callable]:
+    """A decorator that caches the result of a function into a file. Note that this decorator does not take care of any arguments to the function.
+
+    Args:
+        filename: the filename to store the result.
+        force_update: if True, the result will be updated even if the file exists.
+        verbose: if True, the filenames will be printed to the console.
+
+    Returns:
+        a decorator function.
+    """
+
     import jacinle.io as io
 
     def wrapper(func):

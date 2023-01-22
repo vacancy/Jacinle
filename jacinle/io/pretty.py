@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Functions to dump Python objects into human-readable formats."""
+
 import io as _io
 import json
 import functools
@@ -17,7 +19,7 @@ import yaml
 import six
 import inspect
 
-from typing import Sequence
+from typing import Optional, Any, Iterable, Sequence, List, Dict
 from jacinle.utils.meta import dict_deep_kv
 from jacinle.utils.printing import stformat, kvformat
 
@@ -37,7 +39,13 @@ __all__ = [
 ]
 
 
-def iter_txt(fd, strip=True):
+def iter_txt(fd: _io.IOBase, strip: bool = True) -> Iterable[str]:
+    """Iterate over lines in a text file. This function will ignore empty lines.
+
+    Args:
+        fd: a file descriptor.
+        strip: whether to strip the line.
+    """
     for line in as_file_descriptor(fd):
         line_strip = line.strip()
         if line_strip == '':
@@ -45,11 +53,22 @@ def iter_txt(fd, strip=True):
         yield line_strip if strip else line
 
 
-def loads_json(value):
+def loads_json(value: str) -> Any:
+    """Load a JSON object from a string."""
     return json.loads(value)
 
 
-def loads_jsonc(value):
+def loads_jsonc(value: str) -> List[Dict]:
+    """Load a list of JSON dictionaries from a string. This function supports multiple JSON objects in a single string, separated by newlines.
+    Note that this function only support a list of plain dictionaries. Do not use this function to load JSON objects with
+    nested lists or dictionaries.
+
+    Args:
+        value: a string.
+
+    Returns:
+        a list of dictionaries.
+    """
     strings = value.split('}\n{')
     ret = []
     for i, s in enumerate(strings):
@@ -61,15 +80,37 @@ def loads_jsonc(value):
     return ret
 
 
-def loads_xml(value, **kwargs):
-    return _xml2dict(et.fromstring(value), **kwargs)
+def loads_xml(value: str, name_key: str = '__name__', attribute_key: Optional[str] = '__attribute__') -> Dict:
+    """Load an XML object from a string. It will return a dictionary as the root node.
+    For each node, it will have a key named "__name__" as the tag name, and a key "__attributes__" as a dictionary of attributes.
+    Each child node will be a nested dictionary under the root node. If there are multiple child nodes with the same tag name,
+    they will be stored in a list.
+
+    Args:
+        value: a string.
+        name_key: the key name for the tag name.
+        attribute_key: the key name for the attributes. If set to None, the attributes will be stored in the root node.
+
+    Returns:
+        a dictionary.
+    """
+    return _xml2dict(et.fromstring(value), name_key=name_key, attribute_key=attribute_key)
 
 
-def loads_yaml(value):
-    return yaml.load(value)
+def loads_yaml(value: str) -> Any:
+    """Load a YAML object from a string."""
+    return yaml.safe_load(value)
 
 
-def dumps_txt(value):
+def dumps_txt(value: Iterable[str]) -> str:
+    """Dump a list of strings into a string, separated by newlines.
+
+    Args:
+        value: a list of strings.
+
+    Returns:
+        a string.
+    """
     assert isinstance(value, collections.Iterable), 'dump(s) txt supports only list as input.'
     with _io.StringIO() as buf:
         for v in value:
@@ -80,17 +121,33 @@ def dumps_txt(value):
         return buf.getvalue()
 
 
-def dumps_json(value, compressed=True):
+def dumps_json(value: Any, compressed: bool = True) -> str:
+    """Dump a JSON object into a string. In addition to the standard JSON format, this function also supports
+
+    - ``__jsonify__``: an instance method for objects that returns a JSON-serializable object.
+    - For classes, it will store ``__dict__`` as the JSON object.
+
+    Note that both features can not be preserved when loading the JSON object back.
+
+    Args:
+        value: the object to dump.
+        compressed: whether to use compressed format. If set to False, the dumped string will be pretty-printed.
+
+    Returns:
+        a string.
+    """
     if compressed:
-        return json.dumps(value, cls=JsonObjectEncoder)
-    return json.dumps(value, cls=JsonObjectEncoder, sort_keys=True, indent=4, separators=(',', ': '))
+        return json.dumps(value, cls=_JsonObjectEncoder)
+    return json.dumps(value, cls=_JsonObjectEncoder, sort_keys=True, indent=4, separators=(',', ': '))
 
 
-def pretty_dumps_json(value, compressed=False):
+def pretty_dumps_json(value: Any, compressed: bool = False) -> str:
+    """Dump a JSON object into a string, with pretty-printing."""
     return dumps_json(value, compressed=compressed)
 
 
-def dumps_jsonc(value):
+def dumps_jsonc(value: Iterable[Dict]) -> str:
+    """Dump a list of dictionary into a JSON string, separated by new lines, with compressed format."""
     assert isinstance(value, Sequence)
     ret = ''
     for v in value:
@@ -98,23 +155,28 @@ def dumps_jsonc(value):
     return ret
 
 
-def dumps_xml(value, **kwargs):
+def dumps_xml(value: Dict, **kwargs) -> str:
+    """Dump an XML object into a string."""
     return _dict2xml(value, **kwargs)
 
 
-def dumps_yaml(value):
+def dumps_yaml(value: Any) -> str:
+    """Dump a YAML object into a string."""
     return yaml.dump(value, width=80, indent=4)
 
 
 def dumps_struct(value):
+    """Dump a structured object into a string, using :meth:`jacinle.utils.printing.stformat`."""
     return stformat(value)
 
 
 def dumps_kv(value):
+    """Dump a structured object into a string, using :meth:`jacinle.utils.printing.kvformat`."""
     return kvformat(value)
 
 
 def dumps_env(value):
+    """Dump a structured object into a string, similar to :meth:`os.environ`."""
     return '\n'.join(['{} = {}'.format(k, v) for k, v in dict_deep_kv(value)])
 
 
@@ -137,6 +199,7 @@ def _wrap_dump(dumps_func):
 
     dump.__name__ = dumps_func.__name__[:-1]
     dump.__qualname__ = dumps_func.__qualname__[:-1]
+    dump.__doc__ = dumps_func.__doc__.replace('a string', 'a file')
     return dump
 
 
@@ -181,10 +244,12 @@ for registry in ['dump', 'pretty_dump']:
 
 
 def pretty_load(file, **kwargs):
+    """Load a file with pretty-printing."""
     return io_function_registry.dispatch('pretty_load', file, **kwargs)
 
 
 def pretty_dump(file, obj, **kwargs):
+    """Dump a file with pretty-printing."""
     return io_function_registry.dispatch('pretty_dump', file, obj, **kwargs)
 
 
@@ -265,7 +330,7 @@ def _xml2dict(element, name_key='__name__', attribute_key='__attribute__'):
     return output_dict
 
 
-class JsonObjectEncoder(json.JSONEncoder):
+class _JsonObjectEncoder(json.JSONEncoder):
     """Adapted from https://stackoverflow.com/a/35483750"""
 
     def default(self, obj):

@@ -8,32 +8,34 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-# This is free and unencumbered software released into the public domain.
-#
-# Anyone is free to copy, modify, publish, use, compile, sell, or
-# distribute this software, either in source code form or as a compiled
-# binary, for any purpose, commercial or non-commercial, and by any
-# means.
-#
-# In jurisdictions that recognize copyright laws, the author or authors
-# of this software dedicate any and all copyright interest in the
-# software to the public domain. We make this dedication for the benefit
-# of the public at large and to the detriment of our heirs and
-# successors. We intend this dedication to be an overt act of
-# relinquishment in perpetuity of all present and future rights to this
-# software under copyright law.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-# OTHER DEALINGS IN THE SOFTWARE.
-#
-# For more information, please refer to <http://unlicense.org>
-"""
-A platform independent file lock that supports the with-statement.
+"""A platform independent file lock that supports the with-statement.
+
+Original License:
+
+    This is free and unencumbered software released into the public domain.
+
+    Anyone is free to copy, modify, publish, use, compile, sell, or
+    distribute this software, either in source code form or as a compiled
+    binary, for any purpose, commercial or non-commercial, and by any
+    means.
+
+    In jurisdictions that recognize copyright laws, the author or authors
+    of this software dedicate any and all copyright interest in the
+    software to the public domain. We make this dedication for the benefit
+    of the public at large and to the detriment of our heirs and
+    successors. We intend this dedication to be an overt act of
+    relinquishment in perpetuity of all present and future rights to this
+    software under copyright law.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+    OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+    ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    OTHER DEALINGS IN THE SOFTWARE.
+
+    For more information, please refer to <http://unlicense.org>
 """
 
 # yapf: disable
@@ -73,10 +75,7 @@ except NameError:
 
 # Data
 # ------------------------------------------------
-__all__ = [
-    "Timeout", "BaseFileLock", "WindowsFileLock", "UnixFileLock",
-    "SoftFileLock", "FileLock"
-]
+__all__ = ["FileLockTimeout", "BaseFileLock", "WindowsFileLock", "UnixFileLock", "SoftFileLock", "FileLock"]
 
 __version__ = "2.0.8"
 
@@ -85,7 +84,7 @@ logger = logging.getLogger(__name__)
 
 # Exceptions
 # ------------------------------------------------
-class Timeout(TimeoutError):
+class FileLockTimeout(TimeoutError):
     """
     Raised when the lock could not be acquired in *timeout*
     seconds.
@@ -107,12 +106,14 @@ class Timeout(TimeoutError):
 # Classes
 # ------------------------------------------------
 class BaseFileLock(object):
-    """
-    Implements the base class of a file lock.
-    """
+    """Implements the base class of a file lock."""
 
     def __init__(self, lock_file, timeout=-1):
-        """
+        """Initializes the file lock.
+
+        Args:
+            lock_file (str): the path to the lock file.
+            timeout (int): the timeout in seconds. If -1, there is no timeout.
         """
         # The path to the lock file.
         self._lock_file = lock_file
@@ -136,15 +137,12 @@ class BaseFileLock(object):
 
     @property
     def lock_file(self):
-        """
-        The path to the lock file.
-        """
+        """The path to the lock file."""
         return self._lock_file
 
     @property
     def timeout(self):
-        """
-        You can set a default timeout for the filelock. It will be used as
+        """You can set a default timeout for the filelock. It will be used as
         fallback value in the acquire method, if no timeout value (*None*) is
         given.
 
@@ -152,8 +150,6 @@ class BaseFileLock(object):
 
         A timeout of 0 means, that there is exactly one attempt to acquire the
         file lock.
-
-        .. versionadded:: 2.0.0
         """
         return self._timeout
 
@@ -168,17 +164,11 @@ class BaseFileLock(object):
     # --------------------------------------------
 
     def _acquire(self):
-        """
-        Platform dependent. If the file lock could be
-        acquired, self._lock_file_fd holds the file descriptor
-        of the lock file.
-        """
+        """Platform dependent. If the file lock could be acquired, self._lock_file_fd holds the file descriptor of the lock file."""
         raise NotImplementedError()
 
     def _release(self):
-        """
-        Releases the lock and sets self._lock_file_fd to None.
-        """
+        """Releases the lock and sets self._lock_file_fd to None."""
         raise NotImplementedError()
 
     # Platform independent methods
@@ -186,18 +176,20 @@ class BaseFileLock(object):
 
     @property
     def is_locked(self):
-        """
-        True, if the object holds the file lock.
-
-        .. versionchanged:: 2.0.0
-
-            This was previously a method and is now a property.
-        """
+        """True, if the object holds the file lock."""
         return self._lock_file_fd is not None
 
     def acquire(self, timeout=None, poll_intervall=0.05):
-        """
-        Acquires the file lock or fails with a :exc:`Timeout` error.
+        """Acquires the file lock or fails with a :exc:`Timeout` error.
+
+        Args:
+            timeout (float): the maximum time waited for the file lock.
+                If ``timeout <= 0``, there is no timeout and this method will
+                block until the lock could be acquired.
+                If ``timeout`` is None, the default :attr:`~timeout` is used.
+
+            poll_intervall (float): we check once in *poll_intervall* seconds
+                if we can acquire the file lock.
 
         .. code-block:: python
 
@@ -211,24 +203,6 @@ class BaseFileLock(object):
                 pass
             finally:
                 lock.release()
-
-        :arg float timeout:
-            The maximum time waited for the file lock.
-            If ``timeout <= 0``, there is no timeout and this method will
-            block until the lock could be acquired.
-            If ``timeout`` is None, the default :attr:`~timeout` is used.
-
-        :arg float poll_intervall:
-            We check once in *poll_intervall* seconds if we can acquire the
-            file lock.
-
-        :raises Timeout:
-            if the lock could not be acquired in *timeout* seconds.
-
-        .. versionchanged:: 2.0.0
-
-            This method returns now a *proxy* object instead of *self*,
-            so that it can be used in a with statement without side effects.
         """
         # Use the default timeout, if no timeout is provided.
         if timeout is None:
@@ -263,7 +237,7 @@ class BaseFileLock(object):
                         'Timeout on aquiring lock %s on %s', lock_id,
                         lock_filename
                     )
-                    raise Timeout(self._lock_file)
+                    raise FileLockTimeout(self._lock_file)
                 else:
                     logger.debug(
                         'Lock %s not acquired on %s, waiting %s seconds ...',
@@ -296,17 +270,15 @@ class BaseFileLock(object):
         return ReturnProxy(lock=self)
 
     def release(self, force=False):
-        """
-        Releases the file lock.
+        """Releases the file lock.
 
         Please note, that the lock is only completly released, if the lock
         counter is 0.
 
         Also note, that the lock file itself is not automatically deleted.
 
-        :arg bool force:
-            If true, the lock counter is ignored and the lock is released in
-            every case.
+        Args:
+            force (bool):  If true, the lock counter is ignored and the lock is released in every case.
         """
         with self._thread_lock:
 
@@ -347,10 +319,7 @@ class BaseFileLock(object):
 
 
 class WindowsFileLock(BaseFileLock):
-    """
-    Uses the :func:`msvcrt.locking` function to hard lock the lock file on
-    windows systems.
-    """
+    """Uses the :func:`msvcrt.locking` function to hard lock the lock file on windows systems."""
 
     def _acquire(self):
         open_mode = os.O_RDWR | os.O_CREAT | os.O_TRUNC
@@ -388,9 +357,7 @@ class WindowsFileLock(BaseFileLock):
 
 
 class UnixFileLock(BaseFileLock):
-    """
-    Uses the :func:`fcntl.flock` to hard lock the lock file on unix systems.
-    """
+    """Uses the :func:`fcntl.flock` to hard lock the lock file on unix systems."""
 
     def _acquire(self):
         open_mode = os.O_RDWR | os.O_CREAT | os.O_TRUNC
@@ -417,9 +384,7 @@ class UnixFileLock(BaseFileLock):
 
 
 class SoftFileLock(BaseFileLock):
-    """
-    Simply watches the existence of the lock file.
-    """
+    """Simply watches the existence of the lock file."""
 
     def _acquire(self):
         open_mode = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_TRUNC

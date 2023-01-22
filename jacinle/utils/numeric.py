@@ -15,6 +15,7 @@ __all__ = ['safe_sum', 'mean', 'std', 'rms', 'prod', 'divup']
 
 
 def safe_sum(*values):
+    """A safe sum function that uses the first value as the initial value. It can be used as a replacement of :func:`sum`."""
     if len(values) == 0:
         return 0
     if len(values) == 1:
@@ -27,12 +28,14 @@ def safe_sum(*values):
 
 
 def mean(values, default=0):
+    """A mean function that returns the default value when the input is empty."""
     if len(values) == 0:
         return default
     return sum(values) / len(values)
 
 
 def std(values, default=0):
+    """A standard deviation function that returns the default value when the input is empty."""
     if len(values) == 0:
         return default
     l = len(values)
@@ -40,6 +43,7 @@ def std(values, default=0):
 
 
 def rms(values, default=0):
+    """A root mean square function that returns the default value when the input is empty."""
     if len(values) == 0:
         return default
     l = len(values)
@@ -47,10 +51,12 @@ def rms(values, default=0):
 
 
 def prod(values, default=1):
+    """A product function that returns the default value when the input is empty."""
     if len(values) == 0:
         return default
     return reduce(lambda x, y: x * y, values)
 
 
 def divup(n, d):
+    """Divide n by d and round up."""
     return n // d + int((n % d) != 0)
