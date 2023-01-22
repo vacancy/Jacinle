@@ -12,7 +12,7 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 
-from .shape import add_dim_as_except, add_dim_as_except
+from .shape import add_dim_as_except
 
 __all__ = [
     'mask_meshgrid', 'masked_average', 'length2mask', 'length_masked_reversed',
@@ -20,7 +20,16 @@ __all__ = [
 ]
 
 
-def mask_meshgrid(mask, target_dims=2):
+def mask_meshgrid(mask: torch.Tensor, target_dims: int = 2) -> torch.Tensor:
+    """Create an N-dimensional meshgrid-like mask, where ``output[i, j, k, ...] = mask[i] * mask[j] * mask[k] * ...``.
+
+    Args:
+        mask: the original mask. Batch dimensions are supported, but the mask dimension is assumed to be the last one.
+        target_dims: the number of target dimensions of the output mask.
+
+    Returns:
+        a mask with shape ``mask.shape + (target_dims - mask.dim())``.
+    """
     for i in range(target_dims - 1):
         f = mask.unsqueeze(-1)
         g = mask.unsqueeze(-2)
@@ -29,18 +38,16 @@ def mask_meshgrid(mask, target_dims=2):
     return mask
 
 
-def masked_average(tensor, mask, eps=1e-8):
-    """
-    Compute the average of the tensor while ignoring some masked elements.
+def masked_average(tensor: torch.Tensor, mask: torch.Tensor, eps=1e-8) -> torch.Tensor:
+    """Compute the average of the tensor while ignoring some masked elements.
 
     Args:
-        tensor (Tensor): tensor to be averaged.
-        mask (Tensor): a mask indicating the element-wise weight.
-        eps (float): eps for numerical stability.
+        tensor: tensor to be averaged.
+        mask: a mask indicating the element-wise weight.
+        eps: eps for numerical stability.
 
     Returns:
-        FloatTensor: the average of the input tensor.
-
+        the average of the input tensor.
     """
     tensor = tensor.float()
     mask = mask.float()
@@ -48,7 +55,16 @@ def masked_average(tensor, mask, eps=1e-8):
     return masked.sum() / mask.sum().clamp(min=eps)
 
 
-def length2mask(lengths, max_length):
+def length2mask(lengths: torch.Tensor, max_length: int) -> torch.Tensor:
+    """Convert a length vector to a mask.
+
+    Args:
+        lengths: a vector of length. Batch dimensions are supported, but the length dimension is assumed to be the last one.
+        max_length: the maximum length of the mask.
+
+    Returns:
+        a mask with shape ``lengths.shape + (max_length,)``.
+    """
     rng = torch.arange(max_length, dtype=lengths.dtype, device=lengths.device)
     lengths = lengths.unsqueeze(-1)
     rng = add_dim_as_except(rng, lengths, -1)
@@ -56,20 +72,17 @@ def length2mask(lengths, max_length):
     return mask.float()
 
 
-def length_masked_reversed(tensor, lengths, dim=1):
-    """
-    Reverses sequences according to their lengths.
+def length_masked_reversed(tensor: torch.Tensor, lengths: torch.Tensor, dim: int = 1) -> torch.Tensor:
+    """Reverse a padded sequence tensor along the given dimension.
 
     Args:
-        tensor (Tensor): padded batch of variable length sequences.
-        lengths (LongTensor): list of sequence lengths
+        tensor: padded batch of variable length sequences.
+        lengths: list of sequence lengths
+        dim: dimension along which to reverse sequences. Currently only supports dim=1.
 
     Returns:
-        Tensor: A Variable with the same size as tensor, but with each sequence
-        reversed according to its length.
-
+        A tensor with the same size as the input, but with each sequence reversed.
     """
-
     assert dim == 1
 
     if tensor.size(0) != len(lengths):
@@ -84,8 +97,21 @@ def length_masked_reversed(tensor, lengths, dim=1):
 
 
 def masked_softmax(logits, mask=None, dim=-1, eps=1e-20, ninf=-1e4):
+    """Compute the softmax of the tensor while ignoring some masked elements.
+    When all elements are masked, the result is a uniform distribution.
+
+    Args:
+        logits: tensor to be softmaxed.
+        mask: a mask indicating the element-wise weight.
+        dim: the dimension to be softmaxed.
+        eps: eps for numerical stability.
+        ninf: the value to be used for masked elements.
+
+    Returns:
+        the softmax of the input tensor.
+    """
     if mask is not None:
-        logits = logits * mask + ninf * (1 - mask)
+        logits = logits.masked_fill(~mask, ninf)
 
     probs = F.softmax(logits, dim=dim)
     if mask is not None:
@@ -97,6 +123,19 @@ def masked_softmax(logits, mask=None, dim=-1, eps=1e-20, ninf=-1e4):
 
 
 def length_masked_softmax(logits, lengths, dim=-1, ninf=-1e4):
+    """Compute the softmax of the tensor while ignoring some masked elements.
+    Unlike :func:`masked_softmax`, this function uses the lengths to compute the mask.
+    When all elements are masked, the result is a uniform distribution.
+
+    Args:
+        logits: tensor to be softmaxed.
+        lengths: a vector of length. Batch dimensions are supported, but the length dimension is assumed to be the last one.
+        dim: the dimension to be softmaxed.
+        ninf: the value to be used for masked elements.
+
+    Returns:
+        the softmax of the input tensor.
+    """
     rng = torch.arange(logits.size(dim=dim), dtype=lengths.dtype, device=lengths.device)
     rng = add_dim_as_except(rng, logits, dim)
     lengths = lengths.unsqueeze(dim)

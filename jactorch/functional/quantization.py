@@ -8,9 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-"""
-Quantization functionals.
-"""
+"""Basic quantization functions with a straight-through gradient estimator."""
 
 __all__ = ['quantize', 'randomized_quantize']
 
@@ -18,27 +16,47 @@ import torch
 import torch.autograd as ag
 
 
-class Quantize(ag.Function):
+class _Quantize(ag.Function):
     @staticmethod
-    def forward(ctx, input):
-        return (input > 0.5).float()
-
-    @staticmethod
-    def backward(ctx, grad_output):
-        return grad_output
-
-
-class RandomizedQuantize(ag.Function):
-    @staticmethod
-    def forward(ctx, input):
-        rand = torch.rand(input.size())
-        return (rand > input).float()
+    def forward(ctx, x):
+        return (x > 0.5).float()
 
     @staticmethod
     def backward(ctx, grad_output):
         return grad_output
 
 
-quantize = Quantize.apply
-randomized_quantize = RandomizedQuantize.apply
+class _RandomizedQuantize(ag.Function):
+    @staticmethod
+    def forward(ctx, x):
+        rand = torch.rand(x.size())
+        return (rand > x).float()
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        return grad_output
+
+
+def quantize(x: torch.Tensor) -> torch.Tensor:
+    """Quantize a tensor to binary values: ``(x > 0.5).float()``. This function implements the straight-through gradient estimator.
+
+    Args:
+        x: the input tensor.
+
+    Returns:
+        the quantized tensor.
+    """
+    return _Quantize.apply(x)
+
+
+def randomized_quantize(x: torch.Tensor) -> torch.Tensor:
+    """Quantize a tensor to binary values: ``(rand() > x).float()``. This function implements the straight-through gradient estimator.
+
+    Args:
+        x: the input tensor.
+
+    Returns:
+        the quantized tensor.
+    """
+    return _RandomizedQuantize.apply(x)
 

@@ -73,15 +73,26 @@ class _InitFunctionWrapper(object):
 
 
 class JacDataLoader(DataLoader):
-    """
-    A customized dataloader class. It supports an customized initialization function on each worker, as well as
+    """A customized dataloader class. It supports an customized initialization function on each worker, as well as
     the initialization of random seed on different workers. It will invoke `jacinle.random.reset_global_seed` to reset
     the random seed upon the initialization of each worker.
     """
-    def __init__(self, dataset, batch_size=1, shuffle=False, sampler=None, batch_sampler=None,
-                 num_workers=0, collate_fn=default_collate, pin_memory=False, drop_last=False,
-                 timeout=0, base_seed=None, worker_init_fn=None, worker_init_args=None, worker_init_kwargs=None,
-                 worker_recv_fn=None, **kwargs):
+
+    dataset: torch.utils.data.Dataset
+    batch_size: int
+    num_workers: int
+    pin_memory: bool
+    drop_last: bool
+    timeout: float
+    sampler: torch.utils.data.Sampler
+    prefetch_factor: int
+
+    def __init__(
+        self, dataset, batch_size=1, shuffle=False, sampler=None, batch_sampler=None,
+        num_workers=0, collate_fn=default_collate, pin_memory=False, drop_last=False,
+        timeout=0, base_seed=None, worker_init_fn=None, worker_init_args=None, worker_init_kwargs=None,
+        worker_recv_fn=None, **kwargs
+    ):
 
         worker_init_args = worker_init_args if worker_init_args is not None else [tuple() for _ in range(num_workers)]
         worker_init_kwargs = worker_init_kwargs if worker_init_kwargs is not None else [{} for _ in range(num_workers)]
@@ -97,9 +108,11 @@ class JacDataLoader(DataLoader):
             base_seed, worker_init_fn, worker_init_args, worker_init_kwargs,
             self.pipe_master, DataLoaderPipeSlave(worker_recv_fn)
         )
-        super().__init__(dataset, batch_size=batch_size, shuffle=shuffle, sampler=sampler, batch_sampler=batch_sampler,
-                         num_workers=num_workers, collate_fn=collate_fn, pin_memory=pin_memory, drop_last=drop_last,
-                         timeout=timeout, worker_init_fn=worker_init_fn, **kwargs)
+        super().__init__(
+            dataset, batch_size=batch_size, shuffle=shuffle, sampler=sampler, batch_sampler=batch_sampler,
+            num_workers=num_workers, collate_fn=collate_fn, pin_memory=pin_memory, drop_last=drop_last,
+            timeout=timeout, worker_init_fn=worker_init_fn, **kwargs
+        )
 
     def send_to_worker(self, data):
         self.worker_recv_fn(data)

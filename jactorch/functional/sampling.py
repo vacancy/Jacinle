@@ -19,27 +19,35 @@ __all__ = ['sample_bernoulli', 'sample_multinomial', 'choice']
 
 class SampleBernoulli(autograd.Function):
     @staticmethod
-    def forward(ctx, input):
-        rand = input.new(*input.size())
-        torch.rand(input.size(), out=rand)
-        return (rand > input).float()
+    def forward(ctx, x):
+        rand = x.new(*x.size())
+        torch.rand(x.size(), out=rand)
+        return (rand > x).float()
 
     @staticmethod
     def backward(ctx, grad_output):
         return grad_output
 
 
-def sample_bernoulli(input):
-    return SampleBernoulli.apply(input)
+def sample_bernoulli(x):
+    """Sample from a Bernoulli distribution.
+
+    Args:
+        x: the probability of the Bernoulli distribution.
+
+    Returns:
+        A tensor with the same shape as ``x``, where each element is sampled from the corresponding Bernoulli distribution.
+    """
+    return SampleBernoulli.apply(x)
 
 
 class SampleMultinomial(autograd.Function):
     @staticmethod
-    def forward(ctx, input, dim):
-        input = input.transpose(dim, -1)
-        input_flatten = input.contiguous().view(-1, input.size(-1))
-        rand = torch.multinomial(input_flatten, 1).view(input.size()[:-1])
-        output = one_hot_nd(rand, input.size(dim))
+    def forward(ctx, x, dim):
+        x = x.transpose(dim, -1)
+        x_flatten = x.contiguous().view(-1, x.size(-1))
+        rand = torch.multinomial(x_flatten, 1).view(x.size()[:-1])
+        output = one_hot_nd(rand, x.size(dim))
         output = output.transpose(dim, -1)
         return output.float()
 
@@ -48,8 +56,17 @@ class SampleMultinomial(autograd.Function):
         return grad_output, None
 
 
-def sample_multinomial(input, dim=-1):
-    return SampleMultinomial.apply(input, dim)
+def sample_multinomial(x, dim=-1):
+    """Sample from a multinomial distribution.
+
+    Args:
+        x: the probability of the multinomial distribution.
+        dim: the dimension of the categories.
+
+    Returns:
+        A tensor with the same shape as ``x``, where each element is sampled from the corresponding multinomial distribution.
+    """
+    return SampleMultinomial.apply(x, dim)
 
 
 @requires_vendors('pytorch_reservoir')
