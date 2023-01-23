@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : logger.py
+# File   : logging.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 01/17/2017

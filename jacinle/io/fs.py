@@ -375,7 +375,21 @@ def locate_newest_file(dirname: str, pattern: str) -> Optional[str]:
 
 @contextlib.contextmanager
 def tempfile(mode: str = 'w+b', suffix: str = '', prefix: str = 'tmp'):
-    """A context manager that creates a temporary file and deletes it after use."""
+    """A context manager that creates a temporary file and deletes it after use.
+
+    Example:
+        .. code-block:: python
+
+            with tempfile() as f:
+                f.write(b'hello world')
+                f.seek(0)
+                print(f.read())
+
+    Args:
+        mode: the mode to open the file.
+        suffix: the suffix of the file name.
+        prefix: the prefix of the file name.
+    """
     f = tempfile_lib.NamedTemporaryFile(mode, suffix=suffix, prefix=prefix, delete=False)
     yield f
     os.unlink(f.name)

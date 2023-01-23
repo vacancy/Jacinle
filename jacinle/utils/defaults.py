@@ -211,6 +211,22 @@ def option_context(name, is_local=True, **kwargs):
 
 
 class FileOptions(object):
+    """A class that stores options in a single file.
+
+    Example:
+        .. code-block:: python
+
+            # file: my_module.py
+            options = FileOptions(__file__, number_to_add=1)
+
+            def my_func(x: int) -> int:
+                return x + options.number_to_add
+
+            # file: my_script.py
+            import my_module
+            my_module.options.set(number_to_add=2)
+            my_module.my_func(1)  # returns 3
+    """
     def __init__(self, __file__, **init_kwargs):
         self.__file__ = __file__
         for k, v in init_kwargs.items():
@@ -223,9 +239,31 @@ class FileOptions(object):
 
 
 ARGDEF = object()
+"""A special value to indicate that the default value of an argument will be determined in a deferred manner. See :func:`default_args`."""
 
 
 def default_args(func):
+    """A helper function handles the case of "fall-through" default arguments. Suppose we have two functions:
+    ``f`` and ``g``, and ``f`` calls ``g``. ``g`` has a default argument ``x``, e.g., ``x=1``.
+    In many cases, we do not want to specify the default value of ``x`` in ``f``. One way to do this is to
+    use ``None`` as the default value of ``x`` in ``f``, and then check if ``x`` is ``None`` in ``g``. However
+    this does not handle cases where ``x`` can be ``None`` in other cases. It also requires additional
+    checks in ``g``. With this decorator, we can simply write ``x=ARGDEF`` in ``f``, and then ``x`` will
+    be set to ``1`` in ``g``.
+
+    Example:
+        .. code-block:: python
+
+            def f(x=ARGDEF):
+                g(x)
+
+            @default_args
+            def g(x=1):
+                print(x)
+
+            f()  # prints 1
+            f(2)  # prints 2
+    """
     def wrapper(func):
         sig = inspect.signature(func)
 

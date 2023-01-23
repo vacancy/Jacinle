@@ -180,8 +180,6 @@ They will recursively traverse the data structure and apply the function to each
     ~jactorch.functional.shape.move_dim
     ~jactorch.functional.shape.repeat
     ~jactorch.functional.shape.repeat_times
-
-.. rubric:: Modules
 """
 
 try:
