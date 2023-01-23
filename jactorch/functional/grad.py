@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Gradient modification functions."""
+
 from torch.autograd import Function
 
 __all__ = ['grad_multi', 'zero_grad']

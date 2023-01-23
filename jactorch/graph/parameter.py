@@ -8,8 +8,11 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Utilities to access, filter, and mark parameters in a :class:`torch.nn.Module`."""
+
 import six
 import contextlib
+from typing import Union, Iterable, Sequence, Tuple, List, Dict
 
 import torch.nn as nn
 from jacinle.logging import get_logger
@@ -23,11 +26,31 @@ __all__ = [
 ]
 
 
-def find_parameters(module, pattern, return_names=False):
+def find_parameters(module: nn.Module, pattern: Union[Iterable[str], str], return_names: bool = False) -> Union[List[nn.Parameter], List[Tuple[str, nn.Parameter]]]:
+    """Find parameters in a module with a pattern.
+
+    Args:
+        module: the module to search.
+        pattern: the pattern(s) to match.
+        return_names: whether to return the names of the parameters.
+
+    Returns:
+        a list of parameters, or a list of (name, parameter) pairs if `return_names` is True.
+    """
     return filter_parameters(module.named_parameters(), pattern, return_names=return_names)
 
 
-def filter_parameters(params, pattern, return_names=False):
+def filter_parameters(params: Iterable[nn.Parameter], pattern: Union[Iterable[str], str], return_names: bool = False) -> Union[List[nn.Parameter], List[Tuple[str, nn.Parameter]]]:
+    """Filter parameters with a pattern.
+
+    Args:
+        params: the parameters to filter.
+        pattern: the pattern(s) to match.
+        return_names: whether to return the names of the parameters.
+
+    Returns:
+        a list of parameters, or a list of (name, parameter) pairs if `return_names` is True.
+    """
     if isinstance(pattern, six.string_types):
         pattern = [pattern]
     matcher = NameMatcher({p: True for p in pattern})
@@ -38,28 +61,29 @@ def filter_parameters(params, pattern, return_names=False):
             return [p for name, p in params if matcher.match(name)]
 
 
-def exclude_parameters(params, exclude):
+def exclude_parameters(params: Iterable[nn.Parameter], exclude: Sequence[nn.Parameter]) -> List[nn.Parameter]:
+    """Exclude parameters from a list of parameters."""
     return [p for p in params if p not in exclude]
 
 
-def compose_param_groups(model, *groups, filter_grad=True, verbose=True):
+def compose_param_groups(model: nn.Module, *groups: Tuple[str, Dict], filter_grad: bool = True, verbose: bool = True):
     """
     Compose the param_groups argument for torch optimizers.
 
     Examples:
-
-    >>> optim.Adam(compose_param_groups(
-    >>>     param_group('*.weight', lr=0.01)
-    >>> ), lr=0.1)
+        >>> optim.Adam(compose_param_groups(
+        ...     param_group('*.weight', lr=0.01)
+        ...     param_group('*.bias', lr=0.02)
+        ... ), lr=0.1)
 
     Args:
         model: the model containing optimizable variables.
-        *groups: groups defined by patterns, of form (pattern, special_params)
-        filter_grad: only choose parameters with requires_grad=True
+        *groups: groups defined by patterns, of form ``(pattern, special_params)``.
+        filter_grad: only choose parameters with ``requires_grad=True``.
+        verbose: whether to print the parameters in each group.
 
     Returns:
         param_groups argument that can be passed to torch optimizers.
-
     """
     matcher = NameMatcher([(g[0], i) for i, g in enumerate(groups)])
     param_groups = [{'params': [], 'names': []} for _ in range(len(groups) + 1)]
@@ -90,38 +114,40 @@ def compose_param_groups(model, *groups, filter_grad=True, verbose=True):
     return param_groups
 
 
-def param_group(pattern, **kwargs):
+def param_group(pattern: str, **kwargs) -> Tuple[str, Dict]:
     """A helper function used for human-friendly declaration of param groups."""
-    return (pattern, kwargs)
+    return pattern, kwargs
 
 
-def mark_freezed(model):
-    model.eval()  # Turn off all BatchNorm / Dropout
+def mark_freezed(model: nn.Module):
+    """Freeze all parameters in a model."""
     for p in model.parameters():
         p.requires_grad = False
 
 
-def mark_unfreezed(model):
-    model.train()  # Turn on all BatchNorm / Dropout
+def mark_unfreezed(model: nn.Module):
+    """Unfreeze all parameters in a model."""
     for p in model.parameters():
         p.requires_grad = True
 
 
 @contextlib.contextmanager
 def detach_modules(*modules):
-    """
-    A context manager that temporarily detach all parameters in the input list of modules.
+    """A context manager that temporarily detach all parameters in the input list of modules.
 
-    Usage:
+    Example:
         >>> output1 = m2(m1(input1))
         >>> with jactorch.detach_modules(m1, m2):  # or jactorch.detach_modules([m1, m2])
-        >>>     output2 = m2(m1(input2))
+        ...     output2 = m2(m1(input2))
         >>> loss(output1, output2).backward()
 
         The loss from branch `output2` will not back-propagate to m1 and m2.
+
+    Args:
+        *modules: the modules to detach. It can also be a single list of modules.
     """
 
-    if len(modules) == 1 and type(modules[0]) is list:
+    if len(modules) == 1 and type(modules[0]) in (list, tuple):
         modules = modules[0]
 
     all_modules = nn.ModuleList(modules)

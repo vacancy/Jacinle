@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Tensor shape utilities."""
+
 import collections
 from typing import Union, Tuple, List
 

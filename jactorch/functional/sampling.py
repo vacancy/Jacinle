@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Sampling functions."""
+
 import torch
 import torch.autograd as autograd
 

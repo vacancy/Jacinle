@@ -8,6 +8,10 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+from typing import Optional, Dict
+
+import torch
+import torch.nn as nn
 import torch.nn.functional as F
 from jactorch.utils.meta import as_float
 from jactorch.utils.grad import no_grad_func
@@ -25,7 +29,19 @@ __all__ = [
 
 
 @no_grad_func
-def binary_classification_accuracy(pred, label, name='', saturation=True):
+def binary_classification_accuracy(pred: torch.Tensor, label: torch.Tensor, name: str = '', saturation: bool = True) -> Dict[str, float]:
+    r"""Compute the accuracy of binary classification.
+
+    Args:
+        pred: the prediction, of the same shape as ``label``.
+        label: the label, of the same shape as ``pred``.
+        name: the name of this monitor.
+        saturation: whether to check the saturation of the prediction. Saturation
+            is defined as :math:`1 - \min(pred, 1 - pred)`
+
+    Returns:
+        a dict of monitor values.
+    """
     if name != '':
         name = '/' + name
     prefix = 'accuracy' + name
@@ -43,7 +59,17 @@ def binary_classification_accuracy(pred, label, name='', saturation=True):
 
 
 @no_grad_func
-def classification_accuracy(pred, label, name=''):
+def classification_accuracy(pred: torch.Tensor, label: torch.Tensor, name: str = '') -> Dict[str, float]:
+    r"""Compute the accuracy of N-way classification.
+
+    Args:
+        pred: the prediction, of the same shape as ``label``.
+        label: the label, of the same shape as ``pred``.
+        name: the name of this monitor.
+
+    Returns:
+        a dict of monitor values.
+    """
     if name != '':
         name = '/' + name
     prefix = 'accuracy' + name
@@ -54,7 +80,17 @@ def classification_accuracy(pred, label, name=''):
 
 
 @no_grad_func
-def regression_accuracy(pred, label, name=''):
+def regression_accuracy(pred: torch.Tensor, label: torch.Tensor, name: str = '') -> Dict[str, float]:
+    r"""Compute the accuracy of regression.
+
+    Args:
+        pred: the prediction, of the same shape as ``label``.
+        label: the label, of the same shape as ``pred``.
+        name: the name of this monitor.
+
+    Returns:
+        a dict of monitor values.
+    """
     if name != '':
         name = '/' + name
     prefix = 'accuracy' + name
@@ -72,7 +108,16 @@ def _rms(p):
 
 
 @no_grad_func
-def monitor_rms(_dict=None, **values):
+def monitor_rms(_dict: Optional[Dict[str, torch.Tensor]], **values: torch.Tensor) -> Dict[str, float]:
+    """Monitor the RMS of the given values. This function takes either a dict or multiple keyword arguments.
+
+    Args:
+        _dict: a dict of values.
+        **values: multiple keyword arguments.
+
+    Returns:
+        a dict of monitor values.
+    """
     values.update(_dict)
     monitors = {}
     for name, p in values.items():
@@ -81,7 +126,15 @@ def monitor_rms(_dict=None, **values):
 
 
 @no_grad_func
-def monitor_param_saturation(model):
+def monitor_param_saturation(model: torch.nn.Module) -> Dict[str, float]:
+    """Monitor the saturation of the parameters of the given model.
+
+    Args:
+        model: the model to monitor.
+
+    Returns:
+        a dict of monitor values.
+    """
     monitors = {}
     for name, p in model.named_parameters():
         p = F.sigmoid(p)
@@ -91,7 +144,15 @@ def monitor_param_saturation(model):
 
 
 @no_grad_func
-def monitor_param_rms(model):
+def monitor_param_rms(model: torch.nn.Module) -> Dict[str, float]:
+    """Monitor the RMS of the parameters of the given model.
+
+    Args:
+        model: the model to monitor.
+
+    Returns:
+        a dict of monitor values.
+    """
     monitors = {}
     for name, p in model.named_parameters():
         monitors['param/rms/' + name] = _rms(p)
@@ -99,7 +160,15 @@ def monitor_param_rms(model):
 
 
 @no_grad_func
-def monitor_param_gradrms(model):
+def monitor_param_gradrms(model: torch.nn.Module) -> Dict[str, float]:
+    """Monitor the RMS of the gradients of the parameters of the given model.
+
+    Args:
+        model: the model to monitor.
+
+    Returns:
+        a dict of monitor values.
+    """
     monitors = {}
     for name, p in model.named_parameters():
         if p.grad is not None:
@@ -108,7 +177,15 @@ def monitor_param_gradrms(model):
 
 
 @no_grad_func
-def monitor_param_gradrms_ratio(model):
+def monitor_param_gradrms_ratio(model: torch.nn.Module) -> Dict[str, float]:
+    """Monitor the ratio of the RMS of the gradients of the parameters of the given model.
+
+    Args:
+        model: the model to monitor.
+
+    Returns:
+        a dict of monitor values.
+    """
     monitors = {}
     for name, p in model.named_parameters():
         if p.grad is not None:

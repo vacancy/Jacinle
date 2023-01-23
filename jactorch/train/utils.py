@@ -28,12 +28,14 @@ def mark_unfreezed(model):
     return gmark_unfreezed(model)
 
 
-def set_learning_rate(optimizer, lr):
+def set_learning_rate(optimizer, lr: float):
+    """Set the learning rate of the optimizer."""
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
 
-def decay_learning_rate(optimizer, decay):
+def decay_learning_rate(optimizer, decay: float):
+    """Decay the learning rate of the optimizer by a factor of decay."""
     for param_group in optimizer.param_groups:
         param_group['lr'] *= decay
 

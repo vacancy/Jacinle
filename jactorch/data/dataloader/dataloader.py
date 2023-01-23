@@ -75,8 +75,7 @@ class _InitFunctionWrapper(object):
 class JacDataLoader(DataLoader):
     """A customized dataloader class. It supports an customized initialization function on each worker, as well as
     the initialization of random seed on different workers. It will invoke `jacinle.random.reset_global_seed` to reset
-    the random seed upon the initialization of each worker.
-    """
+    the random seed upon the initialization of each worker."""
 
     dataset: torch.utils.data.Dataset
     batch_size: int

@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Functions to build VGG models."""
+
 import math
 import functools
 

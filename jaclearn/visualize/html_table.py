@@ -33,7 +33,8 @@ class HTMLTableColumnDesc(collections.namedtuple(
 
 
 class HTMLTableVisualizer(object):
-    """
+    """A helper class to generate HTML tables.
+
     Example:
         >>> vis = HTMLTableVisualizer('<some_dir>', 'Visualization')
         >>> with vis.html():

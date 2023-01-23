@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Linear algebra functions in the log space."""
+
 from typing import Optional
 
 import math

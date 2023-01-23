@@ -23,13 +23,15 @@ __all__ = ['JacDataParallel', 'UserScatteredJacDataParallel']
 
 
 class JacDataParallel(DataParallel):
-    def __init__(self, module,
-                 device_ids=None, output_device=None, dim=0,
-                 allow_replication_callback=True,
-                 user_scattered=False, use_scatter_stream=True,
-                 scatter_func=None,
-                 use_dict_gather=True, dict_gather_layout=None,
-                 persistent=False, copy_parameters=False, copy_buffers=True):
+    def __init__(
+        self, module,
+        device_ids=None, output_device=None, dim=0,
+        allow_replication_callback=True,
+        user_scattered=False, use_scatter_stream=True,
+        scatter_func=None,
+        use_dict_gather=True, dict_gather_layout=None,
+        persistent=False, copy_parameters=False, copy_buffers=True
+    ):
 
         super(DataParallel, self).__init__()
         if device_ids is None:

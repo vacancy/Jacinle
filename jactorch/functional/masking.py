@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Masking-related functions."""
+
 import torch
 import torch.nn.functional as F
 import numpy as np

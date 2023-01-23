@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Numeric range functions."""
+
 import torch
 from .shape import broadcast, concat_shape
 

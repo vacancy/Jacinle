@@ -8,6 +8,9 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Functional APIs for JacTorch. By default, you should just access functions with ``jactorch.*``. Or, if you want to be
+explicit about the functions, you can import the specific function from ``jactorch.functional.*``."""
+
 from .arith import *
 from .clustering import *
 from .grad import *

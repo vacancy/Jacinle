@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Functions to buildResNet models."""
+
 import math
 import functools
 
@@ -18,9 +20,11 @@ from jactorch.io import load_state_dict
 from jactorch.nn import ResidualConvBlock, ResidualConvBottleneck
 
 
-__all__ = ['ResNet', 'make_resnet',
-           'resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152',
-           'reset_resnet_parameters']
+__all__ = [
+    'ResNet', 'make_resnet',
+    'resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152',
+    'reset_resnet_parameters'
+]
 
 
 class ResNet(nn.Module):

@@ -10,11 +10,23 @@
 
 __all__ = ['AccumGrad']
 
-from .custom_optimizer import CustomizedOptimizer
+from .custom_optimizer_base import CustomizedOptimizer
 
 
 class AccumGrad(CustomizedOptimizer):
+    """A wrapper for optimizer that accumulates gradients for several steps.
+
+    Basically, this wrapper will accumulate gradients for several steps, and then
+    call the base optimizer's step method.
+    """
+
     def __init__(self, base_optimizer, nr_acc):
+        """Initialize the wrapper.
+
+        Args:
+            base_optimizer: the base optimizer.
+            nr_acc: the number of steps to accumulate gradients.
+        """
         self._base_optimizer = base_optimizer
         self._nr_acc = nr_acc
         self._current = 0

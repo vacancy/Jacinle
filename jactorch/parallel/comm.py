@@ -10,6 +10,7 @@
 
 import queue
 import collections
+from typing import Any, Callable
 
 from jacinle.concurrency.future import FutureResult
 
@@ -23,7 +24,7 @@ _SlavePipeBase = collections.namedtuple('_SlavePipeBase', ['identifier', 'queue'
 class SlavePipe(_SlavePipeBase):
     """Pipe for master-slave communication."""
 
-    def run_slave(self, msg):
+    def run_slave(self, msg: Any):
         self.queue.put((self.identifier, msg))
         ret = self.result.get()
         self.queue.put(True)
@@ -39,11 +40,10 @@ class SyncMaster(object):
       and passed to a registered callback.
     - After receiving the messages, the master device should gather the information and determine to message passed back
       to each slave devices.
-
     """
 
-    def __init__(self, master_callback):
-        """
+    def __init__(self, master_callback: Callable):
+        """Initialize the master.
 
         Args:
             master_callback: a callback to be invoked after having collected messages from slave devices.
@@ -54,8 +54,7 @@ class SyncMaster(object):
         self._activated = False
 
     def register_slave(self, identifier):
-        """
-        Register an slave device.
+        """Register an slave device.
 
         Args:
             identifier: an identifier, usually is the device id.
@@ -72,9 +71,8 @@ class SyncMaster(object):
         self._registry[identifier] = _MasterRegistry(future)
         return SlavePipe(identifier, self._queue, future)
 
-    def run_master(self, master_msg):
-        """
-        Main entry for the master device in each forward pass.
+    def run_master(self, master_msg: Any):
+        """Main entry for the master device in each forward pass.
         The messages were first collected from each devices (including the master device), and then
         an callback will be invoked to compute the message to be sent back to each devices
         (including the master device).
@@ -85,7 +83,6 @@ class SyncMaster(object):
 
         Returns:
             the message to be sent back to the master device.
-
         """
         self._activated = True
 
@@ -107,5 +104,6 @@ class SyncMaster(object):
         return results[0][1]
 
     @property
-    def nr_slaves(self):
+    def nr_slaves(self) -> int:
+        """The number of slave devices."""
         return len(self._registry)

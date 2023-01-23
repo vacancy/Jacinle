@@ -58,7 +58,12 @@ class JacRandomState(npr.RandomState):
 _rng = JacRandomState()
 
 
-get_default_rng = defaults_manager.gen_get_default(JacRandomState, default_getter=lambda: _rng)
+_get_default_rng = defaults_manager.gen_get_default(JacRandomState, default_getter=lambda: _rng)
+
+
+def get_default_rng() -> JacRandomState:
+    """Get the default random number generator."""
+    return _get_default_rng()
 
 
 def gen_seed() -> int:
