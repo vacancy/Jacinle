@@ -31,7 +31,31 @@ def search(
     output_format: Optional[Union[str, LogicFormOutputFormat]] = 'DEFAULT',
     depth: Optional[int] = 4,
     coverage: Optional[float] = 0.99
-):
-    return csearch(inputs, outputs, input_names, type=type, output_format=output_format, depth=depth, coverage=coverage)
+) -> List[str]:
+    """Search for logic forms inductively.
 
+    Example:
+        .. code-block:: python
+
+            import numpy as np
+            from jaclearn.logic.propositional.logic_induction import search
+
+            inputs = np.array([[0, 0], [0, 1], [1, 0], [1, 1]], dtype='uint8')
+            outputs = np.array([[0], [1], [1], [0]], dtype='uint8')
+            input_names = ['x', 'y']
+            print(search(inputs, outputs, input_names))  # ['((x OR y) AND (NOT x OR NOT y))']
+
+    Args:
+        inputs: the input data, with shape (N, D).
+        outputs: the output data, with shape (N, C).
+        input_names: the names of the input variables, a list of length D.
+        type: the type of the logic form (options are 'GENERAL', 'CONJUNCTION', 'DISJUNCTION').
+        output_format: the output format of the logic form (options are 'DEFAULT', 'LISP').
+        depth: the maximum depth of the logic form.
+        coverage: the minimum coverage of the logic form.
+
+    Returns:
+        a list of strings, of length C.
+    """
+    return csearch(inputs, outputs, input_names, type=type, output_format=output_format, depth=depth, coverage=coverage)
 
