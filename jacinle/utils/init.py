@@ -10,7 +10,6 @@
 
 import os
 import sys
-import resource
 from jacinle.utils.env import jac_is_debug, jac_getenv
 
 
@@ -18,9 +17,10 @@ def release_syslim():
     if jac_getenv('SYSLIM', default='n', type='bool'):
         sys.setrecursionlimit(1000000)
         try:
+            import resource
             slim = 65536 * 1024
             resource.setrlimit(resource.RLIMIT_STACK, (slim, slim))
-        except ValueError:
+        except (ImportError, ValueError):  # the resource package is not available on Windows
             pass
 
 

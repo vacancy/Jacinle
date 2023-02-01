@@ -140,8 +140,8 @@ def log_function(init_function: Optional[Callable] = None, *, verbose: bool = Tr
             if print_self and verbose:
                 self_info = '(self={})'.format(args[0])
             # print(indent_text(f'Entering: {func_name(function)}', log_function.indent_level, indent_format='| '))
-            print(indent_text(f'Entering: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
             if verbose:
+                print(indent_text(f'Entering: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
                 arguments = ', '.join([str(arg) for arg in args])
                 print(indent_text(f'Args: {arguments}', log_function.indent_level, indent_format='| '))
                 print(indent_text(f'kwargs: {kwargs}', log_function.indent_level, indent_format='| '))
