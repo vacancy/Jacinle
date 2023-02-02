@@ -11,7 +11,7 @@
 import functools
 import operator
 import six
-import collections
+import collections.abc
 import threading
 import contextlib
 
@@ -33,9 +33,9 @@ __all__ = [
 
 
 def gofor(v):
-    if isinstance(v, collections.Mapping):
+    if isinstance(v, dict):
         return v.items()
-    assert_instance(v, collections.Iterable)
+    assert_instance(v, collections.abc.Iterable)
     return enumerate(v)
 
 
@@ -91,11 +91,11 @@ def first_n(iterable, n=10):
 def stmap(func, iterable):
     if isinstance(iterable, six.string_types):
         return func(iterable)
-    elif isinstance(iterable, (collections.Sequence, collections.UserList)):
+    elif isinstance(iterable, (collections.abc.Sequence, collections.abc.UserList)):
         return [stmap(func, v) for v in iterable]
-    elif isinstance(iterable, collections.Set):
+    elif isinstance(iterable, collections.abc.Set):
         return {stmap(func, v) for v in iterable}
-    elif isinstance(iterable, (collections.Mapping, collections.UserDict)):
+    elif isinstance(iterable, (dict, collections.abc.UserDict)):
         return {k: stmap(func, v) for k, v in iterable.items()}
     else:
         return func(iterable)
@@ -172,14 +172,14 @@ def dict_deep_update(a, b):
 
 
 def dict_deep_kv(d, sort=True, sep='.', allow_dict=False):
-    # Not using collections.Sequence to avoid infinite recursion.
-    assert isinstance(d, (tuple, list, collections.Mapping))
+    # Not using collections.abc.Sequence to avoid infinite recursion.
+    assert isinstance(d, (tuple, list, dict))
     result = list()
 
     def _dfs(current, prefix=None):
         for key, value in gofor(current):
             current_key = key if prefix is None else prefix + sep + str(key)
-            if isinstance(current[key], (tuple, list, collections.Mapping)):
+            if isinstance(current[key], (tuple, list, dict)):
                 if allow_dict:
                     result.append((current_key, value))
                 _dfs(current[key], current_key)
