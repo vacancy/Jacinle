@@ -19,10 +19,12 @@ __tqdm_defaults = {'dynamic_ncols': True, 'ascii': True}
 
 
 def get_tqdm_defaults():
+    """Get the default kwargs for tqdm."""
     return __tqdm_defaults
 
 
 def get_current_tqdm():
+    """Get the current tqdm instance. Only tqdms created by :func:`tqdm` will be returned."""
     _init_tqdm_stack()
     assert len(get_current_tqdm._stack.data) > 0, 'No registered tqdm.'
     return get_current_tqdm._stack.data[0]
@@ -65,12 +67,14 @@ def tqdm(iterable, **kwargs):
 
 
 def tqdm_pbar(**kwargs):
+    """Create a tqdm progress bar with the given kwargs."""
     for k, v in get_tqdm_defaults().items():
         kwargs.setdefault(k, v)
     return _tqdm(**kwargs)
 
 
 def tqdm_gofor(iterable, **kwargs):
+    """Create a tqdm progress bar for the given iterable, and use it as the progress bar for :func:`jacinle.utils.meta.gofor`."""
     try:
         total = len(iterable)
     except TypeError:
@@ -80,6 +84,7 @@ def tqdm_gofor(iterable, **kwargs):
 
 
 def tqdm_zip(*iterable, **kwargs):
+    """Create a tqdm progress bar for a zip of the given iterables, and use it as the progress bar."""
     try:
         total = len(iterable[0])
     except TypeError:

@@ -12,4 +12,5 @@ Subpackages
 .. toctree::
    :maxdepth: 2
 
+   jaclearn.logic.decision_tree
    jaclearn.logic.propositional

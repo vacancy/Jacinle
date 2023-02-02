@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : logger.py
+# File   : logging.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 01/17/2017
@@ -8,24 +8,60 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-
 import logging
 import sys
 
 __all__ = ['set_output_file', 'set_logger_output_file', 'set_default_level', 'get_logger']
 
-_default_level = logging.INFO
-_all_loggers = []
+_g_default_level = logging.INFO
+_g_all_loggers = []
 
 
 def set_output_file(fout, mode='a'):
+    """The the output file for all loggers.
+
+    Args:
+        fout: the output file path.
+        mode: the mode to open the file.
+    """
     if isinstance(fout, str):
         fout = open(fout, mode)
     JacLogFormatter.log_fout = fout
 
 
 def set_logger_output_file(fout, mode='a'):
+    """set the output file for all loggers. Alias to :func:`set_output_file`.
+
+    Args:
+        fout: the output file path.
+        mode: the mode to open the file.
+    """
     set_output_file(fout, mode=mode)
+
+
+def set_default_level(level, update_existing=True):
+    """Set the default logging level for all loggers.
+
+    Args:
+        level: the level to set.
+        update_existing: whether to update the existing loggers.
+    """
+    global _g_default_level
+    _g_default_level = level
+
+    if update_existing:
+        for i in _g_all_loggers:
+            i.setLevel(level)
+
+
+def set_logger_default_level(level, update_existing=True):
+    """Set the default logging level for all loggers. Alias to :func:`set_default_level`.
+
+    Args:
+        level: the level to set.
+        update_existing: whether to update the existing loggers.
+    """
+    set_default_level(level, update_existing=update_existing)
 
 
 class JacLogFormatter(logging.Formatter):
@@ -107,31 +143,28 @@ class JacLogFormatter(logging.Formatter):
 
 
 def get_logger(name=None, formatter=JacLogFormatter):
-    """get logger with given name"""
+    """Get logger with given name.
+
+    Args:
+        name: the name of the logger.
+        formatter: the formatter to use.
+    """
 
     logger = logging.getLogger(name)
     if getattr(logger, '_init_done__', None):
         return logger
     logger._init_done__ = True
     logger.propagate = False
-    logger.setLevel(_default_level)
+    logger.setLevel(_g_default_level)
     handler = logging.StreamHandler()
     handler.setFormatter(formatter(datefmt='%d %H:%M:%S'))
     handler.setLevel(0)
     del logger.handlers[:]
     logger.addHandler(handler)
-    _all_loggers.append(logger)
+    _g_all_loggers.append(logger)
     return logger
 
 
-def set_default_level(level, update_existing=True):
-    """set default logging level
-
-    :param level: loggin level given by python :mod:`logging` module"""
-    global _default_level
-    _default_level = level
-    for i in _all_loggers:
-        i.setLevel(level)
-
-
 logger = get_logger('Jacinle')
+"""The default logger of Jacinle."""
+

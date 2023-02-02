@@ -1,0 +1,24 @@
+/*
+ * custom.css
+ * Copyright (C) 2022 Jiayuan Mao
+ *
+ * Distributed under terms of the MIT license.
+ */
+
+.bd-sidebar a.reference {
+  overflow-wrap: break-word;
+}
+
+h1 {
+  overflow-wrap: break-word;
+}
+.bd-main .bd-content .bd-article-container {
+  max-width: 100%;
+}
+.bd-page-width {
+  max-width: 100%;
+}
+.readme-image {
+  width: 100%;
+  max-width: 1440px;
+}

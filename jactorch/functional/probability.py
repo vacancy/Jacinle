@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Probability distributions related functions."""
+
 __all__ = ['normalize_prob', 'check_prob_normalization']
 
 

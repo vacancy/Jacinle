@@ -14,10 +14,12 @@ import uuid
 __all__ = ['gen_time_string', 'gen_uuid4']
 
 
-def gen_time_string():
+def gen_time_string() -> str:
+    """Generate a time string with format: %Y%m%d-%H%M%S-%f."""
     return time.strftime('%Y-%m-%d-%H-%M-%S')
 
 
-def gen_uuid4():
+def gen_uuid4() -> str:
+    """Generate a UUID4 string."""
     return uuid.uuid4().hex
 

@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Tensor indexing utils."""
+
 import torch
 
 from jacinle.utils.numeric import prod
@@ -30,17 +32,17 @@ __all__ = [
 ]
 
 
-def reversed(x, dim=-1):
+def reversed(x: torch.Tensor, dim: int = -1) -> torch.Tensor:
     """
     Reverse a tensor along the given dimension. For example, if `dim=0`, it is equivalent to
     the python notation: `x[::-1]`.
 
     Args:
-        x (Tensor): input.
-        dim: the dimension to be reversed.
+        x (torch.Tensor): input.
+        dim (int): the dimension to be reversed.
 
     Returns:
-        Tensor: of same shape as `x`, but with the dimension `dim` reversed.
+        torch.Tensor: of same shape as `x`, but with the dimension `dim` reversed.
 
     """
     # https://github.com/pytorch/pytorch/issues/229#issuecomment-350041662
@@ -54,7 +56,7 @@ def reversed(x, dim=-1):
 
 
 @no_grad_func
-def one_hot(index, nr_classes):
+def one_hot(index: torch.Tensor, nr_classes: int) -> torch.Tensor:
     """
     Convert a list of class labels into one-hot representation.
 
@@ -62,12 +64,11 @@ def one_hot(index, nr_classes):
         This function support only one-dimensional input. For high dimensional inputs, use `one_hot_nd`.
 
     Args:
-        index (Tensor): shape `(N, )`, input class labels.
+        index (torch.Tensor): shape `(N, )`, input class labels.
         nr_classes (int): number of total classes.
 
     Returns:
-        Tensor: shape `(N, nr_classes)`, one-hot representation of the class labels.
-
+        torch.Tensor: shape `(N, nr_classes)`, one-hot representation of the class labels.
     """
     assert index.dim() == 1
     mask = torch.zeros(index.size(0), nr_classes, dtype=torch.float32, device=index.device)
@@ -77,41 +78,39 @@ def one_hot(index, nr_classes):
 
 
 @no_grad_func
-def one_hot_nd(index, nr_classes):
+def one_hot_nd(index: torch.Tensor, nr_classes: int) -> torch.Tensor:
     """
     Convert a tensor of class labels into one-hot representation.
 
     Args:
-        index (Tensor): input class labels.
+        index (torch.Tensor): input class labels.
         nr_classes (int): number of total classes.
 
     Returns:
-        Tensor: one-hot representation of the class labels, the label dimension is assumed to be the last one.
-
+        torch.Tensor: one-hot representation of the class labels, the label dimension is assumed to be the last one.
     """
     index_size = index.size()
     return one_hot(index.reshape(-1), nr_classes).view(index_size + (nr_classes, ))
 
 
 @no_grad_func
-def one_hot_dim(index, nr_classes, dim):
+def one_hot_dim(index: torch.Tensor, nr_classes: int, dim: int) -> torch.Tensor:
     """
     Convert a tensor of class labels into one-hot representation by adding a new dimension indexed at `dim`.
 
     Args:
-        index (Tensor): input class labels.
+        index (torch.Tensor): input class labels.
         nr_classes (int): number of total classes.
         dim (int): dimension of the class label.
 
     Returns:
-        Tensor: one-hot representation of the class labels.
-
+        torch.Tensor: one-hot representation of the class labels.
     """
     return one_hot_nd(index, nr_classes).transpose(-1, dim)
 
 
 @no_grad_func
-def inverse_permutation(perm):
+def inverse_permutation(perm: torch.Tensor) -> torch.Tensor:
     """
     Inverse a permutation.
 
@@ -120,11 +119,10 @@ def inverse_permutation(perm):
         function may generate arbitrary output.
 
     Args:
-        perm (LongTensor): shape `(N, )` representing a permutation of 0 ~ N - 1.
+        perm (torch.Tensor): shape `(N, )` representing a permutation of 0 ~ N - 1.
 
     Returns:
-        LongTensor: the inverse permutation, which satisfies: `inv[perm[x]] = x`.
-
+        torch.Tensor: the inverse permutation, which satisfies: `inv[perm[x]] = x`.
     """
     assert perm.dim() == 1
     length = perm.size(0)
@@ -133,45 +131,44 @@ def inverse_permutation(perm):
     return inv.long()
 
 
-def index_one_hot(tensor, dim, index):
-    """
+def index_one_hot(tensor: torch.Tensor, dim: int, index: torch.Tensor) -> torch.Tensor:
+    """`tensor[:, :, index, :]`
+
     Args:
-        tensor (Tensor): input.
+        tensor (torch.Tensor): input.
         dim (int) the dimension.
-        index: (LongTensor): the tensor containing the indices along the `dim` dimension.
+        index: (torch.Tensor): the tensor containing the indices along the `dim` dimension.
 
     Returns:
-        Tensor: `tensor[:, :, index, :, :]`.
-
+        torch.Tensor: `tensor[:, :, index, :, :]`.
     """
     return tensor.gather(dim, index.unsqueeze(dim)).squeeze(dim)
 
 
-def set_index_one_hot_(tensor, dim, index, value):
-    """
-    `tensor[:, :, index, :, :] = value`.
+def set_index_one_hot_(tensor: torch.Tensor, dim: int, index: torch.Tensor, value: torch.Tensor) -> None:
+    """`tensor[:, :, index, :, :] = value`.
 
     Args:
-        tensor (Tensor): input.
+        tensor (torch.Tensor): input.
         dim (int) the dimension.
-        index: (LongTensor): the tensor containing the indices along the `dim` dimension.
-
+        index: (torch.Tensor): the tensor containing the indices along the `dim` dimension.
+        value (torch.Tensor): the value to be set.
     """
     if not isinstance(value, (int, float)):
         value = value.unsqueeze(dim)
     tensor.scatter_(dim, index.unsqueeze(dim), value)
 
 
-def index_one_hot_ellipsis(tensor, dim, index):
-    """
+def index_one_hot_ellipsis(tensor: torch.Tensor, dim: int, index: torch.Tensor) -> torch.Tensor:
+    """`tensor[:, :, index, ...]`.
+
     Args:
-        tensor (Tensor): input.
+        tensor (torch.Tensor): input.
         dim (int) the dimension.
-        index: (LongTensor): the tensor containing the indices along the `dim` dimension.
+        index: (torch.Tensor): the tensor containing the indices along the `dim` dimension.
 
     Returns:
-        Tensor: `tensor[:, :, index, ...]`.
-
+        torch.Tensor: `tensor[:, :, index, ...]`.
     """
     tensor_shape = tensor.size()
     tensor = tensor.view(prod(tensor_shape[:dim]), tensor_shape[dim], prod(tensor_shape[dim+1:]))
@@ -182,8 +179,16 @@ def index_one_hot_ellipsis(tensor, dim, index):
     return tensor.view(tensor_shape[:dim] + tensor_shape[dim+1:])
 
 
-def leftmost_nonzero(tensor, dim):
-    """Return the smallest nonzero index along the `dim` axis. The tensor should be binary."""
+def leftmost_nonzero(tensor: torch.Tensor, dim: int) -> torch.Tensor:
+    """Return the smallest nonzero index along the `dim` axis. The tensor should be binary.
+
+    Args:
+        tensor (torch.Tensor): input.
+        dim (int): the dimension.
+
+    Returns:
+        torch.Tensor: the smallest nonzero index along the `dim` axis.
+    """
     indices = add_dim_as_except(
         torch.arange(tensor.size(dim) - 1, -1, -1, dtype=torch.int64, device=tensor.device),
         tensor, dim
@@ -191,8 +196,16 @@ def leftmost_nonzero(tensor, dim):
     return (tensor.to(torch.int64) * tensor.size(dim) + indices).argmax(dim=dim)
 
 
-def rightmost_nonzero(tensor, dim):
-    """Return the smallest nonzero index along the `dim` axis. The tensor should be binary."""
+def rightmost_nonzero(tensor: torch.Tensor, dim: int) -> torch.Tensor:
+    """Return the smallest nonzero index along the `dim` axis. The tensor should be binary.
+
+    Args:
+        tensor (torch.Tensor): input.
+        dim (int): the dimension.
+
+    Returns:
+        torch.Tensor : the smallest nonzero index along the `dim` axis.
+    """
     indices = add_dim_as_except(
         torch.arange(tensor.size(dim), dtype=torch.int64, device=tensor.device),
         tensor, dim
@@ -201,6 +214,23 @@ def rightmost_nonzero(tensor, dim):
 
 
 def index_nonzero(tensor, mask):
+    """Iteratively generates the values of `tensor` where `mask` is nonzero. When `mask` is a 1D tensor,
+    this function is equivalent to:
+
+    .. code-block:: python
+
+        for i in range(mask.size(0)):
+            if mask[i]:
+                yield tensor[i]
+
+    Args:
+        tensor (torch.Tensor): input.
+        mask (torch.Tensor): the mask.
+
+    Yields:
+        torch.Tensor: the values of `tensor` where `mask` is nonzero.
+    """
+
     assert tensor.shape[:mask.dim()] == mask.shape
     if mask.dim() == 0:
         if mask.item() != 0:
@@ -212,7 +242,17 @@ def index_nonzero(tensor, mask):
         yield from tensor[torch.not_equal(mask, 0)]
 
 
-def batched_index_select(tensor, batched_indices):
+def batched_index_select(tensor: torch.Tensor, batched_indices: torch.Tensor) -> torch.Tensor:
+    """Select elements from `tensor` according to `batched_indices`. The first dimension is assumed to be the batch dimension.
+    This operation is equivalent to numpy: `tensor[np.arange(len(batched_indices)), batched_indices]`.
+
+    Args:
+        tensor (torch.Tensor): input.
+        batched_indices (torch.Tensor): the indices to be selected.
+
+    Returns:
+        torch.Tensor: the selected elements.
+    """
     assert batched_indices.dim() == 2
 
     batch_i = torch.arange(batched_indices.size(0)).to(batched_indices)
@@ -247,3 +287,11 @@ else:
     batched_index_slice = requires_vendors('torch_index')(make_dummy_func())
     batched_index_vector_dim = requires_vendors('torch_index')(make_dummy_func())
     batched_index_vectors = requires_vendors('torch_index')(make_dummy_func())
+
+
+if has_vendor('einshape'):
+    from einshape.src.pytorch.pytorch_ops import einshape
+else:
+    from jacinle.utils.meta import make_dummy_func
+    einshape = requires_vendors('einshape')(make_dummy_func())
+

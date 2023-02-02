@@ -27,13 +27,22 @@ logger = get_logger(__file__)
 __all__ = ['TrainerEnv']
 
 
-def cuda_time(sync=True):
+def cuda_time(sync: bool = True) -> float:
+    """Return the current time in seconds, with CUDA synchronization.
+
+    Args:
+        sync: if True, synchronize the CUDA stream before taking the time.
+
+    Returns:
+        the current time in seconds.
+    """
     if sync:
         torch.cuda.synchronize()
     return time.time()
 
 
 def default_reduce_func(k, v):
+    """Default reduce function for the TrainerEnv."""
     if torch.is_tensor(v):
         return v.mean()
     return v

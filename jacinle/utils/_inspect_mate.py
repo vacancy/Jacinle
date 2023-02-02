@@ -107,8 +107,8 @@ def is_static_method(klass, attr, value=None):
     for cls in inspect.getmro(klass):
         if inspect.isroutine(value):
             if attr in cls.__dict__:
-                binded_value = cls.__dict__[attr]
-                return isinstance(binded_value, staticmethod)
+                bound_value = cls.__dict__[attr]
+                return isinstance(bound_value, staticmethod)
     return False
 
 
@@ -130,8 +130,8 @@ def is_class_method(klass, attr, value=None):
     for cls in inspect.getmro(klass):
         if inspect.isroutine(value):
             if attr in cls.__dict__:
-                binded_value = cls.__dict__[attr]
-                if isinstance(binded_value, classmethod):
+                bound_value = cls.__dict__[attr]
+                if isinstance(bound_value, classmethod):
                     return True
     return False
 

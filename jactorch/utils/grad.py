@@ -16,6 +16,7 @@ __all__ = ['no_grad_func']
 
 
 def no_grad_func(func):
+    """A decorator to disable gradient calculation for a function."""
     @functools.wraps(func)
     def new_func(*args, **kwargs):
         with torch.no_grad():

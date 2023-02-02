@@ -14,7 +14,7 @@ import contextlib
 import functools
 
 from .meta import decorator_with_optional_args
-from .naming import class_name_of_method
+from .inspect import class_name_of_method
 
 __all__ = [
     'defaults_manager', 'wrap_custom_as_default', 'gen_get_default', 'gen_set_default',
@@ -24,6 +24,49 @@ __all__ = [
 
 
 class DefaultsManager(object):
+    """Defaults manager can be used to create program or thread-level registries.
+    One of the typical use case is that you can create an instance of a specific class, and then set it as the default,
+    and then get this instance from elsewhere.
+
+    For example::
+
+        >>> class Storage(object):
+        ...     def __init__(self, value):
+        ...         self.value = value
+
+        >>> storage = Storage(1)
+        >>> set_defualt_storage(storage)
+        >>> get_default_storage()  # now you can call this elsewhere.
+
+    Another important feature supported by this default manager is that it allows you to have "nested" default registries.
+
+    For example::
+
+        >>> get_default_storage().value  # -> 1
+        >>> with Stoage(2).as_default():
+        ...     get_default_storage().value  # -> 2
+        ...     with Storage(3).as_default():
+        ...         get_default_storage().value  # -> 3
+        ...     get_default_storage().value  # -> 2
+
+    Similar features have been used commonly in TensorFlow, e.g., tf.Session, tf.Graph.
+
+    To create a class with a default registry, use the following:
+
+    .. code-block:: python
+
+        class Storage(object):
+            def __init__(self, value):
+                self.value = value
+
+            @defaults_manager.wrap_custom_as_default(is_local=True)
+            def as_default(self):  # this is a contextmanager
+                yield
+
+        get_default_storage = defaults_manager.gen_get_default(Storage)
+        set_default_storage = defaults_manager.gen_set_default(Storage)
+    """
+
     def __init__(self):
         self._is_local = dict()
 
@@ -112,15 +155,18 @@ def option_context(name, is_local=True, **kwargs):
 
         @classmethod
         def get_option(cls, name):
+            """Get the option value of the current context."""
             getattr(cls.get_default(), name)
 
         @classmethod
         def set_default_option(cls, name, value):
+            """Set the option value for the current context."""
             cls._create_default_context()
             setattr(cls.default_context.ctx, name, value)
 
         @classmethod
         def get_default(cls):
+            """Get the current option context."""
             cls._create_current_context()
             if cls.current_context.ctx is not None:
                 return cls.current_context.ctx
@@ -130,6 +176,7 @@ def option_context(name, is_local=True, **kwargs):
 
         @contextlib.contextmanager
         def as_default(self):
+            """Make this option context the current context. It will overwrite the current option values."""
             self.__class__._create_current_context()
             backup = self.__class__.current_context.ctx
             self.__class__.current_context.ctx = self
@@ -164,6 +211,22 @@ def option_context(name, is_local=True, **kwargs):
 
 
 class FileOptions(object):
+    """A class that stores options in a single file.
+
+    Example:
+        .. code-block:: python
+
+            # file: my_module.py
+            options = FileOptions(__file__, number_to_add=1)
+
+            def my_func(x: int) -> int:
+                return x + options.number_to_add
+
+            # file: my_script.py
+            import my_module
+            my_module.options.set(number_to_add=2)
+            my_module.my_func(1)  # returns 3
+    """
     def __init__(self, __file__, **init_kwargs):
         self.__file__ = __file__
         for k, v in init_kwargs.items():
@@ -176,9 +239,31 @@ class FileOptions(object):
 
 
 ARGDEF = object()
+"""A special value to indicate that the default value of an argument will be determined in a deferred manner. See :func:`default_args`."""
 
 
 def default_args(func):
+    """A helper function handles the case of "fall-through" default arguments. Suppose we have two functions:
+    ``f`` and ``g``, and ``f`` calls ``g``. ``g`` has a default argument ``x``, e.g., ``x=1``.
+    In many cases, we do not want to specify the default value of ``x`` in ``f``. One way to do this is to
+    use ``None`` as the default value of ``x`` in ``f``, and then check if ``x`` is ``None`` in ``g``. However
+    this does not handle cases where ``x`` can be ``None`` in other cases. It also requires additional
+    checks in ``g``. With this decorator, we can simply write ``x=ARGDEF`` in ``f``, and then ``x`` will
+    be set to ``1`` in ``g``.
+
+    Example:
+        .. code-block:: python
+
+            def f(x=ARGDEF):
+                g(x)
+
+            @default_args
+            def g(x=1):
+                print(x)
+
+            f()  # prints 1
+            f(2)  # prints 2
+    """
     def wrapper(func):
         sig = inspect.signature(func)
 

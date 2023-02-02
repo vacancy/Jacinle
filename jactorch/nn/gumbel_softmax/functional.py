@@ -13,7 +13,7 @@ import torch.nn.functional as F
 from jacinle.utils.enum import JacEnum
 
 from jactorch.functional.indexing import set_index_one_hot_, one_hot_nd
-from jactorch.functional.mask import masked_softmax
+from jactorch.functional.masking import masked_softmax
 
 __all__ = ['greedy_softmax', 'gumbel_softmax', 'SoftmaxImplmentation', 'general_softmax']
 

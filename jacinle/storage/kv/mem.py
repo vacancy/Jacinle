@@ -8,10 +8,12 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-from .kv import KVStoreBase
+from .base import KVStoreBase
 
 
 class MemKVStore(KVStoreBase):
+    """A simple in-memory key-value store."""
+
     def __init__(self, readonly=False):
         super().__init__(readonly=readonly)
         self._store = dict()

@@ -8,13 +8,20 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-from .custom_optimizer import CustomizedOptimizer
+from .custom_optimizer_base import CustomizedOptimizer
 
 __all__ = ['OptimizerGroup']
 
 
 class OptimizerGroup(CustomizedOptimizer):
+    """A group of optimizers. Useful when using multiple optimizers for different parts of the model."""
+
     def __init__(self, **optimizers):
+        """Initialize the optimizer group.
+
+        Args:
+            **optimizers: the list of optimizers.
+        """
         self.optimizers = optimizers
 
     def __getattr__(self, item):
@@ -22,6 +29,20 @@ class OptimizerGroup(CustomizedOptimizer):
 
     def __getitem__(self, item):
         return self.optimizers[item]
+
+    @property
+    def state(self):
+        return {
+            name: opt.state
+            for name, opt in self.optimizers.items()
+        }
+
+    @property
+    def param_groups(self):
+        return {
+            name: opt.param_groups
+            for name, opt in self.optimizers.items()
+        }
 
     def state_dict(self):
         return {

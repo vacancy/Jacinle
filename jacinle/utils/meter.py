@@ -19,11 +19,12 @@ from .meta import map_exec
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
-    val = 0
-    avg = 0
-    sum = 0
-    count = 0
-    tot_count = 0
+
+    val: float = 0
+    avg: float = 0
+    sum: float = 0
+    count: float = 0
+    tot_count: float = 0
 
     def __init__(self):
         self.reset()
@@ -51,8 +52,9 @@ class GroupMeters(object):
         map_exec(AverageMeter.reset, self._meters.values())
 
     def update(self, updates=None, value=None, n=1, **kwargs):
-        """
-        Example:
+        """Update the meters.
+
+        Examples:
             >>> meters.update(key, value)
             >>> meters.update({key1: value1, key2: value2})
             >>> meters.update(key1=value1, key2=value2)
@@ -93,7 +95,7 @@ class GroupMeters(object):
         if compressed:
             return self.format(caption, values, '{}={:4f}', ' ')
         else:
-            return self.format(caption, values, '\t{} = {:4f}', '\n')
+            return self.format(caption, values, '  {} = {:4f}', '\n')
 
     def dump(self, filename, values='avg'):
         meters_kv = self._canonize_values(values)

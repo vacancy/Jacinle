@@ -8,3 +8,4 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""A simple wrapper around tornado for simple web applications. See `examples/web-starter` for a simple example."""

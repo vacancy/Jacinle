@@ -16,11 +16,12 @@ Subpackages
    jacinle.comm
    jacinle.concurrency
    jacinle.config
-   jacinle.event
    jacinle.image
    jacinle.io
    jacinle.jit
    jacinle.logging
+   jacinle.nd
    jacinle.random
    jacinle.storage
    jacinle.utils
+   jacinle.web

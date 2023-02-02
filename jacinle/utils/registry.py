@@ -114,12 +114,11 @@ class CallbackRegistry(Registry):
 
     The fallback callback will also receive the called name as its first argument.
 
-    Examples:
-
-    >>> registry = CallbackRegistry()
-    >>> callback_func = print
-    >>> registry.register('name', callback_func)  # register a callback.
-    >>> registry.dispatch('name', 'arg1', 'arg2', kwarg1='kwarg1')  # dispatch.
+    Example:
+        >>> registry = CallbackRegistry()
+        >>> callback_func = print
+        >>> registry.register('name', callback_func)  # register a callback.
+        >>> registry.dispatch('name', 'arg1', 'arg2', kwarg1='kwarg1')  # dispatch.
     """
     def __init__(self):
         super().__init__()

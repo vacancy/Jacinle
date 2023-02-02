@@ -18,6 +18,7 @@ __all__ = ['has_vendor', 'requires_vendors']
 
 
 def has_vendor(vendor):
+    """Check if the module is available."""
     try:
         importlib.import_module(vendor)
     except ImportError as e:
@@ -26,6 +27,7 @@ def has_vendor(vendor):
 
 
 def requires_vendors(*vendors):
+    """Decorator to check if the module is available. If not, raises an error when the function is called."""
     def wrapper(func):
         checked_vendors = False
 

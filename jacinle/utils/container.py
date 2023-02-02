@@ -10,6 +10,7 @@
 
 import copy
 import collections
+from typing import Any, Optional, Iterable
 
 from .printing import kvformat, kvprint
 
@@ -17,6 +18,14 @@ __all__ = ['G', 'g', 'GView', 'SlotAttrObject', 'OrderedSet']
 
 
 class G(dict):
+    """A simple container that wraps a dict and provides attribute access to the dict.
+
+    Example:
+        >>> g = G()
+        >>> g.a = 1
+        >>> g['b'] = 2
+
+    """
     def __getattr__(self, k):
         if k not in self:
             raise AttributeError
@@ -29,17 +38,24 @@ class G(dict):
         del self[k]
 
     def format(self, sep=': ', end='\n'):
+        """Format the dict as a string using :func:`jacinle.utils.printing.kvformat`."""
         return kvformat(self, sep=sep, end=end)
 
     def print(self, sep=': ', end='\n', file=None):
+        """Print the dict using :func:`jacinle.utils.printing.kvprint`."""
         return kvprint(self, sep=sep, end=end, file=file)
 
 
 g = G()
+"""A simple global dict-like object."""
 
 
 class GView(object):
+    """A simple container that wraps a dict and provides attribute access to the dict.
+    In contrast to :class:`G`, this class wraps around an existing dict."""
+
     def __init__(self, dict_=None):
+        """Initialize the container."""
         if dict_ is None:
             dict_ = dict()
         object.__setattr__(self, '_dict', dict_)
@@ -71,41 +87,60 @@ class GView(object):
         return iter(self.raw().items())
 
     def raw(self):
+        """Return the underlying :class:`dict`."""
         return object.__getattribute__(self, '_dict')
 
     def update(self, other):
+        """Update the underlying dict with another dict."""
         self.raw().update(other)
 
     def keys(self):
+        """Return the keys of the underlying dict."""
         return self.raw().keys()
 
     def values(self):
+        """Return the values of the underlying dict."""
         return self.raw().values()
 
     def items(self):
+        """Iterate over the items of the underlying dict."""
         return self.raw().items()
 
     def copy(self):
+        """Return a shallow copy of the underlying dict."""
         return GView(self.raw().copy())
 
     def format(self, sep=': ', end='\n'):
+        """Format the dict as a string using :func:`jacinle.utils.printing.kvformat`."""
         return kvformat(self.raw(), sep=sep, end=end)
 
     def print(self, sep=': ', end='\n', file=None):
+        """Print the dict using :func:`jacinle.utils.printing.kvprint`."""
         return kvprint(self.raw(), sep=sep, end=end, file=file)
 
 
 class SlotAttrObject(object):
+    """Create a object that allows only a fixed set of attributes to be set."""
+
     def __init__(self, **kwargs):
+        """Initialize the object.
+
+        Args:
+            kwargs: the attributes to be set.
+        """
         for k, v in kwargs.items():
             setattr(self, k, v)
 
     def update(self, **kwargs):
+        """Update the attributes of the object."""
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-    def clone(self):
-        return copy.deepcopy(self)
+    def clone(self, deep: bool = False):
+        """Return a shallow or a deep copy of the object."""
+        if deep:
+            return copy.deepcopy(self)
+        return copy.copy(self)
 
     def __setattr__(self, k, v):
         assert not k.startswith('_')
@@ -121,24 +156,33 @@ class SlotAttrObject(object):
 
 
 class OrderedSet(object):
-    def __init__(self, initial_list=None):
+    """A set that keeps the order of the elements."""
+
+    def __init__(self, initial_list: Optional[Iterable[Any]] = None):
+        """Initialize the set.
+
+        Args:
+            initial_list: the initial list of elements.
+        """
         if initial_list is not None:
             self._dict = collections.OrderedDict([(v, True) for v in initial_list])
         else:
             self._dict = collections.OrderedDict()
 
     def as_list(self):
+        """Return the elements as a list."""
         return list(self._dict.keys())
 
     def append(self, value):
+        """Append an element to the set."""
         self._dict[value] = True
 
     def remove(self, value):
+        """Remove an element from the set."""
         del self._dict[value]
 
     def __contains__(self, value):
         return value in self._dict
 
     def __iter__(self):
-        return self._dict.keys()
-
+        yield from self._dict.keys()

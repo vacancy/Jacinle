@@ -15,7 +15,6 @@ Subpackages
    jactorch.nn.cnn
    jactorch.nn.gumbel_softmax
    jactorch.nn.losses
-   jactorch.nn.mask
    jactorch.nn.neural_logic
    jactorch.nn.prroi_pool
    jactorch.nn.sync_batchnorm

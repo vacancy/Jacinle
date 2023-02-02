@@ -9,6 +9,7 @@
 # Distributed under terms of the MIT license.
 
 import os.path as osp
+from typing import Any, Optional, Union, Sequence, Dict
 
 import numpy as np
 import torch
@@ -27,7 +28,25 @@ __all__ = ['state_dict', 'load_state_dict', 'load_weights']
 __extra_magic_name__ = '__jacinle_extra_state_dict__'
 
 
-def state_dict(model, include=None, exclude=None, cpu=True):
+def state_dict(model: nn.Module, include: Optional[Sequence[str]] = None, exclude: Optional[Sequence[str]] = None, cpu: bool = True) -> Dict[str, Any]:
+    """Get a state dict representation of the model. This function is similar to ``model.state_dict()``, but it also
+    supports additional features including:
+
+    - ``include`` and ``exclude``: only include/exclude some parameters.
+    - ``cpu``: move the parameters to CPU.
+    - ``extra_state_dict``: each module can implement a custom ``extra_state_dict`` method which return additional state
+        of the module (such as hyperparameters, random seeds, etc.).
+
+    Args:
+        model: the PyTorch model.
+        include: a list of parameter names to be included in the state dict (supports globbing).
+        exclude: a list of parameter names to be excluded from the state dict (supports globbing).
+        cpu: whether to move the parameters to CPU.
+
+    Returns:
+        A state dict.
+    """
+
     if isinstance(model, nn.DataParallel):
         model = model.module
 
@@ -52,7 +71,24 @@ def state_dict(model, include=None, exclude=None, cpu=True):
     return state_dict
 
 
-def load_state_dict(model, state_dict, include=None, exclude=None):
+def load_state_dict(model: nn.Module, state_dict: Dict[str, Any], include: Optional[Sequence[str]] = None, exclude: Optional[Sequence[str]] = None):
+    """Load a state dict into the model. This function is similar to ``model.load_state_dict()``, but it also
+    supports additional features including:
+
+    - ``include`` and ``exclude``: only include/exclude some parameters.
+    - ``extra_state_dict``: each module can implement a custom ``load_extra_state_dict`` method which load additional state
+        of the module (such as hyperparameters, random seeds, etc.).
+
+    Furthermore, this function will not raise exceptions when there are missing or unexpected parameters. This is similar to the
+    latest PyTorch behavior specifed by ``strict=False``.
+
+    Args:
+        model: the PyTorch model.
+        state_dict: the state dict to be loaded.
+        include: a list of parameter names to be included in the state dict (supports globbing).
+        exclude: a list of parameter names to be excluded from the state dict (supports globbing).
+    """
+
     if isinstance(model, nn.DataParallel):
         model = model.module
 
@@ -113,7 +149,26 @@ def load_state_dict(model, state_dict, include=None, exclude=None):
         raise KeyError('\n'.join(error_msg))
 
 
-def load_weights(model, filename, include=None, exclude=None, return_raw=True):
+def load_weights(model, filename, include=None, exclude=None, return_raw=True) -> Union[bool, Optional[Dict[str, Any]]]:
+    """Load weights from a file. Internally this function calls :func:`load_state_dict`.
+    It handles the case where the loaded file is a checkpoint (i.e., containing both weights and optimizer states).
+    It will automatically detect such case and extract the weights.
+
+    Args:
+        model: the PyTorch model.
+        filename: the file name.
+        include: a list of parameter names to be included in the state dict (supports globbing).
+        exclude: a list of parameter names to be excluded from the state dict (supports globbing).
+        return_raw: whether to return the raw state dict. If ``False``, this function will return ``True`` when the weights
+            are successfully loaded. If ``True``, this function will return the loaded file (either a state dict or a checkpoint).
+            when the weights are successfully loaded, and ``None`` otherwise.
+
+    Returns:
+
+        - If ``return_raw=False``, return ``True`` when the weights are successfully loaded, and ``False`` otherwise.
+        - If ``return_raw=True``, return the loaded file (either a state dict or a checkpoint) when the weights are successfully loaded,
+            and ``None`` otherwise.
+    """
     if osp.isfile(filename):
         try:
             raw = weights = io.load(filename)
@@ -133,5 +188,5 @@ def load_weights(model, filename, include=None, exclude=None, return_raw=True):
             logger.exception('Error occurred when load weights {}.'.format(filename))
     else:
         logger.warning('No weights file found at specified position: {}.'.format(filename))
-    return None
+    return None if return_raw else False
 

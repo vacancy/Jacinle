@@ -8,7 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-from .custom_optimizer import *
+from .custom_optimizer_base import *
 from .accum_grad import *
 from .weight_decay import *
 from .optimizer_group import *

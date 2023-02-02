@@ -16,7 +16,7 @@ except ImportError:
     from io import BytesIO  # Python 3.x
 
 import tensorflow
-if tensorflow.__version__ >= '1.14.0':
+if str(tensorflow.__version__) >= '1.14.0':
     import tensorflow.compat.v1 as tf
 
     if hasattr(tf, 'disable_eager_execution'):
@@ -28,10 +28,17 @@ from jacinle.utils.meter import GroupMeters
 
 
 class TBLogger(object):
-    # Adapted from:
-    # https://raw.githubusercontent.com/SherlockLiao/pytorch-beginner/
+    """A simple wrapper for tensorboard.
 
-    def __init__(self, log_dir):
+    Source: https://raw.githubusercontent.com/SherlockLiao/pytorch-beginner/
+    """
+
+    def __init__(self, log_dir: str):
+        """Creates a summary writer logging to ``log_dir``.
+
+        Args:
+            log_dir: the directory to save the logs.
+        """
         self.writer = tf.summary.FileWriter(log_dir)
 
     def scalar_summary(self, tag, value, step):
@@ -90,12 +97,15 @@ class TBLogger(object):
 
 
 class TBGroupMeters(GroupMeters):
+    """A group of meters that can be updated and logged to tensorboard."""
+
     def __init__(self, tb_logger):
         super().__init__()
         self._tb_logger = tb_logger
 
     def update(self, updates=None, value=None, n=1, **kwargs):
-        """
+        """Update the meters.
+
         Example:
             >>> meters.update(key, value)
             >>> meters.update({key1: value1, key2: value2})

@@ -12,6 +12,8 @@ __all__ = ['format_exc']
 
 
 def format_exc(ei):
+    """Format an exception info tuple into a string. Useful in context managers."""
+
     import io
     import traceback
 

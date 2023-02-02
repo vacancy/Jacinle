@@ -49,6 +49,7 @@ def _as_tensor(o):
 
 
 def as_tensor(obj):
+    """Convert elements in a Python data structure to tensors. Supported types: tensor, variable (PyTorch 0.x), numpy array, and Python scalars."""
     return stmap(_as_tensor, obj)
 
 
@@ -81,6 +82,7 @@ def _as_numpy(o):
 
 
 def as_numpy(obj):
+    """Convert elements in a Python data structure to numpy arrays. Supported types: tensor, variable (PyTorch 0.x), numpy array, and Python scalars."""
     return stmap(_as_numpy, obj)
 
 
@@ -95,6 +97,7 @@ def _as_float(o):
 
 
 def as_float(obj):
+    """Convert elements in a Python data structure to Python floating-point scalars. Supported types: tensor, variable (PyTorch 0.x), numpy array, and Python scalars."""
     return stmap(_as_float, obj)
 
 
@@ -106,6 +109,7 @@ def _as_cpu(o):
 
 
 def as_cpu(obj):
+    """Move elements in a Python data structure to CPU. Only changes tensors and variables (PyTorch 0.x)."""
     return stmap(_as_cpu, obj)
 
 
@@ -117,6 +121,7 @@ def _as_cuda(o):
 
 
 def as_cuda(obj):
+    """Move elements in a Python data structure to CPU. Only changes tensors and variables (PyTorch 0.x)."""
     return stmap(_as_cuda, obj)
 
 
@@ -129,6 +134,11 @@ def _as_detached(o, clone=False):
     return o
 
 
-def as_detached(obj, clone=False):
+def as_detached(obj, clone: bool = False):
+    """Detach elements in a Python data structure. Only changes tensors and variables (PyTorch 0.x).
+
+    Args:
+        clone: if True, clone the tensor before detaching.
+    """
     return stmap(functools.partial(_as_detached, clone=clone), obj)
 

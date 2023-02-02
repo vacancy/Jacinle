@@ -8,8 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-import lmdb
 import pickle
+from typing import Union
 
 try:
     import memcache
@@ -19,7 +19,7 @@ except ImportError:
     logger.warning('Cannot import memcache. MemcachedKVStore is unavailable.')
     memcache = None
 
-from .kv import KVStoreBase
+from .base import KVStoreBase
 
 _loads = pickle.loads
 _dumps = pickle.dumps
@@ -27,7 +27,28 @@ _encode = lambda s: s.encode('utf8')
 
 
 class MemcachedKVStore(KVStoreBase):
-    def __init__(self, addr, port, readonly=False):
+    """A memcached-based key-value store."""
+
+    available: bool
+    """Whether the memcached is available."""
+
+    addr: str
+    """The address of the memcached server."""
+
+    port: Union[str, int]
+    """The port of the memcached server."""
+
+    full_addr: str
+    """The full address of the memcached server."""
+
+    def __init__(self, addr: str, port: Union[str, int], readonly: bool = False):
+        """Initialize the MemcachedKVStore.
+
+        Args:
+            addr: the address of the memcached server.
+            port: the port of the memcached server.
+            readonly: whether the KVStore is readonly.
+        """
         super().__init__(readonly)
         self.available = memcache is not None
 
@@ -39,6 +60,7 @@ class MemcachedKVStore(KVStoreBase):
 
     @property
     def connection(self):
+        """The connection to the memcached server."""
         if self._connection is None:
             self._connection = memcache.Client([self.full_addr], debug=0)
         return self._connection

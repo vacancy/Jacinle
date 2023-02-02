@@ -43,8 +43,7 @@ def patch_dict_gathering(data_parallel):
 
 
 def dict_gather_v1(outputs, target_device, dim=0):
-    """
-    Gathers variables from different GPUs on a specified device
+    """Gathers variables from different GPUs on a specified device
       (-1 means the CPU), with dictionary support.
     """
     def gather_map(outputs):

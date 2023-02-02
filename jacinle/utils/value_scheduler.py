@@ -33,6 +33,9 @@ class MonotonicSchedulerBase(ValueScheduler):
         self.end = end
         self.end_value = end_value
 
+    def get(self, x):
+        raise NotImplementedError()
+
 
 class LinearScheduler(MonotonicSchedulerBase):
     def get(self, x):

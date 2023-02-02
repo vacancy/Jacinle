@@ -8,6 +8,8 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+"""Clustering functions."""
+
 import torch
 from jacinle.utils.vendor import requires_vendors
 

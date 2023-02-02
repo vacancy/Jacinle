@@ -13,14 +13,24 @@ import socket
 __all__ = ['get_local_addr', 'get_local_addr_v1', 'get_local_addr_v2']
 
 
-def get_local_addr_v1():
+def get_local_addr_v1() -> str:
+    """Get the local IP address of the machine. This is the old version of get_local_addr.
+
+    Returns:
+        the local IP address.
+    """
     try:
         return socket.gethostbyname(socket.gethostname())
     except Exception:
         return '127.0.0.1'
 
 
-def get_local_addr_v2():
+def get_local_addr_v2() -> str:
+    """Get the local IP address of the machine. This is the new version of get_local_addr.
+
+    Returns:
+        the local IP address.
+    """
     try:
         return _get_local_addr_v2_impl()
     except Exception:
@@ -29,7 +39,7 @@ def get_local_addr_v2():
 
 
 # http://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib
-def _get_local_addr_v2_impl():
+def _get_local_addr_v2_impl() -> str:
     resolve = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1]
     if len(resolve):
         return resolve[0]
@@ -41,4 +51,11 @@ def _get_local_addr_v2_impl():
     return addr
 
 
-get_local_addr = get_local_addr_v2
+def get_local_addr() -> str:
+    """Get the local IP address of the machine.
+
+    Returns:
+        the local IP address.
+    """
+    return get_local_addr_v2()
+

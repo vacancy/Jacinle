@@ -12,6 +12,8 @@ __all__ = ['EmptyContext', 'KeyboardInterruptContext', 'SaverContext']
 
 
 class EmptyContext(object):
+    """An empty context manager that does nothing."""
+
     def __enter__(self):
         return
 
@@ -20,6 +22,8 @@ class EmptyContext(object):
 
 
 class KeyboardInterruptContext(object):
+    """A context manager that catches KeyboardInterrupt and does nothing."""
+
     def __enter__(self):
         return
 
@@ -29,11 +33,11 @@ class KeyboardInterruptContext(object):
 
 
 class SaverContext(object):
+    """Save some information before entering the context. Restore the information after.
+
+    Inspired by: https://github.com/caelan/pybullet-planning/blob/master/pybullet_tools/utils.py
     """
-    Save some information before entering the context. Restore the information after.
-    Inspired by:
-        https://github.com/caelan/pybullet-planning/blob/master/pybullet_tools/utils.py
-    """
+
     def __enter__(self):
         self.save()
         return self
@@ -46,3 +50,4 @@ class SaverContext(object):
 
     def restore(self):
         raise NotImplementedError()
+
