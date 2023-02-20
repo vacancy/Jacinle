@@ -9,6 +9,7 @@
 # Distributed under terms of the MIT license.
 
 import logging
+import functools
 import sys
 
 __all__ = ['set_output_file', 'set_logger_output_file', 'set_default_level', 'get_logger']
@@ -156,6 +157,7 @@ def get_logger(name=None, formatter=JacLogFormatter):
     logger._init_done__ = True
     logger.propagate = False
     logger.setLevel(_g_default_level)
+    logger.warning_once = functools.partial(_warning_once, logger=logger)
     handler = logging.StreamHandler()
     handler.setFormatter(formatter(datefmt='%d %H:%M:%S'))
     handler.setLevel(0)
@@ -163,6 +165,17 @@ def get_logger(name=None, formatter=JacLogFormatter):
     logger.addHandler(handler)
     _g_all_loggers.append(logger)
     return logger
+
+
+@functools.lru_cache(128)
+def _warning_once(message: str, logger):
+    """Print a warning message only once.
+
+    Args:
+        logger: the logger to use.
+        message: the message to print.
+    """
+    return logger.warning(message)
 
 
 logger = get_logger('Jacinle')
