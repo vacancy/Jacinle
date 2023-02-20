@@ -13,6 +13,7 @@ import operator
 import six
 import time
 import collections
+import collections.abc
 import threading
 import contextlib
 
@@ -45,9 +46,9 @@ def gofor(v: Iterable[Any]) -> Iterable[Tuple[Any, Any]]:
     Args:
         v: the iterable object.
     """
-    if isinstance(v, collections.Mapping):
+    if isinstance(v, collections.abc.Mapping):
         return v.items()
-    assert_instance(v, collections.Iterable)
+    assert_instance(v, collections.abc.Iterable)
     return enumerate(v)
 
 
@@ -138,11 +139,11 @@ def stmap(func, iterable: Iterable[Any]) -> Iterable[Any]:
     """
     if isinstance(iterable, six.string_types):
         return func(iterable)
-    elif isinstance(iterable, (collections.Sequence, collections.UserList)):
+    elif isinstance(iterable, (collections.abc.Sequence, collections.abc.UserList)):
         return [stmap(func, v) for v in iterable]
-    elif isinstance(iterable, collections.Set):
+    elif isinstance(iterable, collections.abc.Set):
         return {stmap(func, v) for v in iterable}
-    elif isinstance(iterable, (collections.Mapping, collections.UserDict)):
+    elif isinstance(iterable, (dict, collections.abc.UserDict)):
         return {k: stmap(func, v) for k, v in iterable.items()}
     else:
         return func(iterable)
@@ -295,13 +296,13 @@ def dict_deep_kv(d: Dict[Any, Any], sort: bool = True, sep='.', allow_dict: bool
     """
 
     # Not using collections.Sequence to avoid infinite recursion.
-    assert isinstance(d, (tuple, list, collections.Mapping))
+    assert isinstance(d, (tuple, list, dict))
     result = list()
 
     def _dfs(current, prefix=None):
         for key, value in gofor(current):
             current_key = key if prefix is None else prefix + sep + str(key)
-            if isinstance(current[key], (tuple, list, collections.Mapping)):
+            if isinstance(current[key], (tuple, list, dict)):
                 if allow_dict:
                     result.append((current_key, value))
                 _dfs(current[key], current_key)
