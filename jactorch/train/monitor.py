@@ -11,13 +11,13 @@
 from typing import Optional, Dict
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from jactorch.utils.meta import as_float
 from jactorch.utils.grad import no_grad_func
 
 __all__ = [
     'binary_classification_accuracy',
+    'binary_classification_accuracy_4',
     'classification_accuracy',
     'regression_accuracy',
     'monitor_rms',
@@ -56,6 +56,29 @@ def binary_classification_accuracy(pred: torch.Tensor, label: torch.Tensor, name
             prefix + '/saturation/min': as_float(sat.min())
         }
     return {prefix: as_float(acc.float().mean())}
+
+
+@no_grad_func
+def binary_classification_accuracy_4(pred: torch.Tensor, label: torch.Tensor, name: str = '') -> Dict[str, float]:
+    if name != '':
+        name = '/' + name
+
+    prefix = 'accuracy' + name
+    pred = pred.view(-1)  # Binary accuracy
+    label = label.view(-1)
+    numel = pred.numel()
+
+    gt_0_pred_0 = ((label < 0.5) & (pred < 0.5)).sum() / numel
+    gt_0_pred_1 = ((label < 0.5) & (pred > 0.5)).sum() / numel
+    gt_1_pred_0 = ((label > 0.5) & (pred < 0.5)).sum() / numel
+    gt_1_pred_1 = ((label > 0.5) & (pred > 0.5)).sum() / numel
+
+    return {
+        prefix + '/gt_0_pred_0': as_float(gt_0_pred_0),
+        prefix + '/gt_0_pred_1': as_float(gt_0_pred_1),
+        prefix + '/gt_1_pred_0': as_float(gt_1_pred_0),
+        prefix + '/gt_1_pred_1': as_float(gt_1_pred_1),
+    }
 
 
 @no_grad_func

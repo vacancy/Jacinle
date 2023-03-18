@@ -131,7 +131,7 @@ def log_function(init_function: Optional[Callable] = None, *, verbose: bool = Tr
     """
     def wrapper(function: Callable) -> Callable:
         print_self = False
-        if '.' in function.__qualname__:
+        if '.' in function.__qualname__ and '<locals>' not in function.__qualname__:
             print_self = True
 
         @functools.wraps(function)

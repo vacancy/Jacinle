@@ -139,11 +139,11 @@ def stmap(func, iterable: Iterable[Any]) -> Iterable[Any]:
     """
     if isinstance(iterable, six.string_types):
         return func(iterable)
-    elif isinstance(iterable, (collections.abc.Sequence, collections.abc.UserList)):
+    elif isinstance(iterable, collections.abc.Sequence):
         return [stmap(func, v) for v in iterable]
     elif isinstance(iterable, collections.abc.Set):
         return {stmap(func, v) for v in iterable}
-    elif isinstance(iterable, (dict, collections.abc.UserDict)):
+    elif isinstance(iterable, (dict, collections.abc.Mapping)):
         return {k: stmap(func, v) for k, v in iterable.items()}
     else:
         return func(iterable)

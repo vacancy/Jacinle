@@ -13,6 +13,7 @@ import time
 import torch
 
 from jacinle.utils.meter import GroupMeters
+from jactorch.data.dataloader.dataloader import JacDataLoader
 from jactorch.optim.quickaccess import get_optimizer
 from jactorch.utils.meta import as_numpy, as_float, as_tensor
 from jacinle.logging import get_logger
@@ -22,13 +23,18 @@ logger = get_logger(__file__)
 __all__ = ['simple_fit', 'ModelTrainer']
 
 
-def simple_fit(model, loss_function, dataset, optimizer, epochs, lr=0.01, weight_decay=0, print_interval=1, **opt_kwargs):
+def simple_fit(model, loss_function, dataset, optimizer, epochs, lr=0.01, weight_decay=0, print_interval=1, batch_size=None, **opt_kwargs):
     optimizer = get_optimizer(optimizer, model, lr=lr, weight_decay=weight_decay, **opt_kwargs)
+
+    if batch_size is None:
+        dataloader = dataset
+    else:
+        dataloader = JacDataLoader(dataset, batch_size=batch_size, shuffle=True, drop_last=True)
 
     iterations = 1
     model.train()
     for epoch_index in range(1, 1 + epochs):
-        for data_index, data in enumerate(dataset):
+        for data_index, data in enumerate(dataloader):
             optimizer.zero_grad()
             loss, monitors = loss_function(model, data)
             loss.backward()
