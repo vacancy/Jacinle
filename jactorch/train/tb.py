@@ -103,7 +103,7 @@ class TBGroupMeters(GroupMeters):
         super().__init__()
         self._tb_logger = tb_logger
 
-    def update(self, updates=None, value=None, n=1, **kwargs):
+    def update(self, updates=None, value=None, n=1, prefix=None, **kwargs):
         """Update the meters.
 
         Example:
@@ -117,6 +117,7 @@ class TBGroupMeters(GroupMeters):
             updates = {updates: value}
         updates.update(kwargs)
         for k, v in updates.items():
+            k = k if prefix is None else prefix + k
             self._meters[k].update(v, n=n)
             self._tb_logger.scalar_summary(k, self._meters[k].val, self._meters[k].tot_count)
 
