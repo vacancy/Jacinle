@@ -37,7 +37,7 @@ def concat_shape(*shapes: Union[torch.Size, Tuple[int, ...], List[int], int]) ->
     """Concatenate shapes into a tuple. The values can be either torch.Size, tuple, list, or int."""
     output = []
     for s in shapes:
-        if isinstance(s, collections.Sequence):
+        if isinstance(s, collections.abc.Sequence):
             output.extend(s)
         else:
             output.append(int(s))

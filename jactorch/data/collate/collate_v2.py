@@ -16,8 +16,7 @@ import torch
 from six import string_types
 
 from jacinle.utils.argument import UniqueValueGetter
-from jacinle.utils.enum import JacEnum
-from .utils import use_shared_memory, numpy_type_map, user_scattered_collate, VarLengthCollateMode
+from .utils import use_shared_memory, numpy_type_map, VarLengthCollateMode
 
 __all__ = ['VarLengthCollateV2']
 
@@ -91,7 +90,7 @@ class VarLengthCollateV2(object):
             return torch.DoubleTensor(batch)
         elif isinstance(batch[0], string_types):
             return batch
-        elif isinstance(batch[0], collections.Mapping):
+        elif isinstance(batch[0], collections.abc.Mapping):
             result = {}
             for key in batch[0]:
                 values = [d[key] for d in batch]
@@ -107,7 +106,7 @@ class VarLengthCollateV2(object):
                 else:
                     result[key] = self(values)
             return result
-        elif isinstance(batch[0], collections.Sequence):
+        elif isinstance(batch[0], collections.abc.Sequence):
             transposed = zip(*batch)
             return [self(samples) for samples in transposed]
 
@@ -124,7 +123,6 @@ class VarLengthCollateV2(object):
                 mode = VarLengthCollateMode.from_string(mode_spec)
                 parameters = tuple()
 
-        out = None
         if use_shared_memory():
             # If we're in a background process, concatenate directly into a
             # shared memory tensor to avoid an extra copy
@@ -143,18 +141,20 @@ class VarLengthCollateV2(object):
                 numel = sum([x.numel() for x in values])
 
             if numel > 0:
-                storage = values[0].storage()._new_shared(numel)
-                out = values[0].new(storage)
+                pass
+                # TODO(Jiayuan Mao @ 2023/03/18): add back out=out optimization.
+                # storage = values[0].storage()._new_shared(numel)
+                # out = values[0].new(storage)
 
         if key is None:
-            return torch.stack(values, 0, out=out)
+            return torch.stack(values, 0)
 
         if mode is VarLengthCollateMode.CONCAT:
             uvg = UniqueValueGetter('Tensor sizes should match except the first dim.')
             for v in values:
                 uvg.set(v.size()[1:])
             lengths = [v.size(0) for v in values]
-            return torch.cat(values, 0, out=out), torch.LongTensor(lengths)
+            return torch.cat(values, 0), torch.LongTensor(lengths)
         elif mode is VarLengthCollateMode.PAD:
             uvg = UniqueValueGetter('Tensor sizes should match except the first dim.')
             for v in values:
@@ -168,7 +168,7 @@ class VarLengthCollateV2(object):
                 if v.size(0) < max_length:
                     v = torch.cat([v, v.new(*((max_length - v.size(0), ) + v.size()[1:])).fill_(pad_value)], dim=0)
                 result.append(v)
-            return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
+            return torch.stack(result, 0), torch.LongTensor(lengths)
         elif mode is VarLengthCollateMode.PAD2D:
             uvg = UniqueValueGetter('Tensor sizes should match except the first 2 dims.')
             for v in values:
@@ -183,7 +183,7 @@ class VarLengthCollateV2(object):
                 u = v.new(*(max_h, max_w, *rest_size)).fill_(pad_value)
                 u[:v.size(0), :v.size(1)] = v
                 result.append(u)
-            return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
+            return torch.stack(result, 0), torch.LongTensor(lengths)
         elif mode is VarLengthCollateMode.PADIMAGE:
             uvg = UniqueValueGetter('Tensor sizes should match except the last 2 dims.')
             for v in values:
@@ -199,7 +199,7 @@ class VarLengthCollateV2(object):
                 # TODO(Jiayuan Mao @ 07/19): support input with dim > 3.
                 u[:, :v.size(1), :v.size(2)] = v
                 result.append(u)
-            return torch.stack(result, 0, out=out), torch.LongTensor(lengths)
+            return torch.stack(result, 0), torch.LongTensor(lengths)
         else:
             raise ValueError('Unknown collation mode: {}.'.format(mode))
 
