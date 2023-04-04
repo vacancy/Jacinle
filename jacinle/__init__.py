@@ -257,6 +257,11 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     except ImportError:
         pass
 
+    try:
+        from tabulate import tabulate
+    except ImportError:
+        pass
+
     JAC_VERBOSE = jac_is_verbose()
     JAC_DEBUG = jac_is_debug()
 
