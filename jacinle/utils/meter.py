@@ -51,7 +51,7 @@ class GroupMeters(object):
     def reset(self):
         map_exec(AverageMeter.reset, self._meters.values())
 
-    def update(self, updates=None, value=None, n=1, **kwargs):
+    def update(self, updates=None, value=None, n=1, prefix=None, **kwargs):
         """Update the meters.
 
         Examples:
@@ -65,7 +65,7 @@ class GroupMeters(object):
             updates = {updates: value}
         updates.update(kwargs)
         for k, v in updates.items():
-            self._meters[k].update(v, n=n)
+            self._meters[k if prefix is None else prefix + k].update(v, n=n)
 
     def __getitem__(self, name):
         return self._meters[name]

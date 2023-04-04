@@ -35,9 +35,9 @@ def async_copy_to(obj, dev, main_stream=None):
         if main_stream is not None:
             v.record_stream(main_stream)
         return v
-    elif isinstance(obj, collections.Mapping):
+    elif isinstance(obj, collections.abc.Mapping):
         return {k: async_copy_to(o, dev, main_stream) for k, o in obj.items()}
-    elif isinstance(obj, (tuple, list, collections.UserList)):
+    elif isinstance(obj, (tuple, list)):
         return [async_copy_to(o, dev, main_stream) for o in obj]
     else:
         return obj
