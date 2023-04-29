@@ -71,6 +71,10 @@ def state_dict(model: nn.Module, include: Optional[Sequence[str]] = None, exclud
     return state_dict
 
 
+class StateDictKeyError(KeyError):
+    pass
+
+
 def load_state_dict(model: nn.Module, state_dict: Dict[str, Any], include: Optional[Sequence[str]] = None, exclude: Optional[Sequence[str]] = None):
     """Load a state dict into the model. This function is similar to ``model.load_state_dict()``, but it also
     supports additional features including:
@@ -132,7 +136,11 @@ def load_state_dict(model: nn.Module, state_dict: Dict[str, Any], include: Optio
             name2module = dict(model.named_modules())
             for name, extra in extra_state_dict.items():
                 module = name2module[name]
-                if hasattr(module, 'load_extra_state_dict'):
+                if hasattr(module, 'load_extra_state_dict_and_weights'):
+                    module.load_extra_state_dict_and_weights(extra, {
+                        k.replace(name + '.', ''): v for k, v in state_dict.items() if k.startswith(name + '.')
+                    })
+                elif hasattr(module, 'load_extra_state_dict'):
                     module.load_extra_state_dict(extra)
                 else:
                     logger.warning('Extra state dict found but the model does not support load_extra_state_dict: {}.'.format(name))
@@ -146,7 +154,7 @@ def load_state_dict(model: nn.Module, state_dict: Dict[str, Any], include: Optio
         error_msg.append('Unexpected key "{}" in state_dict.'.format(unexpected))
 
     if len(error_msg):
-        raise KeyError('\n'.join(error_msg))
+        raise StateDictKeyError('\n'.join(error_msg))
 
 
 def load_weights(model, filename, include=None, exclude=None, return_raw=True) -> Union[bool, Optional[Dict[str, Any]]]:
@@ -178,7 +186,7 @@ def load_weights(model, filename, include=None, exclude=None, return_raw=True) -
 
             try:
                 load_state_dict(model, weights, include=include, exclude=exclude)
-            except KeyError as e:
+            except StateDictKeyError as e:
                 logger.warning('Unexpected or missing weights found:\n' + e.args[0])
             logger.critical('Weights loaded: {}.'.format(filename))
             if return_raw:
