@@ -50,6 +50,13 @@ class HTMLTableVisualizer(object):
     def __init__(self, visdir, title):
         self.visdir = visdir
         self.title = title
+        self.allow_assets = True
+        self._index_filename = None
+
+        if self.visdir.endswith('.html'):
+            self._index_filename = self.visdir
+            self.visdir = osp.dirname(self.visdir)
+            self.allow_assets = False
 
         self._index_file = None
         self._table_counter = 0
@@ -73,22 +80,26 @@ class HTMLTableVisualizer(object):
         self.end_html()
 
     def begin_html(self):
-        if osp.isfile(self.visdir):
-            raise FileExistsError('Visualization dir "{}" is a file.'.format(self.visdir))
-        elif osp.isdir(self.visdir) and osp.isfile(self.get_index_filename()):
-            if yes_or_no('Visualization dir "{}" is not empty. Do you want to overwrite?'.format(self.visdir)):
-                shutil.rmtree(self.visdir)
-            else:
-                raise FileExistsError('Visualization dir "{}" already exists.'.format(self.visdir))
+        if self.allow_assets:
+            if osp.isfile(self.visdir):
+                raise FileExistsError('Visualization dir "{}" is a file.'.format(self.visdir))
+            elif osp.isdir(self.visdir) and osp.isfile(self.get_index_filename()):
+                if yes_or_no('Visualization dir "{}" is not empty. Do you want to overwrite?'.format(self.visdir)):
+                    shutil.rmtree(self.visdir)
+                else:
+                    raise FileExistsError('Visualization dir "{}" already exists.'.format(self.visdir))
+            io.mkdir(self.visdir)
+            io.mkdir(osp.join(self.visdir, 'assets'))
+        else:
+            io.mkdir(self.visdir)
 
-        io.mkdir(self.visdir)
-        io.mkdir(osp.join(self.visdir, 'assets'))
         self._index_file = open(self.get_index_filename(), 'w')
         self._print('<html>')
         self._print('<head>')
         self._print('<title>{}</title>'.format(self.title))
         self._print('<style>')
         self._print('td {vertical-align:top;padding:5px}')
+        self._print('pre {white-space: pre-wrap;}')
         self._print('</style>')
         self._print('</head>')
         self._print('<body>')
@@ -225,9 +236,13 @@ class HTMLTableVisualizer(object):
         self._index_file.flush()
 
     def get_index_filename(self):
+        if self._index_filename is not None:
+            return self._index_filename
         return osp.join(self.visdir, 'index.html')
 
     def get_asset_filename(self, row_identifier, col_identifier, ext):
+        if not self.allow_assets:
+            raise ValueError('Assets are not allowed. Specify a directory instead of a .html file.')
         table_dir = osp.join(self.visdir, 'assets', 'table{}'.format(self._table_counter))
         io.mkdir(table_dir)
         return osp.join(table_dir, '{}_{}.{}'.format(row_identifier, col_identifier, ext))
@@ -291,3 +306,4 @@ function frameMove(elem, offset) {
 }
 </script>
     """
+
