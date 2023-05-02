@@ -227,6 +227,7 @@ class FileOptions(object):
             my_module.options.set(number_to_add=2)
             my_module.my_func(1)  # returns 3
     """
+
     def __init__(self, __file__, **init_kwargs):
         self.__file__ = __file__
         for k, v in init_kwargs.items():
