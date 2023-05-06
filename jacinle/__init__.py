@@ -106,6 +106,10 @@ See :doc:`jacinle.config.environ_v2` for more details.
 
     ~jacinle.io.fs.load
     ~jacinle.io.fs.dump
+    ~jacinle.io.fs.load_json
+    ~jacinle.io.fs.dump_json
+    ~jacinle.io.fs.load_pkl
+    ~jacinle.io.fs.dump_pkl
     ~jacinle.io.fs.lsdir
     ~jacinle.io.fs.mkdir
 
@@ -240,6 +244,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.utils.uid import gen_time_string, gen_uuid4
 
     from jacinle.io.fs import load, dump, mkdir, lsdir
+    from jacinle.io.fs import load_json, dump_json, load_pkl, dump_pkl
     from jacinle.random import reset_global_seed, seed, with_seed
 
     import jacinle.cli.git as git
