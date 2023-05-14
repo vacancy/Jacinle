@@ -244,7 +244,8 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.utils.uid import gen_time_string, gen_uuid4
 
     from jacinle.io.fs import load, dump, mkdir, lsdir
-    from jacinle.io.fs import load_json, dump_json, load_pkl, dump_pkl
+    from jacinle.io.fs import load_pkl, dump_pkl
+    from jacinle.io.pretty import load_json, dump_json
     from jacinle.random import reset_global_seed, seed, with_seed
 
     import jacinle.cli.git as git
