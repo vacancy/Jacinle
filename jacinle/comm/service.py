@@ -176,3 +176,8 @@ class SocketClient(object):
             raise RuntimeError(repr(output))
         return output
 
+    def __getattr__(self, name):
+        def _call(*args, **kwargs):
+            return self.call(name, *args, **kwargs)
+        return _call
+

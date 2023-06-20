@@ -27,6 +27,7 @@ parser.add_argument('-f', '--force', action='store_true')
 parser.add_argument('-v', '--verbose', action='store_true')
 parser.add_argument('--fix-unknown', action='store_true')
 parser.add_argument('--fix-date', action='store_true')
+parser.add_argument('--clean-header', action='store_true')
 args = parser.parse_args()
 
 
@@ -153,7 +154,8 @@ def process(filename):
 
     if not args.dry:
         with open(filename, 'w') as f:
-            f.write(HEADER.format(**fields))
+            if not args.clean_header:
+                f.write(HEADER.format(**fields))
             if len(extras):
                 f.writelines(extras)
 

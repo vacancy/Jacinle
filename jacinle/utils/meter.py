@@ -23,6 +23,8 @@ class AverageMeter(object):
     val: float = 0
     avg: float = 0
     sum: float = 0
+    sum2: float = 0
+    std: float = 0
     count: float = 0
     tot_count: float = 0
 
@@ -34,14 +36,18 @@ class AverageMeter(object):
         self.val = 0
         self.avg = 0
         self.sum = 0
+        self.sum2 = 0
         self.count = 0
+        self.std = 0
 
     def update(self, val, n=1):
         self.val = val
         self.sum += val * n
+        self.sum2 += val * val * n
         self.count += n
         self.tot_count += n
         self.avg = self.sum / self.count
+        self.std = (self.sum2 / self.count - self.avg * self.avg) ** 0.5
 
 
 class GroupMeters(object):
@@ -84,6 +90,14 @@ class GroupMeters(object):
     @property
     def val(self):
         return {k: m.val for k, m in self._meters.items() if m.count > 0}
+
+    @property
+    def count(self):
+        return {k: m.count for k, m in self._meters.items() if m.count > 0}
+
+    @property
+    def std(self):
+        return {k: m.std for k, m in self._meters.items() if m.count > 0}
 
     def format(self, caption, values, kv_format, glue):
         meters_kv = self._canonize_values(values)

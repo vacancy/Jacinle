@@ -98,6 +98,20 @@ They will recursively traverse the data structure and apply the function to each
     ~jactorch.functional.indexing.reversed
     ~jactorch.functional.indexing.rightmost_nonzero
     ~jactorch.functional.indexing.set_index_one_hot_
+    ~jactorch.functional.indexing.batch
+    ~jactorch.functional.indexing.patch_torch_index
+    ~jactorch.functional.indexing.tindex
+    ~jactorch.functional.indexing.findex
+    ~jactorch.functional.indexing.vindex
+    ~jactorch.functional.indexing.oindex
+    ~jactorch.functional.indexing.btindex
+    ~jactorch.functional.indexing.bfindex
+    ~jactorch.functional.indexing.bvindex
+    ~jactorch.functional.indexing.boindex
+    ~jactorch.functional.indexing.batched_index_int
+    ~jactorch.functional.indexing.batched_index_slice
+    ~jactorch.functional.indexing.batched_index_vector_dim
+    ~jactorch.functional.indexing.batched_index_vectors
 
 .. rubric:: Kernel
 
@@ -188,6 +202,7 @@ try:
     from .functional.clustering import kmeans
     from .functional.grad import grad_multi, zero_grad
     from .functional.indexing import batched_index_select, index_nonzero, index_one_hot, index_one_hot_ellipsis, inverse_permutation, leftmost_nonzero, one_hot, one_hot_dim, one_hot_nd, reversed, rightmost_nonzero, set_index_one_hot_
+    from .functional.indexing import batch, patch_torch_index, tindex, findex, vindex, oindex, btindex, bfindex, bvindex, boindex, batched_index_int, batched_index_slice, batched_index_vector_dim, batched_index_vectors
     from .functional.kernel import cosine_distance, dot, inverse_distance
     from .functional.linalg import normalize
     from .functional.loglinear import batch_logmatmulexp, log1mexp, logaddexp, logits_and, logits_or, logmatmulexp, logsumexp
@@ -229,3 +244,4 @@ from jactorch.utils.init import init_main
 init_main()
 
 del init_main
+

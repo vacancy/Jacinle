@@ -29,7 +29,7 @@ if __name__ == '__main__':
         name='logic_induction',
         packages=['logic_induction'],
         version='1.0',
-        ext_modules= ext_modules
+        ext_modules=ext_modules
     )
 
 
