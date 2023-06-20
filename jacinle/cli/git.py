@@ -142,7 +142,10 @@ def _git_diff_no_index(fname):
     if osp.getsize(fname) > LARGE_FILE_THRESH:
         return f'{fname} is too large to be diffed.\n'
     else:
-        return subprocess.run(['git', '--no-pager', 'diff', '--no-index', '/dev/null', fname], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8').strip() + '\n'
+        try:
+            return subprocess.run(['git', '--no-pager', 'diff', '--no-index', '/dev/null', fname], stdout=subprocess.PIPE, check=False).stdout.decode('utf-8').strip() + '\n'
+        except Exception as e:
+            return f'{fname} failed in git-diff. Exception: {e}'
 
 
 def git_guard(force: bool = False):
