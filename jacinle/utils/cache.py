@@ -22,8 +22,10 @@ logger = get_logger(__file__)
 __all__ = ['cached_property', 'cached_result', 'fs_cached_result']
 
 
-class cached_property:
-    """A decorator that converts a function into a cached property. Similar to ``@property``, but the function result is cached."""
+class _cached_property_v1:
+    """A decorator that converts a function into a cached property. Similar to ``@property``, but the function result is cached.
+    This function has been deprecated. Please use :func:`cached_property` instead.
+    """
 
     def __init__(self, fget):
         self.fget = fget
@@ -45,6 +47,25 @@ class cached_property:
             assert v is not None
             setattr(instance, self.__cache_key, v)
             return v
+
+
+def cached_property(fget):
+    """A decorator that converts a function into a cached property. Similar to ``@property``, but the function result is cached. This function has threading lock support."""
+
+    mutex = collections.defaultdict(threading.Lock)
+    cache = dict()
+
+    def impl(self):
+        nonlocal impl
+        id_ = id(self)
+        with mutex[id_]:
+            if id_ not in cache:
+                cache[id_] = fget(self)
+                return cache[id_]
+            else:
+                return cache[id_]
+
+    return property(impl)
 
 
 def cached_result(func):

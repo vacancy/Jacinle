@@ -359,23 +359,17 @@ def assert_notnone(ins: Any, msg: str = None, name: str = None):
     assert ins is not None, msg
 
 
-class notnone_property:
+def notnone_property(fget):
     """A property that raises an error if the value is None."""
-    def __init__(self, fget):
-        self.fget = fget
-        self.__module__ = fget.__module__
-        self.__name__ = fget.__name__
-        self.__doc__ = fget.__doc__
-        self.__prop_key  = '{}_{}'.format(
-            fget.__name__, id(fget))
 
-    def __get__(self, instance, owner):
-        if instance is None:
-            return self.fget
-        v = self.fget(instance)
+    @functools.wraps(fget)
+    def wrapped(self):
+        v = fget(self)
         assert v is not None, '{}.{} can not be None, maybe not set yet'.format(
-                type(instance).__name__, self.__name__)
+                type(self).__name__, fget.__name__)
         return v
+
+    return property(wrapped)
 
 
 @decorator_with_optional_args
