@@ -25,7 +25,7 @@ pyyaml
 tqdm
 pyzmq
 numpy
-scipy
+scikit-learn
 sklearn
 matplotlib""".split()
 
