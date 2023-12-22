@@ -28,7 +28,7 @@ __all__ = [
     'indent_text',
     'stprint', 'stformat', 'kvprint', 'kvformat',
     'PrintToStringContext', 'print_to_string', 'print_to', 'print2format',
-    'suppress_stdout'
+    'suppress_stdout', 'suppress_stderr', 'suppress_output',
 ]
 
 
@@ -346,3 +346,35 @@ def suppress_stdout():
         finally:
             _redirect_stdout(to=old_stdout)  # restore stdout.
             # buffering and flags such as CLOEXEC may be different
+
+
+@contextlib.contextmanager
+def suppress_stderr():
+    """A context manager that suppress the stdout."""
+    try:
+        fd = sys.stderr.fileno()
+    except io.UnsupportedOperation:
+        yield
+        return
+
+    def _redirect_stdout(to):
+        sys.stderr.close()  # + implicit flush()
+        os.dup2(to.fileno(), fd)  # fd writes to 'to' file
+        sys.stderr = os.fdopen(fd, "w")  # Python writes to fd
+
+    with os.fdopen(os.dup(fd), "w") as old_stdout:
+        with open(os.devnull, "w") as file:
+            _redirect_stdout(to=file)
+
+        try:
+            yield  # allow code to be run with the redirected stdout
+        finally:
+            _redirect_stdout(to=old_stdout)  # restore stdout.
+            # buffering and flags such as CLOEXEC may be different
+
+
+@contextlib.contextmanager
+def suppress_output():
+    """A context manager that suppress the stdout and stderr."""
+    with suppress_stdout(), suppress_stderr():
+            yield

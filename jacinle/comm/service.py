@@ -121,6 +121,7 @@ class SocketClient(object):
         self.conn_info = conn_info
 
         self.client = ClientPipe(self.identifier, conn_info=self.conn_info)
+        self._initialized = False
 
     def initialize(self):
         self.client.initialize()
@@ -133,10 +134,16 @@ class SocketClient(object):
         logger.info('  Server signaature: {}'.format(self.get_signature()))
         configs = self.get_configs()
         if configs is not None:
-            logger.info('  Server configs:\n' + kvformat(configs, indent=2))
+            logger.info('  Server configs: {}'.format(configs))
+        self._initialized = True
 
     def finalize(self):
         self.client.finalize()
+        self._initialized = False
+
+    @property
+    def initialized(self):
+        return self._initialized
 
     @contextlib.contextmanager
     def activate(self):

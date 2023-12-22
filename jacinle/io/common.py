@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File   : common.py
+# File   : codex_core.py
 # Author : Jiayuan Mao
 # Email  : maojiayuan@gmail.com
 # Date   : 01/19/2017

@@ -20,7 +20,6 @@ from typing import Optional, Union, List
 import pickle
 import gzip
 import numpy as np
-import scipy.io as sio
 
 from jacinle.logging import get_logger
 from jacinle.utils.enum import JacEnum
@@ -115,6 +114,7 @@ def load_npz(fd_or_filename: Union[str, io.IOBase], **kwargs):
 
 def load_mat(filename: str, **kwargs):
     """Load a matlab file."""
+    import scipy.io as sio
     return sio.loadmat(filename, **kwargs)
 
 
@@ -148,6 +148,7 @@ def dump_npz(filename: str, obj, **kwargs):
 
 def dump_mat(filename, obj, **kwargs):
     """Dump a matlab file."""
+    import scipy.io as sio
     return sio.savemat(filename, obj, **kwargs)
 
 

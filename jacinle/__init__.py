@@ -99,6 +99,8 @@ See :doc:`jacinle.config.environ_v2` for more details.
     ~jacinle.utils.printing.print_to_string
     ~jacinle.utils.printing.print_to
     ~jacinle.utils.printing.suppress_stdout
+    ~jacinle.utils.printing.suppress_stderr
+    ~jacinle.utils.printing.suppress_output
 
 .. rubric:: Utilities (IO)
 
@@ -239,7 +241,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.utils.inspect import class_name, func_name, method_name, class_name_of_method
     from jacinle.utils.network import get_local_addr
     from jacinle.utils.numeric import safe_sum, mean, std, rms, prod, divup
-    from jacinle.utils.printing import indent_text, stprint, stformat, kvprint, kvformat, print_to_string, print_to, suppress_stdout
+    from jacinle.utils.printing import indent_text, stprint, stformat, kvprint, kvformat, print_to_string, print_to, suppress_stdout, suppress_stderr, suppress_output
     from jacinle.utils.tqdm import get_current_tqdm, tqdm, tqdm_pbar, tqdm_gofor, tqdm_zip
     from jacinle.utils.uid import gen_time_string, gen_uuid4
 
