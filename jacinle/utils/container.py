@@ -12,7 +12,8 @@ import copy
 import collections
 from typing import Any, Optional, Iterable
 
-from .printing import kvformat, kvprint
+from jacinle.utils.meta import repr_from_str
+from jacinle.utils.printing import kvformat, kvprint
 
 __all__ = ['G', 'g', 'GView', 'SlotAttrObject', 'OrderedSet']
 
@@ -117,6 +118,11 @@ class GView(object):
     def print(self, sep=': ', end='\n', file=None):
         """Print the dict using :func:`jacinle.utils.printing.kvprint`."""
         return kvprint(self.raw(), sep=sep, end=end, file=file)
+
+    def __str__(self):
+        return self.format()
+
+    __repr__ = repr_from_str
 
 
 class SlotAttrObject(object):
