@@ -15,8 +15,10 @@ import numpy as np
 import collections
 import contextlib
 import threading
-from typing import Optional, Callable
+from dataclasses import fields
+from typing import Any, Optional, Union, Tuple, List, Callable
 
+from ._termcolor import colored as _colored
 from .registry import LockRegistry
 
 try:
@@ -25,14 +27,21 @@ except ImportError:
     torch = None
 
 __all__ = [
+    'colored',
     'indent_text',
     'stprint', 'stformat', 'kvprint', 'kvformat',
     'PrintToStringContext', 'print_to_string', 'print_to', 'print2format',
     'suppress_stdout', 'suppress_stderr', 'suppress_output',
+    'tabulate_dataclass'
 ]
 
 
 _DEFAULT_FLOAT_FORMAT = '{:.6f}'
+
+
+def colored(text: str, color: str):
+    text = _colored(text, color)
+    return text
 
 
 def indent_text(text: str, level = 1, indent_format: Optional[str] = None, tabsize: Optional[int] = None) -> str:
@@ -378,3 +387,20 @@ def suppress_output():
     """A context manager that suppress the stdout and stderr."""
     with suppress_stdout(), suppress_stderr():
             yield
+
+
+def tabulate_dataclass(dataclass_instance, separate_kv: bool = False) -> Union[List[Tuple[str, Any]], Tuple[List[str], List[Any]]]:
+    """Return a list of (field_name, field_value) pairs for the given dataclass instance.
+
+    Args:
+        dataclass_instance: the dataclass instance.
+        separate_kv: whether to separate the key and value as two lists in the return value.
+
+    Returns:
+        a list of (field_name, field_value) pairs if separate_kv is False, otherwise a tuple of two lists.
+    """
+    data_fields = fields(dataclass_instance)
+    if separate_kv:
+        return [f.name for f in data_fields], [getattr(dataclass_instance, f.name) for f in data_fields]
+    return [(f.name, getattr(dataclass_instance, f.name)) for f in data_fields]
+

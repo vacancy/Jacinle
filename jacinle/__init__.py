@@ -91,6 +91,7 @@ See :doc:`jacinle.config.environ_v2` for more details.
     ~jacinle.utils.inspect.method_name
     ~jacinle.utils.inspect.class_name_of_method
 
+    ~jacinle.utils.printing.colored
     ~jacinle.utils.printing.indent_text
     ~jacinle.utils.printing.stprint
     ~jacinle.utils.printing.stformat
@@ -101,6 +102,7 @@ See :doc:`jacinle.config.environ_v2` for more details.
     ~jacinle.utils.printing.suppress_stdout
     ~jacinle.utils.printing.suppress_stderr
     ~jacinle.utils.printing.suppress_output
+    ~jacinle.utils.printing.tabulate_dataclass
 
 .. rubric:: Utilities (IO)
 
@@ -241,7 +243,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.utils.inspect import class_name, func_name, method_name, class_name_of_method
     from jacinle.utils.network import get_local_addr
     from jacinle.utils.numeric import safe_sum, mean, std, rms, prod, divup
-    from jacinle.utils.printing import indent_text, stprint, stformat, kvprint, kvformat, print_to_string, print_to, suppress_stdout, suppress_stderr, suppress_output
+    from jacinle.utils.printing import colored, indent_text, stprint, stformat, kvprint, kvformat, print_to_string, print_to, suppress_stdout, suppress_stderr, suppress_output, tabulate_dataclass
     from jacinle.utils.tqdm import get_current_tqdm, tqdm, tqdm_pbar, tqdm_gofor, tqdm_zip
     from jacinle.utils.uid import gen_time_string, gen_uuid4
 
