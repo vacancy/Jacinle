@@ -8,7 +8,6 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-import six
 import shutil
 import html
 import collections
@@ -261,14 +260,14 @@ class HTMLTableVisualizer(object):
 
     def canonize_link(self, filetype, obj, row_identifier=None, col_identifier=None):
         if filetype == 'file':
-            assert isinstance(obj, six.string_types)
+            assert isinstance(obj, (str, bytes))
             return osp.relpath(obj, self.visdir), osp.basename(obj)
         elif filetype == 'image':
-            if not isinstance(obj, six.string_types):
+            if not isinstance(obj, (str, bytes)):
                 obj = self.save_image(obj, row_identifier, col_identifier)
             return osp.relpath(obj, self.visdir), osp.basename(obj)
         elif filetype == 'figure':
-            if not isinstance(obj, six.string_types):
+            if not isinstance(obj, (str, bytes)):
                 obj = self.save_figure(obj, row_identifier, col_identifier)
             return osp.relpath(obj, self.visdir), osp.basename(obj)
         else:

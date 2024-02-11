@@ -8,7 +8,6 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-import six
 import functools
 import collections
 
@@ -56,7 +55,7 @@ def dict_gather_v1(outputs, target_device, dim=0):
             return None
         elif isinstance(out, collections.Mapping):
             return {k: gather_map([o[k] for o in outputs]) for k in out}
-        elif isinstance(out, six.string_types):
+        elif isinstance(out, (str, bytes)):
             return outputs
         elif isinstance(out, collections.Sequence):
             return type(out)(map(gather_map, zip(*outputs)))

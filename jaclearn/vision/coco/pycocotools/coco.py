@@ -44,7 +44,6 @@ __version__ = '2.0'
 # Code written by Piotr Dollar and Tsung-Yi Lin, 2014.
 # Licensed under the Simplified BSD License [see bsd.txt]
 
-import six
 import json
 import time
 import numpy as np
@@ -307,7 +306,7 @@ class COCO:
 
         print('Loading and preparing results...')
         tic = time.time()
-        if isinstance(resFile, six.string_types):
+        if isinstance(resFile, str):
             anns = json.load(open(resFile))
         elif type(resFile) == np.ndarray:
             anns = self.loadNumpyAnnotations(resFile)

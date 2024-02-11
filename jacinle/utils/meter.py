@@ -8,7 +8,6 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-import six
 import itertools
 import collections
 
@@ -118,7 +117,7 @@ class GroupMeters(object):
             f.write('\n')
 
     def _canonize_values(self, values):
-        if isinstance(values, six.string_types):
+        if isinstance(values, str):
             assert values in ('avg', 'val', 'sum')
             meters_kv = getattr(self, values)
         else:

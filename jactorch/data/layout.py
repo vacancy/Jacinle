@@ -8,7 +8,6 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-import six
 from typing import Union, Optional
 from jacinle.utils.enum import JacEnum
 
@@ -73,7 +72,7 @@ class DataLayout(object):
                 self.decl(k, v)
 
     def decl(self, key: str, spec: Union[str, DataLayoutSpec]):
-        if isinstance(spec, six.string_types):
+        if isinstance(spec, str):
             self.layout[key] = _type_to_constructor[spec]()
         else:
             self.layout[key] = spec

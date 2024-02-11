@@ -13,8 +13,6 @@ import collections
 
 import torch
 
-from six import string_types
-
 from jacinle.utils.argument import UniqueValueGetter
 from .utils import use_shared_memory, numpy_type_map, VarLengthCollateMode
 
@@ -88,16 +86,16 @@ class VarLengthCollateV2(object):
             return torch.LongTensor(batch)
         elif isinstance(batch[0], float):
             return torch.DoubleTensor(batch)
-        elif isinstance(batch[0], string_types):
+        elif isinstance(batch[0], (str, bytes)):
             return batch
         elif isinstance(batch[0], collections.abc.Mapping):
             result = {}
             for key in batch[0]:
                 values = [d[key] for d in batch]
                 if key in self._fields:
-                    if isinstance(self._fields[key], string_types) and VarLengthCollateMode.from_string(self._fields[key]) is VarLengthCollateMode.SKIP:
+                    if isinstance(self._fields[key], (str, bytes)) and VarLengthCollateMode.from_string(self._fields[key]) is VarLengthCollateMode.SKIP:
                         result[key] = values
-                    elif isinstance(self._fields[key], string_types) and VarLengthCollateMode.from_string(self._fields[key]) is VarLengthCollateMode.STACK:
+                    elif isinstance(self._fields[key], (str, bytes)) and VarLengthCollateMode.from_string(self._fields[key]) is VarLengthCollateMode.STACK:
                         result[key] = self(values)
                     else:
                         values, lengths = self(values, key=key)

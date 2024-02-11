@@ -1,4 +1,3 @@
-six
 Cython
 pkgconfig
 tabulate

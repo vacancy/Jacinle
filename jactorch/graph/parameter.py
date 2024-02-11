@@ -10,7 +10,6 @@
 
 """Utilities to access, filter, and mark parameters in a :class:`torch.nn.Module`."""
 
-import six
 import contextlib
 from typing import Union, Iterable, Sequence, Tuple, List, Dict
 
@@ -51,7 +50,7 @@ def filter_parameters(params: Iterable[nn.Parameter], pattern: Union[Iterable[st
     Returns:
         a list of parameters, or a list of (name, parameter) pairs if `return_names` is True.
     """
-    if isinstance(pattern, six.string_types):
+    if isinstance(pattern, (str, bytes)):
         pattern = [pattern]
     matcher = NameMatcher({p: True for p in pattern})
     with matcher:
