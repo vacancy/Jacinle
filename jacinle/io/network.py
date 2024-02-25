@@ -11,7 +11,7 @@
 import os
 import os.path as osp
 import hashlib
-from six.moves import urllib
+import urllib
 
 from .common import fsize_format
 from jacinle.utils.tqdm import tqdm_pbar
@@ -55,6 +55,7 @@ def download(url: str, dirname: str, cli: bool = True, filename: str = None, md5
     try:
         with tqdm_pbar(unit='B', unit_scale=True, miniters=1, desc=filename) as pbar:
             path, _ = urllib.request.urlretrieve(url, path, reporthook=hook(pbar))
+
         statinfo = os.stat(path)
         size = statinfo.st_size
     except Exception:

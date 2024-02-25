@@ -35,7 +35,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-import six
 import uuid
 from .templates import TPL_DEP_SVG, TPL_DEP_WORDS, TPL_DEP_ARCS, TPL_ENTS
 from .templates import TPL_ENT, TPL_ENT_RTL, TPL_FIGURE, TPL_TITLE, TPL_PAGE
@@ -102,7 +101,7 @@ class DependencyVisualizer(object):
         return rendered
 
     def render_simple_svg(self, text, arcs):
-        if isinstance(text, six.string_types):
+        if isinstance(text, str):
             text = text.split()
         output_words = [{'text': w, 'tag': ''} for w in text]
 

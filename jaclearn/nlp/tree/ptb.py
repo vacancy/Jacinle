@@ -14,8 +14,6 @@ PTB-formed constituency trees.
 
 __all__ = ['PTBNode', 'parse_ptb']
 
-import six
-
 from .node import Node
 from .traversal import traversal
 
@@ -36,7 +34,7 @@ class PTBNode(Node):
 
     @classmethod
     def from_string(cls, encoding, incl_vtype=True, default_vtype=None):
-        if isinstance(encoding, six.string_types):
+        if isinstance(encoding, str):
             steps = encoding.split()
         else:
             assert isinstance(encoding, (tuple, list))
@@ -63,13 +61,13 @@ class PTBNode(Node):
                     poped = []
                     while True:
                         x = stack.pop()
-                        if isinstance(x, six.string_types) and x == '(':
+                        if isinstance(x, str) and x == '(':
                             break
                         poped.append(x)
                     poped = poped[::-1]
 
                     if incl_vtype:
-                        if len(poped) == 2 and isinstance(poped[1], six.string_types):  # is leaf
+                        if len(poped) == 2 and isinstance(poped[1], str):  # is leaf
                             stack.append(cls(poped[0], poped[1]))
                         else:
                             node = cls(poped[0])
@@ -77,12 +75,12 @@ class PTBNode(Node):
                                 node.append_child(x)
                             stack.append(node)
                     else:
-                        if len(poped) == 1 and isinstance(poped[0], six.string_types):  # is leaf
+                        if len(poped) == 1 and isinstance(poped[0], str):  # is leaf
                             stack.append(cls(default_vtype, poped[0]))
                         else:
                             node = cls(default_vtype)
                             for x in poped:
-                                if isinstance(x, six.string_types):
+                                if isinstance(x, str):
                                     x = cls(default_vtype, x)
                                 node.append_child(x)
                             stack.append(node)

@@ -8,7 +8,6 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-import six
 import itertools
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,7 +23,7 @@ def add_bbox_patches(ax, boxes: np.ndarray, class_name: Union[str, List[str]], a
     else:
         legends = ['' for i in range(len(boxes))]
 
-    if isinstance(class_name, six.string_types):
+    if isinstance(class_name, str):
         class_name = itertools.repeat(class_name, len(boxes))
 
     for box, cls, leg in zip(boxes, class_name, legends):

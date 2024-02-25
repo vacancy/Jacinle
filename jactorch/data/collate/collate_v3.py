@@ -13,8 +13,6 @@ import collections
 
 import torch
 
-from six import string_types
-
 from torch.nn.parallel._functions import Gather
 from jacinle.utils.argument import UniqueValueGetter
 from jacinle.utils.enum import JacEnum
@@ -129,7 +127,7 @@ class VarLengthCollateV3(object):
             return torch.LongTensor(batch)
         elif isinstance(batch[0], float):
             return torch.DoubleTensor(batch)
-        elif isinstance(batch[0], string_types):
+        elif isinstance(batch[0], (str, bytes)):
             return batch
 
         elif isinstance(batch[0], collections.Mapping):

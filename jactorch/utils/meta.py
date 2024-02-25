@@ -8,7 +8,6 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
-import six
 import functools
 import numpy as np
 
@@ -17,7 +16,7 @@ import torch
 from jacinle.utils.deprecated import deprecated
 from jacinle.utils.meta import stmap
 
-SKIP_TYPES = six.string_types
+SKIP_TYPES = (str, bytes)
 
 __all__ = ['mark_volatile', 'as_tensor', 'as_variable', 'as_numpy', 'as_float', 'as_cuda', 'as_cpu', 'as_detached']
 

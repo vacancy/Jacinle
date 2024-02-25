@@ -10,7 +10,6 @@
 
 import functools
 import operator
-import six
 import time
 import collections
 import collections.abc
@@ -137,7 +136,7 @@ def stmap(func, iterable: Iterable[Any]) -> Iterable[Any]:
     Returns:
         the mapped iterable.
     """
-    if isinstance(iterable, six.string_types):
+    if isinstance(iterable, str):
         return func(iterable)
     elif isinstance(iterable, collections.abc.Sequence):
         return [stmap(func, v) for v in iterable]

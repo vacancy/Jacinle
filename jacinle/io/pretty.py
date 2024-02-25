@@ -16,7 +16,6 @@ import functools
 import collections
 import xml.etree.ElementTree as et
 import yaml
-import six
 import inspect
 
 from typing import Optional, Any, Iterable, Sequence, List, Dict
@@ -336,7 +335,7 @@ class _JsonObjectEncoder(json.JSONEncoder):
     def default(self, obj):
         if hasattr(obj, '__jsonify__'):
             json_object = obj.__jsonify__()
-            if isinstance(json_object, six.string_types):
+            if isinstance(json_object, (str, bytes)):
                 return json_object
             return self.encode(json_object)
         else:
