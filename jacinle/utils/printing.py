@@ -39,7 +39,11 @@ __all__ = [
 _DEFAULT_FLOAT_FORMAT = '{:.6f}'
 
 
-def colored(text: str, color: str):
+def colored(*text: str, sep=' ', color: str = 'unspecified'):
+    if len(text) == 2 and color == 'unspecified':
+        text, color = text[0], text[1]
+    else:
+        text = sep.join([str(t) for t in text])
     text = _colored(text, color)
     return text
 
@@ -404,3 +408,23 @@ def tabulate_dataclass(dataclass_instance, separate_kv: bool = False) -> Union[L
         return [f.name for f in data_fields], [getattr(dataclass_instance, f.name) for f in data_fields]
     return [(f.name, getattr(dataclass_instance, f.name)) for f in data_fields]
 
+
+def print_filedoc(filename: str, docstring: str):
+    """Print the file docstring.
+
+    Args:
+        filename: the filename.
+        docstring: the docstring.
+    """
+    # Get the terminal width
+    terminal_width = os.get_terminal_size().columns
+    if terminal_width < 80:
+        terminal_width = 80
+
+    print()
+    print('-' * terminal_width)
+    print(colored(f'File: {filename}', 'green'))
+    print()
+    print(docstring.strip())
+    print('-' * terminal_width)
+    print()
