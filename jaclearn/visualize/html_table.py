@@ -74,20 +74,24 @@ class HTMLTableVisualizer(object):
         return self._all_table_specs[self._current_table_spec_stack[-1]]
 
     @contextlib.contextmanager
-    def html(self):
-        self.begin_html()
+    def html(self, force_overwrite: bool = False):
+        self.begin_html(force_overwrite=force_overwrite)
         yield self
         self.end_html()
 
-    def begin_html(self):
+    def begin_html(self, force_overwrite: bool = False):
         if self.allow_assets:
             if osp.isfile(self.visdir):
                 raise FileExistsError('Visualization dir "{}" is a file.'.format(self.visdir))
             elif osp.isdir(self.visdir) and osp.isfile(self.get_index_filename()):
-                if yes_or_no('Visualization dir "{}" is not empty. Do you want to overwrite?'.format(self.visdir)):
+                if force_overwrite:
+                    print('Visualization dir "{}" is not empty. Removing it.'.format(self.visdir))
                     shutil.rmtree(self.visdir)
                 else:
-                    raise FileExistsError('Visualization dir "{}" already exists.'.format(self.visdir))
+                    if yes_or_no('Visualization dir "{}" is not empty. Do you want to overwrite?'.format(self.visdir)):
+                        shutil.rmtree(self.visdir)
+                    else:
+                        raise FileExistsError('Visualization dir "{}" already exists.'.format(self.visdir))
             io.mkdir(self.visdir)
             io.mkdir(osp.join(self.visdir, 'assets'))
         else:
