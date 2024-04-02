@@ -55,13 +55,17 @@ class ServiceException(object):
 
 
 class SocketServer(object):
-    def __init__(self, service, name, tcp_port=None):
+    def __init__(self, service, name, tcp_port=None, ipc_port=None):
         self.service = service
         self.name = name
         self.tcp_port = tcp_port
+        self.ipc_port = ipc_port
+        self.mode = 'tcp'
+        if self.ipc_port is not None:
+            self.mode = 'ipc'
 
         self.identifier = self.name + '-server-' + uuid.uuid4().hex
-        self.server = ServerPipe(self.identifier)
+        self.server = ServerPipe(self.identifier, mode=self.mode)
         self.server.dispatcher.register('get_name', self.call_get_name)
         self.server.dispatcher.register('get_identifier', self.call_get_identifier)
         self.server.dispatcher.register('get_conn_info', self.call_get_conn_info)
@@ -71,7 +75,7 @@ class SocketServer(object):
         self.server.dispatcher.register('query', self.call_query)
 
     def serve(self):
-        with self.server.activate(tcp_port=self.tcp_port):
+        with self.server.activate(tcp_port=self.tcp_port, ipc_port=self.ipc_port):
             logger.info('Server started.')
             logger.info('  Name:       {}'.format(self.name))
             logger.info('  Identifier: {}'.format(self.identifier))
@@ -81,7 +85,7 @@ class SocketServer(object):
 
     @contextlib.contextmanager
     def activate(self):
-        with self.server.activate(tcp_port=self.tcp_port):
+        with self.server.activate(tcp_port=self.tcp_port, ipc_port=self.ipc_port):
             logger.info('Server started.')
             logger.info('  Name:       {}'.format(self.name))
             logger.info('  Identifier: {}'.format(self.identifier))

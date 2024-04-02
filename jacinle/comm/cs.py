@@ -55,7 +55,7 @@ class ServerPipe(object):
     def conn_info(self):
         return self._conn_info
 
-    def initialize(self, tcp_port=None):
+    def initialize(self, tcp_port=None, ipc_port=None):
         self._conn_info = []
         if self._mode == 'tcp':
             if tcp_port is not None:
@@ -71,8 +71,16 @@ class ServerPipe(object):
                 port = self._tosock.bind_to_random_port('tcp://*')
             self._conn_info.append('tcp://{}:{}'.format(get_addr(), port))
         elif self._mode == 'ipc':
-            self._conn_info.append(bind_to_random_ipc(self._frsock, self._name + '-c2s-'))
-            self._conn_info.append(bind_to_random_ipc(self._tosock, self._name + '-s2c-'))
+            if ipc_port is not None:
+                self._frsock.bind('ipc://' + ipc_port[0])
+                self._conn_info.append('ipc://' + ipc_port[0])
+            else:
+                self._conn_info.append(bind_to_random_ipc(self._frsock, self._name + '-c2s-'))
+            if ipc_port is not None:
+                self._tosock.bind('ipc://' + ipc_port[1])
+                self._conn_info.append('ipc://' + ipc_port[1])
+            else:
+                self._conn_info.append(bind_to_random_ipc(self._tosock, self._name + '-s2c-'))
 
         self._rcv_thread = threading.Thread(target=self.mainloop_recv, daemon=True)
         self._rcv_thread.start()
@@ -85,8 +93,8 @@ class ServerPipe(object):
         self._context.term()
 
     @contextlib.contextmanager
-    def activate(self, tcp_port=None):
-        self.initialize(tcp_port=tcp_port)
+    def activate(self, tcp_port=None, ipc_port=None):
+        self.initialize(tcp_port=tcp_port, ipc_port=ipc_port)
         try:
             yield
         finally:

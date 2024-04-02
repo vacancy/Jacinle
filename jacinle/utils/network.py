@@ -9,8 +9,9 @@
 # Distributed under terms of the MIT license.
 
 import socket
+import errno
 
-__all__ = ['get_local_addr', 'get_local_addr_v1', 'get_local_addr_v2']
+__all__ = ['get_local_addr', 'get_local_addr_v1', 'get_local_addr_v2', 'get_free_port', 'get_free_port_from']
 
 
 def get_local_addr_v1() -> str:
@@ -58,4 +59,31 @@ def get_local_addr() -> str:
         the local IP address.
     """
     return get_local_addr_v2()
+
+
+def _check_port_usage(port):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.bind(("127.0.0.1", port))
+    except socket.error as e:
+        if e.errno == errno.EADDRINUSE:
+            return False
+        return False
+    s.close()
+    return True
+
+
+def get_free_port():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(('localhost', 0))
+    port = s.getsockname()[1]
+    s.close()
+    return port
+
+
+def get_free_port_from(start_port):
+    for port in range(start_port, 65536):
+        if _check_port_usage(port):
+            return port
+    return None
 
