@@ -79,6 +79,15 @@ class SocketServer(object):
             while True:
                 import time; time.sleep(1)
 
+    @contextlib.contextmanager
+    def activate(self):
+        with self.server.activate(tcp_port=self.tcp_port):
+            logger.info('Server started.')
+            logger.info('  Name:       {}'.format(self.name))
+            logger.info('  Identifier: {}'.format(self.identifier))
+            logger.info('  Conn info:  {} {}'.format(*self.conn_info))
+            yield
+
     @property
     def conn_info(self):
         return self.server.conn_info
@@ -93,7 +102,7 @@ class SocketServer(object):
         pipe.send(identifier, self.conn_info)
 
     def call_get_spec(self, pipe, identifier, inp):
-        pipe.send(identifier, self.service.sepc)
+        pipe.send(identifier, self.service.spec)
 
     def call_get_configs(self, pipe, identifier, inp):
         pipe.send(identifier, self.service.configs)
