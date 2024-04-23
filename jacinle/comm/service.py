@@ -128,12 +128,13 @@ class SocketServer(object):
 
 
 class SocketClient(object):
-    def __init__(self, name, conn_info):
+    def __init__(self, name, conn_info, echo=True):
         self.name = name
         self.identifier = self.name + '-client-' + uuid.uuid4().hex
         self.conn_info = conn_info
 
         self.client = ClientPipe(self.identifier, conn_info=self.conn_info)
+        self.echo = echo
         self._initialized = False
 
     def initialize(self):
@@ -187,7 +188,9 @@ class SocketClient(object):
     def get_signature(self):
         return self.client.query('get_signature')
 
-    def call(self, *args, echo=True, **kwargs):
+    def call(self, *args, echo=None, **kwargs):
+        if echo is None:
+            echo = self.echo
         self.client.query('query', {'args': args, 'kwargs': kwargs, 'echo': echo}, do_recv=False)
         if echo:
             echo_from_pipe(self.client)
