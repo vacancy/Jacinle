@@ -60,6 +60,7 @@ See :doc:`jacinle.config.environ_v2` for more details.
     ~jacinle.utils.imp.load_module_filename
     ~jacinle.utils.imp.load_source
 
+    ~jacinle.utils.meta.UNSET
     ~jacinle.utils.meta.gofor
     ~jacinle.utils.meta.run_once
     ~jacinle.utils.meta.try_run
@@ -216,7 +217,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.utils.cache import cached_property, cached_result, fs_cached_result
     from jacinle.utils.container import G, g, GView, SlotAttrObject, OrderedSet
     from jacinle.utils.context import EmptyContext, KeyboardInterruptContext
-    from jacinle.utils.debug import hook_exception_ipdb, exception_hook, timeout_ipdb, log_function, profile, time
+    from jacinle.utils.debug import hook_exception_ipdb, exception_hook, timeout_ipdb, log_function, indent_log, indent_print, profile, time
     from jacinle.utils.defaults import (
         defaults_manager, wrap_custom_as_default, gen_get_default, gen_set_default,
         option_context, FileOptions,
@@ -228,7 +229,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.utils.exception import format_exc
     from jacinle.utils.imp import load_module, load_module_filename, load_source
     from jacinle.utils.meta import (
-        gofor,
+        UNSET, gofor,
         run_once, try_run,
         map_exec, filter_exec, first, first_n, stmap,
         method2func, map_exec_method,

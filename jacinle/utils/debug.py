@@ -19,7 +19,11 @@ from typing import Optional, Callable
 from .inspect import func_name
 from .printing import indent_text
 
-__all__ = ['hook_exception_ipdb', 'unhook_exception_ipdb', 'exception_hook', 'decorate_exception_hook', 'timeout_ipdb', 'log_function', 'profile', 'time']
+__all__ = [
+    'hook_exception_ipdb', 'unhook_exception_ipdb', 'exception_hook', 'decorate_exception_hook', 'timeout_ipdb',
+    'log_function', 'indent_log', 'indent_print',
+    'profile', 'time'
+]
 
 
 def _custom_exception_hook(type, value, tb):
@@ -98,13 +102,14 @@ def timeout_ipdb(locals_, timeout: float = 3):
         cv.notify_all()
 
 
-def log_function(init_function: Optional[Callable] = None, *, verbose: bool = True):
+def log_function(init_function: Optional[Callable] = None, *, verbose: bool = False, is_generator: bool = False):
     """A decorator to log the function call. This is useful to debug the function call stack.
     The call stack will be formated with indentations.
 
     Args:
         init_function: the function to be wrapped. If not specified, this function will return a decorator.
         verbose: whether to print detailed log. By default, only the function name is printed.
+        is_generator: whether the function is a generator. If True, the function will be treated as a generator.
 
     Example:
         .. code-block:: python
@@ -129,37 +134,68 @@ def log_function(init_function: Optional[Callable] = None, *, verbose: bool = Tr
             Exiting: foo
             Return: None
     """
-    def wrapper(function: Callable) -> Callable:
-        print_self = False
-        if '.' in function.__qualname__ and '<locals>' not in function.__qualname__:
-            print_self = True
+    if not is_generator:
+        def wrapper(function: Callable) -> Callable:
+            print_self = False
+            if '.' in function.__qualname__ and '<locals>' not in function.__qualname__:
+                print_self = True
 
-        @functools.wraps(function)
-        def wrapped(*args, **kwargs):
-            self_info = ''
-            if print_self and verbose:
-                self_info = '(self={})'.format(args[0])
-            # print(indent_text(f'Entering: {func_name(function)}', log_function.indent_level, indent_format='| '))
-            if verbose:
-                print(indent_text(f'Entering: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
-                arguments = ', '.join([str(arg) for arg in args])
-                print(indent_text(f'Args: {arguments}', log_function.indent_level, indent_format='| '))
-                print(indent_text(f'kwargs: {kwargs}', log_function.indent_level, indent_format='| '))
-            log_function.indent_level += 1
-            rv = 'exception'
-            try:
-                rv = function(*args, **kwargs)
-                return rv
-            except Exception as e:
-                rv = str(e)
-                raise
-            finally:
-                log_function.indent_level -= 1
-                # print(indent_text(f'Exiting: {func_name(function)}', log_function.indent_level, indent_format='| '))
+            @functools.wraps(function)
+            def wrapped(*args, **kwargs):
+                self_info = ''
+                if print_self and verbose:
+                    self_info = '(self={})'.format(args[0])
+                # print(indent_text(f'Entering: {func_name(function)}', log_function.indent_level, indent_format='| '))
                 if verbose:
-                    print(indent_text(f'Exiting: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
-                    print(indent_text(f'Returns: {rv}', log_function.indent_level, indent_format='| '))
-        return wrapped
+                    print(indent_text(f'Entering: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
+                    arguments = ', '.join([str(arg) for arg in args])
+                    print(indent_text(f'Args: {arguments}', log_function.indent_level, indent_format='| '))
+                    print(indent_text(f'kwargs: {kwargs}', log_function.indent_level, indent_format='| '))
+                log_function.indent_level += 1
+                rv = 'exception'
+                try:
+                    rv = function(*args, **kwargs)
+                    return rv
+                except Exception as e:
+                    rv = str(e)
+                    raise
+                finally:
+                    log_function.indent_level -= 1
+                    # print(indent_text(f'Exiting: {func_name(function)}', log_function.indent_level, indent_format='| '))
+                    if verbose:
+                        print(indent_text(f'Exiting: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
+                        print(indent_text(f'Returns: {rv}', log_function.indent_level, indent_format='| '))
+            return wrapped
+    else:
+        def wrapper(function: Callable) -> Callable:
+            print_self = False
+            if '.' in function.__qualname__ and '<locals>' not in function.__qualname__:
+                print_self = True
+
+            @functools.wraps(function)
+            def wrapped(*args, **kwargs):
+                self_info = ''
+                if print_self and verbose:
+                    self_info = '(self={})'.format(args[0])
+                if verbose:
+                    print(indent_text(f'Entering: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
+                    arguments = ', '.join([str(arg) for arg in args])
+                    print(indent_text(f'Args: {arguments}', log_function.indent_level, indent_format='| '))
+                    print(indent_text(f'kwargs: {kwargs}', log_function.indent_level, indent_format='| '))
+                log_function.indent_level += 1
+                rv = 'exception'
+                try:
+                    yield from function(*args, **kwargs)
+                except Exception as e:
+                    rv = str(e)
+                    raise
+                finally:
+                    log_function.indent_level -= 1
+                    # print(indent_text(f'Exiting: {func_name(function)}', log_function.indent_level, indent_format='| '))
+                    if verbose:
+                        print(indent_text(f'Exiting: {func_name(function)}{self_info}', log_function.indent_level, indent_format='| '))
+                        print(indent_text(f'Returns: {rv}', log_function.indent_level, indent_format='| '))
+            return wrapped
 
     if init_function is None:
         return wrapper
@@ -169,17 +205,19 @@ def log_function(init_function: Optional[Callable] = None, *, verbose: bool = Tr
 log_function.indent_level = 0
 
 
-def _inside_log(string):
+def indent_log(string):
+    """Print a log message with the current indent level. The indent level is managed by log_function."""
     print(indent_text(str(string), log_function.indent_level, indent_format='| '))
 
 
-def _inside_print(*args, sep=' ', end='\n'):
+def indent_print(*args, sep=' ', end='\n'):
+    """Print a message with the current indent level. The indent level is managed by log_function."""
     string = sep.join([str(arg) for arg in args])
     print(indent_text(str(string), log_function.indent_level, indent_format='| ').rstrip() + end, end='')
 
 
-log_function.log = _inside_log
-log_function.print= _inside_print
+log_function.log = indent_log
+log_function.print= indent_print
 
 
 @contextlib.contextmanager
@@ -195,15 +233,16 @@ def profile(field='tottime', top_k=10):
     Example:
         .. code-block:: python
 
-            with profile():
+            with profile() as profiler:
                 foo()
+            print(profiler)  # If you need to print additional information inside the context
     """
 
     FIELDS = ['tottime', 'cumtime', None]
     assert field in FIELDS
     profiler = cProfile.Profile()
     profiler.enable()
-    yield
+    yield profiler
     profiler.disable()
     stats = pstats.Stats(profiler).sort_stats(field)
     stats.print_stats(top_k)

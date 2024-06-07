@@ -19,6 +19,7 @@ import contextlib
 from typing import Any, Optional, Union, Iterable, Tuple, List, Dict, Callable
 
 __all__ = [
+    'UNSET',
     'gofor',
     'run_once', 'try_run',
     'map_exec', 'filter_exec', 'first', 'first_n', 'stmap',
@@ -34,6 +35,9 @@ __all__ = [
     'make_dummy_func',
     'repr_from_str'
 ]
+
+UNSET = object()
+"""A special object to indicate that a value is not set."""
 
 
 def gofor(v: Iterable[Any]) -> Iterable[Tuple[Any, Any]]:
