@@ -182,9 +182,13 @@ def log_function(init_function: Optional[Callable] = None, *, verbose: bool = Fa
                     arguments = ', '.join([str(arg) for arg in args])
                     print(indent_text(f'Args: {arguments}', log_function.indent_level, indent_format='| '))
                     print(indent_text(f'kwargs: {kwargs}', log_function.indent_level, indent_format='| '))
-                log_function.indent_level += 1
                 rv = 'exception'
                 try:
+                    log_function.indent_level += 1
+                    for x in function(*args, **kwargs):
+                        log_function.indent_level -= 1
+                        yield x
+                        log_function.indent_level += 1
                     yield from function(*args, **kwargs)
                 except Exception as e:
                     rv = str(e)

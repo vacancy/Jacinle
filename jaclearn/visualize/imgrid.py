@@ -9,9 +9,11 @@
 # Distributed under terms of the MIT license.
 
 import numpy as np
+import matplotlib.pyplot as plt
+from typing import Optional, List
 
 
-__all__ = ['image_grid']
+__all__ = ['image_grid', 'auto_image_grid_mplib']
 
 
 def image_grid(all_images, grid_desc):
@@ -69,3 +71,56 @@ def image_grid(all_images, grid_desc):
         return stack(i, parts)
 
     return recursive_concat(0, all_images)
+
+
+def auto_image_grid_mplib(images: List[np.ndarray], images_title: Optional[List[str]] = None, global_title: Optional[str] = None, show: bool = True):
+    """
+    Automatically create a grid for the images.
+
+    Args:
+        images: a list of images. Should be np.ndarray of shape (h, w, c).
+        images_title: the title for each image.
+        global_title: the title for the whole image grid.
+        show: whether to show the image grid using plt.show().
+
+    Returns:
+        the figure object.
+    """
+
+    n = len(images)
+
+    if n in AUTO_IMAGE_GRID_DESC:
+        nr_rows, nr_cols = AUTO_IMAGE_GRID_DESC[n]
+    else:
+        nr_cols = 5
+        nr_rows = (n + nr_cols - 1) // nr_cols
+    fig, axes = plt.subplots(nr_rows, nr_cols, figsize=(nr_cols*4, nr_rows*4))
+    for i, image, title in zip(range(n), images, images_title if images_title is not None else [None] * n):
+        ax = axes[i // nr_cols, i % nr_cols]
+        ax.imshow(image)
+        if title is not None:
+            ax.set_title(title)
+        ax.axis('off')
+
+    if global_title is not None:
+        # Use bold font for the global title
+        fig.suptitle(global_title, fontweight='bold')
+    fig.tight_layout()
+    if show:
+        plt.show()
+
+    return fig
+
+
+AUTO_IMAGE_GRID_DESC = {
+    1: (1, 1),
+    2: (1, 2),
+    3: (1, 3),
+    4: (2, 2),
+    5: (1, 5),
+    6: (2, 3),
+    7: (2, 4),
+    8: (2, 4),
+    9: (2, 5),
+    10: (2, 5),
+}

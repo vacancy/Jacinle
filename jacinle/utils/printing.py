@@ -11,13 +11,13 @@
 import io
 import os
 import sys
-import numpy as np
 import collections
 import contextlib
 import threading
 from dataclasses import fields
 from typing import Any, Optional, Union, Tuple, List, Callable
 
+import numpy as np
 from ._termcolor import colored as _colored
 from .registry import LockRegistry
 
