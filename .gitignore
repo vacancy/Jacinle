@@ -4,6 +4,9 @@
 # PyCharm
 /.idea
 
+# VSCode
+/.vscode
+
 # Mac DS_Store files
 .DS_Store
 
