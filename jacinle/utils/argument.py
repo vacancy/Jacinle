@@ -12,7 +12,7 @@ import collections
 from typing import Any, Optional, Union, Sequence, Tuple, Callable
 
 __all__ = [
-    'get_2dshape', 'get_3dshape', 'get_4dshape',
+    'get_2dshape', 'get_3dshape', 'get_4dshape', 'get_nd_shape',
     'astuple', 'asshape',
     'canonize_args_list',
     'UniqueValueGetter'
@@ -32,7 +32,7 @@ def get_2dshape(x: Optional[Union[int, Sequence[int]]], default: Tuple[int, int]
     """
     if x is None:
         return default
-    if isinstance(x, collections.Sequence):
+    if isinstance(x, collections.abc.Sequence):
         x = tuple(x)
         if len(x) == 1:
             return x[0], x[0]
@@ -58,7 +58,7 @@ def get_3dshape(x: Optional[Union[int, Sequence[int]]], default: Tuple[int, int,
 
     if x is None:
         return default
-    if isinstance(x, collections.Sequence):
+    if isinstance(x, collections.abc.Sequence):
         x = tuple(x)
         if len(x) == 1:
             return x[0], x[0], x[0]
@@ -84,7 +84,7 @@ def get_4dshape(x: Optional[Union[int, Sequence[int]]], default: Tuple[int, int,
     """
     if x is None:
         return default
-    if isinstance(x, collections.Sequence):
+    if isinstance(x, collections.abc.Sequence):
         x = tuple(x)
         if len(x) == 1:
             return 1, x[0], x[0], 1
@@ -96,6 +96,32 @@ def get_4dshape(x: Optional[Union[int, Sequence[int]]], default: Tuple[int, int,
     else:
         x = type(x)
         return 1, x, x, 1
+
+
+def get_nd_shape(x: Optional[Union[int, Sequence[int]]], ndim: int, default: Tuple[int, ...] = None, type: type = int) -> Tuple[int, ...]:
+    """Convert a value or a tuple to a tuple of length `ndim`.
+
+    Args:
+        x: a value of type `type`, or a tuple of length `ndim`. If the input is a single value, it will be duplicated to a tuple of length `ndim`.
+        ndim: the expected length of the tuple.
+        default: default value.
+        type: expected type of the element.
+
+    Returns:
+        a tuple of length `ndim`.
+    """
+    if x is None:
+        return default
+    if isinstance(x, collections.abc.Sequence):
+        x = tuple(x)
+        if len(x) == 1:
+            return (x[0],) * ndim
+        else:
+            assert len(x) == ndim, f'{ndim}dshape must be of length 1 or {ndim}'
+            return x
+    else:
+        x = type(x)
+        return (x,) * ndim
 
 
 def astuple(arr_like: Any) -> Tuple:
@@ -110,7 +136,7 @@ def astuple(arr_like: Any) -> Tuple:
     """
     if type(arr_like) is tuple:
         return arr_like
-    elif isinstance(arr_like, collections.Sequence) and not isinstance(arr_like, (str, bytes)):
+    elif isinstance(arr_like, collections.abc.Sequence) and not isinstance(arr_like, (str, bytes)):
         return tuple(arr_like)
     else:
         return tuple((arr_like,))
