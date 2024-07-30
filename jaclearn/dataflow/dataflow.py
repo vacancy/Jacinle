@@ -22,7 +22,7 @@ class DataFlowBase(object):
     pass
 
 
-collections.Iterator.register(DataFlowBase)
+collections.abc.Iterator.register(DataFlowBase)
 
 
 class SimpleDataFlowBase(DataFlowBase):

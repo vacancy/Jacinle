@@ -14,11 +14,19 @@ import numpy as np
 from jacinle.jit.cext import auto_travis
 auto_travis(__file__)
 
-from .logic_induction import (
-    search as csearch,
-    LogicFormTypePy as LogicFormType,
-    LogicFormOutputFormatPy as LogicFormOutputFormat
-)
+try:
+    from .logic_induction import (
+        search as csearch,
+        LogicFormTypePy as LogicFormType,
+        LogicFormOutputFormatPy as LogicFormOutputFormat
+    )
+except ImportError:
+    auto_travis(__file__, force_recompile=True)
+    from .logic_induction import (
+        search as csearch,
+        LogicFormTypePy as LogicFormType,
+        LogicFormOutputFormatPy as LogicFormOutputFormat
+    )
 
 __all__ = ['search']
 
