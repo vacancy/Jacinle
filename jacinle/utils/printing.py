@@ -48,7 +48,7 @@ def colored(*text: str, sep=' ', color: str = 'unspecified'):
     return text
 
 
-def indent_text(text: str, level = 1, indent_format: Optional[str] = None, tabsize: Optional[int] = None) -> str:
+def indent_text(text: str, level = 1, indent_format: Optional[str] = None, tabsize: Optional[int] = None, indent_first: bool = True) -> str:
     """Indent the text by the given level.
 
     Args:
@@ -56,6 +56,7 @@ def indent_text(text: str, level = 1, indent_format: Optional[str] = None, tabsi
         level: the indent level.
         indent_format: the indent format. If None, use the tabsize.
         tabsize: the tab size. If None, use the default tab size (2).
+        indent_first: whether to indent the first line.
 
     Returns:
         The indented text.
@@ -69,7 +70,9 @@ def indent_text(text: str, level = 1, indent_format: Optional[str] = None, tabsi
     if indent_format is None and tabsize is None:
         indent_format = '  '
     indent_format = indent_format * level
-    return indent_format + text.replace('\n', '\n' + indent_format)
+    if indent_first:
+        return indent_format + text.replace('\n', '\n' + indent_format)
+    return text.replace('\n', '\n' + indent_format)
 
 
 def format_printable_data(data, float_format: str = _DEFAULT_FLOAT_FORMAT, indent: int = 1, indent_format: str = '  '):
@@ -101,7 +104,15 @@ def format_printable_data(data, float_format: str = _DEFAULT_FLOAT_FORMAT, inden
     elif t is float:
         return float_format.format(data)
     else:
-        return str(data)
+        try:
+            return str(data)
+        except Exception:
+            # The data is not printable. Try to use vars() to print the attributes.
+            try:
+                fmt = '{}{}'.format(t.__name__, stformat(vars(data), indent=0, indent_format=indent_format)[4:]).rstrip()  # strip out the first 'dict'
+                return fmt
+            except Exception:
+                return '{}...'.format(t.__name__)
 
 
 def stprint(
