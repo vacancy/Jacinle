@@ -5,7 +5,7 @@ JACROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/../ && pwd )"
 source $JACROOT/bin/_jac-init.sh $JACROOT
 
 if [[ $1 == *.py ]]; then
-    exec python3 "$@" && exit
+    exec python "$@" && exit
 fi
 exec "$@"
 
