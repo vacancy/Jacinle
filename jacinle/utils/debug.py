@@ -21,7 +21,7 @@ from .printing import indent_text
 
 __all__ = [
     'hook_exception_ipdb', 'unhook_exception_ipdb', 'exception_hook', 'decorate_exception_hook', 'timeout_ipdb',
-    'log_function', 'indent_log', 'indent_print',
+    'log_function', 'lf_indent_log', 'lf_indent_print',
     'profile', 'time'
 ]
 
@@ -209,19 +209,19 @@ def log_function(init_function: Optional[Callable] = None, *, verbose: bool = Fa
 log_function.indent_level = 0
 
 
-def indent_log(string):
+def lf_indent_log(string):
     """Print a log message with the current indent level. The indent level is managed by log_function."""
     print(indent_text(str(string), log_function.indent_level, indent_format='| '))
 
 
-def indent_print(*args, sep=' ', end='\n'):
+def lf_indent_print(*args, sep=' ', end='\n'):
     """Print a message with the current indent level. The indent level is managed by log_function."""
     string = sep.join([str(arg) for arg in args])
     print(indent_text(str(string), log_function.indent_level, indent_format='| ').rstrip() + end, end='')
 
 
-log_function.log = indent_log
-log_function.print= indent_print
+log_function.log = lf_indent_log
+log_function.print= lf_indent_print
 
 
 @contextlib.contextmanager
