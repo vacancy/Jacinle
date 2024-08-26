@@ -33,6 +33,9 @@ class Queue(object):
     def get(self):
         return self._queue.popleft()
 
+    def peek(self):
+        return self._queue[0]
+
     def empty(self):
         return len(self._queue) == 0
 
@@ -51,6 +54,9 @@ class PriorityQueue(object):
 
     def get(self):
         return heapq.heappop(self._queue)[2]
+
+    def peek(self):
+        return self._queue[0][2]
 
     def empty(self):
         return len(self._queue) == 0
