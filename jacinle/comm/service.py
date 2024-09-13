@@ -12,6 +12,7 @@ import sys
 import uuid
 import inspect
 import contextlib
+import atexit
 
 from jacinle.logging import get_logger
 from jacinle.utils.printing import kvformat
@@ -137,7 +138,7 @@ class SocketClient(object):
         self.echo = echo
         self._initialized = False
 
-    def initialize(self):
+    def initialize(self, auto_close=False):
         self.client.initialize()
         logger.info('Client started.')
         logger.info('  Name:              {}'.format(self.name))
@@ -150,6 +151,9 @@ class SocketClient(object):
         if configs is not None:
             logger.info('  Server configs: {}'.format(configs))
         self._initialized = True
+
+        if auto_close:
+            atexit.register(self.finalize)
 
     def finalize(self):
         self.client.finalize()

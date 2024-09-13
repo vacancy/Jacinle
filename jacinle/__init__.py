@@ -54,6 +54,10 @@ See :doc:`jacinle.config.environ_v2` for more details.
     ~jacinle.utils.enum.JacEnum
     ~jacinle.utils.meta.Clock
 
+    ~jacinle.utils.clipboard.copy_to_clipboard
+    ~jacinle.utils.clipboard.copy_to_clipboard_image
+    ~jacinle.utils.clipboard.paste_from_clipboard
+
     ~jacinle.utils.deprecated.deprecated
 
     ~jacinle.utils.imp.load_module
@@ -217,6 +221,7 @@ if jac_getenv('IMPORT_ALL', 'true', 'bool'):
     from jacinle.config.environ_v2 import configs, def_configs, def_configs_func, set_configs, set_configs_func
     from jacinle.logging import get_logger, set_logger_output_file
     from jacinle.utils.cache import cached_property, cached_result, fs_cached_result
+    from jacinle.utils.clipboard import copy_to_clipboard, copy_to_clipboard_image, paste_from_clipboard
     from jacinle.utils.container import G, g, GView, SlotAttrObject, OrderedSet
     from jacinle.utils.context import EmptyContext, KeyboardInterruptContext
     from jacinle.utils.debug import hook_exception_ipdb, exception_hook, timeout_ipdb, log_function, lf_indent_log, lf_indent_print, profile, time
