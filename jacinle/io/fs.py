@@ -213,23 +213,23 @@ def set_fs_verbose(mode: bool = True):
     _fs_verbose = mode
 
 
-def open(filename: str, mode: str, **kwargs):
+def open(filename: str, mode: str, verbose: bool = False, **kwargs):
     """Open a file."""
-    if _fs_verbose and isinstance(filename, str):
+    if (_fs_verbose or verbose) and isinstance(filename, str):
         logger.info('Opening file: "{}", mode={}.'.format(filename, mode))
     return io_function_registry.dispatch('open', filename, mode, **kwargs)
 
 
-def load(filename: str, **kwargs):
+def load(filename: str, verbose: bool = False, **kwargs):
     """Load a file with automatic file type detection."""
-    if _fs_verbose and isinstance(filename, str):
+    if (_fs_verbose or verbose) and isinstance(filename, str):
         logger.info('Loading data from file: "{}".'.format(filename))
     return io_function_registry.dispatch('load', filename, **kwargs)
 
 
-def dump(filename, obj, **kwargs):
+def dump(filename, obj, verbose: bool = False, **kwargs):
     """Dump a file with automatic file type detection."""
-    if _fs_verbose and isinstance(filename, str):
+    if (_fs_verbose or verbose) and isinstance(filename, str):
         logger.info('Dumping data to file: "{}".'.format(filename))
     return io_function_registry.dispatch('dump', filename, obj, **kwargs)
 

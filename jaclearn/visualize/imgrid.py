@@ -32,6 +32,7 @@ def image_grid(all_images, grid_desc):
     """
 
     axes_info = []
+
     auto_infer_dim = len(all_images)
     for d in grid_desc:
         if d == 'h' or d == 'v':
