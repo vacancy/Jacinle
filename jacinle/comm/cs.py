@@ -124,6 +124,7 @@ class ServerPipe(object):
                     break
 
                 job = self._send_queue.get()
+                # print('send job', job)
                 self._tosock.send_multipart([job.identifier, dumpb(job.payload)], copy=False)
         except zmq.ContextTerminated:
             pass
@@ -134,6 +135,7 @@ class ServerPipe(object):
                 raise e
 
     def send(self, identifier, msg):
+        # print('send', identifier, msg)
         self._send_queue.put(_QueryMessage(identifier, msg))
 
 
@@ -200,11 +202,13 @@ class ClientPipe(object):
             self.finalize()
 
     def query(self, type, inp=None, do_recv=True):
+        # print('Querying...', type, inp)
         self._tosock.send(dumpb((self.identity, type, inp)), copy=False)
         if do_recv:
             return self.recv()
 
     def recv(self):
+        # print('Waiting for recv...')
         out = loadb(self._frsock.recv(copy=False).bytes)
         return out
 

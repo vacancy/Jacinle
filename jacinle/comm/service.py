@@ -55,6 +55,15 @@ class ServiceException(object):
         return 'Service exception: ' + self.remote_message
 
 
+class ServiceGeneratorStart(object):
+    def __init__(self, token):
+        self.token = token
+
+
+class ServiceGeneratorEnd(object):
+    pass
+
+
 class SocketServer(object):
     def __init__(self, service, name, tcp_port=None, ipc_port=None):
         self.service = service
@@ -74,6 +83,11 @@ class SocketServer(object):
         self.server.dispatcher.register('get_configs', self.call_get_configs)
         self.server.dispatcher.register('get_signature', self.call_get_signature)
         self.server.dispatcher.register('query', self.call_query)
+        self.server.dispatcher.register('generator_init', self.call_generator_init)
+        self.server.dispatcher.register('generator_next', self.call_generator_next)
+        self.server.dispatcher.register('generator_deinit', self.call_generator_deinit)
+
+        self.generator_states = dict()
 
     def serve(self):
         with self.server.activate(tcp_port=self.tcp_port, ipc_port=self.ipc_port):
@@ -126,6 +140,61 @@ class SocketServer(object):
         except:
             output_dict = ServiceException(format_exc(sys.exc_info()))
         pipe.send(identifier, output_dict)
+
+    def call_generator_init(self, pipe, identifier, feed_dict):
+        logger.info('Received generator_init from: {}.'.format(identifier))
+        token = uuid.uuid4().hex
+        try:
+            if feed_dict['echo']:
+                with EchoToPipe(pipe, identifier).activate():
+                    generator = self.service.call(*feed_dict['args'], **feed_dict['kwargs'])
+                    self.generator_states[token] = {
+                        'generator': generator,
+                        'echo': True
+                    }
+                pipe.send(identifier, ServiceGeneratorStart(token))
+            else:
+                generator = self.service.call(*feed_dict['args'], **feed_dict['kwargs'])
+                self.generator_states[token] = {
+                    'generator': generator,
+                    'echo': False
+                }
+                pipe.send(identifier, ServiceGeneratorStart(token))
+        except:
+            output_dict = ServiceException(format_exc(sys.exc_info()))
+            pipe.send(identifier, output_dict)
+
+    def call_generator_next(self, pipe, identifier, feed_dict):
+        logger.info('Received generator_next from: {}.'.format(identifier))
+        token = feed_dict['token']
+        state = self.generator_states[token]
+        try:
+            if state['echo']:
+                with EchoToPipe(pipe, identifier).activate():
+                    output = next(state['generator'])
+            else:
+                output = next(state['generator'])
+            pipe.send(identifier, output)
+        except StopIteration:
+            pipe.send(identifier, ServiceGeneratorEnd())
+        except:
+            output_dict = ServiceException(format_exc(sys.exc_info()))
+            pipe.send(identifier, output_dict)
+
+    def call_generator_deinit(self, pipe, identifier, feed_dict):
+        logger.info('Received generator_deinit from: {}.'.format(identifier))
+        token = feed_dict['token']
+        state = self.generator_states[token]
+        try:
+            if state['echo']:
+                with EchoToPipe(pipe, identifier).activate():
+                    state['generator'].close()
+            else:
+                state['generator'].close()
+            pipe.send(identifier, ServiceGeneratorEnd())
+        except:
+            output_dict = ServiceException(format_exc(sys.exc_info()))
+            pipe.send(identifier, output_dict)
 
 
 class SocketClient(object):
@@ -209,6 +278,36 @@ class SocketClient(object):
         if isinstance(output, ServiceException):
             raise RuntimeError(repr(output))
         return output
+
+    def call_generator(self, *args, echo=False, **kwargs):
+        if echo is None:
+            echo = self.echo
+        self.client.query('generator_init', {'args': args, 'kwargs': kwargs, 'echo': echo}, do_recv=False)
+        if echo:
+            echo_from_pipe(self.client)
+        output = self.client.recv()
+        if isinstance(output, ServiceException):
+            raise RuntimeError(repr(output))
+        if not isinstance(output, ServiceGeneratorStart):
+            raise RuntimeError('Invalid generator start token.')
+
+        token = output.token
+        try:
+            while True:
+                self.client.query('generator_next', {'token': token}, do_recv=False)
+                if echo:
+                    echo_from_pipe(self.client)
+                output = self.client.recv()
+                if isinstance(output, ServiceException):
+                    raise RuntimeError(repr(output))
+                if isinstance(output, ServiceGeneratorEnd):
+                    break
+                yield output
+        finally:
+            self.client.query('generator_deinit', {'token': token}, do_recv=False)
+            if echo:
+                echo_from_pipe(self.client)
+            self.client.recv()
 
     def __getattr__(self, name):
         def _call(*args, **kwargs):
