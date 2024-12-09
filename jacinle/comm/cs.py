@@ -149,7 +149,7 @@ class ClientPipe(object):
     def identity(self):
         return self._name.encode('utf-8')
 
-    def initialize(self):
+    def initialize(self, timeout=None):
         self._context = zmq.Context()
         self._tosock = self._context.socket(zmq.PUSH)
         self._frsock = self._context.socket(zmq.DEALER)
@@ -158,6 +158,33 @@ class ClientPipe(object):
         self._tosock.set_hwm(2)
         self._tosock.connect(self._conn_info[0])
         self._frsock.connect(self._conn_info[1])
+
+        if timeout is not None:
+            self._tosock.setsockopt(zmq.RCVTIMEO, timeout)
+            self._frsock.setsockopt(zmq.RCVTIMEO, timeout)
+
+            # Poller to verify connection within timeout
+            poller = zmq.Poller()
+            poller.register(self._tosock, zmq.POLLOUT)
+            poller.register(self._frsock, zmq.POLLIN)
+
+            # Wait for the sockets to be ready
+            events = dict(poller.poll(timeout))
+
+            # Unregister the sockets
+            poller.unregister(self._tosock)
+            poller.unregister(self._frsock)
+            # Unset the timeout
+            self._tosock.setsockopt(zmq.RCVTIMEO, -1)
+            self._frsock.setsockopt(zmq.RCVTIMEO, -1)
+
+            if self._tosock in events or self._frsock in events:
+                return True
+            else:
+                # If no events occurred within timeout
+                return False
+
+        return True
 
     def finalize(self):
         graceful_close(self._frsock)

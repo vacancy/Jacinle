@@ -138,8 +138,13 @@ class SocketClient(object):
         self.echo = echo
         self._initialized = False
 
-    def initialize(self, auto_close=False):
-        self.client.initialize()
+    def initialize(self, auto_close=False, timeout=None):
+        success = self.client.initialize(timeout)
+
+        if not success:
+            self.client.finalize()
+            return False
+
         logger.info('Client started.')
         logger.info('  Name:              {}'.format(self.name))
         logger.info('  Identifier:        {}'.format(self.identifier))
@@ -154,6 +159,8 @@ class SocketClient(object):
 
         if auto_close:
             atexit.register(self.finalize)
+
+        return True
 
     def finalize(self):
         self.client.finalize()

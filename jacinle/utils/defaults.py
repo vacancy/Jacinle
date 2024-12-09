@@ -226,6 +226,7 @@ class FileOptions(object):
             import my_module
             my_module.options.set(number_to_add=2)
             my_module.my_func(1)  # returns 3
+
     """
 
     def __init__(self, __file__, **init_kwargs):
@@ -235,7 +236,8 @@ class FileOptions(object):
 
     def set(self, **kwargs):
         for k, v in kwargs.items():
-            assert hasattr(self, k), '{} is not an option for file "{}".'.format(k, self.__file__)
+            if not hasattr(self, k):
+                raise ValueError(f'{k} is not an option for file "{self.__file__}". Available options are: {", ".join(self.__dict__.keys())}.')
             setattr(self, k, v)
 
 
@@ -264,6 +266,7 @@ def default_args(func):
 
             f()  # prints 1
             f(2)  # prints 2
+
     """
     def wrapper(func):
         sig = inspect.signature(func)
