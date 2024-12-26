@@ -15,10 +15,10 @@ import threading
 
 import zmq
 
+from typing import List
 from jacinle.concurrency.packing import dumpb, loadb
 from jacinle.concurrency.zmq_utils import get_addr, bind_to_random_ipc, graceful_close
 from jacinle.logging import get_logger
-from jacinle.utils.meta import notnone_property
 from jacinle.utils.registry import CallbackRegistry
 
 logger = get_logger(__file__)
@@ -51,8 +51,9 @@ class ServerPipe(object):
     def dispatcher(self):
         return self._dispatcher
 
-    @notnone_property
-    def conn_info(self):
+    @property
+    def conn_info(self) -> List[str]:
+        assert self._conn_info is not None, 'ServerPipe is not initialized.'
         return self._conn_info
 
     def initialize(self, tcp_port=None, ipc_port=None):

@@ -10,11 +10,16 @@
 
 import time
 
+from jacinle.cli.argument import JacArgumentParser
 from jacinle.comm.service import SocketClient
 
 
 def main():
-    client = SocketClient('client', ['tcp://127.0.0.1:31001', 'tcp://127.0.0.1:31002'])
+    parser = JacArgumentParser()
+    parser.add_argument('--simple', action='store_true')
+    args = parser.parse_args()
+
+    client = SocketClient('client', ['tcp://127.0.0.1:31001', 'tcp://127.0.0.1:31002'], use_simple=args.simple)
     with client.activate():
         inp = dict(a=1, b=2)
         out = client.call(inp)

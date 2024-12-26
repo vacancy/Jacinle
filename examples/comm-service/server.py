@@ -8,6 +8,7 @@
 # This file is part of Jacinle.
 # Distributed under terms of the MIT license.
 
+from jacinle.cli.argument import JacArgumentParser
 from jacinle.comm.service import Service
 
 
@@ -19,8 +20,12 @@ class MyService(Service):
 
 
 def main():
+    parser = JacArgumentParser()
+    parser.add_argument('--simple', action='store_true')
+    args = parser.parse_args()
+
     s = MyService()
-    s.serve_socket(tcp_port=[31001, 31002])
+    s.serve_socket(tcp_port=[31001, 31002], use_simple=args.simple)
 
 
 if __name__ == '__main__':
