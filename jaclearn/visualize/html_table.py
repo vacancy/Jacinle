@@ -181,10 +181,10 @@ class HTMLTableVisualizer(object):
             if obj is None:
                 pass
             elif c.type == 'file':
-                link, alt = self.canonize_link('file', obj)
+                link, alt = self.canonicalize_link('file', obj)
                 self._print('    <a class="{}" href="{}">{}</a>'.format(classname, link, alt))
             elif c.type == 'image' or c.type == 'figure':
-                link, alt = self.canonize_link(c.type, obj, row_identifier, c.identifier)
+                link, alt = self.canonicalize_link(c.type, obj, row_identifier, c.identifier)
                 self._print('    <img class="{}" src="{}" alt="{}" />'.format(classname, link, alt))
             elif c.type == 'frames':
                 self._print_frames(row_identifier, c, obj, classname)
@@ -212,7 +212,7 @@ class HTMLTableVisualizer(object):
         has_info = False
         for i, obj in enumerate(objs):
             if 'image' in obj:
-                obj['image'] = self.canonize_link('image', obj['image'], row_identifier, column.identifier + '_' + str(i))
+                obj['image'] = self.canonicalize_link('image', obj['image'], row_identifier, column.identifier + '_' + str(i))
                 type = 'image'
             else:
                 assert 'text' in obj
@@ -262,7 +262,7 @@ class HTMLTableVisualizer(object):
         figure.savefig(filename)
         return filename
 
-    def canonize_link(self, filetype, obj, row_identifier=None, col_identifier=None):
+    def canonicalize_link(self, filetype, obj, row_identifier=None, col_identifier=None):
         if filetype == 'file':
             assert isinstance(obj, (str, bytes))
             return osp.relpath(obj, self.visdir), osp.basename(obj)

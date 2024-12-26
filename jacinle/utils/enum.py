@@ -21,10 +21,10 @@ class JacEnum(enum.Enum):
     def from_string(cls, value: Union[str, 'JacEnum']) -> 'JacEnum':
         if isinstance(value, JacEnum):
             return value
-        value = _canonize_enum_value(value, True)
+        value = _canonicalize_enum_value(value, True)
         if isinstance(value, str) and hasattr(cls, value):
             return getattr(cls, value)
-        value = _canonize_enum_value(value)
+        value = _canonicalize_enum_value(value)
         return cls(value)
 
     @classmethod
@@ -50,7 +50,7 @@ class JacEnum(enum.Enum):
     @classmethod
     def is_valid(cls, value):
         """Check if the value is a valid choice."""
-        value = _canonize_enum_value(value)
+        value = _canonicalize_enum_value(value)
         return value in cls.choice_values()
 
     @classmethod
@@ -64,7 +64,7 @@ class JacEnum(enum.Enum):
         return self.value
 
 
-def _canonize_enum_value(value, cap=False):
+def _canonicalize_enum_value(value, cap=False):
     if isinstance(value, str):
         if cap:
             value = value.upper()

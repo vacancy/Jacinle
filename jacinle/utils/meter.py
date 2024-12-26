@@ -99,7 +99,7 @@ class GroupMeters(object):
         return {k: m.std for k, m in self._meters.items() if m.count > 0}
 
     def format(self, caption, values, kv_format, glue):
-        meters_kv = self._canonize_values(values)
+        meters_kv = self._canonicalize_values(values)
         log_str = [caption] if caption is not None else list()
         log_str.extend(itertools.starmap(kv_format.format, sorted(meters_kv.items())))
         return glue.join(log_str)
@@ -111,12 +111,12 @@ class GroupMeters(object):
             return self.format(caption, values, '  {} = {:4f}', '\n')
 
     def dump(self, filename, values='avg'):
-        meters_kv = self._canonize_values(values)
+        meters_kv = self._canonicalize_values(values)
         with open(filename, 'a') as f:
             f.write(io.dumps_json(meters_kv, compressed=False))
             f.write('\n')
 
-    def _canonize_values(self, values):
+    def _canonicalize_values(self, values):
         if isinstance(values, str):
             assert values in ('avg', 'val', 'sum')
             meters_kv = getattr(self, values)

@@ -14,7 +14,7 @@ from typing import Any, Optional, Union, Sequence, Tuple, Callable
 __all__ = [
     'get_2dshape', 'get_3dshape', 'get_4dshape', 'get_nd_shape',
     'astuple', 'asshape',
-    'canonize_args_list',
+    'canonicalize_args_list',
     'UniqueValueGetter'
 ]
 
@@ -164,14 +164,14 @@ def asshape(arr_like: Optional[Union[int, Sequence[int]]]) -> Optional[Tuple[int
         return tuple(arr_like)
 
 
-def canonize_args_list(args: Tuple[Any], *, allow_empty: bool = False, cvt: Optional[Callable[[Any], Any]] = None) -> Tuple[Any]:
+def canonicalize_args_list(args: Tuple[Any], *, allow_empty: bool = False, cvt: Optional[Callable[[Any], Any]] = None) -> Tuple[Any]:
     """Convert the argument list to a tuple of values. This is useful to make unified interface for shape-related operations.
 
     Example:
         .. code-block:: python
 
             def foo(*args):
-                args = canonize_args_list(args, allow_empty=True)
+                args = canonicalize_args_list(args, allow_empty=True)
                 print(args)
 
             foo(1, 2, 3)  # (1, 2, 3)

@@ -55,7 +55,7 @@ class DiscreteActionSpace(ActionSpaceBase):
 
 class ContinuousActionSpace(ActionSpaceBase):
     @staticmethod
-    def __canonize_bound(v, shape):
+    def __canonicalize_bound(v, shape):
         if type(v) is np.ndarray:
             assert v.shape == shape, 'Invalid shape for bound value: expect {}, got {}.'.format(
                     shape, v.shape)
@@ -80,8 +80,8 @@ class ContinuousActionSpace(ActionSpaceBase):
             self._high = high
             self._shape = low.shape
         else:
-            self._low = self.__canonize_bound(low, shape)
-            self._high = self.__canonize_bound(high, shape)
+            self._low = self.__canonicalize_bound(low, shape)
+            self._high = self.__canonicalize_bound(high, shape)
             self._shape = shape
 
     @property
