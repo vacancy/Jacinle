@@ -34,7 +34,7 @@ __all__ = [
     'as_file_descriptor', 'fs_verbose', 'set_fs_verbose',
     'open', 'open_txt', 'open_h5', 'open_gz',
     'load', 'load_txt', 'load_h5', 'load_pkl', 'load_pklgz', 'load_npy', 'load_npz', 'load_mat', 'load_pth',
-    'dump', 'dump_pkl', 'dump_pklgz', 'dump_npy', 'dump_npz', 'dump_mat', 'dump_pth',
+    'dump', 'dump_pkl', 'dump_pklgz', 'dump_npy', 'dump_npz', 'dump_npz_compressed', 'dump_mat', 'dump_pth',
     'safe_dump',
     'link', 'mkdir', 'lsdir', 'remove', 'locate_newest_file', 'tempfile',
     'io_function_registry'
@@ -138,12 +138,19 @@ def dump_pklgz(filename: str, obj, **kwargs):
 
 def dump_npy(filename: str, obj, **kwargs):
     """Dump a npy numpy file."""
-    return np.save(filename, obj)
+    return np.save(filename, obj, **kwargs)
 
 
 def dump_npz(filename: str, obj, **kwargs):
     """Dump a npz numpy file."""
-    return np.savez(filename, obj)
+    return np.savez(filename, obj, **kwargs)
+
+
+def dump_npz_compressed(filename: str, obj, allow_pickle: bool = True):
+    """Dump a npz numpy file with compression."""
+    if not isinstance(obj, dict):
+        raise ValueError('The object to be dumped to a npz file must be a dictionary.')
+    return np.savez_compressed(filename, **obj, allow_pickle=allow_pickle)
 
 
 def dump_mat(filename, obj, **kwargs):
