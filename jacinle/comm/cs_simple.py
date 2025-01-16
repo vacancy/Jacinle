@@ -105,7 +105,7 @@ class SimpleClientPipe(object):
         self._socket = self._context.socket(zmq.REQ)
         self._initialized = False
 
-        if isinstance(self._conn_info, (tuple, list)) and len(self._conn_info) == 2:
+        if isinstance(self._conn_info, (tuple, list)):
             self._conn_info = conn_info[0]
 
     def initialize(self, timeout=None):

@@ -33,11 +33,11 @@ class Service(object):
         self.configs = configs
         self.spec = spec
 
-    def serve_socket(self, name=None, tcp_port=None, use_simple=False):
+    def serve_socket(self, name=None, tcp_port=None, use_simple=False, register_name_server=False):
         if name is None:
             name = self.__class__.__name__
 
-        return SocketServer(self, name, tcp_port=tcp_port, use_simple=use_simple).serve()
+        return SocketServer(self, name, tcp_port=tcp_port, use_simple=use_simple, register_name_server=register_name_server).serve()
 
     def initialize(self):
         pass
@@ -67,7 +67,7 @@ class ServiceGeneratorEnd(object):
 
 
 class SocketServer(object):
-    def __init__(self, service, name, tcp_port=None, ipc_port=None, use_simple: bool = False):
+    def __init__(self, service, name, tcp_port=None, ipc_port=None, use_simple: bool = False, register_name_server: bool = False):
         self.service = service
         self.name = name
         self.tcp_port = tcp_port
@@ -77,6 +77,7 @@ class SocketServer(object):
             self.mode = 'ipc'
 
         self.use_simple = use_simple
+        self.register_name_server = register_name_server
         self.identifier = self.name + '-server-' + uuid.uuid4().hex
         if use_simple:
             self.server = SimpleServerPipe(self.identifier, mode=self.mode)
@@ -101,6 +102,11 @@ class SocketServer(object):
             logger.info('  Name:       {}'.format(self.name))
             logger.info('  Identifier: {}'.format(self.identifier))
             logger.info('  Conn info:  {}'.format(self.conn_info))
+
+            if self.register_name_server:
+                from jacinle.comm.service_name_server import sns_register
+                sns_register(self.name, {'conn_info': self.conn_info})
+
             if self.use_simple:
                 self.server.serve_forever()
             else:
@@ -210,9 +216,23 @@ class SocketServer(object):
 
 
 class SocketClient(object):
-    def __init__(self, name, conn_info, echo=True, use_simple=False):
+    def __init__(self, name, conn_info=None, echo=True, use_simple=False, use_name_server: bool = False):
         self.name = name
         self.identifier = self.name + '-client-' + uuid.uuid4().hex
+
+        if use_name_server:
+            if conn_info is None:
+                from jacinle.comm.service_name_server import sns_get
+                sns_info = sns_get(name)
+                if sns_info is None:
+                    raise ValueError('Name server does not have the information of the service: {}.'.format(name))
+                conn_info = sns_info['conn_info']
+            else:
+                logger.warning('conn_info is provided, ignoring the name server.')
+        else:
+            if conn_info is None:
+                raise ValueError('conn_info must be provided if not using name server.')
+
         self.conn_info = conn_info
 
         self.use_simple = use_simple
