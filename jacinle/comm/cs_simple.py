@@ -52,8 +52,12 @@ class SimpleServerPipe(object):
             if tcp_port is None:
                 port = self._socket.bind_to_random_port('tcp://*')
             else:
-                if len(tcp_port) == 2:
+                if isinstance(tcp_port, (int, str)):
+                    tcp_port = tcp_port
+                elif isinstance(tcp_port, (tuple, list)):
                     tcp_port = tcp_port[0]
+                else:
+                    raise ValueError('Invalid tcp_port: {}.'.format(tcp_port))
                 self._socket.bind('tcp://*:{}'.format(tcp_port))
                 port = tcp_port
             self._conn_info = 'tcp://{}:{}'.format(get_addr(), port)
