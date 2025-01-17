@@ -98,10 +98,10 @@ class SocketServer(object):
 
     def serve(self):
         with self.server.activate(tcp_port=self.tcp_port, ipc_port=self.ipc_port):
-            logger.info('Server started.')
-            logger.info('  Name:       {}'.format(self.name))
-            logger.info('  Identifier: {}'.format(self.identifier))
-            logger.info('  Conn info:  {}'.format(self.conn_info))
+            print('Server started.')
+            print('  Name:       {}'.format(self.name))
+            print('  Identifier: {}'.format(self.identifier))
+            print('  Conn info:  {}'.format(self.conn_info))
 
             if self.register_name_server:
                 from jacinle.comm.service_name_server import sns_register
@@ -148,7 +148,7 @@ class SocketServer(object):
         pipe.send(identifier, repr(inspect.getfullargspec(self.service.call)))
 
     def call_query(self, pipe, identifier, feed_dict):
-        logger.info('Received query from: {}.'.format(identifier))
+        print('Received query from: {}.'.format(identifier))
         try:
             if feed_dict['echo']:
                 with EchoToPipe(pipe, identifier).activate():

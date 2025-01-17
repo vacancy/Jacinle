@@ -97,8 +97,8 @@ def get_default_name_server_client():
     global _default_name_server_client
 
     if _default_name_server_client is None:
-        host = jac_getenv('NAMESERVER_HOST', 'localhost')
-        port = jac_getenv('NAMESERVER_PORT', SimpleNameServer.DEFAULT_PORT)
+        host = jac_getenv('SNS_HOST', 'localhost')
+        port = jac_getenv('SNS_PORT', SimpleNameServer.DEFAULT_PORT)
         _default_name_server_client = SimpleNameServerClient(host, port)
 
     return _default_name_server_client
