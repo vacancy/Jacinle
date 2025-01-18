@@ -69,8 +69,10 @@ class SimpleNameServer(Service):
 class SimpleNameServerClient(SocketClient):
     def __init__(self, host='localhost', port=11103):
         conn_info = 'tcp://{}:{}'.format(host, port)
-        super().__init__('jacinle/nameserver::client', conn_info, use_simple=True)
+        print('Connecting to the name server at {}... Waiting...'.format(conn_info))
+        super().__init__('jacinle/nameserver::client', conn_info, use_simple=True, verbose=False)
         self.initialize(auto_close=True)
+        print('Connected to the name server.')
 
     def heartbeat(self, name, obj):
         self.call('heartbeat', name, obj)

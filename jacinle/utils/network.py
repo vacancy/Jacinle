@@ -41,7 +41,7 @@ def get_local_addr_v2() -> str:
 
 # http://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib
 def _get_local_addr_v2_impl() -> str:
-    resolve = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1]
+    resolve = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.") and not ip.startswith('172.')][:1]
     if len(resolve):
         return resolve[0]
 

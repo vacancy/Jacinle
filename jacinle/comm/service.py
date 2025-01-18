@@ -33,11 +33,11 @@ class Service(object):
         self.configs = configs
         self.spec = spec
 
-    def serve_socket(self, name=None, tcp_port=None, use_simple=False, register_name_server=False):
+    def serve_socket(self, name=None, tcp_port=None, use_simple=False, register_name_server=False, verbose=True):
         if name is None:
             name = self.__class__.__name__
 
-        return SocketServer(self, name, tcp_port=tcp_port, use_simple=use_simple, register_name_server=register_name_server).serve()
+        return SocketServer(self, name, tcp_port=tcp_port, use_simple=use_simple, register_name_server=register_name_server, verbose=verbose).serve()
 
     def initialize(self):
         pass
@@ -67,7 +67,7 @@ class ServiceGeneratorEnd(object):
 
 
 class SocketServer(object):
-    def __init__(self, service, name, tcp_port=None, ipc_port=None, use_simple: bool = False, register_name_server: bool = False):
+    def __init__(self, service, name, tcp_port=None, ipc_port=None, use_simple: bool = False, register_name_server: bool = False, verbose: bool = True):
         self.service = service
         self.name = name
         self.tcp_port = tcp_port
@@ -75,6 +75,7 @@ class SocketServer(object):
         self.mode = 'tcp'
         if self.ipc_port is not None:
             self.mode = 'ipc'
+        self.verbose = verbose
 
         self.use_simple = use_simple
         self.register_name_server = register_name_server
@@ -98,10 +99,11 @@ class SocketServer(object):
 
     def serve(self):
         with self.server.activate(tcp_port=self.tcp_port, ipc_port=self.ipc_port):
-            print('Server started.')
-            print('  Name:       {}'.format(self.name))
-            print('  Identifier: {}'.format(self.identifier))
-            print('  Conn info:  {}'.format(self.conn_info))
+            if self.verbose:
+                print('Server started.')
+                print('  Name:       {}'.format(self.name))
+                print('  Identifier: {}'.format(self.identifier))
+                print('  Conn info:  {}'.format(self.conn_info))
 
             if self.register_name_server:
                 from jacinle.comm.service_name_server import sns_register
@@ -148,7 +150,8 @@ class SocketServer(object):
         pipe.send(identifier, repr(inspect.getfullargspec(self.service.call)))
 
     def call_query(self, pipe, identifier, feed_dict):
-        print('Received query from: {}.'.format(identifier))
+        if self.verbose:
+            print('Received query from: {}.'.format(identifier))
         try:
             if feed_dict['echo']:
                 with EchoToPipe(pipe, identifier).activate():
@@ -216,9 +219,10 @@ class SocketServer(object):
 
 
 class SocketClient(object):
-    def __init__(self, name, conn_info=None, echo=True, use_simple=False, use_name_server: bool = False):
+    def __init__(self, name, conn_info=None, echo=True, use_simple=False, use_name_server: bool = False, verbose: bool = True):
         self.name = name
         self.identifier = self.name + '-client-' + uuid.uuid4().hex
+        self.verbose = verbose
 
         if use_name_server:
             if conn_info is None:
@@ -251,16 +255,17 @@ class SocketClient(object):
             self.client.finalize()
             return False
 
-        logger.info('Client started.')
-        logger.info('  Name:              {}'.format(self.name))
-        logger.info('  Identifier:        {}'.format(self.identifier))
-        logger.info('  Conn info:         {}'.format(self.conn_info))
-        logger.info('  Server name:       {}'.format(self.get_server_name()))
-        logger.info('  Server identifier: {}'.format(self.get_server_identifier()))
-        logger.info('  Server signature:  {}'.format(self.get_signature()))
-        configs = self.get_configs()
-        if configs is not None:
-            logger.info('  Server configs: {}'.format(configs))
+        if self.verbose:
+            logger.info('Client started.')
+            logger.info('  Name:              {}'.format(self.name))
+            logger.info('  Identifier:        {}'.format(self.identifier))
+            logger.info('  Conn info:         {}'.format(self.conn_info))
+            logger.info('  Server name:       {}'.format(self.get_server_name()))
+            logger.info('  Server identifier: {}'.format(self.get_server_identifier()))
+            logger.info('  Server signature:  {}'.format(self.get_signature()))
+            configs = self.get_configs()
+            if configs is not None:
+                logger.info('  Server configs: {}'.format(configs))
         self._initialized = True
 
         if auto_close:
