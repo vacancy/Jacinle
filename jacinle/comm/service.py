@@ -107,7 +107,7 @@ class SocketServer(object):
 
             if self.register_name_server:
                 from jacinle.comm.service_name_server import sns_register
-                sns_register(self.name, {'conn_info': self.conn_info})
+                sns_register(self.name, {'conn_info': self.conn_info}, verbose=self.verbose)
 
             if self.use_simple:
                 self.server.serve_forever()
@@ -227,7 +227,7 @@ class SocketClient(object):
         if use_name_server:
             if conn_info is None:
                 from jacinle.comm.service_name_server import sns_get
-                sns_info = sns_get(name)
+                sns_info = sns_get(name, verbose)
                 if sns_info is None:
                     raise ValueError('Name server does not have the information of the service: {}.'.format(name))
                 conn_info = sns_info['conn_info']

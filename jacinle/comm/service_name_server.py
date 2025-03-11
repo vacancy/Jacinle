@@ -67,12 +67,14 @@ class SimpleNameServer(Service):
 
 
 class SimpleNameServerClient(SocketClient):
-    def __init__(self, host='localhost', port=11103):
+    def __init__(self, host='localhost', port=11103, verbose=False):
         conn_info = 'tcp://{}:{}'.format(host, port)
-        print('Connecting to the name server at {}... Waiting...'.format(conn_info))
+        if verbose:
+            print('Connecting to the name server at {}... Waiting...'.format(conn_info))
         super().__init__('jacinle/nameserver::client', conn_info, use_simple=True, verbose=False)
         self.initialize(auto_close=True)
-        print('Connected to the name server.')
+        if verbose:
+            print('Connected to the name server.')
 
     def heartbeat(self, name, obj):
         self.call('heartbeat', name, obj)
@@ -95,25 +97,27 @@ class SimpleNameServerClient(SocketClient):
 _default_name_server_client = None
 
 
-def get_default_name_server_client():
+def get_default_name_server_client(verbose: bool = False):
     global _default_name_server_client
 
     if _default_name_server_client is None:
         host = jac_getenv('SNS_HOST', 'localhost')
         port = jac_getenv('SNS_PORT', SimpleNameServer.DEFAULT_PORT)
-        _default_name_server_client = SimpleNameServerClient(host, port)
+        _default_name_server_client = SimpleNameServerClient(host, port, verbose=verbose)
 
     return _default_name_server_client
 
 
-def sns_register(name, obj):
-    get_default_name_server_client().register(name, obj)
+def sns_register(name, obj, verbose: bool = False):
+    get_default_name_server_client(verbose=verbose).register(name, obj)
+    if verbose:
+        print(f'Endpoint {name} registered at {obj}.')
 
 
-def sns_get(name):
-    return get_default_name_server_client().get(name)
+def sns_get(name, verbose: bool = False):
+    return get_default_name_server_client(verbose=verbose).get(name)
 
 
-def sns_has(name):
-    return get_default_name_server_client().has(name)
+def sns_has(name, verbose: bool = False):
+    return get_default_name_server_client(verbose=verbose).has(name)
 
