@@ -1,6 +1,27 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jacinle"
+version = "1.0.4"
+authors = [
+  { name="Jiayuan Mao", email="maojiayuan@gmail.com" },
 ]
-build-backend = "setuptools.build_meta"
+description = "Jacinle"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+]
+keywords = ['']
+dependencies = ['Cython', 'pkgconfig', 'tabulate', 'ipdb', 'pyyaml', 'tqdm', 'pyzmq', 'numpy', 'scipy', 'scikit-learn', 'matplotlib']
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/vacancy/Jacinle"
+Issues = "https://github.com/vacancy/Jacinle/issues"
+
